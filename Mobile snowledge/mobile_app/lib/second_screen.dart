@@ -36,19 +36,14 @@ class AskPermission extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
         Widget>[
-      const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 15),
-          child: Text('Sovellus tarvitsee luvan käyttää laitteen sijaintia',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                height: 2,
-                fontSize: 20,
-              )),
-        ),
+
+      const Image(
+        image: AssetImage('assets/images/logo_transparent_black.png'),
+        width: 250.0,
+        height: 250.0,
+        fit: BoxFit.cover,
       ),
       Container(
         margin: const EdgeInsets.all(15.0),
@@ -58,11 +53,35 @@ class AskPermission extends StatelessWidget {
             'Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?\n\n*Luvat on mahdollista antaa myös myöhemmässä vaiheessa',
             style: TextStyle(height: 1, fontSize: 15)),
       ),
+
       Padding(
         padding: const EdgeInsets.fromLTRB(7, 100, 7, 15),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
+        child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
             Widget>[
           ElevatedButton(
+            onPressed: () async {
+              if (await GpsHandler.checkAndAskGpsAlwaysOnPermission(context)) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainPage()),
+                        (route) => false);
+              }
+            },
+            child: const Text(
+              'Salli sijainnin käyttö',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+                fixedSize: const Size(170, 70),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10))),
+          ),
+          OutlinedButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -70,7 +89,7 @@ class AskPermission extends StatelessWidget {
                   (route) => false);
             },
             child: const Text(
-              'Ohita',
+              'Älä salli sijaintia',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
@@ -78,41 +97,16 @@ class AskPermission extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            style: ElevatedButton.styleFrom(
+            style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.black),
                 fixedSize: const Size(170, 70),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              if (await GpsHandler.checkAndAskGpsAlwaysOnPermission(context)) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainPage()),
-                    (route) => false);
-              }
-            },
-            child: const Text(
-              'Anna luvat',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-                fixedSize: const Size(170, 70),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-          ),
+
         ]),
       ),
-      Expanded(
-          child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Image.asset('assets/images/logo_transparent_black.png'),
-      )),
+
     ]);
   }
 }
