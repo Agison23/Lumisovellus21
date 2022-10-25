@@ -5,7 +5,8 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page.dart';
-import 'first_screen.dart';
+//import 'first_screen.dart';
+import 'first_screennew.dart';
 
 String? fName;
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'notification',
-      home: (fName == null) ? FirstScreen() : MainPage(),
+      home: (fName == null) ? FirstScreen() : FirstScreen(),
     );
   }
 }
