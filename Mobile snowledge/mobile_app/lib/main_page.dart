@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'notification_handler.dart';
@@ -63,6 +64,11 @@ class _MainPageState extends State<MainPage> {
               const WebView(
                 initialUrl: 'https://lumisovellus.fi/',
                 javascriptMode: JavascriptMode.unrestricted,
+              ),
+              // Stacking the bottom bar on top of the webview
+              const Align(
+                  alignment: Alignment.bottomCenter,
+                  child: BottomBar()
               ),
               IconButton(
                 iconSize: 30,
