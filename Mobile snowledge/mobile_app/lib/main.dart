@@ -5,8 +5,8 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page.dart';
-//import 'first_screen.dart';
-import 'first_screennew.dart';
+import 'name_input_screen.dart';
+import 'welcome_screen.dart';
 
 String? fName;
 
