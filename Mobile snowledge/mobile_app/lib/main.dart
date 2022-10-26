@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'notification',
-      home: (fName == null) ? FirstScreen() : FirstScreen(),
+      home: (fName == null) ? FirstScreen() : MainPage(),
     );
   }
 }
