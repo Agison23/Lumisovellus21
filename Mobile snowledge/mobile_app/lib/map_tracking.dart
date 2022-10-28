@@ -2,11 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'main_page.dart';
+import 'package:mobile_app/side_bar/side_bar_state.dart';
+import 'package:mobile_app/side_bar/gps_handler.dart';
 
 class MapTracking extends StatefulWidget {
   final bool tempGps;
@@ -19,92 +22,87 @@ class MapTracking extends StatefulWidget {
 class MapTrackingState extends State<MapTracking> {
   static late Timer _stateUpdateTimer;
   static late List<Marker> _markers = [];
-  static List<Marker> _helpers = [];
-
-  @override
-  void dispose() {
-    if (widget.tempGps) {
-      GpsHandler.setGpsSetting(context, false);
-      _markers.clear();
-      _helpers.clear();
-    }
-    ServerComms.messageToServer('HELP_DELETE');
-    _stateUpdateTimer.cancel();
-    super.dispose();
-  }
+  static late LatLng currentLocation;
 
   @override
   initState() {
     super.initState();
+    GpsHandler.setGpsSetting(context, true, insistAlwaysOn: false)
+        .then((gpsOn) async {
+      if (gpsOn) {
+        await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+        await ServerComms.messageToServer('LOCATION');
+      }
+    });
+
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
       (Timer t) => {
         getLatLng().then((usersLatLng) {
           setState(() {
-            _markers = getMarkers(_helpers, usersLatLng);
+            _markers = getMarkers(usersLatLng);
+            currentLocation = usersLatLng;
           });
         })
       },
     );
 
-    ServerComms.messageToServer("HELP");
+    //ServerComms.messageToServer("HELP");
   }
 
   static Future<LatLng> getLatLng() async {
-    var location = await GpsHandler.gps;
-    return await LatLng(location.latitude!, location.longitude!);
+    var location = GpsHandler.gps;
+    return LatLng(location.latitude!, location.longitude!);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SafeArea(
-        child: Scaffold(
-          body: Stack(
-            children: [
-              FlutterMap(
-                options: MapOptions(
-                  minZoom: 6,
-                  maxZoom: 18,
-                  center: LatLng(68.07, 24.02),
-                  zoom: 11.0,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            FlutterMap(
+              options: MapOptions(
+                minZoom: 6,
+                maxZoom: 18,
+                center: currentLocation,
+                zoom: 11.0,
+              ),
+              layers: [
+                TileLayerOptions(urlTemplate: getSummerOrWinterMap()
+                    // Pöllöille oma API avain!
+                    ),
+                MarkerLayerOptions(
+                  markers: _markers,
+                  rotate: true,
                 ),
-                layers: [
-                  TileLayerOptions(urlTemplate: getSummerOrWinterMap()
-                      // Pöllöille oma API avain!
-                      ),
-                  MarkerLayerOptions(
-                    markers: _markers,
-                    rotate: true,
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Tooltip(
+                    message:
+                        "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                    child: IconButton(
+                      onPressed: () async {
+                        const url = "https://maptiler.com/";
+                        if (await canLaunchUrlString(url)) {
+                          await launchUrlString(url);
+                        } else {
+                          print('ERROR');
+                        }
+                      },
+                      icon: Image.asset('assets/images/MapTiler.png'),
+                      iconSize: 20,
+                    ),
                   ),
                 ],
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Tooltip(
-                      message:
-                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
-                      child: IconButton(
-                        onPressed: () async {
-                          const url = "https://maptiler.com/";
-                          if (await canLaunchUrlString(url)) {
-                            await launchUrlString(url);
-                          } else {
-                            print('ERROR');
-                          }
-                        },
-                        icon: Image.asset('assets/images/MapTiler.png'),
-                        iconSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -118,7 +116,7 @@ class MapTrackingState extends State<MapTracking> {
     return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
-  static List<Marker> getMarkers(List<Marker> helpers, LatLng usersLatLng) {
+  static List<Marker> getMarkers(LatLng usersLatLng) {
     List<Marker> markers = [];
     markers.add(
       Marker(
