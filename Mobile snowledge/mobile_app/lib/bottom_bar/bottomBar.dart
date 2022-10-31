@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/side_bar/gps_handler.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:mobile_app/widgets_binding_observer_state.dart';
-
-import '../help_needed_mode.dart';
-import '../open_112app.dart';
-import '../side_bar/server_communications.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -14,139 +10,6 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
-  String locationMessage = 'LOCATION';
-
-  ElevatedButton _helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
-    return ElevatedButton(
-      onPressed: () async {
-        if (gpsSettingIsOff) {
-          GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
-              .then((gpsOn) async {
-            if (gpsOn) {
-              await GpsHandler.updateGpsVariable(ignoreSwitch: true);
-              await ServerComms.messageToServer(locationMessage);
-              if (text == 'Soita 112') {
-                open112();
-              }
-              Navigator.of(contx).push(
-                  MaterialPageRoute(builder: (contx) => HelpNeeded(true)));
-            } else {
-              showDialog<bool>(
-                  context: contx,
-                  builder: (contx) {
-                    return AlertDialog(
-                      title:
-                      Text('Toiminto vaatii luvan käyttää laitteen GPS:ää'),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(contx),
-                          child: Text('Ok'),
-                        ),
-                      ],
-                    );
-                  });
-            }
-          });
-        } else {
-          await ServerComms.messageToServer(locationMessage);
-          if (text == 'Soita 112') {
-            open112();
-          }
-          Navigator.of(contx).push(
-              MaterialPageRoute(builder: (contx) => HelpNeeded(true)));
-        }
-      },
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      style: ElevatedButton.styleFrom(
-          primary: color,
-          padding: const EdgeInsets.all(20.0),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
-    );
-  }
-
-  Future _showDialog(context) async {
-    return await showDialog<void>(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.9),
-      builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
-                const Text(
-                  'Millaista apua tarvitset?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  child: Text(
-                    'Vakavassa hädässä, soita aina hätänumeroon 112.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
-                  child: Text(
-                    'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return _helpButton(
-                              !(_snapshot.data ?? false),
-                              context,
-                              'Soita 112',
-                              const Color(0xFFDA7272)
-                          );
-                        }),
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return _helpButton(
-                              !(_snapshot.data ?? false),
-                              context,
-                              'Avunpyyntö',
-                              const Color(0xFF7281DA)
-                          );
-                        })
-                  ],
-                ),
-              ]);
-            },
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +42,7 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                   InkWell(
                     onTap: () {
                       // add page infos about sharing location
+                      Dialogs().showDialogSharingLocation(context);
                     },
                     child: Row(
                       children: const [
@@ -198,7 +62,7 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
             alignment: Alignment.bottomCenter,
             child: InkWell(
               onTap: () {
-                _showDialog(context);
+                Dialogs().showHelpNeededDialog(context);
               },
               child: Container(
                 margin: const EdgeInsets.only(bottom: 20.0),
@@ -208,7 +72,7 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(50.0)
                 ),
-                child: Center(child: const Text('Pyydäapua', style: TextStyle(color: Colors.white))),
+                child: const Center(child: Text('Pyydäapua', style: TextStyle(color: Colors.white))),
               ),
             ),
           ),
