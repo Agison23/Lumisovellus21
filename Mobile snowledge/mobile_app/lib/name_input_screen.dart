@@ -33,12 +33,16 @@ class MyCustomForm extends StatelessWidget {
       ),
       child: ListView(
         children: <Widget>[
-          const Image(
-            image: AssetImage('assets/images/logo_transparent_black.png'),
-            width: 250.0,
-            height: 250.0,
-            fit: BoxFit.cover,
+          Column(
+            children: [
+              const Image(
+                image: AssetImage('assets/images/logo_transparent_black.png'),
+                width: 250.0,
+                height: 250.0,
+                fit: BoxFit.cover,
 
+              ),
+            ],
           ),
           Container(
             margin: const EdgeInsets.all(15.0),
