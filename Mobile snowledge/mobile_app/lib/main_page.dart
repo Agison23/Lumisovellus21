@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_app/bottom_bar/bottomBar.dart';
+import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'notification_handler.dart';
-import 'side_bar/side_bar.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -81,7 +80,7 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ),
-          drawer: SideBar(),
+          drawer: const NavigationDrawer(),
         ),
       ),
     );
