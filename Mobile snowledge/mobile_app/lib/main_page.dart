@@ -66,10 +66,11 @@ class _MainPageState extends State<MainPage> {
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview
-              const Align(
-                  alignment: Alignment.bottomCenter,
-                  child: BottomBar()
-              ),
+              // Remove comments when changes has made to lumisovellus
+              // const Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: BottomBar()
+              // ),
               IconButton(
                 iconSize: 30,
                 icon: const Icon(Icons.menu),
