@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 String? firstName;
 String? lastName;
+String? phoneNumber;
 class UserInfoPage extends StatefulWidget {
 
   @override
@@ -13,6 +14,7 @@ class _UserInfoPageState extends State<UserInfoPage>{
 
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
+  TextEditingController pNumberController = TextEditingController();
 
 
   @override
@@ -20,10 +22,13 @@ class _UserInfoPageState extends State<UserInfoPage>{
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       firstName = pref.getString('fName');
+      fNameController.text = firstName.toString();
       lastName = pref.getString('lName');
+      lNameController.text = lastName.toString();
+      phoneNumber = pref.getString('pNumber');
+      pNumberController.text = phoneNumber.toString();
+
     });
-    fNameController.text = firstName.toString();
-    lNameController.text = lastName.toString();
   }
 
   Widget build(BuildContext context){
@@ -47,7 +52,8 @@ class _UserInfoPageState extends State<UserInfoPage>{
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: TextField(
+              child: TextFormField(
+                //initialValue: firstName,
                 controller: fNameController,
                 decoration: const InputDecoration(
                   filled: true,
@@ -62,7 +68,8 @@ class _UserInfoPageState extends State<UserInfoPage>{
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: TextField(
+              child: TextFormField(
+                //initialValue: lastName,
                 controller: lNameController,
                 decoration: const InputDecoration(
                   filled: true,
@@ -74,6 +81,21 @@ class _UserInfoPageState extends State<UserInfoPage>{
                   lastName=value;
                 },
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                scrollPadding: const EdgeInsets.only(bottom: 40),
+                controller: pNumberController,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(),
+                  labelText: 'Puhelinnumero',
+                ),
+              ),
+
             ),
             Center(
               child: ElevatedButton(
@@ -130,7 +152,7 @@ void _updateName(BuildContext context, String fName, String lName){
   prefs.then((pref) {
     pref.setString('fName', fName);
     pref.setString('lName', lName);
-    _showDialog(context, "Nimi tallennettu");
+    _showDialog(context, "Tiedot tallennettu");
   });
 }
 
