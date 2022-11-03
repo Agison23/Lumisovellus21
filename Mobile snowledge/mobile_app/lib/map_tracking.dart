@@ -9,8 +9,7 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class MapTracking extends StatefulWidget {
-  final bool tempGps;
-  const MapTracking(this.tempGps, {Key? key}) : super(key: key);
+  const MapTracking({Key? key}) : super(key: key);
 
   @override
   State<MapTracking> createState() => MapTrackingState();
@@ -31,11 +30,6 @@ class MapTrackingState extends State<MapTracking> {
         ServerComms.startSendingLocationMessages(); */
       }
     });
-  }
-
-  static Future<LatLng> getLatLng() async {
-    var location = GpsHandler.gps;
-    return LatLng(location.latitude!, location.longitude!);
   }
 
   @override
