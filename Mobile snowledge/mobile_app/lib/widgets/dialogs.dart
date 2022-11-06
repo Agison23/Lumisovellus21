@@ -136,7 +136,7 @@ class Dialogs {
                 ),
                 const SizedBox(height: 20),
                 prefs.getString('lastLocationTime') != null ?
-                Text('Last location sent: \n' "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" ' ago',
+                Text('Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" ' sitten',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,

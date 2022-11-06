@@ -20,13 +20,12 @@ class Utility {
       time = DateFormat.yMMMd().format(dt);
     } else if (dur.inDays > 0) {
       time = '${dur.inDays} d';
-      return dur.inDays == 1 ? '1 d' : DateFormat.MMMd().format(dt);
     } else if (dur.inHours > 0) {
       time = '${dur.inHours} h';
     } else if (dur.inMinutes > 0) {
-      time = '${dur.inMinutes} m';
+      time = '${dur.inMinutes} min';
     } else if (dur.inSeconds > 0) {
-      time = '${dur.inSeconds} s';
+      time = '${dur.inSeconds} sec';
     } else {
       time = 'now';
     }
