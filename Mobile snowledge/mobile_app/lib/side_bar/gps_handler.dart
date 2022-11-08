@@ -19,7 +19,13 @@ class GpsHandler {
   static bool _userInAppSettings = false;
 
   static bool get userInAppSettings => _userInAppSettings;
-  static StreamSubscription<LocationData> listener = _location.onLocationChanged.listen((event) {});
+  static StreamSubscription<LocationData> listener =
+      _location.onLocationChanged.listen((event) {});
+
+  // for use in main view in the continually updating map
+  static Stream<LocationData> getCoordinates() async* {
+    yield* _location.onLocationChanged;
+  }
 
   static userReturnedToTheApp() {
     _userInAppSettings = false;
@@ -46,7 +52,8 @@ class GpsHandler {
 
   ///tries to set gps setting and returns the value that the setting ends up being.
   ///If insistAlwaysOn = false, make sure that setGpsSetting(false) is run after using the gps, to avoid unexpected behaviour.
-  static Future<bool> setGpsSetting(context, bool value, {bool insistAlwaysOn = false}) async {
+  static Future<bool> setGpsSetting(context, bool value,
+      {bool insistAlwaysOn = false}) async {
     _userInAppSettings = false;
     bool result = false;
     //gps services state and permissions
@@ -88,7 +95,10 @@ class GpsHandler {
     //check permission
     if (!await Permission.locationAlways.isGranted) {
       if (Platform.isAndroid) {
-        int androidVersion = int.parse((await DeviceInfoPlugin().androidInfo).version.release!.split('.')[0]);
+        int androidVersion = int.parse((await DeviceInfoPlugin().androidInfo)
+            .version
+            .release!
+            .split('.')[0]);
         if (androidVersion > 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(
               context,
@@ -164,7 +174,8 @@ class GpsHandler {
     await sharedPreferences.setBool("isSharingLocation", value);
   }
 
-  static Future<bool> _showGPSDialog(context, bool insistAlwaysOn, String dialogMessage, String buttonText) async {
+  static Future<bool> _showGPSDialog(context, bool insistAlwaysOn,
+      String dialogMessage, String buttonText) async {
     bool result = false;
     await showDialog<void>(
         context: context,
