@@ -7,6 +7,10 @@ import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
+import 'notification_handler.dart';
+import 'package:mobile_app/bottom_bar/bottomBar.dart';
+import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:flutter/material.dart';
 
 class MapTracking extends StatefulWidget {
   const MapTracking({Key? key}) : super(key: key);
@@ -30,7 +34,12 @@ class MapTrackingState extends State<MapTracking> {
         ServerComms.startSendingLocationMessages(); */
       }
     });
+
+    new NotificationHandler().init(context);
+    Timer.run(() => _globalKey.currentState?.openDrawer());
   }
+
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +61,7 @@ class MapTrackingState extends State<MapTracking> {
 
           return SafeArea(
             child: Scaffold(
+              key: _globalKey,
               body: Stack(
                 children: [
                   FlutterMap(
@@ -71,6 +81,19 @@ class MapTrackingState extends State<MapTracking> {
                       ),
                     ],
                   ),
+                  // Stacking the bottom bar on top of the webview
+                  // Remove comments when changes has made to lumisovellus
+                  const Align(
+                      alignment: Alignment.bottomCenter, child: BottomBar()),
+                  IconButton(
+                    iconSize: 30,
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      _globalKey.currentState?.openDrawer();
+                    },
+                    color: Colors.black,
+                  ),
+
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Row(
@@ -97,6 +120,7 @@ class MapTrackingState extends State<MapTracking> {
                   ),
                 ],
               ),
+              drawer: const NavigationDrawer(),
             ),
           );
         }));
