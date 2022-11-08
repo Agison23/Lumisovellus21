@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
+import 'package:mobile_app/helper/utility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
 
 class Dialogs {
-  // Help needed
+  /// Open the help needed dialog
   Future showHelpNeededDialog(context) async {
     return await showDialog<void>(
       context: context,
@@ -81,8 +83,9 @@ class Dialogs {
     );
   }
 
-  // Sharing location
+  /// Open the sharing location dialog
   Future showDialogSharingLocation(context) async {
+    var prefs = await SharedPreferences.getInstance();
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -128,9 +131,19 @@ class Dialogs {
                         ),
                       ),
                     ),
-                    SetSharingLocation()
+                    SetSharingLocation(),
                   ],
                 ),
+                const SizedBox(height: 20),
+                prefs.getString('lastLocationTime') != null ?
+                Text('Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" ' sitten',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18
+                  ),
+                )
+                    : const SizedBox()
               ]);
             },
           ),
