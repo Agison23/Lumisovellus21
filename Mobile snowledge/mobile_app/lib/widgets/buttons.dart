@@ -63,4 +63,28 @@ class Buttons {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
+
+  // Cancel button
+  static ElevatedButton cancelButton(BuildContext context, String text, Color color) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: const EdgeInsets.all(20.0),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
 }

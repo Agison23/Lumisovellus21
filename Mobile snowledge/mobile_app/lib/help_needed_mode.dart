@@ -4,9 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'main_page.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
@@ -36,13 +35,19 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   initState() {
     super.initState();
+    // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
       (Timer t) => {
         getLatLng().then((usersLatLng) {
-          setState(() {
-            _markers = getMarkers(_helpers, usersLatLng);
-          });
+          if (_helpers.isNotEmpty) {
+            setState(() {
+              _markers = getMarkers(_helpers, usersLatLng);
+            });
+          } else {
+            _stateUpdateTimer.cancel();
+            Dialogs.showNoUserCloseDialog(context);
+          }
         })
       },
     );
@@ -54,14 +59,14 @@ class HelpNeededState extends State<HelpNeeded> {
     switch (diff) {
       case -1:
         for (int i = 0; i < _helpers.length; i++) {
-          if (_helpers[i].key.toString() == "[<'${id}'>]") {
+          if (_helpers[i].key.toString() == "[<'$id'>]") {
             _helpers.remove(_helpers[i]);
           }
         }
         break;
       case 0:
         for (int i = 0; i < _helpers.length; i++) {
-          if (_helpers[i].key.toString() == "[<'${id}'>]") {
+          if (_helpers[i].key.toString() == "[<'$id'>]") {
             _helpers.remove(_helpers[i]);
             _helpers.add(newHelper(id, gps));
           }
@@ -72,7 +77,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-        throw new Exception("Invalid input! the int diff value must be -1, 0 or 1");
+        throw Exception("Invalid input! the int diff value must be -1, 0 or 1");
         break;
     }
     getLatLng().then((usersLatLng) {
@@ -103,8 +108,11 @@ class HelpNeededState extends State<HelpNeeded> {
                       onPressed: () {
                         _markers.clear();
                         _helpers.clear();
-                        Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                        /*Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: const Text('Kyllä')),
                 ],
@@ -169,8 +177,11 @@ class HelpNeededState extends State<HelpNeeded> {
                                   onPressed: () {
                                     _markers.clear();
                                     _helpers.clear();
-                                    Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                                   /* Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
                                   },
                                   child: const Text('Kyllä')),
                             ],
@@ -192,7 +203,7 @@ class HelpNeededState extends State<HelpNeeded> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.red[200],
+                      backgroundColor: Colors.red[200],
                       fixedSize: const Size(200, 75),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                 ),
