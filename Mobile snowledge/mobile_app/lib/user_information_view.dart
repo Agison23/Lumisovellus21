@@ -50,12 +50,21 @@ class _UserInfoPageState extends State<UserInfoPage>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              margin: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(3.0),
+              child: const Text(
+                  'Omat tiedot',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(height: 1, fontSize: 30)),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: TextFormField(
                 //initialValue: firstName,
                 controller: fNameController,
                 decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
@@ -72,6 +81,7 @@ class _UserInfoPageState extends State<UserInfoPage>{
                 //initialValue: lastName,
                 controller: lNameController,
                 decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
@@ -89,6 +99,7 @@ class _UserInfoPageState extends State<UserInfoPage>{
                 scrollPadding: const EdgeInsets.only(bottom: 40),
                 controller: pNumberController,
                 decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(),
@@ -104,12 +115,12 @@ class _UserInfoPageState extends State<UserInfoPage>{
                 ),
                 onPressed: () {
                   int nameMaxLen = 30;
-                  if (fNameController.text.isEmpty || lNameController.text.isEmpty) {
+                  if (fNameController.text.isEmpty || lNameController.text.isEmpty || pNumberController.text.isEmpty) {
                     _showDialog(context, 'Täytä kaikki kentät!');
                   } else if (fNameController.text.length > nameMaxLen || lNameController.text.length > nameMaxLen) {
                     _showDialog(context, 'Yhden nimen enimmäispituus on ${nameMaxLen} merkkiä!');
                   } else {
-                    _updateName(context, fNameController.text, lNameController.text);
+                    _updateName(context, fNameController.text, lNameController.text, pNumberController.text);
 
                   }
                 },
@@ -147,11 +158,12 @@ Future _showDialog(BuildContext context, String message) async {
       });
 }
 
-void _updateName(BuildContext context, String fName, String lName){
+void _updateName(BuildContext context, String fName, String lName, String pNumber){
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((pref) {
     pref.setString('fName', fName);
     pref.setString('lName', lName);
+    pref.setString('pNumber', pNumber);
     _showDialog(context, "Tiedot tallennettu");
   });
 }
