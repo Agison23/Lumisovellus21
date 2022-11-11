@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/help_needed_mode.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
+import 'package:mobile_app/user_information_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../open_112app.dart';
@@ -86,7 +87,22 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
                   "Privacy Policy",
                   textAlign: TextAlign.left,
                 )),
-          )),
+          )
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+        child: TextButton(
+          child: Text(
+            'Omat tiedot'
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  UserInfoPage()),
+            );
+          },
+        ),
+      ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

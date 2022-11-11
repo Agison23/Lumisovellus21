@@ -21,6 +21,7 @@ class MyCustomForm extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController fName = TextEditingController();
     TextEditingController lName = TextEditingController();
+    TextEditingController pNumber = TextEditingController();
 
     return Container(
       decoration: const BoxDecoration(
@@ -49,7 +50,7 @@ class MyCustomForm extends StatelessWidget {
             padding: const EdgeInsets.all(3.0),
             decoration: BoxDecoration(color: Colors.white),
             child: const Text(
-                '\nSyötäthän oikean nimesi!\n\nNimeä käytetään sovelluksen GPS-toimintoon. Toiminnolla tuetaan Pallaksen Pöllöjä ja tarvittaessa pelastuslaitosta.\n',
+                '\nSyötäthän oikeat tietosi\n\nNimeä käytetään sovelluksen GPS-toimintoon. Toiminnolla tuetaan Pallaksen Pöllöjä ja tarvittaessa pelastuslaitosta.\n',
                 textAlign: TextAlign.center,
                 style: TextStyle(height: 1, fontSize: 15)),
           ),
@@ -62,7 +63,7 @@ class MyCustomForm extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(),
-                labelText: 'Anna etunimi',
+                labelText: 'Etunimi',
               ),
             ),
           ),
@@ -75,9 +76,24 @@ class MyCustomForm extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(),
-                labelText: 'Anna sukunimi',
+                labelText: 'Sukunimi',
               ),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              scrollPadding: const EdgeInsets.only(bottom: 40),
+              controller: pNumber,
+              decoration: const InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(),
+                labelText: 'Puhelinnumero',
+              ),
+            ),
+
           ),
           Center(
             child: ElevatedButton(
@@ -86,12 +102,12 @@ class MyCustomForm extends StatelessWidget {
               ),
               onPressed: () {
                 int nameMaxLen = 30;
-                if (fName.text.isEmpty || lName.text.isEmpty) {
+                if (fName.text.isEmpty || lName.text.isEmpty || pNumber.text.isEmpty) {
                   _showDialog(context, 'Täytä kaikki kentät!');
                 } else if (fName.text.length > nameMaxLen || lName.text.length > nameMaxLen) {
                   _showDialog(context, 'Yhden nimen enimmäispituus on ${nameMaxLen} merkkiä!');
                 } else {
-                  _navigateToNextScreen(context, fName.text, lName.text);
+                  _navigateToNextScreen(context, fName.text, lName.text, pNumber.text);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -105,11 +121,12 @@ class MyCustomForm extends StatelessWidget {
     );
   }
 
-  void _navigateToNextScreen(BuildContext context, String fName, String lName) {
+  void _navigateToNextScreen(BuildContext context, String fName, String lName, String pNumber) {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('fName', fName);
       pref.setString('lName', lName);
+      pref.setString('pNumber', pNumber);
     });
     Navigator.pushAndRemoveUntil(
         context,

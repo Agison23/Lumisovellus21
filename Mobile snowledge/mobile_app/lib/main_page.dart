@@ -6,6 +6,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'notification_handler.dart';
 
+import 'user_information_view.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 

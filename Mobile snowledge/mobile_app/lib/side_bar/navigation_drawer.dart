@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../user_information_view.dart';
+
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({Key? key}) : super(key: key);
 
@@ -81,7 +83,10 @@ class NavigationDrawer extends StatelessWidget {
               leading: const Icon(Icons.person_outline),
               title: const Text('Käyttäjätiedot'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  UserInfoPage()),
+                );
               },
             ),
             ListTile(
