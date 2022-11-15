@@ -20,8 +20,9 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    new NotificationHandler().init(context);
-    Timer.run(() => _globalKey.currentState?.openDrawer());
+    // this is force opening the drawer
+    /* new NotificationHandler().init(context);
+    Timer.run(() => _globalKey.currentState?.openDrawer()); */
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
