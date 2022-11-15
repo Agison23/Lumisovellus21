@@ -21,7 +21,7 @@ class HelpNeededState extends State<HelpNeeded> {
   final MapController _mapController = MapController();
   static late Timer _stateUpdateTimer;
   static late List<Marker> _markers = [];
-  static List<Marker> _helpers = [];
+  static final List<Marker> _helpers = [];
 
   @override
   void dispose() {
@@ -38,6 +38,7 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   initState() {
     super.initState();
+    // Add this line to add a user and verify that the dialog stays close if a user is nearby
     // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
@@ -80,9 +81,13 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
+<<<<<<< HEAD
         throw new Exception(
             "Invalid input! the int diff value must be -1, 0 or 1");
         break;
+=======
+        throw Exception("Invalid input! the int diff value must be -1, 0 or 1");
+>>>>>>> 78700f0 (Minor changes)
     }
     getLatLng().then((usersLatLng) {
       _markers = getMarkers(_helpers, usersLatLng);
@@ -90,8 +95,8 @@ class HelpNeededState extends State<HelpNeeded> {
   }
 
   static Future<LatLng> getLatLng() async {
-    var location = await GpsHandler.gps;
-    return await LatLng(location.latitude!, location.longitude!);
+    var location = GpsHandler.gps;
+    return LatLng(location.latitude!, location.longitude!);
   }
 
   @override
@@ -119,6 +124,7 @@ class HelpNeededState extends State<HelpNeeded> {
                       onPressed: () {
                         _markers.clear();
                         _helpers.clear();
+<<<<<<< HEAD
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -126,6 +132,8 @@ class HelpNeededState extends State<HelpNeeded> {
                             (route) => false);
                         /*Navigator.pushAndRemoveUntil(
                             context, MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+=======
+>>>>>>> 78700f0 (Minor changes)
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
