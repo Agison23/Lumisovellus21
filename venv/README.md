@@ -1,7 +1,7 @@
 For Python development and testing you can and should use this Virtual environment (venv).<br/>
 1. First you need to download "pip" (recommendation: pip3) and after that install virtualenv by command "pip3 install virtualenv" (change "pip3" to "pip" if not working) to your computer.  <br/>
 2. Second you need to activate venv. To activate venv you need to navigate to "snowledge" folder. Then you need activate venv by command "source venv/bin/activate". <br/>
-(3. If you need to download more tools or modules you can download them after succesfull activate by pip.)
+3. (If you need to download more tools or modules you can download them after succesfull activate by pip.)
 <br/>
 4. To download all necessary modules you need to run command "pip install -r requirements.txt"
 <br/>
