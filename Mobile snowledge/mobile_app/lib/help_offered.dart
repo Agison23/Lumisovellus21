@@ -35,7 +35,8 @@ class HelpOfferedState extends State<HelpOffered> {
     List<String> payloadparts = widget.payload!.split(':');
     _distance = payloadparts[1];
     List<String> gpsParts = payloadparts[0].split(',');
-    _toBeHelpedLatLng = LatLng(double.parse(gpsParts[0]), double.parse(gpsParts[1]));
+    _toBeHelpedLatLng =
+        LatLng(double.parse(gpsParts[0]), double.parse(gpsParts[1]));
     super.initState();
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
@@ -86,7 +87,10 @@ class HelpOfferedState extends State<HelpOffered> {
                       onPressed: () {
                         ServerComms.messageToServer('DECLINE');
                         Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MainPage()),
+                            (route) => false);
                       },
                       child: const Text('Kyllä')),
                 ],
@@ -102,8 +106,13 @@ class HelpOfferedState extends State<HelpOffered> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              _accepted ? 'Avuntarjoamistila' : 'Käyttäjä on pyytänyt apua $_distance päässä',
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 15),
+              _accepted
+                  ? 'Avuntarjoamistila'
+                  : 'Käyttäjä on pyytänyt apua $_distance päässä',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 15),
             ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.red[200],
@@ -118,15 +127,6 @@ class HelpOfferedState extends State<HelpOffered> {
                   center: LatLng(68.07, 24.02),
                   zoom: 11.0,
                 ),
-                layers: [
-                  TileLayerOptions(urlTemplate: HelpNeededState.getSummerOrWinterMap()
-                      // Pöllöille oma API avain!
-                      ),
-                  MarkerLayerOptions(
-                    markers: _markers,
-                    rotate: true,
-                  ),
-                ],
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -141,7 +141,8 @@ class HelpOfferedState extends State<HelpOffered> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Tooltip(
-                      message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                      message:
+                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                       child: IconButton(
                         onPressed: () async {
                           const url = "https://maptiler.com/";
@@ -171,7 +172,9 @@ class HelpOfferedState extends State<HelpOffered> {
         onPressed: () {
           ServerComms.messageToServer('HELP_RESPONSE:0');
           Navigator.pushAndRemoveUntil(
-              context, MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+              (route) => false);
         },
         child: const Text(
           'Hylkää',
@@ -185,7 +188,8 @@ class HelpOfferedState extends State<HelpOffered> {
         style: ElevatedButton.styleFrom(
             primary: Colors.red[200],
             fixedSize: const Size(175, 75),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
       ),
       ElevatedButton(
         onPressed: () {
@@ -206,7 +210,8 @@ class HelpOfferedState extends State<HelpOffered> {
         style: ElevatedButton.styleFrom(
             primary: Colors.red[200],
             fixedSize: const Size(175, 75),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
       ),
     ];
   }
@@ -228,7 +233,10 @@ class HelpOfferedState extends State<HelpOffered> {
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pushAndRemoveUntil(
-                              context, MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MainPage()),
+                              (route) => false);
                         },
                         child: const Text('Kyllä')),
                   ],
@@ -252,7 +260,8 @@ class HelpOfferedState extends State<HelpOffered> {
         style: ElevatedButton.styleFrom(
             primary: Colors.red[200],
             fixedSize: const Size(200, 75),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
       ),
     ];
   }
@@ -293,7 +302,8 @@ class HelpOfferedState extends State<HelpOffered> {
       builder: (ctx) => Container(
         width: 1.0,
         height: 1.0,
-        decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
+        decoration:
+            const BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
         child: const Align(
           alignment: Alignment.center,
           child: Text(

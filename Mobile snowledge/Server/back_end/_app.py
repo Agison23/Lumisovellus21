@@ -12,6 +12,20 @@ connection = db.connect_to_database()
 app = Flask(__name__)
 cors = CORS(app)
 
+@app.route('/rescue_login', methods=['GET'])
+def rescue_login_user():
+    """ This function is used for user login to rescue side """
+
+    header = request.headers
+    username, password = header.get('Authorization').split(':')
+
+    auth = db.rescue_user_authentication(connection, username, password)
+
+    if auth:
+        response = jsonify({"message": "OK: Authorized"}), 200
+    else:
+        response = jsonify({"message": "ERROR: Unauthorized"}), 401
+    return response
 
 @app.route('/login', methods=['GET'])
 def login_user():
@@ -28,6 +42,7 @@ def login_user():
 
 @app.route('/get/users', methods=['GET'])
 def get_users():
+    """ Get location of users ???"""
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
@@ -149,4 +164,5 @@ def get_last_x_locations(num_locations, dev_id):
 
 
 if __name__ == "__main__":
+    print(f"App.py started correctly")
     serve(app, port=3002)

@@ -92,8 +92,9 @@ class MyData extends DataTableSource {
   int get selectedRowCount => selectedRows.length;
 }
 
-Future<List> callHttp(String api, String username, String password, Map? body) async {
-  String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
+Future<List> callHttp(
+    String api, String username, String password, Map? body) async {
+  String url = 'http://localhost:3002/';
   Response response;
 
   if (body == null) {
@@ -114,8 +115,8 @@ Future<List> callHttp(String api, String username, String password, Map? body) a
   return result;
 }
 
-SizedBox createMap(
-    BuildContext context, int width, List<Marker> markers, List<TaggedPolyline> polylines, String mapTemplate) {
+SizedBox createMap(BuildContext context, int width, List<Marker> markers,
+    List<TaggedPolyline> polylines, String mapTemplate) {
   return SizedBox(
     width: MediaQuery.of(context).size.width - width,
     child: Stack(
@@ -148,7 +149,8 @@ SizedBox createMap(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Tooltip(
-                message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                message:
+                    "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                 child: IconButton(
                   onPressed: () async {
                     const url = "https://maptiler.com/";

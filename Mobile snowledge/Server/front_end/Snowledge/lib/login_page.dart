@@ -50,7 +50,8 @@ class LoginPage extends StatelessWidget {
                     hintText: 'Enter password',
                   ),
                   onSubmitted: ((value) {
-                    navigateToMainScreen(context, usernameController.text, passwordController.text);
+                    navigateToMainScreen(context, usernameController.text,
+                        passwordController.text);
                   }),
                 ),
               ),
@@ -58,7 +59,8 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               style: style,
               onPressed: () async {
-                navigateToMainScreen(context, usernameController.text, passwordController.text);
+                navigateToMainScreen(
+                    context, usernameController.text, passwordController.text);
               },
               child: const Text('Log in'),
             ),
@@ -69,7 +71,8 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-void navigateToMainScreen(BuildContext context, String username, String password) async {
+void navigateToMainScreen(
+    BuildContext context, String username, String password) async {
   String hashedPassword = sha256.convert(utf8.encode(password)).toString();
   print(hashedPassword);
   bool correct = await checkUserCredentials(username, hashedPassword);
@@ -77,7 +80,8 @@ void navigateToMainScreen(BuildContext context, String username, String password
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Mainpage(username: username, password: hashedPassword),
+        builder: (context) =>
+            Mainpage(username: username, password: hashedPassword),
       ),
     );
   } else {
@@ -99,7 +103,7 @@ void navigateToMainScreen(BuildContext context, String username, String password
 
 Future<bool> checkUserCredentials(String username, String password) async {
   bool result = false;
-  String url = 'https://pallas.lumisovellus.fi/data/api/login';
+  String url = 'http://localhost:3002/login';
 
   Response response = await get(
     Uri.parse(url),

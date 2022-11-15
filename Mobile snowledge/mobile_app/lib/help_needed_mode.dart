@@ -72,7 +72,8 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-        throw new Exception("Invalid input! the int diff value must be -1, 0 or 1");
+        throw new Exception(
+            "Invalid input! the int diff value must be -1, 0 or 1");
         break;
     }
     getLatLng().then((usersLatLng) {
@@ -104,7 +105,10 @@ class HelpNeededState extends State<HelpNeeded> {
                         _markers.clear();
                         _helpers.clear();
                         Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MainPage()),
+                            (route) => false);
                       },
                       child: const Text('Kyllä')),
                 ],
@@ -141,15 +145,6 @@ class HelpNeededState extends State<HelpNeeded> {
                   center: LatLng(68.07, 24.02),
                   zoom: 11.0,
                 ),
-                layers: [
-                  TileLayerOptions(urlTemplate: getSummerOrWinterMap()
-                      // Pöllöille oma API avain!
-                      ),
-                  MarkerLayerOptions(
-                    markers: _markers,
-                    rotate: true,
-                  ),
-                ],
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -162,15 +157,20 @@ class HelpNeededState extends State<HelpNeeded> {
                             title: const Text('Haluatko lopettaa avunpyynnön?'),
                             actions: [
                               ElevatedButton(
-                                onPressed: () => Navigator.of(context).pop(false),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
                                 child: const Text('En'),
                               ),
                               ElevatedButton(
                                   onPressed: () {
                                     _markers.clear();
                                     _helpers.clear();
-                                    Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => const MainPage()), (route) => false);
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainPage()),
+                                        (route) => false);
                                   },
                                   child: const Text('Kyllä')),
                             ],
@@ -194,7 +194,8 @@ class HelpNeededState extends State<HelpNeeded> {
                   style: ElevatedButton.styleFrom(
                       primary: Colors.red[200],
                       fixedSize: const Size(200, 75),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
               ),
               Align(
@@ -203,7 +204,8 @@ class HelpNeededState extends State<HelpNeeded> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Tooltip(
-                      message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                      message:
+                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                       child: IconButton(
                         onPressed: () async {
                           const url = "https://maptiler.com/";
