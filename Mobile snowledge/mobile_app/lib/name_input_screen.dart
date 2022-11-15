@@ -130,7 +130,7 @@ class MyCustomForm extends StatelessWidget {
     });
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+        MaterialPageRoute(builder: (context) => const MapTracking()),
         (route) => false);
   }
 }

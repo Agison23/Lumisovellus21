@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/main_page.dart';
+import 'package:mobile_app/map_tracking.dart';
 
 import '../user_information_view.dart';
 
@@ -45,9 +47,11 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
 
-                //Navigator.of(context).push(MaterialPageRoute(
-                //builder: (context) => const MapView()
-                // ));
+                /* Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MapTracking()),
+                    (route) => false); */
               },
             ),
             ListTile(
@@ -55,6 +59,11 @@ class NavigationDrawer extends StatelessWidget {
               title: const Text('Tunturialueet'),
               onTap: () {
                 Navigator.pop(context);
+
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainPage()),
+                    (route) => false);
               },
             ),
             ListTile(
