@@ -47,11 +47,11 @@ class NavigationDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pop(context);
 
-                /* Navigator.pushAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const MapTracking()),
-                    (route) => false); */
+                    (route) => false);
               },
             ),
             ListTile(
