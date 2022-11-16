@@ -3,7 +3,6 @@ import os
 import sys
 import sqlite3
 import _database as db
-# import _rescue_database as rdb
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from time import time
@@ -16,20 +15,17 @@ connection = db.connect_to_database()
 app = Flask(__name__)
 cors = CORS(app)
 
-
+# test
 # 1 GET Login
 @app.route('/rescue_login', methods=['GET'])
 
 def rescue_login_user():
     """ 
-    This function is used for user login to rescue side 
-    tää on vähän mysteeri, että toimiiko vai ei
-    en oo ehtinyt paneutua asiaan mut erroia ei anna. 
-    Ainoastaan tuo user authentication ei toimi tän kaa vielä
-    en oo toki sitä kovinkaa vielä yrittäny tehdä
+    Toimii, jos käyttäjä oikein ja salasana oikein. 
+    Tietokannassa tällä hetkellä voi olla useita samannimisiä käyttäjiä
+    ja sama salasana nii vähä mysteeri kumpaa käyttää
+    PYSTYY DEMOAMAAN
     """
-
-
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
@@ -47,11 +43,22 @@ def rescue_login_user():
 @app.route('/users', methods=['GET'])
 def rescue_get_users():
     """ 
-    Tämä funktio on kesken vielä, aloin äsken tekemään tätä ku sain idean,
-    tällä hetkellä tää tarkistaa nyt sen, että onko admin vai ei ja sen mukaan printtaa
-    tarvii vielä käyttäjän authenticoinnin
-    Tätä jatkan illalla,
+    Tää pitäs olla jone sul toimivana
     """
+
+    # lisää tälläinen tarkastin auth varten 
+#    header = request.headers
+#    username, password = header.get('Authorization').split(':')
+
+#    auth = db.rescue_user_authentication(connection, username, password)
+
+#    if auth:
+#        response = jsonify({"message": "OK: Authorized"}), 200
+#    else:
+#        response = jsonify({"message": "ERROR: Unauthorized"}), 401
+#    return response
+    ##########
+
     if not request.is_json:
         return "The content isn't of type JSON"
     print("json ok")
@@ -61,19 +68,31 @@ def rescue_get_users():
     password = user.get('password')
     is_admin = user.get('is_admin')
 
+    list = get_list_from_database("user_id, username, password, is_admin,", "rescue")
+    result_table = []
+    for i in list:
+        for user in list:
+            if user[0] == list[0]:
+                entry = []
+                entry.append(user[0])
+                entry.append(user[1])
+                entry.append(user[2])
+                entry.append(list[1])
+        result_table.append(entry)
+## errorriiia
     if is_admin == 1:
-        query = f'SELECT * FROM rescue'
-        db.rescue_users_from_db(connection)
-        print("Admin")
+        response = jsonify(result_table), 200
     else:
-        query = f'SELECT * FROM rescue WHERE user_id = "{user_id}"'
-        print("Not admin")
+        response = jsonify({"message": "ERROR: Unauthorized: Not admin"}), 401
 
+    return response
+    
+"""
     cur = connection.cursor()
     cur.execute(query)
     connection.commit()
 
-    return jsonify(request.get_json())
+    return jsonify(request.get_json())"""
 
 # postman testausta varten json. Muista laittaa headereissa päällee
 # Key = Content type, Value = application/json
@@ -91,26 +110,36 @@ def rescue_get_users():
 @app.route('/register', methods=['POST'])
 def register_user():
     """
-    Tämä funktio toimii tällä hetkellä MUTTA
-    ei kryptaa salasanaa, kuitenkin se luo uuden käyttäjän tietokantaan. 
-    lisään tähän myöhemmin kryptauksen ku kerkeen,
+    Toimii,
+    tekee authentikoinnin oikein ja tarkistaa onko käyttäjä kirjautunut sisälle
+    ei kuitenkaan tarkista mitenkää onko käyttäjä admin -> jatkokehitys
+    pitää lisätä tarkastin siihen, että onko olemassa saman niminen käyttäjä. -> jatkokehitys
     """
-    if not request.is_json:
-        return "The content isn't of type JSON"
-    print("json ok")
-    user = request.get_json()
-    username = user.get('username')
-    password = user.get('password')
-    is_admin = user.get('is_admin')
- 
-    query = f'INSERT INTO rescue (username, password, is_admin)\
-              VALUES ("{username}", "{password}", "{is_admin}");'
+    header = request.headers
+    username, password = header.get('Authorization').split(':')
 
-    cur = connection.cursor()
-    cur.execute(query)
-    connection.commit()
+    auth = db.rescue_user_authentication(connection, username, password)
 
-    return jsonify(request.get_json())
+    if auth:
+        response = jsonify({"message": "OK: Authorized, User registered"}), 200
+        if not request.is_json:
+            return "The content isn't of type JSON"
+        print("json ok")
+        user = request.get_json()
+        username = user.get('username')
+        password = user.get('password')
+        is_admin = user.get('is_admin')
+    
+        query = f'INSERT INTO rescue (username, password, is_admin)\
+                VALUES ("{username}", "{password}", "{is_admin}");'
+
+        cur = connection.cursor()
+        cur.execute(query)
+        connection.commit()
+    else:
+        response = jsonify({"message": "ERROR: Unauthorized, not registered"}), 401
+        return response
+    return response
 
 
 # postman testausta varten json. Muista laittaa headereissa päällee
@@ -131,24 +160,38 @@ def modify_user():
     Toimii tällä hetkellä ainoastaan kun käyttäjä vaihtaa kaikki tiedot
     Esim jos jotain jättää tyhjäksi nii tietokannassaki tyhjää
     teen tähän tarkistimen, että se ei muokkaa tyhjiä asioita
+    autentikointi toimii kuitenkin
+    demossa kannattaa melkeen muokata aina kaikkia osia
     """
     msg = ''
     if not request.is_json:
         return "The content isn't of type JSON"
     print("json ok")
-    user = request.get_json()
-    user_id = user.get('user_id')
-    username = user.get('username')
-    password = user.get('password')
-    is_admin = user.get('is_admin')
+    header = request.headers
+    username, password = header.get('Authorization').split(':')
+
+    auth = db.rescue_user_authentication(connection, username, password)
+
+    if auth:
+        response = jsonify({"message": "OK: Authorized, User modified"}), 200
+        user = request.get_json()
+        user_id = user.get('user_id')
+        username = user.get('username')
+        password = user.get('password')
+        is_admin = user.get('is_admin')
+        
+        # tähän teen tarkastimen, joka estää NONE valueiden menemisen 
+        query = f'UPDATE rescue SET username = "{username}", password = "{password}", is_admin = "{is_admin}" WHERE user_id = "{user_id}"'
+        
+    else: 
+        response = jsonify({"message": "ERROR: Unauthorized, user not modified"}), 401
+        return response
     
-    query = f'UPDATE rescue SET username = "{username}", password = "{password}", is_admin = "{is_admin}" WHERE user_id = "{user_id}"'
-   
     cur = connection.cursor()
     cur.execute(query)
     connection.commit()
+    return response
 
-    return jsonify(request.get_json())
 
 # postman testausta varten json. Muista laittaa headereissa päällee
 # Key = Content type, Value = application/json
@@ -163,21 +206,31 @@ def modify_user():
 @app.route('/delete', methods=['DELETE'])
 def delete_user():
     """
-    tän pitäs olla käytännössä valmis
-    tää poistaa ihan oikein ku syöttää user_id postmanilla. 
+    toimii,
+    autentikointi toimii
+    -> pitää lisätä admin tarkastus -> jatkokehitys
     """
-    msg = ''
-    if not request.is_json:
-        return "The content isn't of type JSON"
-    print("json ok")
-    user = request.get_json()
-    user_id = user.get('user_id')
-    query = f'DELETE FROM rescue WHERE user_id = {user_id};'
-    cur = connection.cursor()
-    cur.execute(query)
-    connection.commit()
+    header = request.headers
+    username, password = header.get('Authorization').split(':')
 
-    return jsonify(request.get_json())
+    auth = db.rescue_user_authentication(connection, username, password)
+
+    if auth:
+        response = jsonify({"message": "OK: Authorized, Delete user"}), 200
+        msg = ''
+        if not request.is_json:
+            return "The content isn't of type JSON"
+        print("json ok")
+        user = request.get_json()
+        user_id = user.get('user_id')
+        query = f'DELETE FROM rescue WHERE user_id = {user_id};'
+        cur = connection.cursor()
+        cur.execute(query)
+        connection.commit()
+    else:
+        response = jsonify({"message": "ERROR: Unauthorized, not deleted"}), 401
+        return response
+    return response
 
 # to test delete on postman
 """{
@@ -194,37 +247,18 @@ def rescue_after_request(response):
     return response
 
 
-
-
-if __name__ == "__main__":
-    print(f"Rescue management started correctly")
-    serve(app, port=3003)
-
-"""
-    header = request.headers
-    username, password = header.get('Authorization').split(':')
-
-    auth = db.rescue_user_authentication(connection, username, password)
-# if authenticated then
-    if auth:
-        response = jsonify(result_table), 200
-    else:
-        response = jsonify({"message": "ERROR: Unauthorized"}), 401
-
-    users = get_list_from_database("user_id,username,is_admin", "rescue")
-    # else error code
-
-    result_table = []
-
-    
-    return response"""
-
-# tällä hetkellä ei taida olla tarpeellinen uudenlaisen get users toteutuksen takia
-"""def get_list_from_database(data, source):
+def get_list_from_database(data, source):
     sql = '''SELECT {} FROM {};'''.format(data, source)
 
     cur = connection.cursor()
     cur.execute(sql)
     _list = cur.fetchall()
 
-    return _list"""
+    return _list
+
+
+if __name__ == "__main__":
+    print(f"Rescue management started correctly")
+    serve(app, port=3003)
+
+

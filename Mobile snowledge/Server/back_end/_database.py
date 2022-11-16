@@ -13,65 +13,6 @@ with open('admin_user.txt', 'r') as file:
     PASSWORD = lines[1]
 
 
-def rescue_user_authentication(connection, username, password):
-    """ Used for rescue side user authentication"""
-    correct = False
-    sql = '''SELECT password FROM rescue WHERE username=?;'''
-
-    cur = connection.cursor()
-    cur.execute(sql, (username,))
-    _password = cur.fetchall()
-    if _password:
-        _password = _password[0][0]
-        correct = password == _password
-
-    return correct
-
-"""
-def delete_rescue_users(connection):
-    sql = '''SELECT user_id FROM rescue;'''
-    delete_sql = '''DELETE FROM rescue WHERE user_id = ?;'''
-
-    cur = connection.cursor()
-    cur.execute(sql)
-    user_ids = cur.fetchall()
-
-    for id in user_ids:
-        _, exists = check_if_entry_exists(connection, 'data', 'user_id', 'user_id', id[0], False)
-        if not exists:
-            cur.execute(delete_sql, (id[0],))
-
-    return
-
-
-
-def rescue_create_user_entry(connection, user):
-    sql = ''' INSERT INTO users(dev_id,first_name,last_name,ip_address)
-              VALUES (?,?,?,?) '''
-
-    cur = connection.cursor()
-    cur.execute(sql, user)
-    connection.commit()
-    return user[0] 
-"""
-"""  
-def rescue_user_authentication(connection, username, password):
-    Used for rescue side user authentication
-    correct = False
-    sql = '''SELECT password FROM rescue WHERE username=?;'''
-
-    cur = connection.cursor()
-    cur.execute(sql, (username,))
-    _password = cur.fetchall()
-    if _password:
-        _password = _password[0][0]
-        correct = password == _password
-
-    return correct
-"""
-
-
-#######################################
 def create_connection(path):
     connection = None
 
@@ -368,6 +309,22 @@ def init_tables(connection):
     rescue_users_from_db(connection)
     connection.commit()
 
+
+def rescue_user_authentication(connection, username, password):
+    """ Used for rescue side user authentication"""
+    correct = False
+    sql = '''SELECT password FROM rescue WHERE username=?;'''
+
+    cur = connection.cursor()
+    cur.execute(sql, (username,))
+    _password = cur.fetchall()
+    if _password:
+        _password = _password[0][0]
+        correct = password == _password
+
+    return correct
+
+
 def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
     try:
         cur = connection.cursor()
@@ -391,4 +348,6 @@ def rescue_users_from_db(connection):
     cur = connection.cursor()
     cur.execute("SELECT * FROM rescue")
     print(cur.fetchall())
+ 
+#test
  
