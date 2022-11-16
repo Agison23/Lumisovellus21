@@ -7,6 +7,27 @@ import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 
 class Dialogs {
+
+  static Object?_selectedRadio = 0;
+  final String help1 = 'Varusteongelma';
+  final String help2 = 'Terveysongelma';
+  final String help3 = 'Eksynyt';
+
+  String getMinorHelpCondition() {
+    int helpNeed = _selectedRadio as int;
+    if (helpNeed == 1) {
+      return help1;
+    }
+    else if (helpNeed == 2) {
+      return help2;
+    }
+    else if (helpNeed == 3) {
+      return help3;
+    } 
+    else {return 'Vakava hätä';} 
+  }
+
+
   /// Open the help needed dialog
   Future showHelpNeededDialog(context) async {
     return await showDialog<void>(
@@ -151,7 +172,7 @@ class Dialogs {
   }
 
   Future showDialogMinorHelpQuestions(context) async {
-    int selectedRadio = 1;
+    _selectedRadio = 1;
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -165,25 +186,25 @@ class Dialogs {
               RadioListTile(
                 title: const Text('Varusteongelma'),
                 value: 1,
-                groupValue: selectedRadio,
+                groupValue: _selectedRadio,
                 onChanged: (value) {
-                  setState(() => selectedRadio = 1); 
+                  setState(() => _selectedRadio = value); 
                 },
               ),
               RadioListTile(
                 title: const Text('Terveysogelma'),
                 value: 2,
-                groupValue: selectedRadio,
+                groupValue: _selectedRadio,
                 onChanged: (value) {
-                  setState(() => selectedRadio = 2);
+                  setState(() => _selectedRadio = value);
                 },
               ),
               RadioListTile(
                 title: const Text('Olen eksynyt'),
                 value: 3,
-                groupValue: selectedRadio,
+                groupValue: _selectedRadio,
                 onChanged: (value) {
-                  setState(() => selectedRadio = 3);
+                  setState(() => _selectedRadio = value);
                 },
               ),
               Row(
@@ -195,7 +216,8 @@ class Dialogs {
                   ElevatedButton(
                     onPressed: (() {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));}),
+                      MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+                      }),
                     child: const Text('Jatka'))
                 ],
               )

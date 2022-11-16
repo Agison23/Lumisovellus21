@@ -8,7 +8,7 @@ import '../side_bar/server_communications.dart';
 
 class Buttons {
   // Help button
-  String locationMessage = 'LOCATION';
+  String locationMessage = 'HELP';
   ElevatedButton helpButton(
       bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
@@ -17,14 +17,16 @@ class Buttons {
           GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
               .then((gpsOn) async {
             if (gpsOn) {
-              await GpsHandler.updateGpsVariable(ignoreSwitch: true);
-              await ServerComms.messageToServer(locationMessage);
               if (text == 'Soita 112') {
+                await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+                //await ServerComms.messageToServer(locationMessage);
                 open112();
+                Navigator.of(contx).push(
+                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
               }
-/*               Navigator.of(contx).push(
-                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true))); */
-            Dialogs().showDialogMinorHelpQuestions(contx);
+              if (text == 'Avunpyyntö') {
+                Dialogs().showDialogMinorHelpQuestions(contx);
+              }
             } else {
               showDialog<bool>(
                   context: contx,
