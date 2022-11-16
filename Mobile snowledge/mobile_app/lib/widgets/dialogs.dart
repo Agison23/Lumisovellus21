@@ -150,22 +150,82 @@ class Dialogs {
   }
 
   Future showDialogMinorHelpQuestions(context) async {
+    int selectedRadio = 1;
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return SimpleDialog(
+          return AlertDialog(
             title: const Text('Millaista apua tarvitset?'),
-            children: [
-              SimpleDialogOption(
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+              RadioListTile(
+                title: const Text('Varusteongelma'),
+                value: 1,
+                groupValue: selectedRadio,
+                onChanged: (value) {
+                  setState(() => selectedRadio = 1); 
+                },
+              ),
+              RadioListTile(
+                title: const Text('Terveysogelma'),
+                value: 2,
+                groupValue: selectedRadio,
+                onChanged: (value) {
+                  setState(() => selectedRadio = 2);
+                },
+              ),
+              RadioListTile(
+                title: const Text('Olen eksynyt'),
+                value: 3,
+                groupValue: selectedRadio,
+                onChanged: (value) {
+                  setState(() => selectedRadio = 3);
+                },
+              ),
+            ]);}
+            ),
+          );
+        });
+  }
+    /* SimpleDialogOption(
                 onPressed: () {},
                 child: const Text('Varusteongelma'),
               ),
               SimpleDialogOption(
                   onPressed: () {}, child: const Text('Terveysongelma')),
               SimpleDialogOption(
-                  onPressed: () {}, child: const Text('Olen eksynyt')),
-            ],
-          );
-        });
-  }
+                  onPressed: () {}, child: const Text('Olen eksynyt')), */
 }
+
+
+
+
+
+
+/* showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          int? selectedRadio = 0;
+          return AlertDialog(
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(3, (int index) {
+                    return Radio<int>(
+                      toggleable: true,
+                      value: index,
+                      groupValue: selectedRadio,
+                      onChanged: (value) {
+                        setState(() => selectedRadio = value);
+                      },
+                    );
+                  }),
+                );
+              },
+            ),
+          );
+        }); */
