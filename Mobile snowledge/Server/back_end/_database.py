@@ -4,7 +4,7 @@ import sqlite3
 import time
 from sqlite3 import Error
 
-# korvaa tämä databasen kautta tapahtuvalla tunnistautumisella
+
 with open('admin_user.txt', 'r') as file:
     lines = file.readlines()
     for i in range(len(lines)):
