@@ -4,6 +4,7 @@ import 'package:mobile_app/helper/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
+import '../help_needed_mode.dart';
 
 class Dialogs {
   /// Open the help needed dialog
@@ -185,47 +186,23 @@ class Dialogs {
                   setState(() => selectedRadio = 3);
                 },
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: (() {Navigator.pop(context);}),
+                    child: const Text('Peruuta')),
+                  ElevatedButton(
+                    onPressed: (() {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));}),
+                    child: const Text('Jatka'))
+                ],
+              )
+              
             ]);}
             ),
           );
         });
   }
-    /* SimpleDialogOption(
-                onPressed: () {},
-                child: const Text('Varusteongelma'),
-              ),
-              SimpleDialogOption(
-                  onPressed: () {}, child: const Text('Terveysongelma')),
-              SimpleDialogOption(
-                  onPressed: () {}, child: const Text('Olen eksynyt')), */
 }
-
-
-
-
-
-
-/* showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          int? selectedRadio = 0;
-          return AlertDialog(
-            content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List<Widget>.generate(3, (int index) {
-                    return Radio<int>(
-                      toggleable: true,
-                      value: index,
-                      groupValue: selectedRadio,
-                      onChanged: (value) {
-                        setState(() => selectedRadio = value);
-                      },
-                    );
-                  }),
-                );
-              },
-            ),
-          );
-        }); */
