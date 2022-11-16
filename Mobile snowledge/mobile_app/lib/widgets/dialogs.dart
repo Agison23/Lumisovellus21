@@ -17,15 +17,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Millaista apua tarvitset?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -60,8 +59,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Soita 112',
-                              const Color(0xFFDA7272)
-                          );
+                              const Color(0xFFDA7272));
                         }),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -70,8 +68,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Avunpyyntö',
-                              const Color(0xFF7281DA)
-                          );
+                              const Color(0xFF7281DA));
                         })
                   ],
                 ),
@@ -95,15 +92,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Sijaintitiedon jakaminen',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -135,14 +131,15 @@ class Dialogs {
                   ],
                 ),
                 const SizedBox(height: 20),
-                prefs.getString('lastLocationTime') != null ?
-                Text('Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" ' sitten',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18
-                  ),
-                )
+                prefs.getString('lastLocationTime') != null
+                    ? Text(
+                        'Viimeinen sijaintitieto lähetetty: \n'
+                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
+                        ' sitten',
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 18),
+                      )
                     : const SizedBox()
               ]);
             },
@@ -150,5 +147,25 @@ class Dialogs {
         );
       },
     );
+  }
+
+  Future showDialogMinorHelpQuestions(context) async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Millaista apua tarvitset?'),
+            children: [
+              SimpleDialogOption(
+                onPressed: () {},
+                child: const Text('Varusteongelma'),
+              ),
+              SimpleDialogOption(
+                  onPressed: () {}, child: const Text('Terveysongelma')),
+              SimpleDialogOption(
+                  onPressed: () {}, child: const Text('Olen eksynyt')),
+            ],
+          );
+        });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 
 import '../help_needed_mode.dart';
 import '../open_112app.dart';
@@ -8,7 +9,8 @@ import '../side_bar/server_communications.dart';
 class Buttons {
   // Help button
   String locationMessage = 'LOCATION';
-  ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+  ElevatedButton helpButton(
+      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
@@ -20,15 +22,16 @@ class Buttons {
               if (text == 'Soita 112') {
                 open112();
               }
-              Navigator.of(contx).push(
-                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+/*               Navigator.of(contx).push(
+                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true))); */
+            Dialogs().showDialogMinorHelpQuestions(contx);
             } else {
               showDialog<bool>(
                   context: contx,
                   builder: (contx) {
                     return AlertDialog(
-                      title:
-                      const Text('Toiminto vaatii luvan käyttää laitteen GPS:ää'),
+                      title: const Text(
+                          'Toiminto vaatii luvan käyttää laitteen GPS:ää'),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(contx),
@@ -60,7 +63,7 @@ class Buttons {
           backgroundColor: color,
           padding: const EdgeInsets.all(20.0),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 }
