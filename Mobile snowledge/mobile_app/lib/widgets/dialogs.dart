@@ -24,7 +24,7 @@ class Dialogs {
     else if (helpNeed == 3) {
       return help3;
     } 
-    else {return 'Vakava hätä';} 
+    else {return 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';} 
   }
 
 
