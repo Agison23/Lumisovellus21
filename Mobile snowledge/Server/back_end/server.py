@@ -17,7 +17,6 @@ class UdpServer:
         
         db.init_tables(self.connection)
         self.max_time_from_closest_users = 7200
-        self.max_distance_from_help_request = 2.0
         self.max_entry_age = 172800
 
     def run(self):
@@ -45,7 +44,6 @@ class UdpServer:
                         self.connection, 
                         message, 
                         self.max_time_from_closest_users, 
-                        self.max_distance_from_help_request, 
                         self.udp
                     )
                 elif msg_type == "LOCATION":
