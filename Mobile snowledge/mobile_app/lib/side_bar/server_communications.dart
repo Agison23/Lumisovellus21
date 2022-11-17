@@ -68,7 +68,7 @@ class ServerComms {
         case 'HELP':
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
-          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}:$helpNeed';
+          message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
           message = '$messagetype:$devId';
