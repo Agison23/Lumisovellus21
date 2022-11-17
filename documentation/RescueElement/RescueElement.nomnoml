@@ -1,0 +1,68 @@
+
+[<info> RescueElement.nomnoml |
+	Go to nomnoml.com and copy file contents to edit
+]
+
+#title: RescueElement
+#padding: 17
+#direction: right
+#fontSize: 16
+#leading: 2.25
+
+#.action: visual=ellipse
+#.question: visual=note fill=#ede280
+#.note: visual=note fill=#ede280 body=left title=left
+#.usecase: visual=class title=bold
+#.info: visual=class title=left,bold body=left
+
+[<note> 1. When help request ends, other possible helpers should be informed
+		2. What happens, when connection is lost? (Helping ends / new help request is sent / etc.)
+        3. How do we make the user come back to Snowledge app? Help request not sent if user doesn't return?
+]
+
+[<usecase>FE01 Asking for help in mild emergency |
+  [<start>start]  -> [<action>Prompt user for mild emergency questions]
+  [<action>Prompt user for mild emergency questions] -> [<choice>Users within 3km range?]
+  [<choice>Users within 3km range?] yes -> [<action>Send help request to other users (3km range, max 3 helpers)]
+  [<choice>Users within 3km range?] no -> [<action>Inform user that no help is close]
+  [<action>Inform user that no help is close] -> [<action> Advise user to call 112]
+  [<action>Advise user to call 112] -> [<end> end]
+  [<action>Send help request to other users (3km range, max 3 helpers)] -> [<choice>Someone accepts?]
+  [<choice>Someone accepts?] yes -> [<usecase>FE03 Accepting a help request from other user]
+  [<choice>Someone accepts?] no -> [<action>Inform user that no help is close]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help requester / Helper is online?]
+  [<choice>Help requester / Helper is online?] no -> [<action>Inform Helper / Help requester that connection is lost]
+  [<action>Inform Helper / Help requester that connection is lost] -> [<question>? (2)]
+  [<question>? (2)] -> [<end>end]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help requester and helper found each other?]
+  [<choice>Help requester and helper found each other?] yes -> [<action>Terminate help request]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help need ended?]
+  [<choice>Help need ended?] yes -> [<action>Terminate help request]
+  [<action> Terminate help request] -> [<question>? (1)]
+  [<question>? (1)] -> [<end> end]
+]
+
+[<usecase>FE02 Asking for help in serious emergency |
+  [<start>start] -> [<choice>User has 112 app?]
+  [<choice>User has 112 app?] yes -> [<action>Open 112 app]
+  [<choice>User has 112 app?] no -> [<action>Call 112]
+  [<action>Call 112] -> [<question>? (3)]
+  [<action>Open 112 app] -> [<question>? (3)]
+  [<question>? (3)] -> [<choice>Users within 1km range?]
+  [<choice>Users within 1km range?] yes -> [<action>Send help request to other users (1km range, max 3 helpers)]
+  [<choice>Users within 1km range?] no -> [<action>Inform user that no help is close]
+  [<action>Send help request to other users (1km range, max 3 helpers)] -> [<choice>Someone accepts?]
+  [<choice>Someone accepts?] yes -> [<usecase>FE03 Accepting a help request from other user]
+  [<choice>Someone accepts?] no -> [<action>Inform user that no help is close]
+  [<action>Inform user that no help is close] -> [<end>end]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help requester / Helper is online?]
+  [<choice>Help requester / Helper is online?] no -> [<action>Inform Helper / Help requester that connection is lost]
+  [<action>Inform Helper / Help requester that connection is lost] -> [<question>? (2)]
+  [<question>? (2)] -> [<end> end]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help requester and helper found each other?]
+  [<choice>Help requester and helper found each other?] yes -> [<action>Terminate help request]
+  [<usecase>FE03 Accepting a help request from other user] <-> [<choice>Help need ended / 112 arrived?]
+  [<choice>Help need ended / 112 arrived?] yes -> [<action>Terminate help request]
+  [<action>Terminate help request] -> [<question>? (1)]
+  [<question>? (1)] -> [<end> end]
+]
