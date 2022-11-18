@@ -19,7 +19,6 @@ class MapTracking extends StatefulWidget {
 }
 
 class MapTrackingState extends State<MapTracking> {
-  static Stream locationStream = GpsHandler.getCoordinates();
   final MapController _mapController = MapController();
 
   @override
@@ -44,7 +43,7 @@ class MapTrackingState extends State<MapTracking> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: locationStream,
+        stream: GpsHandler.getCoordinates(),
         builder: ((context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
