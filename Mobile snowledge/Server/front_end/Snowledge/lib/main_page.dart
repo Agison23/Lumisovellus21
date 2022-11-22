@@ -1,3 +1,4 @@
+import 'package:Snowledge/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'dart:async';
@@ -7,7 +8,8 @@ import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart
 import 'package:intl/intl.dart';
 
 class Mainpage extends StatefulWidget {
-  const Mainpage({Key? key, required this.username, required this.password}) : super(key: key);
+  const Mainpage({Key? key, required this.username, required this.password})
+      : super(key: key);
   final String username;
   final String password;
 
@@ -19,6 +21,15 @@ class _MainpageState extends State<Mainpage> {
   TextEditingController controller = TextEditingController();
   String searchResult = '';
   int dropdownValue = 1;
+  String username = "";
+  String password = "";
+
+  void updateCredentials(String updatedUsername, String updatedPassword) {
+    setState(() {
+      username = updatedUsername;
+      password = updatedPassword;
+    });
+  }
 
   List<dynamic> myRawData = [];
   List<dynamic> helpData = [];
@@ -30,13 +41,15 @@ class _MainpageState extends State<Mainpage> {
     "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC",
   ];
   bool datatableState = true;
-  String mapType = "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
+  String mapType =
+      "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   late Timer timer;
 
   Future<void> updateMap() async {
     var selected = myRawData.where((item) => item.last == true);
     List<Marker> markers = [];
     List<TaggedPolyline> myLines = [];
+
     for (var user in selected) {
       String name = '${user[1]} ${user[2]}';
       var userData = await callHttp(
@@ -109,8 +122,10 @@ class _MainpageState extends State<Mainpage> {
       timer.cancel();
       return;
     }
-    List<dynamic> allUsers = await callHttp('get/users', widget.username, widget.password, null);
-    List<dynamic> helpUsers = await callHttp('get/help', widget.username, widget.password, null);
+    List<dynamic> allUsers =
+        await callHttp('get/users', widget.username, widget.password, null);
+    List<dynamic> helpUsers =
+        await callHttp('get/help', widget.username, widget.password, null);
     for (var _ in allUsers) {
       _.add(false);
     }
@@ -148,7 +163,9 @@ class _MainpageState extends State<Mainpage> {
 
   @override
   void initState() {
-    updateData();
+    //updateData();
+    username = widget.username;
+    password = widget.password;
     timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       updateData();
       updateMap();
@@ -275,7 +292,8 @@ class _MainpageState extends State<Mainpage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() => {myMarkers = [], myMarkerLines = []});
+                            setState(
+                                () => {myMarkers = [], myMarkerLines = []});
                           },
                           child: const SizedBox(
                             width: 130,
@@ -313,7 +331,8 @@ class _MainpageState extends State<Mainpage> {
               ],
             ),
           ),
-          createMap(context, 450, myMarkers, myMarkerLines, mapType),
+          createMap(context, 450, myMarkers, myMarkerLines, mapType, username,
+              password, updateCredentials),
         ],
       ),
     );

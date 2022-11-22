@@ -11,7 +11,7 @@ with open('admin_user.txt', 'r') as file:
         lines[i] = lines[i].rstrip()
     ADMIN = lines[0]
     PASSWORD = lines[1]
-    
+
 
 def create_connection(path):
     connection = None
@@ -25,6 +25,7 @@ def create_connection(path):
 
 
 def connect_to_database():
+    """ Function used for connecting to database"""
     path = pathlib.Path(__file__).parent.resolve()
     path = str(str(path) + '/db/')
 
@@ -38,8 +39,9 @@ def connect_to_database():
 
 
 def user_authentication(connection, username, password):
+    """ Used for lumisovellus side (not rescue) accounts"""
     correct = False
-    sql = '''SELECT password FROM accounts WHERE username=?;'''
+    sql = '''SELECT password FROM rescue WHERE username=?;'''
 
     cur = connection.cursor()
     cur.execute(sql, (username,))
@@ -239,6 +241,8 @@ def delete_old_users(connection):
 
 
 def create_table(connection, create_table_sql):
+    """ this function creates tables """
+    
     try:
         cur = connection.cursor()
         cur.execute(create_table_sql)
@@ -247,6 +251,7 @@ def create_table(connection, create_table_sql):
 
 
 def init_tables(connection):
+    print("tulee tähän")
     sql_table_users = ''' CREATE TABLE IF NOT EXISTS users (
                             dev_id text PRIMARY KEY,
                             first_name text NOT NULL,
@@ -279,14 +284,22 @@ def init_tables(connection):
                             state INTEGER NOT NULL
                             );'''
 
+    sql_table_rescue = '''CREATE TABLE IF NOT EXISTS rescue (
+                            user_id INTEGER PRIMARY KEY,
+                            username text NOT NULL,
+                            password text NOT NULL,
+                            is_admin INTEGER NOT NULL
+                            );'''
+
     create_table(connection, sql_table_users)
     create_table(connection, sql_table_data)
     create_table(connection, sql_table_help)
     create_table(connection, sql_table_accounts)
     create_table(connection, sql_table_requests)
-
+    create_table(connection, sql_table_rescue)
     sql  = "DELETE FROM accounts WHERE role = 'Admin'"
     sql2 = 'INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);'
+    sql3 = 'INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);'
     username = ADMIN
     password = PASSWORD
     role = 'Admin'
@@ -294,8 +307,30 @@ def init_tables(connection):
     cur = connection.cursor()
     cur.execute(sql)
     cur.execute(sql2, (username, password, role))
+    cur.execute(sql3, (username, password))
+    rescue_users_from_db(connection)
     connection.commit()
 
+def get_user_id(connection, username, password):
+    sql = '''SELECT user_id FROM rescue WHERE username=? AND password=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (username,password))
+    user_id = cur.fetchall()
+    return user_id[0][0]
+
+def is_user_admin(connection, user_id):
+    sql = '''SELECT is_admin FROM rescue WHERE user_id=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (user_id,))
+    result = cur.fetchall()
+    return result[0][0] == 1
+
+def get_user(connection, user_id):
+    sql = '''SELECT * FROM rescue WHERE user_id=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (user_id,))
+    result = cur.fetchall()
+    return result[0]
 
 def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
     try:
@@ -314,3 +349,12 @@ def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
         return exists[0][0], True
     else:
         return None, False
+
+
+def rescue_users_from_db(connection):
+    cur = connection.cursor()
+    cur.execute("SELECT * FROM rescue")
+    print(cur.fetchall())
+ 
+#test
+ 
