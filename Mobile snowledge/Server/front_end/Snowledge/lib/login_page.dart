@@ -15,6 +15,9 @@ class LoginPage extends StatelessWidget {
     final usernameController = TextEditingController();
     final passwordController = TextEditingController();
 
+    usernameController.text = "admin";
+    passwordController.text = "admin";
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -74,7 +77,6 @@ class LoginPage extends StatelessWidget {
 void navigateToMainScreen(
     BuildContext context, String username, String password) async {
   String hashedPassword = sha256.convert(utf8.encode(password)).toString();
-  print(hashedPassword);
   bool correct = await checkUserCredentials(username, hashedPassword);
   if (correct) {
     Navigator.push(
@@ -104,6 +106,7 @@ void navigateToMainScreen(
 Future<bool> checkUserCredentials(String username, String password) async {
   bool result = false;
   String url = 'http://localhost:3002/login';
+  //String url = 'https://pallas.lumisovellus.fi/data/api/login';
 
   Response response = await get(
     Uri.parse(url),

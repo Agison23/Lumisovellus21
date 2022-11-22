@@ -41,7 +41,7 @@ def connect_to_database():
 def user_authentication(connection, username, password):
     """ Used for lumisovellus side (not rescue) accounts"""
     correct = False
-    sql = '''SELECT password FROM accounts WHERE username=?;'''
+    sql = '''SELECT password FROM rescue WHERE username=?;'''
 
     cur = connection.cursor()
     cur.execute(sql, (username,))
@@ -299,6 +299,7 @@ def init_tables(connection):
     create_table(connection, sql_table_rescue)
     sql  = "DELETE FROM accounts WHERE role = 'Admin'"
     sql2 = 'INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);'
+    sql3 = 'INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);'
     username = ADMIN
     password = PASSWORD
     role = 'Admin'
@@ -306,24 +307,30 @@ def init_tables(connection):
     cur = connection.cursor()
     cur.execute(sql)
     cur.execute(sql2, (username, password, role))
+    cur.execute(sql3, (username, password))
     rescue_users_from_db(connection)
     connection.commit()
 
-
-def rescue_user_authentication(connection, username, password):
-    """ Used for rescue side user authentication"""
-    correct = False
-    sql = '''SELECT password FROM rescue WHERE username=?;'''
-
+def get_user_id(connection, username, password):
+    sql = '''SELECT user_id FROM rescue WHERE username=? AND password=?;'''
     cur = connection.cursor()
-    cur.execute(sql, (username,))
-    _password = cur.fetchall()
-    if _password:
-        _password = _password[0][0]
-        correct = password == _password
+    cur.execute(sql, (username,password))
+    user_id = cur.fetchall()
+    return user_id[0][0]
 
-    return correct
+def is_user_admin(connection, user_id):
+    sql = '''SELECT is_admin FROM rescue WHERE user_id=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (user_id,))
+    result = cur.fetchall()
+    return result[0][0] == 1
 
+def get_user(connection, user_id):
+    sql = '''SELECT * FROM rescue WHERE user_id=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (user_id,))
+    result = cur.fetchall()
+    return result[0]
 
 def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
     try:

@@ -1,91 +1,44 @@
-#!/bin/env python
-import os
-import sys
-import sqlite3
 import _database as db
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from time import time
 from waitress import serve
 
-time3DaysAgo = int(time()) - 259200
-
 connection = db.connect_to_database()
 
 app = Flask(__name__)
 cors = CORS(app)
 
-# test
-# 1 GET Login
-@app.route('/rescue_login', methods=['GET'])
-
-def rescue_login_user():
-    """ 
-    Toimii, jos käyttäjä oikein ja salasana oikein. 
-    Tietokannassa tällä hetkellä voi olla useita samannimisiä käyttäjiä
-    ja sama salasana nii vähä mysteeri kumpaa käyttää
-    PYSTYY DEMOAMAAN
-    """
-    header = request.headers
-    username, password = header.get('Authorization').split(':')
-
-    auth = db.rescue_user_authentication(connection, username, password)
-
-    if auth:
-        response = jsonify({"message": "OK: Authorized"}), 200
-    else:
-        response = jsonify({"message": "ERROR: Unauthorized"}), 401
-    return response
-
-
-
 # 2. GET Users
 @app.route('/users', methods=['GET'])
 def rescue_get_users():
-    """ 
-    Tää pitäs olla jone sul toimivana
-    """
+    header = request.headers
+    username, password = header.get('Authorization').split(':')
+    auth = db.user_authentication(connection, username, password)
 
-    # lisää tälläinen tarkastin auth varten 
-#    header = request.headers
-#    username, password = header.get('Authorization').split(':')
+    if auth == False:
+        return jsonify({"message": "Unauthorized"}), 401
 
-#    auth = db.rescue_user_authentication(connection, username, password)
+    user_id = db.get_user_id(connection, username, password)
+    is_admin = db.is_user_admin(connection, user_id)
 
-#    if auth:
-#        response = jsonify({"message": "OK: Authorized"}), 200
-#    else:
-#        response = jsonify({"message": "ERROR: Unauthorized"}), 401
-#    return response
-    ##########
+    if is_admin == False:
+        print("EI OLE ADMIN")
+        print("username: " + username)
+        print("password: " + password)
+        user = db.get_user(connection, user_id)
+        return jsonify([{"user_id": user[0], "username": user[1], "is_admin": user[3]}])
 
-    if not request.is_json:
-        return "The content isn't of type JSON"
-    print("json ok")
-    user = request.get_json()
-    user_id = user.get('user_id')
-    username = user.get('username')
-    password = user.get('password')
-    is_admin = user.get('is_admin')
+    query = f'SELECT * FROM rescue;'
+    cur = connection.cursor()
+    cur.execute(query)
+    response= cur.fetchall()
 
-    list = get_list_from_database("user_id, username, password, is_admin,", "rescue")
     result_table = []
-    for i in list:
-        for user in list:
-            if user[0] == list[0]:
-                entry = []
-                entry.append(user[0])
-                entry.append(user[1])
-                entry.append(user[2])
-                entry.append(list[1])
-        result_table.append(entry)
-## errorriiia
-    if is_admin == 1:
-        response = jsonify(result_table), 200
-    else:
-        response = jsonify({"message": "ERROR: Unauthorized: Not admin"}), 401
-
-    return response
+    for i in response:
+        result_table.append({"user_id": i[0], "username": i[1], "is_admin": i[3]})
+        
+    return jsonify(result_table)
     
 """
     cur = connection.cursor()
@@ -105,7 +58,6 @@ def rescue_get_users():
 }
 """
 
-
 # 3 POST user
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -118,7 +70,7 @@ def register_user():
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
-    auth = db.rescue_user_authentication(connection, username, password)
+    auth = db.user_authentication(connection, username, password)
 
     if auth:
         response = jsonify({"message": "OK: Authorized, User registered"}), 200
@@ -155,6 +107,7 @@ def register_user():
 
 # 4 PUT users
 @app.route('/modify', methods=['PUT'])
+@cross_origin(methods=['PUT'])
 def modify_user():
     """
     Toimii tällä hetkellä ainoastaan kun käyttäjä vaihtaa kaikki tiedot
@@ -163,34 +116,43 @@ def modify_user():
     autentikointi toimii kuitenkin
     demossa kannattaa melkeen muokata aina kaikkia osia
     """
-    msg = ''
     if not request.is_json:
-        return "The content isn't of type JSON"
-    print("json ok")
+        return jsonify({"message": "ERROR: Bad request"}), 401
+
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
-    auth = db.rescue_user_authentication(connection, username, password)
+    auth = db.user_authentication(connection, username, password)
 
-    if auth:
-        response = jsonify({"message": "OK: Authorized, User modified"}), 200
-        user = request.get_json()
-        user_id = user.get('user_id')
-        username = user.get('username')
-        password = user.get('password')
-        is_admin = user.get('is_admin')
-        
-        # tähän teen tarkastimen, joka estää NONE valueiden menemisen 
-        query = f'UPDATE rescue SET username = "{username}", password = "{password}", is_admin = "{is_admin}" WHERE user_id = "{user_id}"'
-        
-    else: 
-        response = jsonify({"message": "ERROR: Unauthorized, user not modified"}), 401
-        return response
+    if auth == False:
+        return jsonify({"message": "ERROR: Unauthorized, user not modified"}), 401
     
+    user = request.get_json()
+    print(user)
+    user_id = user.get('user_id')
+    username = user.get('username')
+    password = user.get('password')
+    is_admin = user.get('is_admin')
+
+    if user_id == None or (username == None and password == None and is_admin == None):
+        return 401
+
+    query = f'UPDATE rescue SET '
+    if(username != None):
+        query += f'username = "{username}",'
+    if(password != None):
+        query += f'password = "{password}",'
+    if(is_admin != None):
+        query += f'is_admin = "{is_admin}",'
+        
+    #viimenen pilkku pois
+    query = query[:-1]
+    query += f'WHERE user_id = {user_id}'
+    print(query)    
     cur = connection.cursor()
     cur.execute(query)
     connection.commit()
-    return response
+    return jsonify({"message": "OK"}), 200
 
 
 # postman testausta varten json. Muista laittaa headereissa päällee
@@ -204,58 +166,38 @@ def modify_user():
 
 # 5 DELETE users
 @app.route('/delete', methods=['DELETE'])
+@cross_origin(methods=['DELETE'])
 def delete_user():
-    """
-    toimii,
-    autentikointi toimii
-    -> pitää lisätä admin tarkastus -> jatkokehitys
-    """
+    print("/delete")
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
-    auth = db.rescue_user_authentication(connection, username, password)
+    auth = db.user_authentication(connection, username, password)
 
-    if auth:
-        response = jsonify({"message": "OK: Authorized, Delete user"}), 200
-        msg = ''
-        if not request.is_json:
-            return "The content isn't of type JSON"
-        print("json ok")
-        user = request.get_json()
-        user_id = user.get('user_id')
-        query = f'DELETE FROM rescue WHERE user_id = {user_id};'
-        cur = connection.cursor()
-        cur.execute(query)
-        connection.commit()
-    else:
-        response = jsonify({"message": "ERROR: Unauthorized, not deleted"}), 401
-        return response
-    return response
+    if auth == False:
+        return 401
+        
+    user_id = request.args.get('user_id', None, int)
+    
+    if user_id == None:
+        return 401 #"user_id parameter not provided"
 
-# to test delete on postman
-"""{
-    "user_id": "5",
-}"""
+    print(user_id);
+    query = f'DELETE FROM rescue WHERE user_id = {user_id};'
+    cur = connection.cursor()
+    cur.execute(query)
+    connection.commit()
 
+    return  jsonify({"message": "OK"}), 200
 
 @app.after_request
 def rescue_after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
     header['Access-Control-Allow-Headers'] = '*'
+
     # Other headers can be added here if required
     return response
-
-
-def get_list_from_database(data, source):
-    sql = '''SELECT {} FROM {};'''.format(data, source)
-
-    cur = connection.cursor()
-    cur.execute(sql)
-    _list = cur.fetchall()
-
-    return _list
-
 
 if __name__ == "__main__":
     print(f"Rescue management started correctly")
