@@ -61,6 +61,7 @@ class ServerComms {
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
+          saveLastLocationTimeToSP();
           message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}';
           break;
         case 'HELP':
@@ -199,5 +200,13 @@ class ServerComms {
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
     return [time.toString(), fName, lName, _gps];
+  }
+
+  static saveLastLocationTimeToSP() async {
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((pref) {
+      pref.setString('lastLocationTime', DateTime.now().toString());
+    }
+    );
   }
 }

@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'notification_handler.dart';
-import 'side_bar/side_bar.dart';
+
+import 'user_information_view.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -18,8 +20,9 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    new NotificationHandler().init(context);
-    Timer.run(() => _globalKey.currentState?.openDrawer());
+    // this is force opening the drawer
+    /* new NotificationHandler().init(context);
+    Timer.run(() => _globalKey.currentState?.openDrawer()); */
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
@@ -64,6 +67,12 @@ class _MainPageState extends State<MainPage> {
                 initialUrl: 'https://lumisovellus.fi/',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
+              // Stacking the bottom bar on top of the webview
+              // Remove comments when changes has made to lumisovellus
+              // const Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: BottomBar()
+              // ),
               IconButton(
                 iconSize: 30,
                 icon: const Icon(Icons.menu),
@@ -74,7 +83,7 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ),
-          drawer: SideBar(),
+          drawer: const NavigationDrawer(),
         ),
       ),
     );

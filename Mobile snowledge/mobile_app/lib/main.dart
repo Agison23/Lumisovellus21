@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page.dart';
-import 'first_screen.dart';
+import 'name_input_screen.dart';
+import 'welcome_screen.dart';
 
 String? fName;
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'notification',
-      home: (fName == null) ? FirstScreen() : MainPage(),
+      home: (fName == null) ? FirstScreen() : MapTracking(),
     );
   }
 }
