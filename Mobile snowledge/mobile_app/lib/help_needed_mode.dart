@@ -286,29 +286,15 @@ class HelpNeededState extends State<HelpNeeded> {
     markers.addAll(helpers);
     markers.add(
       Marker(
-        width: 50.0,
-        height: 30.0,
-        point: usersLatLng,
-        builder: (ctx) => Container(
+      point: usersLatLng,
+      builder: (ctx) => Container(
           width: 1.0,
           height: 1.0,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blue,
-          ),
-          child: const Align(
-            alignment: Alignment.center,
-            child: Text(
-              'Olet\ntässä',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 8.0,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+          child: const Icon(
+            Icons.person_pin_circle,
+            size: 40,
+          )),
+    ));
     return markers;
   }
 }
