@@ -2,28 +2,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:mobile_app/helper/loading_indicator.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
-import 'package:mobile_app/side_bar/server_communications.dart';
-
 import 'package:url_launcher/url_launcher_string.dart';
 import 'notification_handler.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import '../../widgets_binding_observer_state.dart';
 
 class MapTracking extends StatefulWidget {
   const MapTracking({Key? key}) : super(key: key);
 
   @override
-  State<MapTracking> createState() => MapTrackingState();
+  MapTrackingState createState() => MapTrackingState();
 }
 
-class MapTrackingState extends State<MapTracking> {
+class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   final MapController _mapController = MapController();
 
   @override
   initState() {
     super.initState();
+    setAppResumedWithAlwaysOnPermissionsTask(() => {setState(() {})});
     GpsHandler.setGpsSetting(context, true, insistAlwaysOn: false)
         .then((gpsOn) async {
       if (gpsOn) {
@@ -34,7 +34,7 @@ class MapTrackingState extends State<MapTracking> {
       }
     });
 
-    new NotificationHandler().init(context);
+    NotificationHandler().init(context);
     Timer.run(() => _globalKey.currentState?.openDrawer());
   }
 
@@ -46,7 +46,7 @@ class MapTrackingState extends State<MapTracking> {
         stream: GpsHandler.getCoordinates(),
         builder: ((context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: LoadingIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));

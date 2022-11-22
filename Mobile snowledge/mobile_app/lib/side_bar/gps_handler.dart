@@ -8,6 +8,8 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
+import '../main_page.dart';
+
 class GpsHandler {
   //#region gps
   static late Timer _timer;
@@ -190,6 +192,10 @@ class GpsHandler {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MainPage()),
+                          (route) => false);
                 },
                 child: const Text('Peruuta'),
               ),
@@ -201,7 +207,7 @@ class GpsHandler {
                       if (await openAppSettings()) _userInAppSettings = true;
                     }
                     result = await Permission.locationAlways.isGranted;
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
                   } else {
                     await Permission.location.request();
                     if (!(await Permission.location.isGranted)) {
@@ -209,7 +215,7 @@ class GpsHandler {
                         _userInAppSettings = true;
                     }
                     result = await Permission.location.isGranted;
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
                   }
                 },
                 child: Text(buttonText),
