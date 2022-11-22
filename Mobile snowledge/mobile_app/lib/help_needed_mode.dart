@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,12 +12,14 @@ import 'main_page.dart';
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
   const HelpNeeded(this.tempGps, {Key? key}) : super(key: key);
+  
 
   @override
   State<HelpNeeded> createState() => HelpNeededState();
 }
 
 class HelpNeededState extends State<HelpNeeded> {
+  final MapController _mapController = MapController();
   static late Timer _stateUpdateTimer;
   static late List<Marker> _markers = [];
   static List<Marker> _helpers = [];
@@ -87,6 +90,13 @@ class HelpNeededState extends State<HelpNeeded> {
 
   @override
   Widget build(BuildContext context) {
+
+    String usersLocation = GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
+    List<String> dataList = usersLocation.toString().split(' ');
+          var lat = double.parse(dataList[1]);
+          var lng = double.parse(dataList[3]);
+
+
     return WillPopScope(
       onWillPop: () async {
         final value = await showDialog<bool>(
@@ -135,10 +145,11 @@ class HelpNeededState extends State<HelpNeeded> {
           body: Stack(
             children: [
               FlutterMap(
+                mapController: _mapController,
                 options: MapOptions(
                   minZoom: 6,
                   maxZoom: 18,
-                  center: LatLng(68.07, 24.02),
+                  center: LatLng(lat,lng),
                   zoom: 11.0,
                 ),
                 layers: [
@@ -151,6 +162,15 @@ class HelpNeededState extends State<HelpNeeded> {
                   ),
                 ],
               ),
+              Align(
+                      alignment: Alignment.bottomRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.my_location),
+                        onPressed: () {
+                          _mapController.moveAndRotate(
+                              LatLng(lat, lng), _mapController.zoom, 0);
+                        },
+                      )),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
