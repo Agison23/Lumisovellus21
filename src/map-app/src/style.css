@@ -101,7 +101,7 @@ body {
 
 .maplibregl-ctrl-bottom-right {
   position: absolute;
-  bottom: 60px;
+  bottom: 60px !important;
   right: 5px;
 }
 
@@ -166,6 +166,7 @@ body {
     width: 100vw;
     z-index: 6;
   }
+
 }
 
 /*
