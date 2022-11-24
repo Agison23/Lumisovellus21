@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   crypto: ^3.0.1
   http_auth: ^1.0.1
-  flutter_map: ^0.14.0
+  flutter_map: ^3.0.0
   flutter_map_tappable_polyline: ^3.1.0
   url_launcher: ^6.1.0
 

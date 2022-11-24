@@ -71,11 +71,11 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                       center: LatLng(lat, lng),
                       zoom: 11.0,
                     ),
-                    layers: [
-                      TileLayerOptions(urlTemplate: getSummerOrWinterMap()
+                    children: [
+                      TileLayer(urlTemplate: getSummerOrWinterMap()
                           // Pöllöille oma API avain!
                           ),
-                      MarkerLayerOptions(
+                      MarkerLayer(
                         markers: getMarker(LatLng(lat, lng)),
                         rotate: true,
                       ),
