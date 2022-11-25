@@ -27,9 +27,9 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start --openssl-legacy-provider",
     "watch": "npm-watch",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "build": "react-scripts build --openssl-legacy-provider",
     "test": "cypress open",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js"
@@ -37,7 +37,7 @@
   "watch": {
     "build": "src/"
   },
-  "proxy": "http://localhost:3000",
+  "proxy": "https://lumisovellus.fi",
   "eslintConfig": {
     "extends": [
       "react-app",

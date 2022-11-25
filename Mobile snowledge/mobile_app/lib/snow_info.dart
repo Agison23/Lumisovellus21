@@ -6,21 +6,17 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class SnowInfo extends StatefulWidget {
+  const SnowInfo({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<SnowInfo> createState() => _SnowInfoState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _SnowInfoState extends State<SnowInfo> {
   @override
   void initState() {
     super.initState();
-
-    // this is force opening the drawer
-    /* new NotificationHandler().init(context);
-    Timer.run(() => _globalKey.currentState?.openDrawer()); */
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
@@ -62,11 +58,12 @@ class _MainPageState extends State<MainPage> {
           body: Stack(
             children: [
               const WebView(
-                // initialUrl: 'https://lumisovellus.fi/mobiili',
-                initialUrl: 'http://localhost:3000/mobiili',
+                // initialUrl: 'https://lumisovellus.fi/selitteet',
+                initialUrl: 'http://localhost:3000/selitteet',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview
+              // Remove comments when changes has made to lumisovellus
               const Align(
                   alignment: Alignment.bottomCenter, child: BottomBar()),
               IconButton(
@@ -75,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
                 },
-                color: Colors.black,
+                color: Colors.white,
               ),
             ],
           ),

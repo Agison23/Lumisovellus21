@@ -608,7 +608,7 @@ function WeatherTab() {
   };
 
   return (
-    <div>
+    <div className="weather_tab_inner">
       {!displayWeatherStatistics ?
         <WeatherInfo weatherState={weatherState} handleMoreInformationClick={handleMoreInformationClick}/> :
         <Statistics weatherState={weatherState} handleReturnClick={handleReturnClick}/>}

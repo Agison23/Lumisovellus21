@@ -69,7 +69,7 @@ function SnowTypes(props) {
 
   const styledClasses = useStyles();
   return(
-    <div className={styledClasses.root}>
+    <div className="snow_tab_inner">
       <Box className={styledClasses.header} style={props.isMobile ? {width: "100vw"} : {}}>
         <Typography variant="h3">SELITTEET</Typography>
       </Box>

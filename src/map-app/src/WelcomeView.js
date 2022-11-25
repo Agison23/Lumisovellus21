@@ -18,9 +18,10 @@ import Button from "@material-ui/core/Button";
 const useStyles = makeStyles(() => ({
   root: {
     backgroundColor: "#292929",
-    height: "100%",
+    height: "100vh",
     display: "flex",
-    flexFlow: "column"
+    flexFlow: "column",
+    paddingTop: "1rem"
   },
   textContainer: {
     overflowY: "scroll",
