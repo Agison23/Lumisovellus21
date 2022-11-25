@@ -42,7 +42,8 @@ body {
   flex: 0 1 auto;
 }
 
-.app .weather_tab {
+.app .weather_tab,
+.weather_tab_inner {
   position: fixed;
   bottom: 0;
   height: 100%;
@@ -146,8 +147,12 @@ body {
     width: 100vw;
   }
 
-  .app .snow_tab {
+  .app .snow_tab,
+  .snow_tab_inner {
     width: 100vw;
+  }
+  .snow_tab_inner > div:first-child {
+    width: 100vw !important;
   }
 
   .app .map_container {
@@ -158,7 +163,8 @@ body {
     width: 100vw;
   }
 
-  .app .weather_tab {
+  .app .weather_tab,
+  .weather_tab_inner {
     width: 100vw;
   }
 
