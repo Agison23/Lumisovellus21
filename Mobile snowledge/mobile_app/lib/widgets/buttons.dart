@@ -1,34 +1,40 @@
 import 'package:flutter/material.dart';
-
 import '../help_needed_mode.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
+import 'dialogs.dart';
 
 class Buttons {
   // Help button
   String locationMessage = 'LOCATION';
-  ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+  ElevatedButton helpButton(
+      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
           GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
               .then((gpsOn) async {
             if (gpsOn) {
-              await GpsHandler.updateGpsVariable(ignoreSwitch: true);
-              await ServerComms.messageToServer(locationMessage);
               if (text == 'Soita 112') {
                 open112();
+                await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+                await ServerComms.messageToServer(locationMessage);
+                Navigator.of(contx).push(
+                    MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
               }
-              Navigator.of(contx).push(
-                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+              if (text == 'Avunpyyntö') {
+                Dialogs().showDialogMinorHelpQuestions(contx);
+                await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+                await ServerComms.messageToServer(locationMessage);
+              }
             } else {
               showDialog<bool>(
                   context: contx,
                   builder: (contx) {
                     return AlertDialog(
-                      title:
-                      const Text('Toiminto vaatii luvan käyttää laitteen GPS:ää'),
+                      title: const Text(
+                          'Toiminto vaatii luvan käyttää laitteen GPS:ää'),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(contx),

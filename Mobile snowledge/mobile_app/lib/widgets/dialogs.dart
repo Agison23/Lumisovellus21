@@ -4,6 +4,7 @@ import 'package:mobile_app/helper/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
+import '../help_needed_mode.dart';
 
 class Dialogs {
   /// Open the help needed dialog
@@ -17,7 +18,7 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Millaista apua tarvitset?',
                   textAlign: TextAlign.center,
@@ -95,7 +96,7 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Sijaintitiedon jakaminen',
                   textAlign: TextAlign.center,
@@ -136,7 +137,9 @@ class Dialogs {
                 ),
                 const SizedBox(height: 20),
                 prefs.getString('lastLocationTime') != null ?
-                Text('Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" ' sitten',
+                Text(
+                  'Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(
+                      prefs.getString('lastLocationTime'))}" ' sitten',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -164,7 +167,7 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Sovelluksen käyttäjiä ei ole lähistöllä',
                   textAlign: TextAlign.center,
@@ -189,7 +192,8 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'Peruuta', Colors.transparent),
+                    Buttons.cancelButton(
+                        context, 'Peruuta', Colors.transparent),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
@@ -209,4 +213,84 @@ class Dialogs {
       },
     );
   }
-}
+
+  static Object?_selectedRadio = 0;
+  final String help1 = 'Varusteongelma';
+  final String help2 = 'Terveysongelma';
+  final String help3 = 'Eksynyt';
+
+  String getMinorHelpCondition() {
+    int helpNeed = _selectedRadio as int;
+    if (helpNeed == 1) {
+      return help1;
+    } else if (helpNeed == 2) {
+      return help2;
+    } else if (helpNeed == 3) {
+      return help3;
+    } else {
+      return 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';
+    }
+  }
+
+  Future showDialogMinorHelpQuestions(context) async {
+    _selectedRadio = 1;
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Millaista apua tarvitset?'),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RadioListTile(
+                          title: const Text('Varusteongelma'),
+                          value: 1,
+                          groupValue: _selectedRadio,
+                          onChanged: (value) {
+                            setState(() => _selectedRadio = value);
+                          },
+                        ),
+                        RadioListTile(
+                          title: const Text('Terveysogelma'),
+                          value: 2,
+                          groupValue: _selectedRadio,
+                          onChanged: (value) {
+                            setState(() => _selectedRadio = value);
+                          },
+                        ),
+                        RadioListTile(
+                          title: const Text('Olen eksynyt'),
+                          value: 3,
+                          groupValue: _selectedRadio,
+                          onChanged: (value) {
+                            setState(() => _selectedRadio = value);
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                                onPressed: (() {
+                                  Navigator.pop(context);
+                                }),
+                                child: const Text('Peruuta')),
+                            ElevatedButton(
+                                onPressed: (() {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (contx) => const HelpNeeded(
+                                              true)));
+                                }),
+                                child: const Text('Jatka'))
+                          ],
+                        )
+
+                      ]);
+                }
+            ),
+          );
+        });
+  }
+  }
