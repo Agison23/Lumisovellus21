@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
@@ -81,13 +82,9 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-<<<<<<< HEAD
         throw new Exception(
             "Invalid input! the int diff value must be -1, 0 or 1");
         break;
-=======
-        throw Exception("Invalid input! the int diff value must be -1, 0 or 1");
->>>>>>> 78700f0 (Minor changes)
     }
     getLatLng().then((usersLatLng) {
       _markers = getMarkers(_helpers, usersLatLng);
@@ -124,16 +121,8 @@ class HelpNeededState extends State<HelpNeeded> {
                       onPressed: () {
                         _markers.clear();
                         _helpers.clear();
-<<<<<<< HEAD
                         Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainPage()),
-                            (route) => false);
-                        /*Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
-=======
->>>>>>> 78700f0 (Minor changes)
+                            context, MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -209,14 +198,8 @@ class HelpNeededState extends State<HelpNeeded> {
                                   onPressed: () {
                                     _markers.clear();
                                     _helpers.clear();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainPage()),
-                                        (route) => false);
-                                   /* Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                                   Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
