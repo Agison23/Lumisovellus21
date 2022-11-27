@@ -33,6 +33,11 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(connection, gpscoord,
                               max_distance,
                               int(timestamp) - max_time_from_closest_users)
+    if len(users) == 1:
+        ip_address, _ = db.check_if_entry_exists(connection, 'users', 'ip_address', 'dev_id', user_id, False)
+        message = 'NO_USER_NEARBY'
+        ip_address, port = ip_address.split(',')
+        s.sendto(bytes(message, 'UTF-8'),(ip_address, int(port)))
 
     for user in users:
         if user[0] == dev_id: continue

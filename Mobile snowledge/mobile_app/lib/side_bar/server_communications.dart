@@ -164,6 +164,9 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(resultParts[2], resultParts[3]);
               }
               break;
+            case "NO_USER_NEARBY":
+              print('Working');
+              break;
             case "HELP_OVER":
               // HELP_OVER:ID
               String devId = await _getDeviceID();
