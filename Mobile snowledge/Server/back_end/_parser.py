@@ -12,18 +12,24 @@ def parse_message(msg):
     return message[1:], msg_type
 
 
-def parse_help_request(connection, message, max_time_from_closest_users, max_distance, s):
+def parse_help_request(connection, message, max_time_from_closest_users, s):
     timestamp = message[0]
     dev_id    = message[1]
     gpscoord  = message[2]
+    helptype  = message[3]
 
     user_id, exists = db.check_if_entry_exists(connection, 'users', 'dev_id', 'dev_id', dev_id, False)
 
     if not exists:
         return
 
-    help = (user_id, timestamp, gpscoord)
+    help = (user_id, timestamp, gpscoord, helptype)
     db.create_help_entry(connection, help)
+
+    if helptype == 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112':
+        max_distance = 1
+    else:
+        max_distance = 3
 
     users = get_closest_users(connection, gpscoord,
                               max_distance,
@@ -34,7 +40,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, max_dis
         if not db.create_request_entry(connection, dev_id, user[0]):
             continue
         ip_address, _ = db.check_if_entry_exists(connection, 'users', 'ip_address', 'dev_id', user[0], False)
-        message = 'NOTIFY:{}:{}:{:.2f}km'.format(user[0], gpscoord, user[1])
+        message = 'NOTIFY:{}:{}:{:.2f}km:Syy {}'.format(user[0], gpscoord, user[1], helptype)
         ip_address, port = ip_address.split(',')
         s.sendto(bytes(message, 'UTF-8'),(ip_address, int(port)))
 
@@ -43,7 +49,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, max_dis
     for user in pallaksenpollot:
         if user[0] == dev_id: continue
         ip_address, _ = db.check_if_entry_exists(connection, 'users', 'ip_address', 'dev_id', user[0], False)
-        message = 'NOTIFY:{}:{}'.format(user[0], gpscoord)
+        message = 'NOTIFY:{}:{}:Syy {}'.format(user[0], gpscoord, helptype)
         ip_address, port = ip_address.split(',')
         s.sendto(bytes(message, 'UTF-8'),(ip_address, int(port)))
 

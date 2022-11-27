@@ -156,6 +156,12 @@ class HelpNeededState extends State<HelpNeeded> {
                   center: LatLng(lat,lng),
                   zoom: 11.0,
                 ),
+                children: [
+                  TileLayer(
+                    urlTemplate: getSummerOrWinterMap()
+                  ),
+                  MarkerLayer(markers: _markers)
+                ],
               ),
               Align(
                       alignment: Alignment.bottomRight,

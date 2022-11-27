@@ -88,8 +88,8 @@ def get_all_pending_requests(connection, requester):
 
 
 def create_user_entry(connection, user):
-    sql = ''' INSERT INTO users(dev_id,first_name,last_name,ip_address)
-              VALUES (?,?,?,?) '''
+    sql = ''' INSERT INTO users(dev_id,first_name,last_name,ip_address,phone_number)
+              VALUES (?,?,?,?,?) '''
 
     cur = connection.cursor()
     cur.execute(sql, user)
@@ -108,8 +108,8 @@ def create_data_entry(connection, data):
 
 
 def create_help_entry(connection, help):
-    sql = ''' INSERT INTO help(dev_id,timestamp,gpscoord)
-              VALUES (?,?,?)'''
+    sql = ''' INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
+              VALUES (?,?,?,?)'''
 
     _, exists = check_if_entry_exists(connection, 'help', 'dev_id', 'dev_id', help[0], False)
 
@@ -256,7 +256,8 @@ def init_tables(connection):
                             dev_id text PRIMARY KEY,
                             first_name text NOT NULL,
                             last_name text NOT NULL,
-                            ip_address text NOT NULL
+                            ip_address text NOT NULL,
+                            phone_number text
                          ); '''
 
     sql_table_data = '''CREATE TABLE IF NOT EXISTS data (
@@ -269,7 +270,8 @@ def init_tables(connection):
     sql_table_help = ''' CREATE TABLE IF NOT EXISTS help (
                             dev_id text PRIMARY KEY,
                             timestamp integer,
-                            gpscoord text
+                            gpscoord text,
+                            help_type text
                         );'''
 
     sql_table_accounts = '''CREATE TABLE IF NOT EXISTS accounts (
