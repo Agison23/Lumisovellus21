@@ -5,6 +5,13 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+<<<<<<< HEAD
+=======
+
+import 'main_page.dart';
+import 'onboarding.dart';
+import 'name_input_screen.dart';
+>>>>>>> 5ccd3dc (Onboarding and userinfo working)
 import 'welcome_screen.dart';
 
 String? fName;
@@ -25,6 +32,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AppState>(create: (_) => AppState())
@@ -35,6 +43,13 @@ class MyApp extends StatelessWidget {
         title: 'Snowledge',
         home: (fName == null) ? const FirstScreen() : const MapTracking(),
       ),
+=======
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      title: 'notification',
+      home: (fName == null) ? OnBoardingPage() : MapTracking(),
+>>>>>>> 5ccd3dc (Onboarding and userinfo working)
     );
   }
 }
