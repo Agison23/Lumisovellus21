@@ -1,9 +1,12 @@
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 String? firstName;
 String? lastName;
 String? phoneNumber;
+
+
 class UserInfoPage extends StatefulWidget {
 
   @override
@@ -15,6 +18,8 @@ class _UserInfoPageState extends State<UserInfoPage>{
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController pNumberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  int nameMaxLen = 30;
 
 
   @override
@@ -46,91 +51,133 @@ class _UserInfoPageState extends State<UserInfoPage>{
           ),
         ),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(15.0),
-              padding: const EdgeInsets.all(3.0),
-              child: const Text(
-                  'Omat tiedot',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(height: 1, fontSize: 30)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: TextFormField(
-                //initialValue: firstName,
-                controller: fNameController,
-                decoration: const InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  labelText: 'Etunimi',
+      body: Padding(
+        padding: const EdgeInsets.only(top: 100),
+        child: Form(
+        key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: TextFormField(
+                            controller: fNameController,
+                            validator: (value){
+                              if(value == null || value.isEmpty){
+                                return 'Anna etunimesi';
+                              }
+                              if(value.length > nameMaxLen){
+                                return 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              labelText: 'Etunimi',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: TextFormField(
+                            controller: lNameController,
+                            validator: (value){
+                              if(value == null || value.isEmpty){
+                                return 'Anna sukunimesi';
+                              }
+                              if(value.length > nameMaxLen){
+                                return 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                              ),
+                              labelText: 'Sukunimi',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                onChanged: (String value){
-                  firstName=value;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: TextFormField(
-                //initialValue: lastName,
-                controller: lNameController,
-                decoration: const InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  labelText: 'Sukunimi',
+                Container(
+                  height: 100,
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
+                    keyboardType: TextInputType.number,
+                    controller: pNumberController,
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'Anna puhelinnumerosi';
+                      }
+                
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                      ),
+                      labelText: 'Puhelinnumero',
+                    ),
+                  ),
                 ),
-                onChanged: (String value){
-                  lastName=value;
-                },
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: (){
+                      if(_formKey.currentState!.validate()){
+                        _updateName(context, fNameController.text, lNameController.text, pNumberController.text);
+                
+                      }
+                    },
+                      child: const Text(
+                        'Tallenna',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                
+                          color: Colors.black,
+                          fontSize: 20,
+                        ),
+                      ),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(170, 70),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                )
+              ],
+                
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                scrollPadding: const EdgeInsets.only(bottom: 40),
-                controller: pNumberController,
-                decoration: const InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  labelText: 'Puhelinnumero',
-                ),
-              ),
-
-            ),
-            Center(
-              child: ElevatedButton(
-                child: const Text(
-                  'Tallenna'
-                ),
-                onPressed: () {
-                  int nameMaxLen = 30;
-                  if (fNameController.text.isEmpty || lNameController.text.isEmpty || pNumberController.text.isEmpty) {
-                    _showDialog(context, 'Täytä kaikki kentät!');
-                  } else if (fNameController.text.length > nameMaxLen || lNameController.text.length > nameMaxLen) {
-                    _showDialog(context, 'Yhden nimen enimmäispituus on ${nameMaxLen} merkkiä!');
-                  } else {
-                    _updateName(context, fNameController.text, lNameController.text, pNumberController.text);
-
-                  }
-                },
-              ),
-            )
-          ],
-
-        ),
+          ),
+          ),
       ),
-
     );
   }
 }

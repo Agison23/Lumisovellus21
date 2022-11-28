@@ -28,19 +28,18 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-                'https://static.wixstatic.com/media/5887f2_a1088b1d721e48f2aa8bec5e0088a46a~mv2_d_5656_3770_s_4_2.jpg/v1/fill/w_493,h_618,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Pallas_Lapland_ski_april_2958.jpg'
+    return Container(
+      decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage( //TODO change the background image
+                  'https://static.wixstatic.com/media/5887f2_a1088b1d721e48f2aa8bec5e0088a46a~mv2_d_5656_3770_s_4_2.jpg/v1/fill/w_493,h_618,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Pallas_Lapland_ski_april_2958.jpg'
+              ),
+              fit: BoxFit.cover,
             ),
-            fit: BoxFit.cover,
           ),
-        ),
-        child: SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
           child: Column(
             children: [
               Container(
@@ -170,21 +169,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   ), //Page2End
 
                   //Page3Start
-                  Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        padding: const EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Text(
-                            '\nSyötäthän oikeat tietosi\n\nNimeä käytetään sovelluksen GPS-toimintoon. Toiminnolla tuetaan Pallaksen Pöllöjä ja tarvittaessa pelastuslaitosta.\n',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(height: 1, fontSize: 15)),
-                      ),
-                      UserInfoForm()
-                    ],
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Text(
+                              '\nSyötäthän oikeat tietosi\n\nNimeä käytetään sovelluksen GPS-toimintoon. Toiminnolla tuetaan Pallaksen Pöllöjä ja tarvittaessa pelastuslaitosta.\n',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(height: 1, fontSize: 15)),
+                        ),
+                        UserInfoForm()
+                      ],
+                    ),
                   ), //Page3End
                 ],
               ),
@@ -220,7 +221,7 @@ class UserInfoFormState extends State<UserInfoForm> {
       key: _formKey,
         child: Column(
           children: [
-
+        
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Row(
@@ -241,7 +242,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                           return null;
                         },
                         decoration: InputDecoration(
-
+        
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -294,7 +295,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                   if(value == null || value.isEmpty){
                     return 'Anna puhelinnumerosi';
                   }
-
+        
                   return null;
                 },
                 decoration: InputDecoration(
@@ -313,14 +314,14 @@ class UserInfoFormState extends State<UserInfoForm> {
                 onPressed: (){
                   if(_formKey.currentState!.validate()){
                     _navigateToNextScreen(context, fNameController.text, lNameController.text, pNumberController.text);
-
+        
                   }
                 },
                   child: const Text(
                     'Siirry sovellukseen',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-
+        
                       color: Colors.black,
                       fontSize: 20,
                     ),
@@ -333,8 +334,8 @@ class UserInfoFormState extends State<UserInfoForm> {
               ),
             )
           ],
-
-    ),
+        
+          ),
     );
   }
 }

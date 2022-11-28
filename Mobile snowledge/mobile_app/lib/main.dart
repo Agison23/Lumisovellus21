@@ -6,6 +6,7 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page.dart';
+import 'onboarding.dart';
 import 'name_input_screen.dart';
 import 'welcome_screen.dart';
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'notification',
-      home: (fName == null) ? FirstScreen() : MapTracking(),
+      home: (fName == null) ? OnBoardingPage() : MapTracking(),
     );
   }
 }
