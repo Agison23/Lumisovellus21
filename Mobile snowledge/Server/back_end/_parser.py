@@ -60,9 +60,10 @@ def parse_database_entry(connection, message, addr, max_entry_age):
     etunimi   = message[2]
     sukunimi  = message[3]
     gpscoord  = message[4]
+    phone_number  = message[5]
 
     addr_str = '{},{}'.format(addr[0], addr[1])
-    user = (dev_id, etunimi, sukunimi, addr_str)
+    user = (dev_id, etunimi, sukunimi, addr_str,phone_number)
     user_entry_id, exists = db.check_if_entry_exists(connection, 'users', 'dev_id', 'dev_id', dev_id, False)
 
     if not exists:

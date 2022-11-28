@@ -226,6 +226,7 @@ class Dialogs {
             ),
           );
         });
+  }
   /// Open dialog when no user close
   static showNoUserCloseDialog(context) async {
     return await showDialog<void>(

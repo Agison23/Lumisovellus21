@@ -70,9 +70,7 @@ class Buttons {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
-<<<<<<< HEAD
-}
-=======
+
 
   // Cancel button
   static ElevatedButton cancelButton(BuildContext context, String text, Color color) {
@@ -98,4 +96,3 @@ class Buttons {
     );
   }
 }
->>>>>>> a4920fc (Open dialog if no users is close)
