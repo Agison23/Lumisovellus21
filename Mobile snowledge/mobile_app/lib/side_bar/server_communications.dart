@@ -18,8 +18,8 @@ import 'gps_handler.dart';
 
 class ServerComms {
   static late Timer _timer;
-  static String serverIP = '185.87.111.109';
-  static Future<RawDatagramSocket> rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+  static String serverIP = '0.0.0.0';
+  static Future<RawDatagramSocket> rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv4, 50944);
 
   static bool _isOfferingHelp = false;
 
@@ -166,7 +166,8 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(resultParts[2], resultParts[3]);
               }
               break;
-            case "NO_USER_NEARBY":
+            case "NO_USERS_NEARBY":
+              HelpNeededState().noUserNearby();
               print('Working');
               break;
             case "HELP_OVER":

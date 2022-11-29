@@ -4,6 +4,7 @@ import '../help_needed_mode.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
+import 'dialogs.dart';
 
 class Buttons {
   // Help button

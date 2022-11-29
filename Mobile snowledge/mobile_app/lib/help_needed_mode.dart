@@ -23,6 +23,7 @@ class HelpNeededState extends State<HelpNeeded> {
   static late Timer _stateUpdateTimer;
   static late List<Marker> _markers = [];
   static final List<Marker> _helpers = [];
+  static final List _users = ['1'];
 
   @override
   void dispose() {
@@ -33,8 +34,12 @@ class HelpNeededState extends State<HelpNeeded> {
     }
     ServerComms.messageToServer('HELP_DELETE');
     _stateUpdateTimer.cancel();
+    _timer.cancel();
     super.dispose();
   }
+
+  int _start = 1;
+  late Timer _timer;
 
   @override
   initState() {
@@ -45,11 +50,26 @@ class HelpNeededState extends State<HelpNeeded> {
       const Duration(seconds: 2),
       (Timer t) => {
         getLatLng().then((usersLatLng) {
-          if (_helpers.isNotEmpty) {
-            setState(() {
-              _markers = getMarkers(_helpers, usersLatLng);
-            });
+          // if users nearby
+          if (_users.isNotEmpty) {
+            // if users has accepted the request
+            if (_helpers.isNotEmpty) {
+              setState(() {
+                _markers = getMarkers(_helpers, usersLatLng);
+              });
+            } else {
+              // start a timer once
+              if (_start == 0) {
+
+              } else {
+                showDialogAfter5Minutes();
+                setState(() {
+                  _start = 0;
+                });
+              }
+            }
           } else {
+            // if no users nearby
             _stateUpdateTimer.cancel();
             Dialogs.showNoUserCloseDialog(context);
           }
@@ -58,6 +78,26 @@ class HelpNeededState extends State<HelpNeeded> {
     );
 
     ServerComms.messageToServer("HELP");
+  }
+
+  /// start a timer of 5 minutes and opens dialog if no users has accepted the request
+  void showDialogAfter5Minutes() {
+    const duration = Duration(seconds: 10);
+    _timer = Timer.periodic(
+      duration,
+          (Timer timer) {
+            Dialogs.showNoUserHasAcceptedRequestDialog(context);
+            print('no user has accepted');
+            timer.cancel();
+      },
+    );
+  }
+
+  // call if server send message 'NO_USERS_NEARBY'
+  noUserNearby() {
+    setState(() {
+      _users.clear();
+    });
   }
 
   static helperAmountUpdate(int diff, String id, LatLng gps) {
@@ -82,7 +122,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-        throw new Exception(
+        throw Exception(
             "Invalid input! the int diff value must be -1, 0 or 1");
         break;
     }
