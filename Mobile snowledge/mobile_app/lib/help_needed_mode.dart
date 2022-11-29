@@ -25,6 +25,9 @@ class HelpNeededState extends State<HelpNeeded> {
   static final List<Marker> _helpers = [];
   static final List _users = ['1'];
 
+  int _start = 1;
+  late Timer _timer;
+
   @override
   void dispose() {
     if (widget.tempGps) {
@@ -34,18 +37,15 @@ class HelpNeededState extends State<HelpNeeded> {
     }
     ServerComms.messageToServer('HELP_DELETE');
     _stateUpdateTimer.cancel();
-    _timer.cancel();
     super.dispose();
   }
-
-  int _start = 1;
-  late Timer _timer;
 
   @override
   initState() {
     super.initState();
     // Add this line to add a user and verify that the dialog stays close if a user is nearby
     // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
+
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
       (Timer t) => {
@@ -60,7 +60,6 @@ class HelpNeededState extends State<HelpNeeded> {
             } else {
               // start a timer once
               if (_start == 0) {
-
               } else {
                 showDialogAfter5Minutes();
                 setState(() {
@@ -82,7 +81,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
   /// start a timer of 5 minutes and opens dialog if no users has accepted the request
   void showDialogAfter5Minutes() {
-    const duration = Duration(seconds: 10);
+    const duration = Duration(minutes: 5);
     _timer = Timer.periodic(
       duration,
           (Timer timer) {
@@ -95,9 +94,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
   // call if server send message 'NO_USERS_NEARBY'
   noUserNearby() {
-    setState(() {
-      _users.clear();
-    });
+    _users.clear();
   }
 
   static helperAmountUpdate(int diff, String id, LatLng gps) {
