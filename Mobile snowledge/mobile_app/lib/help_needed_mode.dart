@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'main_page.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
   const HelpNeeded(this.tempGps, {Key? key}) : super(key: key);
-  
 
   @override
   State<HelpNeeded> createState() => HelpNeededState();
@@ -22,7 +22,11 @@ class HelpNeededState extends State<HelpNeeded> {
   final MapController _mapController = MapController();
   static late Timer _stateUpdateTimer;
   static late List<Marker> _markers = [];
-  static List<Marker> _helpers = [];
+  static final List<Marker> _helpers = [];
+  static final List _users = ['1'];
+
+  int _start = 1;
+  late Timer _timer;
 
   @override
   void dispose() {
@@ -39,13 +43,35 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   initState() {
     super.initState();
+    // Add this line to add a user and verify that the dialog stays close if a user is nearby
+    // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
+
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
       (Timer t) => {
         getLatLng().then((usersLatLng) {
-          setState(() {
-            _markers = getMarkers(_helpers, usersLatLng);
-          });
+          // if users nearby
+          if (_users.isNotEmpty) {
+            // if users has accepted the request
+            if (_helpers.isNotEmpty) {
+              setState(() {
+                _markers = getMarkers(_helpers, usersLatLng);
+              });
+            } else {
+              // start a timer once
+              if (_start == 0) {
+              } else {
+                showDialogAfter5Minutes();
+                setState(() {
+                  _start = 0;
+                });
+              }
+            }
+          } else {
+            // if no users nearby
+            _stateUpdateTimer.cancel();
+            Dialogs.showNoUserCloseDialog(context);
+          }
         })
       },
     );
@@ -53,18 +79,36 @@ class HelpNeededState extends State<HelpNeeded> {
     ServerComms.messageToServer("HELP");
   }
 
+  /// start a timer of 5 minutes and opens dialog if no users has accepted the request
+  void showDialogAfter5Minutes() {
+    const duration = Duration(minutes: 5);
+    _timer = Timer.periodic(
+      duration,
+          (Timer timer) {
+            Dialogs.showNoUserHasAcceptedRequestDialog(context);
+            print('no user has accepted');
+            timer.cancel();
+      },
+    );
+  }
+
+  // call if server send message 'NO_USERS_NEARBY'
+  noUserNearby() {
+    _users.clear();
+  }
+
   static helperAmountUpdate(int diff, String id, LatLng gps) {
     switch (diff) {
       case -1:
         for (int i = 0; i < _helpers.length; i++) {
-          if (_helpers[i].key.toString() == "[<'${id}'>]") {
+          if (_helpers[i].key.toString() == "[<'$id'>]") {
             _helpers.remove(_helpers[i]);
           }
         }
         break;
       case 0:
         for (int i = 0; i < _helpers.length; i++) {
-          if (_helpers[i].key.toString() == "[<'${id}'>]") {
+          if (_helpers[i].key.toString() == "[<'$id'>]") {
             _helpers.remove(_helpers[i]);
             _helpers.add(newHelper(id, gps));
           }
@@ -75,7 +119,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-        throw new Exception(
+        throw Exception(
             "Invalid input! the int diff value must be -1, 0 or 1");
         break;
     }
@@ -85,8 +129,8 @@ class HelpNeededState extends State<HelpNeeded> {
   }
 
   static Future<LatLng> getLatLng() async {
-    var location = await GpsHandler.gps;
-    return await LatLng(location.latitude!, location.longitude!);
+    var location = GpsHandler.gps;
+    return LatLng(location.latitude!, location.longitude!);
   }
 
   @override
@@ -114,11 +158,9 @@ class HelpNeededState extends State<HelpNeeded> {
                       onPressed: () {
                         _markers.clear();
                         _helpers.clear();
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainPage()),
-                            (route) => false);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: const Text('Kyllä')),
                 ],
@@ -183,20 +225,18 @@ class HelpNeededState extends State<HelpNeeded> {
                             title: const Text('Haluatko lopettaa avunpyynnön?'),
                             actions: [
                               ElevatedButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
+                                onPressed: () => Navigator.of(context).pop(false),
                                 child: const Text('En'),
                               ),
                               ElevatedButton(
                                   onPressed: () {
                                     _markers.clear();
                                     _helpers.clear();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainPage()),
-                                        (route) => false);
+                                   /* Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
                                   },
                                   child: const Text('Kyllä')),
                             ],
@@ -218,7 +258,7 @@ class HelpNeededState extends State<HelpNeeded> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.red[200],
+                      backgroundColor: Colors.red[200],
                       fixedSize: const Size(200, 75),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
@@ -230,8 +270,7 @@ class HelpNeededState extends State<HelpNeeded> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Tooltip(
-                      message:
-                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                      message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                       child: IconButton(
                         onPressed: () async {
                           const url = "https://maptiler.com/";

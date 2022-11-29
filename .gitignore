@@ -57,3 +57,6 @@ src/yarn-error.log*
 #Vagrant .gitignore file
 vagrant/.vagrant
 vagrant/ubuntu*console.log
+
+#database
+Mobile snowledge/Server/back_end/db/database

@@ -63,7 +63,7 @@ class ServerComms {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSP();
-          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}';
+          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
           List<String> list = await getTimeFNameLNameGps();
@@ -165,6 +165,10 @@ class ServerComms {
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(resultParts[2], resultParts[3]);
               }
+              break;
+            case "NO_USERS_NEARBY":
+              print('Working');
+              HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
               // HELP_OVER:ID

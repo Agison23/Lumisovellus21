@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/widgets/dialogs.dart';
 
 import '../help_needed_mode.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
+import 'dialogs.dart';
 
 class Buttons {
   // Help button
   String locationMessage = 'LOCATION';
-  ElevatedButton helpButton(
-      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+  ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
@@ -22,7 +21,7 @@ class Buttons {
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
                 Navigator.of(contx).push(
-                  MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+                    MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
               }
               if (text == 'Avunpyyntö') {
                 Dialogs().showDialogMinorHelpQuestions(contx);
@@ -67,7 +66,31 @@ class Buttons {
           backgroundColor: color,
           padding: const EdgeInsets.all(20.0),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
+
+  // Cancel button
+  static ElevatedButton cancelButton(BuildContext context, String text, Color color) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: const EdgeInsets.all(20.0),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 }
