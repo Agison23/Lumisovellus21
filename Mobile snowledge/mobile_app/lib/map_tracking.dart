@@ -2,29 +2,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:mobile_app/helper/loading_indicator.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
-import 'package:mobile_app/side_bar/server_communications.dart';
-
 import 'package:url_launcher/url_launcher_string.dart';
 import 'notification_handler.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
-import 'package:flutter/material.dart';
+import '../../widgets_binding_observer_state.dart';
 
 class MapTracking extends StatefulWidget {
   const MapTracking({Key? key}) : super(key: key);
 
   @override
-  State<MapTracking> createState() => MapTrackingState();
+  MapTrackingState createState() => MapTrackingState();
 }
 
-class MapTrackingState extends State<MapTracking> {
-  static Stream locationStream = GpsHandler.getCoordinates();
+class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
+  final MapController _mapController = MapController();
 
   @override
   initState() {
     super.initState();
+    setAppResumedWithAlwaysOnPermissionsTask(() => {setState(() {})});
     GpsHandler.setGpsSetting(context, true, insistAlwaysOn: false)
         .then((gpsOn) async {
       if (gpsOn) {
@@ -35,7 +34,7 @@ class MapTrackingState extends State<MapTracking> {
       }
     });
 
-    new NotificationHandler().init(context);
+    NotificationHandler().init(context);
     Timer.run(() => _globalKey.currentState?.openDrawer());
   }
 
@@ -44,10 +43,10 @@ class MapTrackingState extends State<MapTracking> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: locationStream,
+        stream: GpsHandler.getCoordinates(),
         builder: ((context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: LoadingIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -65,24 +64,23 @@ class MapTrackingState extends State<MapTracking> {
               body: Stack(
                 children: [
                   FlutterMap(
+                    mapController: _mapController,
                     options: MapOptions(
                       minZoom: 6,
                       maxZoom: 18,
                       center: LatLng(lat, lng),
                       zoom: 11.0,
                     ),
-                    layers: [
-                      TileLayerOptions(urlTemplate: getSummerOrWinterMap()
+                    children: [
+                      TileLayer(urlTemplate: getSummerOrWinterMap()
                           // Pöllöille oma API avain!
                           ),
-                      MarkerLayerOptions(
-                        markers: getMarkers(LatLng(lat, lng)),
+                      MarkerLayer(
+                        markers: getMarker(LatLng(lat, lng)),
                         rotate: true,
                       ),
                     ],
                   ),
-                  // Stacking the bottom bar on top of the webview
-                  // Remove comments when changes has made to lumisovellus
                   const Align(
                       alignment: Alignment.bottomCenter, child: BottomBar()),
                   IconButton(
@@ -93,31 +91,44 @@ class MapTrackingState extends State<MapTracking> {
                     },
                     color: Colors.black,
                   ),
-
+                  // maptiler logo button
                   Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Tooltip(
-                          message:
-                              "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
-                          child: IconButton(
-                            onPressed: () async {
-                              const url = "https://maptiler.com/";
-                              if (await canLaunchUrlString(url)) {
-                                await launchUrlString(url);
-                              } else {
-                                print('ERROR');
-                              }
-                            },
-                            icon: Image.asset('assets/images/MapTiler.png'),
-                            iconSize: 20,
-                          ),
-                        ),
-                      ],
+                    alignment: const Alignment(-0.95, 0.82),
+                    child: Tooltip(
+                      message:
+                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                      child: IconButton(
+                        onPressed: () async {
+                          const url = "https://maptiler.com/";
+                          if (await canLaunchUrlString(url)) {
+                            await launchUrlString(url);
+                          } else {
+                            print('ERROR');
+                          }
+                        },
+                        icon: Image.asset('assets/images/MapTiler.png'),
+                        iconSize: 20,
+                      ),
                     ),
                   ),
+                  // location centering button
+                  Align(
+                      alignment: const Alignment(0.95, 0.82),
+                      child: IconButton(
+                        icon: const Icon(Icons.my_location),
+                        onPressed: () {
+                          _mapController.moveAndRotate(
+                              LatLng(lat, lng), _mapController.zoom, 0);
+                        },
+                      )),
+                  const Align(
+                      alignment: Alignment.topCenter,
+                      child: Image(
+                        image: AssetImage(
+                            'assets/images/logo_transparent_black.png'),
+                        width: 80,
+                        height: 80,
+                      ))
                 ],
               ),
               drawer: const NavigationDrawer(),
@@ -134,33 +145,18 @@ class MapTrackingState extends State<MapTracking> {
     return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
-  static List<Marker> getMarkers(LatLng usersLatLng) {
-    List<Marker> markers = [];
-    markers.add(
-      Marker(
-        width: 50.0,
-        height: 30.0,
-        point: usersLatLng,
-        builder: (ctx) => Container(
+  static List<Marker> getMarker(LatLng usersLatLng) {
+    List<Marker> marker = [];
+    marker.add(Marker(
+      point: usersLatLng,
+      builder: (ctx) => Container(
           width: 1.0,
           height: 1.0,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blue,
-          ),
-          child: const Align(
-            alignment: Alignment.center,
-            child: Text(
-              'Olet\ntässä',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 8.0,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-    return markers;
+          child: const Icon(
+            Icons.person_pin_circle,
+            size: 40,
+          )),
+    ));
+    return marker;
   }
 }

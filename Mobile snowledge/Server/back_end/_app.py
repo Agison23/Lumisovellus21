@@ -17,17 +17,19 @@ cors = CORS(app)
 def login_user():
     header = request.headers
     username, password = header.get('Authorization').split(':')
+    print(header.get('Authorization'))
 
     auth = db.user_authentication(connection, username, password)
 
-    if auth:
-        response = jsonify({"message": "OK: Authorized"}), 200
-    else:
-        response = jsonify({"message": "ERROR: Unauthorized"}), 401
-    return response
+    if auth == False:
+        return jsonify({"message": "ERROR: Unauthorized"}), 401
+    
+    user_id = db.get_user_id(connection, username, password)
+    return jsonify({"message": "OK: Authorized", "user_id": user_id}), 200
 
 @app.route('/get/users', methods=['GET'])
 def get_users():
+    """ Get location of users ???"""
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
@@ -149,4 +151,5 @@ def get_last_x_locations(num_locations, dev_id):
 
 
 if __name__ == "__main__":
+    print(f"App.py started correctly")
     serve(app, port=3002)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'main_page.dart';
@@ -19,7 +20,7 @@ class _SecondScreenState extends WidgetsBindingObserverState<SecondScreen> {
     setAppResumedWithAlwaysOnPermissionsTask(() => {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const MainPage()),
+              MaterialPageRoute(builder: (context) => const MapTracking()),
               (route) => false)
         });
   }

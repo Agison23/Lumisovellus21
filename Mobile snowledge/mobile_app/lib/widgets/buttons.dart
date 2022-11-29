@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../help_needed_mode.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
-import 'dialogs.dart';
 
 class Buttons {
   // Help button
   String locationMessage = 'LOCATION';
-  ElevatedButton helpButton(
-      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+  ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {

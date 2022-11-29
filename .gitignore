@@ -16,6 +16,7 @@ src/map-app/coverage
 src/map-app/build
 
 # misc
+.DS_Store
 src/map-app/.DS_Store
 src/map-app/.env.local
 src/map-app/.env.development.local
@@ -56,3 +57,6 @@ src/yarn-error.log*
 #Vagrant .gitignore file
 vagrant/.vagrant
 vagrant/ubuntu*console.log
+
+#database
+Mobile snowledge/Server/back_end/db/database

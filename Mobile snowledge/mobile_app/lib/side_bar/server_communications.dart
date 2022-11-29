@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/help_need_over.dart';
 import 'package:mobile_app/side_bar/side_bar_state.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -62,11 +63,12 @@ class ServerComms {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSP();
-          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}';
+          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
           List<String> list = await getTimeFNameLNameGps();
-          message = '$messagetype:${list[0]}:$devId:${list[3]}';
+          String helpNeed = Dialogs().getMinorHelpCondition();
+          message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
           message = '$messagetype:$devId';
@@ -199,10 +201,11 @@ class ServerComms {
     var prefs = await SharedPreferences.getInstance();
     String fName = prefs.getString('fName')!;
     String lName = prefs.getString('lName')!;
+    String pNumber = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
-    return [time.toString(), fName, lName, _gps];
+    return [time.toString(), fName, lName, _gps, pNumber];
   }
 
   static saveLastLocationTimeToSP() async {

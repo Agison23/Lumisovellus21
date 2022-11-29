@@ -17,6 +17,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     dev_id    = message[1]
     gpscoord  = message[2]
     helptype  = message[3]
+
     user_id, exists = db.check_if_entry_exists(connection, 'users', 'dev_id', 'dev_id', dev_id, False)
 
     if not exists:
@@ -33,9 +34,10 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(connection, gpscoord,
                               max_distance,
                               int(timestamp) - max_time_from_closest_users)
+
     if len(users) == 1:
-        ip_address, _ = db.check_if_entry_exists(connection, 'users', 'ip_address', 'dev_id', user_id, False)
-        message = 'NO_USER_NEARBY'
+        ip_address, _ = db.check_if_entry_exists(connection, 'users', 'ip_address', 'dev_id', dev_id, False)
+        message = 'NO_USERS_NEARBY'
         ip_address, port = ip_address.split(',')
         s.sendto(bytes(message, 'UTF-8'),(ip_address, int(port)))
 
@@ -57,15 +59,17 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, port = ip_address.split(',')
         s.sendto(bytes(message, 'UTF-8'),(ip_address, int(port)))
 
+
 def parse_database_entry(connection, message, addr, max_entry_age):
     timestamp = message[0]
     dev_id    = message[1]
     etunimi   = message[2]
     sukunimi  = message[3]
     gpscoord  = message[4]
+    phone_number  = message[5]
 
     addr_str = '{},{}'.format(addr[0], addr[1])
-    user = (dev_id, etunimi, sukunimi, addr_str)
+    user = (dev_id, etunimi, sukunimi, addr_str,phone_number)
     user_entry_id, exists = db.check_if_entry_exists(connection, 'users', 'dev_id', 'dev_id', dev_id, False)
 
     if not exists:

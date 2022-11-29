@@ -1,3 +1,4 @@
+import 'package:Snowledge/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -92,30 +93,50 @@ class MyData extends DataTableSource {
   int get selectedRowCount => selectedRows.length;
 }
 
-Future<List> callHttp(String api, String username, String password, Map? body) async {
-  String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
+Future<List> callHttp(
+    String api, String username, String password, Map? body) async {
+  String url = 'http://localhost:3003/${api}';
+  //String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
+
   Response response;
 
   if (body == null) {
     response = await get(
       Uri.parse(url),
-      headers: {'Authorization': '$username:$password'},
+      headers: {
+        'Authorization': '$username:$password',
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
     );
   } else {
     response = await post(
       Uri.parse(url),
-      headers: {'Authorization': '$username:$password'},
+      headers: {
+        'Authorization': '$username:$password',
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
       body: jsonEncode(body),
     );
   }
 
-  List<dynamic> result = jsonDecode(response.body);
+  List<dynamic> result = json.decode(response.body);
 
   return result;
 }
 
 SizedBox createMap(
-    BuildContext context, int width, List<Marker> markers, List<TaggedPolyline> polylines, String mapTemplate) {
+    BuildContext context,
+    int width,
+    List<Marker> markers,
+    List<TaggedPolyline> polylines,
+    String mapTemplate,
+    String _username,
+    String _password,
+    UpdateCredentials _updateCredentials) {
   return SizedBox(
     width: MediaQuery.of(context).size.width - width,
     child: Stack(
@@ -148,7 +169,8 @@ SizedBox createMap(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Tooltip(
-                message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                message:
+                    "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                 child: IconButton(
                   onPressed: () async {
                     const url = "https://maptiler.com/";
@@ -164,7 +186,25 @@ SizedBox createMap(
               ),
             ],
           ),
-        )
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Käyttäjien hallinta',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DashboardPage(
+                      username: _username,
+                      password: _password,
+                      updateMainPageCredentials: _updateCredentials,
+                    ),
+                  ));
+            },
+          ),
+        ),
       ],
     ),
   );

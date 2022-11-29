@@ -10,14 +10,13 @@ class UdpServer:
         self.connection = db.connect_to_database()
         self.status = True
         
-        self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
+        self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
         self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.udp.bind(('',50943))
-
+        
         db.init_tables(self.connection)
         self.max_time_from_closest_users = 7200
-        self.max_distance_from_help_request = 2.0
         self.max_entry_age = 172800
 
     def run(self):
@@ -45,7 +44,6 @@ class UdpServer:
                         self.connection, 
                         message, 
                         self.max_time_from_closest_users, 
-                        self.max_distance_from_help_request, 
                         self.udp
                     )
                 elif msg_type == "LOCATION":
@@ -68,5 +66,6 @@ class UdpServer:
 
 
 if __name__ == "__main__":
+    print("Server started succesfully!")
     udp = UdpServer()
     udp.run()
