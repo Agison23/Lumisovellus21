@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/side_bar/side_bar_state.dart';
+import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 

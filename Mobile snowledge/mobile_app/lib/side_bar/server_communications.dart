@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/help_need_over.dart';
-import 'package:mobile_app/side_bar/side_bar_state.dart';
+import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
