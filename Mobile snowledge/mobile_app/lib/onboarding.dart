@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/map_tracking.dart';
-import 'package:mobile_app/name_input_screen.dart';
+
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/user_information_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,16 +42,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         body: SafeArea(
           child: Column(
             children: [
-              Container(
-                child: const Image(
-                  image: AssetImage('assets/images/logo_transparent_black.png'),
-                  width: 250.0,
-                  height: 250.0,
-                  fit: BoxFit.cover,
-                ),
+              const Image(
+                image: AssetImage('assets/images/logo_transparent_black.png'),
+                width: 250.0,
+                height: 250.0,
+                fit: BoxFit.cover,
               ),
               Expanded(child: PageView(
-                //physics: const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: pageViewController,
                 children: [
                   //Page1Start
@@ -102,7 +100,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         padding: const EdgeInsets.all(15.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -183,7 +181,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(height: 1, fontSize: 15)),
                         ),
-                        UserInfoForm()
+                        const UserInfoForm()
                       ],
                     ),
                   ), //Page3End

@@ -7,8 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main_page.dart';
 import 'onboarding.dart';
-import 'name_input_screen.dart';
-import 'welcome_screen.dart';
+
 
 String? fName;
 
