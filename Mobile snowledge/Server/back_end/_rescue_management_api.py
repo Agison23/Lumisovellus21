@@ -1,3 +1,4 @@
+#!/bin/env python
 import _database as db
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
@@ -9,7 +10,7 @@ connection = db.connect_to_database()
 app = Flask(__name__)
 cors = CORS(app)
 
-# 2. GET Users
+
 @app.route('/users', methods=['GET'])
 def rescue_get_users():
     header = request.headers
@@ -58,14 +59,11 @@ def rescue_get_users():
 }
 """
 
-# 3 POST user
+
 @app.route('/register', methods=['POST'])
 def register_user():
     """
-    Toimii,
-    tekee authentikoinnin oikein ja tarkistaa onko käyttäjä kirjautunut sisälle
-    ei kuitenkaan tarkista mitenkää onko käyttäjä admin -> jatkokehitys
-    pitää lisätä tarkastin siihen, että onko olemassa saman niminen käyttäjä. -> jatkokehitys
+    Used to create a new user for the Rescue side
     """
     header = request.headers
     username, password = header.get('Authorization').split(':')
@@ -73,7 +71,6 @@ def register_user():
     auth = db.user_authentication(connection, username, password)
 
     if auth:
-        response = jsonify({"message": "OK: Authorized, User registered"}), 200
         if not request.is_json:
             return "The content isn't of type JSON"
         print("json ok")
@@ -81,13 +78,22 @@ def register_user():
         username = user.get('username')
         password = user.get('password')
         is_admin = user.get('is_admin')
-    
-        query = f'INSERT INTO rescue (username, password, is_admin)\
-                VALUES ("{username}", "{password}", "{is_admin}");'
 
-        cur = connection.cursor()
-        cur.execute(query)
-        connection.commit()
+        # check if some user already have requested username
+        is_username_reserved = db.check_if_username_exists(connection, username)
+        if is_username_reserved != None:
+            response = jsonify({"message": "ERROR: Username already exists"}), 409
+            print("Käyttäjänimi varattuna")
+            return response
+        else:
+            print("käyttäjänimeä ei ole varattu")
+            response = jsonify({"message": "OK: Authorized, User registered"}), 200
+            query = f'INSERT INTO rescue (username, password, is_admin)\
+                        VALUES ("{username}", "{password}", "{is_admin}");'
+
+            cur = connection.cursor()
+            cur.execute(query)
+            connection.commit()
     else:
         response = jsonify({"message": "ERROR: Unauthorized, not registered"}), 401
         return response
@@ -110,11 +116,9 @@ def register_user():
 @cross_origin(methods=['PUT'])
 def modify_user():
     """
-    Toimii tällä hetkellä ainoastaan kun käyttäjä vaihtaa kaikki tiedot
-    Esim jos jotain jättää tyhjäksi nii tietokannassaki tyhjää
-    teen tähän tarkistimen, että se ei muokkaa tyhjiä asioita
-    autentikointi toimii kuitenkin
-    demossa kannattaa melkeen muokata aina kaikkia osia
+    Used to edit user data. 
+    For example, if you want to change the 
+    user's password, username or admin rights.
     """
     if not request.is_json:
         return jsonify({"message": "ERROR: Bad request"}), 401
@@ -134,16 +138,25 @@ def modify_user():
     password = user.get('password')
     is_admin = user.get('is_admin')
 
-    if user_id == None or (username == None and password == None and is_admin == None):
-        return 401
+    # check if username is already reserved for another user
+    is_username_reserved = db.check_if_username_exists(connection, username)
+    if is_username_reserved != None:
+        response = jsonify({"message": "ERROR: Username already exists"}), 409
+        print("Käyttäjänimi varattuna")
+        return response
+    else:
+        print("käyttäjänimeä ei ole varattu")
+        if user_id == None or (username == None and password == None and is_admin == None):
+            response = jsonify({"message": "ERROR: 401"}), 401
+            return response
 
-    query = f'UPDATE rescue SET '
-    if(username != None):
-        query += f'username = "{username}",'
-    if(password != None):
-        query += f'password = "{password}",'
-    if(is_admin != None):
-        query += f'is_admin = "{is_admin}",'
+        query = f'UPDATE rescue SET '
+        if(username != None):
+            query += f'username = "{username}",'
+        if(password != None):
+            query += f'password = "{password}",'
+        if(is_admin != None):
+            query += f'is_admin = "{is_admin}",'
         
     #viimenen pilkku pois
     query = query[:-1]
@@ -164,10 +177,10 @@ def modify_user():
 }"""
 
 
-# 5 DELETE users
 @app.route('/delete', methods=['DELETE'])
 @cross_origin(methods=['DELETE'])
 def delete_user():
+    """ Used to delete user data from the rescue table in the database """
     print("/delete")
     header = request.headers
     username, password = header.get('Authorization').split(':')

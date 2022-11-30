@@ -25,7 +25,7 @@ def create_connection(path):
 
 
 def connect_to_database():
-    """ Function used for connecting to database"""
+    """ Function used for connecting to database """
     path = pathlib.Path(__file__).parent.resolve()
     path = str(str(path) + '/db/')
 
@@ -39,7 +39,7 @@ def connect_to_database():
 
 
 def user_authentication(connection, username, password):
-    """ Used for lumisovellus side (not rescue) accounts"""
+    """ Used to authenticate rescue-side users """
     correct = False
     sql = '''SELECT password FROM rescue WHERE username=?;'''
 
@@ -111,7 +111,8 @@ def create_help_entry(connection, help):
     sql = ''' INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
               VALUES (?,?,?,?)'''
 
-    _, exists = check_if_entry_exists(connection, 'help', 'dev_id', 'dev_id', help[0], False)
+    _, exists = check_if_entry_exists(
+        connection, 'help', 'dev_id', 'dev_id', help[0], False)
 
     if exists:
         return
@@ -126,7 +127,8 @@ def create_request_entry(connection, requester, helper):
     sql = '''INSERT INTO requests(help_giver,help_requester,state)
              VALUES(?,?,?)'''
 
-    entry, exists = check_if_entry_exists(connection, 'requests', 'help_giver', 'help_giver', helper, False)
+    entry, exists = check_if_entry_exists(
+        connection, 'requests', 'help_giver', 'help_giver', helper, False)
 
     if exists:
         return False
@@ -137,15 +139,15 @@ def create_request_entry(connection, requester, helper):
     return True
 
 
-def update_request_state(connection ,_state, helper):
+def update_request_state(connection, _state, helper):
     sql = '''UPDATE requests SET state=? WHERE help_giver=?'''
 
     cur = connection.cursor()
     cur.execute(sql, (_state, helper))
     connection.commit()
-    
-    
-def update_ip_address(connection , dev_id, addr_str):
+
+
+def update_ip_address(connection, dev_id, addr_str):
     sql = '''UPDATE users SET ip_address=? WHERE dev_id=?'''
 
     cur = connection.cursor()
@@ -172,6 +174,7 @@ def get_all_requests(connection):
     entry = cur.fetchall()
     return entry
 
+
 def get_all_pallaksen_pollot(connection):
     sql = '''SELECT * FROM users WHERE first_name= "8M0sZy" AND last_name= "FBy2sR";'''
 
@@ -179,6 +182,7 @@ def get_all_pallaksen_pollot(connection):
     cur.execute(sql)
     entry = cur.fetchall()
     return entry
+
 
 def delete_request_entry(connection, entry, ID):
     sql = '''DELETE FROM requests
@@ -233,7 +237,8 @@ def delete_old_users(connection):
     dev_ids = cur.fetchall()
 
     for id in dev_ids:
-        _, exists = check_if_entry_exists(connection, 'data', 'dev_id', 'dev_id', id[0], False)
+        _, exists = check_if_entry_exists(
+            connection, 'data', 'dev_id', 'dev_id', id[0], False)
         if not exists:
             cur.execute(delete_sql, (id[0],))
             cur.execute(delete_sql2, (id[0],))
@@ -242,7 +247,7 @@ def delete_old_users(connection):
 
 def create_table(connection, create_table_sql):
     """ this function creates tables """
-    
+
     try:
         cur = connection.cursor()
         cur.execute(create_table_sql)
@@ -279,7 +284,7 @@ def init_tables(connection):
                             password text NOT NULL,
                             role text NOT NULL
                             );'''
-    
+
     sql_table_requests = '''CREATE TABLE IF NOT EXISTS requests (
                             help_giver text PRIMARY KEY,
                             help_requester text NOT NULL,
@@ -299,7 +304,7 @@ def init_tables(connection):
     create_table(connection, sql_table_accounts)
     create_table(connection, sql_table_requests)
     create_table(connection, sql_table_rescue)
-    sql  = "DELETE FROM accounts WHERE role = 'Admin'"
+    sql = "DELETE FROM accounts WHERE role = 'Admin'"
     sql2 = 'INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);'
     sql3 = 'INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);'
     username = ADMIN
@@ -313,26 +318,55 @@ def init_tables(connection):
     rescue_users_from_db(connection)
     connection.commit()
 
+
 def get_user_id(connection, username, password):
+    """ 
+    It is used, for example, to get the right user whose data you want to change on the Rescue side. 
+    Used if the user wants to edit their own data, 
+    OR if the admin user wants to edit another user
+    """
     sql = '''SELECT user_id FROM rescue WHERE username=? AND password=?;'''
     cur = connection.cursor()
-    cur.execute(sql, (username,password))
+    cur.execute(sql, (username, password))
     user_id = cur.fetchall()
     return user_id[0][0]
 
+
 def is_user_admin(connection, user_id):
+    """ Check if the user has admin rights for user management on the rescue side """
+
     sql = '''SELECT is_admin FROM rescue WHERE user_id=?;'''
     cur = connection.cursor()
     cur.execute(sql, (user_id,))
     result = cur.fetchall()
     return result[0][0] == 1
 
+
 def get_user(connection, user_id):
+    """ 
+    With this function, the user's information 
+    (user ID, username and whether the user is admin) 
+    can be seen in Rescue user management panel.
+    """
     sql = '''SELECT * FROM rescue WHERE user_id=?;'''
     cur = connection.cursor()
     cur.execute(sql, (user_id,))
     result = cur.fetchall()
     return result[0]
+
+def check_if_username_exists(connection, username):
+    """ 
+    Used to check if the username is reserved on the site. 
+    This function is used to prevent the application 
+    from having users with the same name.
+    """
+    sql = '''SELECT username FROM rescue WHERE username==?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (username,))
+    result = cur.fetchone()
+    return result
+
+
 
 def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
     try:
@@ -341,7 +375,7 @@ def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
         print(e)
 
     _query = "SELECT {} FROM {} WHERE {}=?".format(key1, table, key2)
-    cur.execute(_query, (entry,) )
+    cur.execute(_query, (entry,))
 
     exists = cur.fetchall()
 
@@ -354,9 +388,9 @@ def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
 
 
 def rescue_users_from_db(connection):
+    """ TEST FOR DEVELOPMENT """
     cur = connection.cursor()
     cur.execute("SELECT * FROM rescue")
     print(cur.fetchall())
- 
-#test
- 
+
+

@@ -29,7 +29,7 @@ def login_user():
 
 @app.route('/get/users', methods=['GET'])
 def get_users():
-    """ Get location of users ???"""
+    """ Get location of users """
     header = request.headers
     username, password = header.get('Authorization').split(':')
 
