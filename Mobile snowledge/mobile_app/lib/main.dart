@@ -11,12 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main_page.dart';
 import 'onboarding.dart';
 <<<<<<< HEAD
-import 'name_input_screen.dart';
->>>>>>> 5ccd3dc (Onboarding and userinfo working)
-import 'welcome_screen.dart';
+import 'onboard>>>>>>> 5ccd3dc (Onboarding and userinfo working)
+ing.dart';
 =======
 
 >>>>>>> 84ad3cc (Finishing tasks and cleaning up)
+
 
 String? fName;
 
@@ -53,7 +53,6 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: 'notification',
       home: (fName == null) ? OnBoardingPage() : MapTracking(),
->>>>>>> 5ccd3dc (Onboarding and userinfo working)
     );
   }
 }
