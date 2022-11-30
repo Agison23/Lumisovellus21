@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mobile_app/name_input_screen.dart';
+import 'onboarding.dart';
 
 import 'help_offered.dart';
 import 'main.dart';
@@ -55,7 +55,7 @@ class NotificationHandler {
     // display a dialog with the notification details, tap ok to go to another page
     try {
       await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => const NameInputScreen()));
+          ?.push(MaterialPageRoute(builder: (context) => const OnBoardingPage()));
     } catch (e) {
       print(e.toString());
     }

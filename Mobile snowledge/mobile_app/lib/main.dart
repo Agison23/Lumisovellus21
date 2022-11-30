@@ -5,7 +5,11 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'welcome_screen.dart';
+
+import 'main_page.dart';
+import 'onboarding.dart';
+
+
 
 String? fName;
 
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
         title: 'Snowledge',
-        home: (fName == null) ? const FirstScreen() : const MapTracking(),
+        home: (fName == null) ? const OnBoardingPage() : const MapTracking(),
       ),
     );
   }
