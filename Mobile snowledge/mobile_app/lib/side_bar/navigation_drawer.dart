@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/app_info.dart';
+import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/snow_info.dart';
@@ -19,20 +20,7 @@ class NavigationDrawer extends StatefulWidget {
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
 
-  bool winter = false;
-
-  @override void initState() {
-    int month = DateTime.now().month;
-    int day = DateTime.now().day;
-
-    // summertime 10.6. -> 15.10
-    if ((month > 5 && day > 9) && (month < 11 && day < 16)) {
-      winter = false;
-    }
-    else {winter = true;}
-
-    super.initState();
-  }
+  bool winter = Utility.getSummerOrWinter();
 
   @override
   Widget build(BuildContext context) => Drawer(
