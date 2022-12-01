@@ -33,8 +33,8 @@ class Utility {
   }
 
   static bool getSummerOrWinter() {
-    int month = 10; //DateTime.now().month;
-    int day = 16; //DateTime.now().day;
+    int month = DateTime.now().month;
+    int day = DateTime.now().day;
     bool winter;
 
     // summertime 10.6. -> 15.10.

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
@@ -295,11 +296,10 @@ class HelpNeededState extends State<HelpNeeded> {
   }
 
   static String getSummerOrWinterMap() {
-    int month = DateTime.now().month;
-    if (month > 5 && month < 11) {
-      return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
+    if (Utility.getSummerOrWinter()) {
+      return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
     }
-    return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
+    return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
   static Marker newHelper(String id, LatLng gps) {
