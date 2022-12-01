@@ -18,6 +18,22 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+
+  bool winter = false;
+
+  @override void initState() {
+    int month = DateTime.now().month;
+    int day = DateTime.now().day;
+
+    // summertime 10.6. -> 15.10
+    if ((month > 5 && day > 9) && (month < 11 && day < 16)) {
+      winter = false;
+    }
+    else {winter = true;}
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
@@ -49,21 +65,25 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               Icons.map_outlined,
               "Karttanäkymä"
           ),
+          Visibility(child: 
           _item(
               1,
               Icons.area_chart_outlined,
               "Lumiolosuhteet Pallaksella"
           ),
+          visible: winter,),
           _item(
               2,
               Icons.sunny_snowing,
               "Sää Pallaksella"
           ),
+          Visibility(child: 
           _item(
               3,
               Icons.ac_unit,
               "Lumityyppien selitteet"
           ),
+          visible: winter,),
           _item(
               4,
               Icons.person_outline,
