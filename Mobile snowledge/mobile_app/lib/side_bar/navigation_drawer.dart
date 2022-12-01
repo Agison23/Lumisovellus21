@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/app_info.dart';
+import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/snow_info.dart';
@@ -18,6 +19,9 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+
+  bool winter = Utility.getSummerOrWinter();
+
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
@@ -49,21 +53,25 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               Icons.map_outlined,
               "Karttanäkymä"
           ),
+          Visibility(child: 
           _item(
               1,
               Icons.area_chart_outlined,
               "Lumiolosuhteet Pallaksella"
           ),
+          visible: winter,),
           _item(
               2,
               Icons.sunny_snowing,
               "Sää Pallaksella"
           ),
+          Visibility(child: 
           _item(
               3,
               Icons.ac_unit,
               "Lumityyppien selitteet"
           ),
+          visible: winter,),
           _item(
               4,
               Icons.person_outline,

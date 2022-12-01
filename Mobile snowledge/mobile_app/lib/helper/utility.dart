@@ -31,4 +31,23 @@ class Utility {
     }
     return time;
   }
+
+  static bool getSummerOrWinter() {
+    int month = DateTime.now().month;
+    int day = DateTime.now().day;
+    bool winter;
+
+    // summertime 10.6. -> 15.10.
+    if ((month > 5 && month < 11)) {
+      if (month == 6 && day < 10) {
+        winter = true;
+      } else if (month == 10 && day > 15){
+        winter = true;
+      }
+      else {winter = false;}
+    }
+    else {winter = true;}
+
+    return winter;
+  }
 }
