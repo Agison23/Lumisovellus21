@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import '../../side_bar/gps_handler.dart';
 import '../../side_bar/server_communications.dart';
 import '../../widgets_binding_observer_state.dart';
@@ -7,32 +8,37 @@ class SetSharingLocation extends StatefulWidget {
   const SetSharingLocation({Key? key}) : super(key: key);
 
   @override
-  _SetSharingLocationState createState() => _SetSharingLocationState();
+  SetSharingLocationState createState() => SetSharingLocationState();
 }
 
-class _SetSharingLocationState extends WidgetsBindingObserverState<SetSharingLocation> {
+class SetSharingLocationState
+    extends WidgetsBindingObserverState<SetSharingLocation> {
   static bool _gpsSwitchState = false;
   static bool get gpsSwitchState => _gpsSwitchState;
+  static Location _location = new Location();
   static void setGpsSwitchState(bool value) async {
     if (_gpsSwitchState != value) {
       _gpsSwitchState = value;
       if (value) {
+        _location.enableBackgroundMode(enable: true);
         await GpsHandler.startUpdatingGpsVariable();
         ServerComms.startSendingLocationMessages();
       } else {
         GpsHandler.stopUpdatingGpsVariable();
         ServerComms.stopSendingLocationMessages();
+        _location.enableBackgroundMode(enable: false);
       }
     }
   }
+
   @override
   void initState() {
     super.initState();
     setAppResumedWithAlwaysOnPermissionsTask(() => {
-      setState(() {
-        setGpsSwitchState(true);
-      })
-    });
+          setState(() {
+            setGpsSwitchState(true);
+          })
+        });
     GpsHandler.loadGpsSetting().then((gpsOn) {
       setState(() {
         setGpsSwitchState(gpsOn);
@@ -52,7 +58,7 @@ class _SetSharingLocationState extends WidgetsBindingObserverState<SetSharingLoc
                   value: _snapshot.data ?? false,
                   onChanged: (value) {
                     GpsHandler.setGpsSetting(context, value,
-                        insistAlwaysOn: true)
+                            insistAlwaysOn: true)
                         .then((gpsOn) {
                       setState(() {
                         value = gpsOn;

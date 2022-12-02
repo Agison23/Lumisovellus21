@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/help_need_over.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
@@ -19,13 +20,14 @@ import 'gps_handler.dart';
 class ServerComms {
   static late Timer _timer;
   static String serverIP = '185.87.111.109';
-  static Future<RawDatagramSocket> rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+  static Future<RawDatagramSocket> rDgS =
+      RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
 
   static bool _isOfferingHelp = false;
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
   static void startSendingLocationMessages() {
-    if (SideBarState.gpsSwitchState) {
+    if (SetSharingLocationState.gpsSwitchState) {
       messageToServer("LOCATION");
     }
     _timer = Timer.periodic(
@@ -36,9 +38,10 @@ class ServerComms {
 
   static void _listenServerTimerInsides(int minutesBetweenLocationMessages) {
     print(_timer.tick);
-    if (SideBarState.gpsSwitchState) {
+    if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
-          _isOfferingHelp && _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
+          _isOfferingHelp &&
+              _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
         messageToServer("LOCATION");
       } else {
         messageToServer("KEEP_ALIVE");
@@ -63,7 +66,8 @@ class ServerComms {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSP();
-          message = '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
+          message =
+              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
           List<String> list = await getTimeFNameLNameGps();
@@ -102,7 +106,8 @@ class ServerComms {
         },
       );
     } else {
-      print("FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
+      print(
+          "FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
     }
   }
 
@@ -136,34 +141,38 @@ class ServerComms {
             case "HELPER_ACCEPTED":
               //HELPER_ACCEPTED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
-              HelpNeededState.helperAmountUpdate(
-                  1, resultParts[1], LatLng(double.parse(res2[0]), double.parse(res2[1])));
+              HelpNeededState.helperAmountUpdate(1, resultParts[1],
+                  LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_UPDATED":
               //HELP_UPDATED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
-              HelpNeededState.helperAmountUpdate(
-                  0, resultParts[1], LatLng(double.parse(res2[0]), double.parse(res2[1])));
+              HelpNeededState.helperAmountUpdate(0, resultParts[1],
+                  LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_WITHDRAWN":
               //HELP_WITHDRAWN:ID
-              HelpNeededState.helperAmountUpdate(-1, resultParts[1], LatLng(0, 0));
+              HelpNeededState.helperAmountUpdate(
+                  -1, resultParts[1], LatLng(0, 0));
               break;
             case "HELP_TARGET_UPDATE":
               //HELP_TARGET_UPDATE:ID:GPS
-              print("\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
+              print(
+                  "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
               print("resultParts[1] ${resultParts[1]}     devId ${devId}");
               if (resultParts[1] == devId) {
-                HelpOfferedState.setToBeHelpedLatLng(LatLng(double.parse(res2[0]), double.parse(res2[1])));
+                HelpOfferedState.setToBeHelpedLatLng(
+                    LatLng(double.parse(res2[0]), double.parse(res2[1])));
               }
               break;
             case "NOTIFY":
               //NOTIFY:ID:GPS:DISTANCE:
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(resultParts[2], resultParts[3]);
+                await NotificationHandler.pushUpNotification(
+                    resultParts[2], resultParts[3]);
               }
               break;
             case "NO_USERS_NEARBY":
@@ -177,8 +186,9 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 try {
                   if (HelpOfferedState.pageOpen) {
-                    await MyApp.navigatorKey.currentState
-                        ?.push(MaterialPageRoute(builder: (context) => const HelpOver()));
+                    await MyApp.navigatorKey.currentState?.push(
+                        MaterialPageRoute(
+                            builder: (context) => const HelpOver()));
                   }
                 } catch (e) {
                   print(e.toString());
@@ -213,7 +223,6 @@ class ServerComms {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
-    }
-    );
+    });
   }
 }

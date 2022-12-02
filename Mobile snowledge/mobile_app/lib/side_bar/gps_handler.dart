@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
@@ -47,7 +48,7 @@ class GpsHandler {
   }
 
   static Future<void> updateGpsVariable({bool ignoreSwitch = false}) async {
-    if (SideBarState.gpsSwitchState || ignoreSwitch) {
+    if (SetSharingLocationState.gpsSwitchState || ignoreSwitch) {
       _gps = await _location.getLocation();
     }
   }
@@ -195,7 +196,7 @@ class GpsHandler {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const MainPage()),
-                          (route) => false);
+                      (route) => false);
                 },
                 child: const Text('Peruuta'),
               ),
