@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:mobile_app/helper/loading_indicator.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'bottom_bar/state/setSharingLocation.dart';
 import 'notification_handler.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
@@ -20,7 +22,7 @@ class MapTracking extends StatefulWidget {
 
 class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   final MapController _mapController = MapController();
-
+  static Location _location = new Location();
   @override
   initState() {
     super.initState();
@@ -30,8 +32,16 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
       if (gpsOn) {
         await GpsHandler.updateGpsVariable(ignoreSwitch: true);
 
-        /* await ServerComms.messageToServer('LOCATION');
-        ServerComms.startSendingLocationMessages(); */
+        //Checks the value of the location-switch in "Sijainti" -popup
+        Future<bool> checkPermission = GpsHandler.loadGpsSetting();
+        if (await checkPermission) {
+          SetSharingLocationState.setGpsSwitchState(true);
+          print("Permission Granted!");
+        } else {
+          SetSharingLocationState.setGpsSwitchState(false);
+          _location.enableBackgroundMode(enable: false);
+          print("Permission not Granted");
+        }
       }
     });
 

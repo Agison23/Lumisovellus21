@@ -19,7 +19,6 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
-
   bool winter = Utility.getSummerOrWinter();
 
   @override
@@ -48,50 +47,29 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       child: Wrap(
         runSpacing: 16,
         children: [
-          _item(
-              0,
-              Icons.map_outlined,
-              "Karttanäkymä"
+          _item(0, Icons.map_outlined, "Karttanäkymä"),
+          Visibility(
+            child: _item(
+                1, Icons.area_chart_outlined, "Lumiolosuhteet Pallaksella"),
+            visible: winter,
           ),
-          Visibility(child: 
-          _item(
-              1,
-              Icons.area_chart_outlined,
-              "Lumiolosuhteet Pallaksella"
+          _item(2, Icons.sunny_snowing, "Sää Pallaksella"),
+          Visibility(
+            child: _item(3, Icons.ac_unit, "Lumityyppien selitteet"),
+            visible: winter,
           ),
-          visible: winter,),
-          _item(
-              2,
-              Icons.sunny_snowing,
-              "Sää Pallaksella"
-          ),
-          Visibility(child: 
-          _item(
-              3,
-              Icons.ac_unit,
-              "Lumityyppien selitteet"
-          ),
-          visible: winter,),
-          _item(
-              4,
-              Icons.person_outline,
-              "Käyttäjätiedot"
-          ),
-          _item(
-              5,
-              Icons.menu_book_outlined,
-              "Tietoa palvelusta"
-          ),
+          _item(4, Icons.person_outline, "Käyttäjätiedot"),
+          _item(5, Icons.menu_book_outlined, "Tietoa palvelusta"),
           const Divider(color: Colors.black),
           _item(
-              6,
-              Icons.downhill_skiing_outlined,
-              "Pallaksen Pöllöt",
+            6,
+            Icons.downhill_skiing_outlined,
+            "Pallaksen Pöllöt",
           ),
           _item(
-              7,
-              Icons.privacy_tip_outlined,
-              "Tietosuojaseloste",
+            7,
+            Icons.privacy_tip_outlined,
+            "Tietosuojaseloste",
           ),
         ],
       ),
@@ -102,13 +80,14 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     var appState = Provider.of<AppState>(context);
     return ListTile(
       leading: Icon(iconData),
-      iconColor: index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
-      textColor: index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
+      iconColor:
+          index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
+      textColor:
+          index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
       title: Text(title),
       trailing: index == 6 || index == 7 ? const Icon(Icons.launch) : null,
       onTap: () async {
         if (index == appState.pageIndex) {
-
         } else {
           setState(() {
             appState.setPageIndex = index;
@@ -117,27 +96,26 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const MapTracking()),
-                    (route) => false);
+                MaterialPageRoute(builder: (context) => const MapTracking()),
+                (route) => false);
           } else if (index == 1) {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const MainPage()),
-                    (route) => false);
+                (route) => false);
           } else if (index == 2) {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const Weather()),
-                    (route) => false);
+                (route) => false);
           } else if (index == 3) {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const SnowInfo()),
-                    (route) => false);
+                (route) => false);
           } else if (index == 4) {
             Navigator.push(
               context,
@@ -164,9 +142,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               await launchUrlString(
                   url); //launch is from url_launcher package to launch URL
             } else {}
-          } else {
-
-          }
+          } else {}
         }
       },
     );
