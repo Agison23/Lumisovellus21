@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mobile_app/side_bar/gps_handler.dart';
+import 'package:mobile_app/state/appState.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class WidgetsBindingObserverState<T extends StatefulWidget> extends State
     with WidgetsBindingObserver {
   @override
   void initState() {
+    var appState = Provider.of<AppState>(context, listen: false);
     super.initState();
     setAppResumedWithAlwaysOnPermissionsTask(
-        () => {GpsHandler.userReturnedToTheApp()});
+        () => {appState.setUserInAppSettings = false});
     WidgetsBinding.instance!.addObserver(this);
   }
 
@@ -27,10 +29,11 @@ class WidgetsBindingObserverState<T extends StatefulWidget> extends State
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    var appState = Provider.of<AppState>(context, listen: false);
     switch (state) {
       case AppLifecycleState.resumed:
-        if (GpsHandler.userInAppSettings) {
-          GpsHandler.userReturnedToTheApp();
+        if (appState.userInAppSettings) {
+          appState.setUserInAppSettings = false;
           Permission.locationAlways.isGranted.then((isGranted) {
             if (isGranted) {
               _appResumedWithAlwaysOnPermissions();

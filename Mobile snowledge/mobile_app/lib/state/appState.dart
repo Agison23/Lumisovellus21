@@ -10,4 +10,14 @@ class AppState extends ChangeNotifier {
     _pageIndex = index;
     notifyListeners();
   }
+
+  static bool _userInAppSettings = false;
+  bool get userInAppSettings {
+    return _userInAppSettings;
+  }
+
+  set setUserInAppSettings(bool value) {
+    _userInAppSettings = value;
+    notifyListeners();
+  }
 }
