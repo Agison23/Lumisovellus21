@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import '../help_needed_mode.dart';
+import '../main_page.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
+import '../state/appState.dart';
 import 'dialogs.dart';
 
 class Buttons {
-  // Help button
   String locationMessage = 'LOCATION';
+  /// Help button
   ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
@@ -70,27 +73,82 @@ class Buttons {
     );
   }
 
-  // Cancel button
-  static ElevatedButton cancelButton(BuildContext context, String text, Color color) {
+  /// Cancel button
+  static ElevatedButton cancelButton(BuildContext context, String type) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
+        if (type == 'help_request') {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        } else if (type == 'location'){
+          var appState = Provider.of<AppState>(context, listen: false);
+          Navigator.of(context).pop();
+          appState.setPageIndex = 1;
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MainPage()),
+                  (route) => false);
+        }
       },
-      child: Text(
-        text,
-        style: const TextStyle(
+      child: const Text(
+        'Peruuta',
+        style: TextStyle(
           color: Colors.white,
           fontSize: 15,
           fontWeight: FontWeight.bold,
         ),
       ),
       style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: Colors.transparent,
           padding: const EdgeInsets.all(20.0),
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
+
+  /// Go to settings button
+  static ElevatedButton goToSettingsButton(BuildContext context, bool insistAlwaysOn, bool result, String buttonText) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    return ElevatedButton(
+        onPressed: () async {
+          if (insistAlwaysOn) {
+            await Permission.locationAlways.request();
+            if (!(await Permission
+                .locationAlways.isGranted)) {
+              if (await openAppSettings()) {
+                appState.setUserInAppSettings = true;
+              }
+            }
+            result =
+            await Permission.locationAlways.isGranted;
+            Navigator.pop(context);
+          } else {
+            await Permission.location.request();
+            if (!(await Permission.location.isGranted)) {
+              if (await openAppSettings()) {
+                appState.setUserInAppSettings = true;
+              }
+            }
+            result = await Permission.location.isGranted;
+            Navigator.pop(context);
+          }
+        },
+        child: Text(
+          buttonText,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF4B6DD7),
+          padding: const EdgeInsets.all(20.0),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50))),
     );
   }
 }
