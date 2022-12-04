@@ -95,7 +95,7 @@ class MyData extends DataTableSource {
 
 Future<List> callHttp(
     String api, String username, String password, Map? body) async {
-  String url = 'http://localhost:3003/${api}';
+  String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
   //String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
 
   Response response;
@@ -177,7 +177,7 @@ SizedBox createMap(
                     if (await canLaunchUrlString(url)) {
                       await launchUrlString(url);
                     } else {
-                      print('ERROR');
+                      //print('ERROR');
                     }
                   },
                   icon: Image.asset('assets/images/MapTiler.png'),

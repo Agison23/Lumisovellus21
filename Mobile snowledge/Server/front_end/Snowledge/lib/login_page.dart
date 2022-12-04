@@ -15,15 +15,15 @@ class LoginPage extends StatelessWidget {
     final usernameController = TextEditingController();
     final passwordController = TextEditingController();
 
-    usernameController.text = "admin";
-    passwordController.text = "admin";
+    //usernameController.text = "admin";
+    //passwordController.text = "admin";
 
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('Username', style: TextStyle(fontSize: 25)),
+            const Text('Käyttäjänimi', style: TextStyle(fontSize: 25)),
             Padding(
               padding: const EdgeInsets.only(bottom: 25.0),
               child: SizedBox(
@@ -32,13 +32,13 @@ class LoginPage extends StatelessWidget {
                   controller: usernameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter username',
+                    hintText: 'Syötä käyttäjänimi',
                   ),
                 ),
               ),
             ),
             const Text(
-              'Password',
+              'Salasana',
               style: TextStyle(fontSize: 25),
             ),
             Padding(
@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
                   controller: passwordController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter password',
+                    hintText: 'Syötä salasana',
                   ),
                   onSubmitted: ((value) {
                     navigateToMainScreen(context, usernameController.text,
@@ -65,7 +65,7 @@ class LoginPage extends StatelessWidget {
                 navigateToMainScreen(
                     context, usernameController.text, passwordController.text);
               },
-              child: const Text('Log in'),
+              child: const Text('Kirjaudu'),
             ),
           ],
         ),
@@ -105,7 +105,7 @@ void navigateToMainScreen(
 
 Future<bool> checkUserCredentials(String username, String password) async {
   bool result = false;
-  String url = 'http://localhost:3002/login';
+  String url = 'https://pallas.lumisovellus.fi/data/api/login';
   //String url = 'https://pallas.lumisovellus.fi/data/api/login';
 
   Response response = await get(
@@ -114,7 +114,7 @@ Future<bool> checkUserCredentials(String username, String password) async {
       'Authorization': '$username:$password',
     },
   );
-
+  //print(response);
   result = response.statusCode == 200;
 
   return result;
