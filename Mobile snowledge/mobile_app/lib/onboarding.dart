@@ -174,7 +174,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           const SizedBox(height: 100),
                           Buttons.onboardingButton(
                               context,
-                              'LÄHETÄ',
+                              'SEURAAVA',
                               onPressed: () {
                                 Navigator.pushAndRemoveUntil(
                                     context,
