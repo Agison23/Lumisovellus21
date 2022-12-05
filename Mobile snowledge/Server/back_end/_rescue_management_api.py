@@ -142,9 +142,14 @@ def modify_user():
     is_username_changed = db.check_is_same_username(connection, user_id, username)
     # check if username is already reserved for another user
     is_username_reserved = db.check_if_username_exists(connection, username)
-
-    if is_username_changed == None:
+    
+    if is_username_changed == None or username == None:
         print("KÄYTTÄJÄNIMI HALUTAAN VAIHTAA")
+        if username == None:
+            response = jsonify({"message": "ERROR: Username is empty"}), 400
+            print("Käyttäjänimi on tyhjä!")
+            return response
+
         if is_username_reserved != None:
             response = jsonify({"message": "ERROR: Username already exists"}), 409
             print("Käyttäjänimi varattuna")
