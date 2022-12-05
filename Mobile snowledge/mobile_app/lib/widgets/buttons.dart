@@ -153,7 +153,7 @@ class Buttons {
   }
 
 
-  static ElevatedButton confirmButton(BuildContext context, String text, {VoidCallback? onPressed}) {
+   static ElevatedButton confirmButton(BuildContext context, String text, {VoidCallback? onPressed}) {
     return ElevatedButton(
         onPressed: onPressed,
         child: Text(
@@ -174,6 +174,44 @@ class Buttons {
           ),
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
+
+  static ElevatedButton onboardingButton(BuildContext context, String text, {VoidCallback? onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 40.0),
+          side: const BorderSide(
+              width: 3, // the thickness
+              color: Colors.white // the color of the border
+          ),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
+
+  static TextButton refuseLocationPermissionButton(BuildContext context, {VoidCallback? onPressed}) {
+    return TextButton(
+        onPressed: onPressed,
+        child: const Text(
+          'Älä salli sijaintia',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 17,
+          ),
+        ),
     );
   }
 }
