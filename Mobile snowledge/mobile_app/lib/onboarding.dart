@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/map_tracking.dart';
-
 import 'package:mobile_app/side_bar/gps_handler.dart';
-import 'package:mobile_app/user_information_view.dart';
+import 'package:mobile_app/widgets/buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mobile_app/main_page.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
@@ -21,7 +18,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   void dispose() {
     pageViewController.dispose();
-
     super.dispose();
   }
 
@@ -30,164 +26,165 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(//TODO change the background image
-              'https://static.wixstatic.com/media/5887f2_a1088b1d721e48f2aa8bec5e0088a46a~mv2_d_5656_3770_s_4_2.jpg/v1/fill/w_493,h_618,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/Pallas_Lapland_ski_april_2958.jpg'),
-          fit: BoxFit.cover,
-        ),
+            image: AssetImage("assets/images/TAUSTAKUVA_SOVELLUS.jpg"),
+            fit: BoxFit.cover),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Column(
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(
             children: [
+              const SizedBox(height: 50),
               const Image(
-                image: AssetImage('assets/images/logo_transparent_black.png'),
+                image:
+                    AssetImage('assets/images/pallaksen_pollot_logo_white.png'),
                 width: 250.0,
-                height: 250.0,
-                fit: BoxFit.cover,
+                fit: BoxFit.fitWidth,
               ),
+              const SizedBox(height: 20),
               Expanded(
                 child: PageView(
                   physics: const NeverScrollableScrollPhysics(),
                   controller: pageViewController,
                   children: [
                     //Page1Start
-                    Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                              'Pallaksen Pöllöjen tuottama lumisovellus.\n tarjoaa tietoja alueella vallitsevista \nlumiolosuhteista',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(height: 1, fontSize: 15)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(100.0),
-                          child: ElevatedButton(
-                            child: const Text(
-                              'Seuraava',
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 120),
+                          const Text(
+                              'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Color(0xffffffff),
-                                fontSize: 20,
-                              ),
-                            ),
-                            onPressed: () {
-                              pageViewController.nextPage(
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOut,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(
-                                    0xff3c4d62), // background (button) color
-                                foregroundColor: Color(
-                                    0xffffffff), // foreground (text) color
-                                fixedSize: const Size(170, 70),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                        ),
-                      ],
+                                  height: 1,
+                                  fontSize: 20,
+                                  color: Colors.white)),
+                          const SizedBox(height: 150),
+                          Buttons.onboardingButton(context, 'Seuraava',
+                              onPressed: () {
+                            pageViewController.nextPage(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          })
+                        ],
+                      ),
                     ), //Page1end
 
                     //Page2Start
-                    Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(5),
-                          padding: const EdgeInsets.all(15.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                              'Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni. Sallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?\n\n*Luvat on mahdollista antaa myös myöhemmässä vaiheessa',
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 70),
+                          const Text(
+                              'LUPA SIJAINTIETOIHIN',
                               textAlign: TextAlign.center,
-                              style: TextStyle(height: 1, fontSize: 15)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(7, 100, 7, 15),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      if (await GpsHandler
-                                          .checkAndAskGpsAlwaysOnPermission(
-                                              context)) {
-                                        pageViewController.nextPage(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          curve: Curves.easeInOut,
-                                        );
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Salli sijainnin käyttö',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Color(0xffffffff),
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(
-                                          0xff3c4d62), // background (button) color
-                                      foregroundColor: Color(
-                                          0xffffffff), // foreground (text) color
-                                      fixedSize: const Size(170, 70),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    pageViewController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 500),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Älä salli sijaintia',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                        ),
-                      ],
+                              style: TextStyle(
+                                  height: 1,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                          const SizedBox(height: 30.0),
+                          const Text(
+                              'Sovellus tarvitsee luvan käyttää tietojasi myös näytön ollessa suljettuna. Sallitko sijaintitiedon keräämisen sovelluksen ollessa taustalla?',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  height: 1,
+                                  fontSize: 20,
+                                  color: Colors.white)),
+                          const SizedBox(height: 100),
+                          Buttons.onboardingButton(context, 'SALLI KÄYTTÖ',
+                              onPressed: () async {
+                                if (await GpsHandler
+                                    .checkAndAskGpsAlwaysOnPermission(
+                                    context)) {
+                                  pageViewController.nextPage(
+                                    duration:
+                                    const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }
+                              },
+                              ),
+                          const SizedBox(height: 10.0),
+                          Buttons.refuseLocationPermissionButton(
+                              context,
+                              onPressed: () {
+                                pageViewController.nextPage(
+                                  duration:
+                                  const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                          )
+                        ],
+                      ),
                     ), //Page2End
 
                     //Page3Start
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(8),
-                            padding: const EdgeInsets.all(5.0),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Text(
-                                '\nSyötäthän oikeat tietosi\n\nNimeä käytetään sovelluksen GPS-toimintoon. Toiminnolla tuetaan Pallaksen Pöllöjä ja tarvittaessa pelastuslaitosta.\n',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(height: 1, fontSize: 15)),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+                      child: ScrollConfiguration(
+                        behavior: MyScrollBehavior(),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const Text(
+                                  'Syötäthän oikeat tietosi',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                              const SizedBox(height: 20.0),
+                              const Text(
+                                  'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      color: Colors.white)),
+                              const SizedBox(height: 30),
+                              SingleChildScrollView(child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30.0),
+                                child: UserInfoForm(pageController: pageViewController),
+                              ))
+                            ],
                           ),
-                          const UserInfoForm()
-                        ],
+                        ),
                       ),
                     ), //Page3End
+
+                    //Page4Start
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 70),
+                          const Text(
+                              'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa useilla eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä punaisen napin kautta kaikissa näkymissä.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  height: 1,
+                                  fontSize: 20,
+                                  color: Colors.white)),
+                          const SizedBox(height: 100),
+                          Buttons.onboardingButton(
+                              context,
+                              'LÄHETÄ',
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const MapTracking()),
+                                        (route) => false);
+                              }
+                          )
+                        ],
+                      ),
+                    ), //Page4End
                   ],
                 ),
               ),
@@ -200,7 +197,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 }
 
 class UserInfoForm extends StatefulWidget {
-  const UserInfoForm({Key? key}) : super(key: key);
+  UserInfoForm({Key? key, required this.pageController}) : super(key: key);
+
+  final PageController pageController;
 
   @override
   UserInfoFormState createState() {
@@ -221,116 +220,115 @@ class UserInfoFormState extends State<UserInfoForm> {
       key: _formKey,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Row(
-              children: [
-                Flexible(
-                  child: Container(
-                    height: 100,
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: TextFormField(
-                      controller: fNameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Anna etunimesi';
-                        }
-                        if (value.length > nameMaxLen) {
-                          return 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        labelText: 'Etunimi',
-                      ),
-                    ),
-                  ),
+          TextFormField(
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20
+            ),
+            textAlign: TextAlign.center,
+            controller: fNameController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Anna etunimesi';
+              }
+              if (value.length > nameMaxLen) {
+                return 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              floatingLabelAlignment: FloatingLabelAlignment.center,
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(width: 2, color: Colors.white),
                 ),
-                Flexible(
-                  child: Container(
-                    height: 100,
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: TextFormField(
-                      controller: lNameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Anna sukunimesi';
-                        }
-                        if (value.length > nameMaxLen) {
-                          return 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        labelText: 'Sukunimi',
-                      ),
+                label: Center(
+                  child: Text('Etunimi',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontSize: 20
                     ),
-                  ),
-                ),
-              ],
+                  ))
             ),
           ),
-          Container(
-            height: 100,
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: TextFormField(
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-              ],
-              keyboardType: TextInputType.number,
-              controller: pNumberController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Anna puhelinnumerosi';
-                }
+          const SizedBox(height: 10.0),
+          TextFormField(
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20
+            ),
+            textAlign: TextAlign.center,
+            controller: lNameController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Anna sukunimesi';
+              }
+              if (value.length > nameMaxLen) {
+                return 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+                floatingLabelAlignment: FloatingLabelAlignment.center,
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(width: 2, color: Colors.white),
+                ),
+                label: Center(
+                    child: Text('Sukunimi',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 20
+                      ),
+                    ))
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          TextFormField(
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20
+            ),
+            textAlign: TextAlign.center,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            ],
+            keyboardType: TextInputType.number,
+            controller: pNumberController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Anna puhelinnumerosi';
+              }
 
-                return null;
-              },
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+              return null;
+            },
+            decoration: InputDecoration(
+                floatingLabelAlignment: FloatingLabelAlignment.center,
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(width: 2, color: Colors.white),
                 ),
-                labelText: 'Puhelinnumero',
-              ),
+                label: Center(
+                    child: Text('Puhelinnumero',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 20
+                      ),
+                    ))
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
+          const SizedBox(height: 30.0),
+          Buttons.onboardingButton(
+              context,
+              'Seuraava',
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _navigateToNextScreen(context, fNameController.text,
+                  _setPreferences(fNameController.text,
                       lNameController.text, pNumberController.text);
+                  widget.pageController.nextPage(
+                    duration:
+                    const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
                 }
-              },
-              child: const Text(
-                'Siirry sovellukseen',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xffffffff),
-                  fontSize: 20,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff3c4d62), // background (button) color
-                foregroundColor: Color(0xffffffff), // foreground (text) color
-                fixedSize: const Size(170, 70),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
+              }
           )
         ],
       ),
@@ -338,16 +336,19 @@ class UserInfoFormState extends State<UserInfoForm> {
   }
 }
 
-void _navigateToNextScreen(
-    BuildContext context, String fName, String lName, String pNumber) {
+void _setPreferences(String fName, String lName, String pNumber) {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((pref) {
     pref.setString('fName', fName);
     pref.setString('lName', lName);
     pref.setString('pNumber', pNumber);
   });
-  Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const MapTracking()),
-      (route) => false);
+}
+
+class MyScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
 }
