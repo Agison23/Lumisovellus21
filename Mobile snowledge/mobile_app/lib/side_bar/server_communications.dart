@@ -184,6 +184,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
+                NotificationHandler.helpRequestCancelledNotification();
                 try {
                   if (HelpOfferedState.pageOpen) {
                     await MyApp.navigatorKey.currentState?.push(
