@@ -85,10 +85,10 @@ class HelpNeededState extends State<HelpNeeded> {
     const duration = Duration(minutes: 5);
     _timer = Timer.periodic(
       duration,
-          (Timer timer) {
-            Dialogs.showNoUserHasAcceptedRequestDialog(context);
-            print('no user has accepted');
-            timer.cancel();
+      (Timer timer) {
+        Dialogs.showNoUserHasAcceptedRequestDialog(context);
+        print('no user has accepted');
+        timer.cancel();
       },
     );
   }
@@ -120,8 +120,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
         break;
       default:
-        throw Exception(
-            "Invalid input! the int diff value must be -1, 0 or 1");
+        throw Exception("Invalid input! the int diff value must be -1, 0 or 1");
         break;
     }
     getLatLng().then((usersLatLng) {
@@ -136,12 +135,11 @@ class HelpNeededState extends State<HelpNeeded> {
 
   @override
   Widget build(BuildContext context) {
-
-    String usersLocation = GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
+    String usersLocation =
+        GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
-          var lat = double.parse(dataList[1]);
-          var lng = double.parse(dataList[3]);
-
+    var lat = double.parse(dataList[1]);
+    var lng = double.parse(dataList[3]);
 
     return WillPopScope(
       onWillPop: () async {
@@ -181,11 +179,11 @@ class HelpNeededState extends State<HelpNeeded> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.red[200],
+            backgroundColor: const Color(0xff3c4d62),
             centerTitle: true,
             toolbarHeight: 100,
           ),
@@ -196,25 +194,23 @@ class HelpNeededState extends State<HelpNeeded> {
                 options: MapOptions(
                   minZoom: 6,
                   maxZoom: 18,
-                  center: LatLng(lat,lng),
+                  center: LatLng(lat, lng),
                   zoom: 11.0,
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate: getSummerOrWinterMap()
-                  ),
+                  TileLayer(urlTemplate: getSummerOrWinterMap()),
                   MarkerLayer(markers: _markers)
                 ],
               ),
               Align(
-                      alignment: Alignment.bottomRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.my_location),
-                        onPressed: () {
-                          _mapController.moveAndRotate(
-                              LatLng(lat, lng), _mapController.zoom, 0);
-                        },
-                      )),
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      _mapController.moveAndRotate(
+                          LatLng(lat, lng), _mapController.zoom, 0);
+                    },
+                  )),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
@@ -226,14 +222,15 @@ class HelpNeededState extends State<HelpNeeded> {
                             title: const Text('Haluatko lopettaa avunpyynnön?'),
                             actions: [
                               ElevatedButton(
-                                onPressed: () => Navigator.of(context).pop(false),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
                                 child: const Text('En'),
                               ),
                               ElevatedButton(
                                   onPressed: () {
                                     _markers.clear();
                                     _helpers.clear();
-                                   /* Navigator.pushAndRemoveUntil(context,
+                                    /* Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
                                     Navigator.pop(context);
                                     Navigator.pop(context);
@@ -253,13 +250,13 @@ class HelpNeededState extends State<HelpNeeded> {
                     'Lopeta avun hälyttäminen',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[200],
+                      backgroundColor: const Color(0xff3c4d62),
                       fixedSize: const Size(200, 75),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
@@ -271,7 +268,8 @@ class HelpNeededState extends State<HelpNeeded> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Tooltip(
-                      message: "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                      message:
+                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                       child: IconButton(
                         onPressed: () async {
                           const url = "https://maptiler.com/";
@@ -312,7 +310,7 @@ class HelpNeededState extends State<HelpNeeded> {
         width: 1.0,
         height: 1.0,
         decoration: const BoxDecoration(
-          color: Color.fromARGB(250, 239, 154, 154),
+          color: Color.fromARGB(255, 60, 77, 98),
         ),
         child: const Align(
           alignment: Alignment.center,
@@ -331,8 +329,7 @@ class HelpNeededState extends State<HelpNeeded> {
   static List<Marker> getMarkers(List<Marker> helpers, LatLng usersLatLng) {
     List<Marker> markers = [];
     markers.addAll(helpers);
-    markers.add(
-      Marker(
+    markers.add(Marker(
       point: usersLatLng,
       builder: (ctx) => Container(
           width: 1.0,

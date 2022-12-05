@@ -7,7 +7,7 @@ import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 
 class Dialogs {
-  static Object?_selectedRadio = 0;
+  static Object? _selectedRadio = 0;
   final String help1 = 'Varusteongelma';
   final String help2 = 'Terveysongelma';
   final String help3 = 'Eksynyt';
@@ -24,6 +24,7 @@ class Dialogs {
       return 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';
     }
   }
+
   Future showDialogMinorHelpQuestions(context) async {
     _selectedRadio = 1;
     return await showDialog(
@@ -33,50 +34,49 @@ class Dialogs {
             title: const Text('Millaista apua tarvitset?'),
             content: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
-                  return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RadioListTile(
-                          title: const Text('Varusteongelma'),
-                          value: 1,
-                          groupValue: _selectedRadio,
-                          onChanged: (value) {
-                            setState(() => _selectedRadio = value);
-                          },
-                        ),
-                        RadioListTile(
-                          title: const Text('Terveysogelma'),
-                          value: 2,
-                          groupValue: _selectedRadio,
-                          onChanged: (value) {
-                            setState(() => _selectedRadio = value);
-                          },
-                        ),
-                        RadioListTile(
-                          title: const Text('Olen eksynyt'),
-                          value: 3,
-                          groupValue: _selectedRadio,
-                          onChanged: (value) {
-                            setState(() => _selectedRadio = value);
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                                onPressed: (() {Navigator.pop(context);}),
-                                child: const Text('Peruuta')),
-                            ElevatedButton(
-                                onPressed: (() {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
-                                }),
-                                child: const Text('Jatka'))
-                          ],
-                        )
-
-                      ]);}
-            ),
+              return Column(mainAxisSize: MainAxisSize.min, children: [
+                RadioListTile(
+                  title: const Text('Varusteongelma'),
+                  value: 1,
+                  groupValue: _selectedRadio,
+                  onChanged: (value) {
+                    setState(() => _selectedRadio = value);
+                  },
+                ),
+                RadioListTile(
+                  title: const Text('Terveysogelma'),
+                  value: 2,
+                  groupValue: _selectedRadio,
+                  onChanged: (value) {
+                    setState(() => _selectedRadio = value);
+                  },
+                ),
+                RadioListTile(
+                  title: const Text('Olen eksynyt'),
+                  value: 3,
+                  groupValue: _selectedRadio,
+                  onChanged: (value) {
+                    setState(() => _selectedRadio = value);
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                        onPressed: (() {
+                          Navigator.pop(context);
+                        }),
+                        child: const Text('Peruuta')),
+                    ElevatedButton(
+                        onPressed: (() {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (contx) => const HelpNeeded(true)));
+                        }),
+                        child: const Text('Jatka'))
+                  ],
+                )
+              ]);
+            }),
           );
         });
   }
@@ -92,15 +92,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Millaista apua tarvitset?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -135,8 +134,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Soita 112',
-                              const Color(0xFFDA7272)
-                          );
+                              const Color(0xffd99222));
                         }),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -145,8 +143,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Avunpyyntö',
-                              const Color(0xFF7281DA)
-                          );
+                              const Color(0xff7c94b6));
                         })
                   ],
                 ),
@@ -170,15 +167,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Sijaintitiedon jakaminen',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -210,16 +206,15 @@ class Dialogs {
                   ],
                 ),
                 const SizedBox(height: 20),
-                prefs.getString('lastLocationTime') != null ?
-                Text(
-                  'Viimeinen sijaintitieto lähetetty: \n' "${Utility.getTimeAgo(
-                      prefs.getString('lastLocationTime'))}" ' sitten',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18
-                  ),
-                )
+                prefs.getString('lastLocationTime') != null
+                    ? Text(
+                        'Viimeinen sijaintitieto lähetetty: \n'
+                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
+                        ' sitten',
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 18),
+                      )
                     : const SizedBox()
               ]);
             },
@@ -241,15 +236,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'Sovelluksen käyttäjiä ei ole lähistöllä',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -274,8 +268,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Soita 112',
-                              const Color(0xFFDA7272)
-                          );
+                              const Color(0xFFDA7272));
                         })
                   ],
                 ),
@@ -299,15 +292,14 @@ class Dialogs {
           backgroundColor: Colors.transparent,
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
                   'No user has accepted your request',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontWeight: FontWeight.bold),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -332,8 +324,7 @@ class Dialogs {
                               !(_snapshot.data ?? false),
                               context,
                               'Soita 112',
-                              const Color(0xFFDA7272)
-                          );
+                              const Color(0xFFDA7272));
                         })
                   ],
                 ),
@@ -359,30 +350,31 @@ class Dialogs {
               backgroundColor: Colors.transparent,
               content: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          dialogMessage,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 50),
-                        Column(
-                          children: [
-                            // Go to settings button
-                            Buttons.goToSettingsButton(context, insistAlwaysOn, result, buttonText),
-                            const SizedBox(height: 10),
-                            // Cancel button
-                            Buttons.cancelButton(context, 'location')
-                          ],
-                        )
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      dialogMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 50),
+                    Column(
+                      children: [
+                        // Go to settings button
+                        Buttons.goToSettingsButton(
+                            context, insistAlwaysOn, result, buttonText),
+                        const SizedBox(height: 10),
+                        // Cancel button
+                        Buttons.cancelButton(context, 'location')
                       ],
-                    );
-                  }));
+                    )
+                  ],
+                );
+              }));
         });
     return result;
   }
