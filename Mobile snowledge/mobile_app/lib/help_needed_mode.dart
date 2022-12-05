@@ -2,14 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
 import 'package:mobile_app/helper/utility.dart';
-import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'main_page.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
@@ -22,12 +19,12 @@ class HelpNeeded extends StatefulWidget {
 class HelpNeededState extends State<HelpNeeded> {
   final MapController _mapController = MapController();
   static late Timer _stateUpdateTimer;
+  static late Timer _timer;
   static late List<Marker> _markers = [];
   static final List<Marker> _helpers = [];
   static final List _users = ['1'];
 
   int _start = 1;
-  late Timer _timer;
 
   @override
   void dispose() {
@@ -38,6 +35,7 @@ class HelpNeededState extends State<HelpNeeded> {
     }
     ServerComms.messageToServer('HELP_DELETE');
     _stateUpdateTimer.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
