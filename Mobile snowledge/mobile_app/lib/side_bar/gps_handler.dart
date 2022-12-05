@@ -2,36 +2,24 @@ import 'dart:async';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
-import 'package:mobile_app/side_bar/side_bar.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
-import '../main_page.dart';
-
 class GpsHandler {
-  //#region gps
   static late Timer _timer;
   static Location _location = new Location();
-
   static late LocationData _gps;
   static LocationData get gps => _gps;
 
-  static bool _userInAppSettings = false;
-
-  static bool get userInAppSettings => _userInAppSettings;
   static StreamSubscription<LocationData> listener =
       _location.onLocationChanged.listen((event) {});
 
   // for use in main view in the continually updating map
   static Stream<LocationData> getCoordinates() async* {
     yield* _location.onLocationChanged;
-  }
-
-  static userReturnedToTheApp() {
-    _userInAppSettings = false;
   }
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopUpdatingGpsVariable() method.
@@ -57,7 +45,7 @@ class GpsHandler {
   ///If insistAlwaysOn = false, make sure that setGpsSetting(false) is run after using the gps, to avoid unexpected behaviour.
   static Future<bool> setGpsSetting(context, bool value,
       {bool insistAlwaysOn = false}) async {
-    _userInAppSettings = false;
+    // _userInAppSettings = false;
     bool result = false;
     //gps services state and permissions
     if (value) {
@@ -76,7 +64,7 @@ class GpsHandler {
               //permissions were not denied, => permissions granted and gps is ON for now.
               result = true;
             } else {
-              result = await _showGPSDialog(
+              result = await Dialogs.showGPSDialog(
                   context,
                   false,
                   'Sovellus tarvitsee paikannukseen luvan käyttää sijaintia.\n\nSallitko sijaintiedon keräämisen?',
@@ -90,7 +78,6 @@ class GpsHandler {
     } else {
       _saveGpsSetting(false);
     }
-
     return result;
   }
 
@@ -130,7 +117,6 @@ class GpsHandler {
         throw ErrorDescription("The platform must be either Android or IOS!");
       }
     }
-
     return true;
   }
 
@@ -140,7 +126,7 @@ class GpsHandler {
     if (!(await Permission.locationWhenInUse.isGranted)) {
       return false;
     }
-    return await _showGPSDialog(context, true, dialogMessage, buttonText);
+    return await Dialogs.showGPSDialog(context, true, dialogMessage, buttonText);
   }
 
   ///check if phones gps is on
@@ -153,7 +139,6 @@ class GpsHandler {
         return false;
       }
     }
-
     return true;
   }
 
@@ -161,7 +146,6 @@ class GpsHandler {
   static Future<bool> loadGpsSetting() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var loadedSetting = sharedPreferences.getBool("isSharingLocation");
-
     return loadedSetting ?? false;
   }
 
@@ -176,56 +160,4 @@ class GpsHandler {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setBool("isSharingLocation", value);
   }
-
-  static Future<bool> _showGPSDialog(context, bool insistAlwaysOn,
-      String dialogMessage, String buttonText) async {
-    bool result = false;
-    await showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(dialogMessage),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainPage()),
-                      (route) => false);
-                },
-                child: const Text('Peruuta'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (insistAlwaysOn) {
-                    await Permission.locationAlways.request();
-                    if (!(await Permission.locationAlways.isGranted)) {
-                      if (await openAppSettings()) _userInAppSettings = true;
-                    }
-                    result = await Permission.locationAlways.isGranted;
-                    Navigator.pop(context);
-                  } else {
-                    await Permission.location.request();
-                    if (!(await Permission.location.isGranted)) {
-                      if (await openAppSettings()) //TODO päätä kannattaako tämä pitää tässä
-                        _userInAppSettings = true;
-                    }
-                    result = await Permission.location.isGranted;
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text(buttonText),
-              ),
-            ],
-          );
-        });
-    return result;
-  }
-
-//#endregion
 }

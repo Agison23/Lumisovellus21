@@ -266,7 +266,7 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'Peruuta', Colors.transparent),
+                    Buttons.cancelButton(context, 'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
@@ -324,7 +324,7 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'Peruuta', Colors.transparent),
+                    Buttons.cancelButton(context, 'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
@@ -343,5 +343,47 @@ class Dialogs {
         );
       },
     );
+  }
+
+  /// Open dialog if user is not sharing his location
+  static Future<bool> showGPSDialog(context, bool insistAlwaysOn,
+      String dialogMessage, String buttonText) async {
+    bool result = false;
+    await showDialog<void>(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.9),
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              content: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          dialogMessage,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 50),
+                        Column(
+                          children: [
+                            // Go to settings button
+                            Buttons.goToSettingsButton(context, insistAlwaysOn, result, buttonText),
+                            const SizedBox(height: 10),
+                            // Cancel button
+                            Buttons.cancelButton(context, 'location')
+                          ],
+                        )
+                      ],
+                    );
+                  }));
+        });
+    return result;
   }
 }
