@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/help_need_over.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -189,7 +190,8 @@ class ServerComms {
                   if (HelpOfferedState.pageOpen) {
                     await MyApp.navigatorKey.currentState?.push(
                         MaterialPageRoute(
-                            builder: (context) => const HelpOver()));
+                            builder: (context) => const MapTracking()));
+                    await Dialogs.showHelpNeedOverDialog(MyApp.navigatorKey.currentState?.context);
                   }
                 } catch (e) {
                   print(e.toString());
