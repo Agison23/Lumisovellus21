@@ -1,14 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-import 'help_needed_mode.dart';
 import 'main_page.dart';
 
 class HelpOffered extends StatefulWidget {
@@ -105,7 +101,8 @@ class HelpOfferedState extends State<HelpOffered> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(
+            title:
+            Text(
               _accepted
                   ? 'Avuntarjoamistila'
                   : 'Käyttäjä on pyytänyt apua $_distance päässä',
@@ -130,9 +127,12 @@ class HelpOfferedState extends State<HelpOffered> {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _accepted ? returnbutton() : decisionbuttons(),
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: _accepted ? returnbutton() : decisionbuttons(),
+                  ),
                 ),
               ),
               Align(
@@ -180,14 +180,14 @@ class HelpOfferedState extends State<HelpOffered> {
           'Hylkää',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.red,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         style: ElevatedButton.styleFrom(
-            primary: Colors.red[200],
-            fixedSize: const Size(175, 75),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            backgroundColor: Colors.red[200],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
       ),
@@ -202,14 +202,14 @@ class HelpOfferedState extends State<HelpOffered> {
           'Hyväksy',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.green,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         style: ElevatedButton.styleFrom(
-            primary: Colors.red[200],
-            fixedSize: const Size(175, 75),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            backgroundColor: Colors.green[200],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
       ),
@@ -258,7 +258,7 @@ class HelpOfferedState extends State<HelpOffered> {
           ),
         ),
         style: ElevatedButton.styleFrom(
-            primary: Colors.red[200],
+            backgroundColor: Colors.red[200],
             fixedSize: const Size(200, 75),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),

@@ -77,6 +77,21 @@ class NotificationHandler {
     flutterLocalNotificationsPlugin.cancel(id);
   }
 
+  static Future<void> helpRequestCancelledNotification({int id = 12345}) async {
+    flutterLocalNotificationsPlugin.show(
+        id,
+        "Avuntarve ohi",
+        "Kiitos avusta!",
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: 'ticker'),
+            iOS: _iosNotificationDetails),
+        );
+  }
 
   static Future<void> pushUpNotification(String coords, String distance,
       {int id = 12345}) async {

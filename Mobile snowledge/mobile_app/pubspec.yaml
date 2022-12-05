@@ -76,6 +76,7 @@ flutter:
     - assets/images/logo_transparent_black.png
     - android/app/src/main/res/drawable/logo_transparent_black.png
     - assets/images/MapTiler.png
+    - assets/images/TAUSTAKUVA_SOVELLUS.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

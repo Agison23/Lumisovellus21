@@ -151,4 +151,29 @@ class Buttons {
               borderRadius: BorderRadius.circular(50))),
     );
   }
+
+
+  static ElevatedButton confirmButton(BuildContext context, String text, {VoidCallback? onPressed}) {
+    return ElevatedButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          padding: const EdgeInsets.all(20.0),
+          side: const BorderSide(
+              width: 3, // the thickness
+              color: Colors.white // the color of the border
+          ),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+    );
+  }
 }

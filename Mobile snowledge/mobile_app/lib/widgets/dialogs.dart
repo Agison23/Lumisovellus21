@@ -294,7 +294,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
-                  'No user has accepted your request',
+                  'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -377,5 +377,48 @@ class Dialogs {
               }));
         });
     return result;
+  }
+
+  /// Open dialog when user has deleted the request
+  static showHelpNeedOverDialog(context) async {
+    return await showDialog<void>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+                const Text(
+                  'Avuntarve ohi\nKiitos avusta!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: SizedBox(
+                    width: 300,
+                    child: Buttons.confirmButton(
+                        context,
+                        'OK',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }
+                    )),
+                )
+              ]);
+            },
+          ),
+        );
+      },
+    );
   }
 }
