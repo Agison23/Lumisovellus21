@@ -294,7 +294,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 const Text(
-                  'No user has accepted your request',
+                  'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
