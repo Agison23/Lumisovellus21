@@ -130,8 +130,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         behavior: MyScrollBehavior(),
                         child: SingleChildScrollView(
                           child: Column(
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                   'Syötäthän oikeat tietosi',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -139,24 +139,52 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white)),
-                              SizedBox(height: 20.0),
-                              Text(
+                              const SizedBox(height: 20.0),
+                              const Text(
                                   'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               SingleChildScrollView(child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 30.0),
-                                child: UserInfoForm(),
+                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30.0),
+                                child: UserInfoForm(pageController: pageViewController),
                               ))
                             ],
                           ),
                         ),
                       ),
                     ), //Page3End
+
+                    //Page4Start
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 70),
+                          const Text(
+                              'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa useilla eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä punaisen napin kautta kaikissa näkymissä.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  height: 1,
+                                  fontSize: 20,
+                                  color: Colors.white)),
+                          const SizedBox(height: 100),
+                          Buttons.onboardingButton(
+                              context,
+                              'LÄHETÄ',
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const MapTracking()),
+                                        (route) => false);
+                              }
+                          )
+                        ],
+                      ),
+                    ), //Page4End
                   ],
                 ),
               ),
@@ -169,7 +197,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 }
 
 class UserInfoForm extends StatefulWidget {
-  const UserInfoForm({Key? key}) : super(key: key);
+  UserInfoForm({Key? key, required this.pageController}) : super(key: key);
+
+  final PageController pageController;
 
   @override
   UserInfoFormState createState() {
@@ -287,11 +317,16 @@ class UserInfoFormState extends State<UserInfoForm> {
           const SizedBox(height: 30.0),
           Buttons.onboardingButton(
               context,
-              'LÄHETÄ',
+              'Seuraava',
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _navigateToNextScreen(context, fNameController.text,
+                  _setPreferences(fNameController.text,
                       lNameController.text, pNumberController.text);
+                  widget.pageController.nextPage(
+                    duration:
+                    const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
                 }
               }
           )
@@ -301,18 +336,13 @@ class UserInfoFormState extends State<UserInfoForm> {
   }
 }
 
-void _navigateToNextScreen(
-    BuildContext context, String fName, String lName, String pNumber) {
+void _setPreferences(String fName, String lName, String pNumber) {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((pref) {
     pref.setString('fName', fName);
     pref.setString('lName', lName);
     pref.setString('pNumber', pNumber);
   });
-  Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const MapTracking()),
-      (route) => false);
 }
 
 class MyScrollBehavior extends ScrollBehavior {
