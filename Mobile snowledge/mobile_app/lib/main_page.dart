@@ -62,8 +62,8 @@ class _MainPageState extends State<MainPage> {
           body: Stack(
             children: [
               const WebView(
-                // initialUrl: 'https://lumisovellus.fi/mobiili',
-                initialUrl: 'http://localhost:3000/mobiili',
+                initialUrl: 'https://lumisovellus.fi/mobiili',
+                // initialUrl: 'http://localhost:3000/mobiili',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview

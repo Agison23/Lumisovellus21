@@ -58,8 +58,8 @@ class _AppInfoState extends State<AppInfo> {
           body: Stack(
             children: [
               const WebView(
-                // initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
-                initialUrl: 'http://localhost:3000/tietoasovelluksesta',
+                initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
+                // initialUrl: 'http://localhost:3000/tietoasovelluksesta',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview

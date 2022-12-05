@@ -58,8 +58,8 @@ class _WeatherState extends State<Weather> {
           body: Stack(
             children: [
               const WebView(
-                // initialUrl: 'https://lumisovellus.fi/saa',
-                initialUrl: 'http://localhost:3000/saa',
+                initialUrl: 'https://lumisovellus.fi/saa',
+                // initialUrl: 'http://localhost:3000/saa',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview

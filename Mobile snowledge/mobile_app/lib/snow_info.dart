@@ -58,8 +58,8 @@ class _SnowInfoState extends State<SnowInfo> {
           body: Stack(
             children: [
               const WebView(
-                // initialUrl: 'https://lumisovellus.fi/selitteet',
-                initialUrl: 'http://localhost:3000/selitteet',
+                initialUrl: 'https://lumisovellus.fi/selitteet',
+                // initialUrl: 'http://localhost:3000/selitteet',
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview
