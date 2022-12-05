@@ -354,6 +354,7 @@ def get_user(connection, user_id):
     result = cur.fetchall()
     return result[0]
 
+
 def check_if_username_exists(connection, username):
     """ 
     Used to check if the username is reserved on the site. 
@@ -363,6 +364,20 @@ def check_if_username_exists(connection, username):
     sql = '''SELECT username FROM rescue WHERE username==?;'''
     cur = connection.cursor()
     cur.execute(sql, (username,))
+    result = cur.fetchone()
+    return result
+
+
+def check_is_same_username(connection, user_id, username):
+    """
+    When the user wants to change information, 
+    this function is used to check 
+    whether the user wants to change his username 
+    or only admin rights or password
+    """
+    sql = '''SELECT username FROM rescue WHERE user_id=? AND username=?;'''
+    cur = connection.cursor()
+    cur.execute(sql, (user_id, username))
     result = cur.fetchone()
     return result
 
@@ -392,5 +407,3 @@ def rescue_users_from_db(connection):
     cur = connection.cursor()
     cur.execute("SELECT * FROM rescue")
     print(cur.fetchall())
-
-

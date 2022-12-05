@@ -138,18 +138,18 @@ def modify_user():
     password = user.get('password')
     is_admin = user.get('is_admin')
 
+    #check if the user wants to change their username
+    is_username_changed = db.check_is_same_username(connection, user_id, username)
     # check if username is already reserved for another user
     is_username_reserved = db.check_if_username_exists(connection, username)
-    if is_username_reserved != None:
-        response = jsonify({"message": "ERROR: Username already exists"}), 409
-        print("Käyttäjänimi varattuna")
-        return response
-    else:
-        print("käyttäjänimeä ei ole varattu")
-        if user_id == None or (username == None and password == None and is_admin == None):
-            response = jsonify({"message": "ERROR: 401"}), 401
-            return response
 
+    if is_username_changed == None:
+        print("KÄYTTÄJÄNIMI HALUTAAN VAIHTAA")
+        if is_username_reserved != None:
+            response = jsonify({"message": "ERROR: Username already exists"}), 409
+            print("Käyttäjänimi varattuna")
+            return response
+        
         query = f'UPDATE rescue SET '
         if(username != None):
             query += f'username = "{username}",'
@@ -157,14 +157,32 @@ def modify_user():
             query += f'password = "{password}",'
         if(is_admin != None):
             query += f'is_admin = "{is_admin}",'
+
+    else:
+        print("KÄYTTÄJÄNIMEÄ EI HALUTA VAIHTAA")
+        print("käyttäjänimeä ei ole varattu")
+        if user_id == None or (username == None and password == None and is_admin == None):
+            response = jsonify({"message": "ERROR: 401"}), 401
+            return response
+            
+        query = f'UPDATE rescue SET '
+        if(username != None):
+            query += f'username = "{username}",'
+        if(password != None):
+            query += f'password = "{password}",'
+        if(is_admin != None):
+            query += f'is_admin = "{is_admin}",'
+    
         
     #viimenen pilkku pois
+ 
     query = query[:-1]
     query += f'WHERE user_id = {user_id}'
     print(query)    
     cur = connection.cursor()
     cur.execute(query)
     connection.commit()
+   
     return jsonify({"message": "OK"}), 200
 
 
