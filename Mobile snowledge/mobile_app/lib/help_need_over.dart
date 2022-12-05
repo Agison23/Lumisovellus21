@@ -1,56 +1,57 @@
 import 'package:flutter/material.dart';
-import 'main_page.dart';
+import 'package:mobile_app/map_tracking.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets/buttons.dart';
+import 'package:provider/provider.dart';
 
 class HelpOver extends StatelessWidget {
   const HelpOver({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print(context.toString());
-    return const Scaffold(
-      body: OverPopUp(),
-    );
-  }
-}
-
-class OverPopUp extends StatelessWidget {
-  const OverPopUp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 75, vertical: 150),
-            child: Text('Avuntarve ohi\nKiitos avusta!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  height: 3,
-                  fontSize: 30,
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(50, 100, 50, 25),
-            child: ElevatedButton(
-              child: const Text(
-                'OK',
+      child: Scaffold(
+          body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage("assets/images/TAUSTAKUVA_SOVELLUS.jpg"),
+          fit: BoxFit.cover,
+        )),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text('Avuntarve ohi\nKiitos avusta!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    height: 3,
+                    fontSize: 30,
+                  )),
+              Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+                child: SizedBox(
+                  width: 300,
+                  child: Buttons.confirmButton(
+                      context,
+                      'OK',
+                      onPressed: () {
+                        var appState = Provider.of<AppState>(context, listen: false);
+                        appState.setPageIndex = 0;
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MapTracking()),
+                                (route) => false);
+                      }
+                  ),
+                ),
               ),
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MainPage()),
-                    (route) => false);
-              },
-              style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(200, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50))),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      )),
     );
   }
 }
