@@ -39,27 +39,28 @@ class _DashboardPageState extends State<DashboardPage> {
 
     if (user_id == -1) {
       Response response = await get(
-        Uri.parse('http://localhost:3002/login'),
+        Uri.parse('https://pallas.lumisovellus.fi/data/api/login'),
         headers: {
           'Authorization': '$loginUsername:$loginPassword',
           'Content-Type': 'application/json',
         },
       );
       List<dynamic> result = json.decode("[" + response.body + "]");
-      print('$loginUsername:$loginPassword');
-      print(result);
+      //print('$loginUsername:$loginPassword');
+      //print(result);
       setState(() {
         user_id = result[0]["user_id"];
       });
     }
 
     Response response = await get(
-      Uri.parse('http://localhost:3003/users'),
+      Uri.parse('https://pallas.lumisovellus.fi/data/api/users'),
       headers: {
         'Authorization': '$loginUsername:$loginPassword',
         'Content-Type': 'application/json',
       },
     );
+    //print(json.decode(response.body));
     List<dynamic> _users = json.decode(response.body);
 
     for (var i = 0; i < _users.length; i++) {
@@ -87,8 +88,8 @@ class _DashboardPageState extends State<DashboardPage> {
     });
 
     widget.updateMainPageCredentials(updatedUsername, updatedPassword);
-    print(updatedUsername);
-    print(updatedPassword);
+    //print(updatedUsername);
+    //print(updatedPassword);
   }
 
   @override

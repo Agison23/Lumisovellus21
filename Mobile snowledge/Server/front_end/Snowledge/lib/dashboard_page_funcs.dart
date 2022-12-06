@@ -47,9 +47,8 @@ class OwnDetailsState extends State<OwnDetails> {
     if (editedpassword1 != "") {
       modifiedUser.addAll({"password": hashedPassword});
     }
-    print(modifiedUser);
     http.Response response = await http.put(
-      Uri.parse('http://localhost:3003/modify'),
+      Uri.parse('https://pallas.lumisovellus.fi/data/api/modify'),
       body: jsonEncode(modifiedUser),
       headers: {
         'Authorization': '${widget.username}:${widget.password}',
@@ -57,7 +56,6 @@ class OwnDetailsState extends State<OwnDetails> {
       },
     );
     List<dynamic> result = json.decode("[" + response.body + "]");
-    print(result);
     widget.updateCredentials(editedUsername, hashedPassword);
   }
 
@@ -281,7 +279,7 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
       "is_admin": admin
     };
     http.Response response = await http.post(
-      Uri.parse('http://localhost:3003/register'),
+      Uri.parse('https://pallas.lumisovellus.fi/data/api/register'),
       body: jsonEncode(newUser),
       headers: {
         'Authorization': '$loginUsername:$loginPassword',
@@ -306,9 +304,8 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
       String hashedPassword = sha256.convert(utf8.encode(password1)).toString();
       modifiedUser.addAll({"password": hashedPassword});
     }
-    print(modifiedUser);
     http.Response response = await http.put(
-      Uri.parse('http://localhost:3003/modify'),
+      Uri.parse('https://pallas.lumisovellus.fi/data/api/modify'),
       body: jsonEncode(modifiedUser),
       headers: {
         'Authorization': '$loginUsername:$loginPassword',
@@ -316,14 +313,14 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
       },
     );
     List<dynamic> result = json.decode("[" + response.body + "]");
-    print(result);
     Navigator.pop(context);
     updateTable();
   }
 
   Future deleteClicked() async {
     int userID = int.parse(user["user_id"].toString());
-    String url = 'http://localhost:3003/delete?user_id=${userID}';
+    String url =
+        'https://pallas.lumisovellus.fi/data/api/delete?user_id=${userID}';
     http.Response response = await http.delete(
       Uri.parse(url),
       headers: {
