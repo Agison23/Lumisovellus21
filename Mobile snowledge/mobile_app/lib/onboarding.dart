@@ -161,28 +161,30 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     //Page4Start
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 70),
-                          const Text(
-                              'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa useilla eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä punaisen napin kautta kaikissa näkymissä.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  height: 1,
-                                  fontSize: 20,
-                                  color: Colors.white)),
-                          const SizedBox(height: 100),
-                          Buttons.onboardingButton(
-                              context,
-                              'SEURAAVA',
-                              onPressed: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const MapTracking()),
-                                        (route) => false);
-                              }
-                          )
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 70),
+                            const Text(
+                                'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa useilla eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä punaisen napin kautta kaikissa näkymissä.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    height: 1,
+                                    fontSize: 20,
+                                    color: Colors.white)),
+                            const SizedBox(height: 100),
+                            Buttons.onboardingButton(
+                                context,
+                                'SEURAAVA',
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const MapTracking()),
+                                          (route) => false);
+                                }
+                            )
+                          ],
+                        ),
                       ),
                     ), //Page4End
                   ],
@@ -322,6 +324,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                 if (_formKey.currentState!.validate()) {
                   _setPreferences(fNameController.text,
                       lNameController.text, pNumberController.text);
+                  FocusScope.of(context).unfocus();
                   widget.pageController.nextPage(
                     duration:
                     const Duration(milliseconds: 500),
