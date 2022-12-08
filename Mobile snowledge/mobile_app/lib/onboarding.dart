@@ -79,7 +79,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         children: [
                           const SizedBox(height: 70),
                           const Text(
-                              'LUPA SIJAINTIETOIHIN',
+                              'SIJAINTITIEDON JAKAMINEN',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   height: 1,
@@ -88,7 +88,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   color: Colors.white)),
                           const SizedBox(height: 30.0),
                           const Text(
-                              'Sovellus tarvitsee luvan käyttää tietojasi myös näytön ollessa suljettuna. Sallitko sijaintitiedon keräämisen sovelluksen ollessa taustalla?',
+                              'Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   height: 1,
