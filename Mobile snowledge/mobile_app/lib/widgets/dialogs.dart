@@ -8,26 +8,33 @@ import '../help_needed_mode.dart';
 
 class Dialogs {
   static Object? _selectedRadio = 0;
-  final String help1 = 'Varusteongelma';
-  final String help2 = 'Terveysongelma';
-  final String help3 = 'Eksynyt';
+  final String minorHelp1 = 'Varusteongelma';
+  final String minorHelp2 = 'Terveysongelma';
+  final String minorHelp3 = 'Eksynyt';
+  final String seriousHelp = 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';
 
   String getMinorHelpCondition() {
     int helpNeed = _selectedRadio as int;
     if (helpNeed == 1) {
-      return help1;
+      return minorHelp1;
     } else if (helpNeed == 2) {
-      return help2;
+      return minorHelp2;
     } else if (helpNeed == 3) {
-      return help3;
+      return minorHelp3;
     } else {
-      return 'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';
+      return seriousHelp;
     }
+  }
+
+  // needs to be called when exiting help needed mode to ensure that the minor help dialog works right every time
+  static void resetRadioSelection() {
+    _selectedRadio = 0;
   }
 
   Future showDialogMinorHelpQuestions(context) async {
     _selectedRadio = 1;
     return await showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -64,6 +71,7 @@ class Dialogs {
                   children: [
                     ElevatedButton(
                         onPressed: (() {
+                          resetRadioSelection();
                           Navigator.pop(context);
                         }),
                         child: const Text('Peruuta')),
