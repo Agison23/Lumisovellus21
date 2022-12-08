@@ -247,7 +247,7 @@ function PallasMap(props) {
     function getSnowType(feature) {
       var snowType = "";
       var snowId1 = feature.properties.snowId1;
-      //var snowId2 = feature.properties.snowId2;
+      var snowId2 = feature.properties.snowId2;
       var snowId3 = feature.properties.snowId3;
       //var snowId4 = feature.properties.snowId4;
       var snowId5 = feature.properties.snowId5;
@@ -256,9 +256,13 @@ function PallasMap(props) {
 
       if (snowId1 !== 0) {
         snowType += snowId1 + ":";
-        if (snowId3 !== 0) {
-          snowType += snowId3;
+        if (snowId2 !== 0) {
+          snowType += snowId2;
         }
+        return snowType;
+      }
+      if (snowId2 !== 0) {
+        snowType += snowId2 + ":";
         return snowType;
       }
       if (snowId3 !== 0) {
