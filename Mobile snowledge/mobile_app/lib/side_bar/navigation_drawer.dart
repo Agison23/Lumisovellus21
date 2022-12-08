@@ -47,10 +47,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
       child: Wrap(
         runSpacing: 16,
         children: [
-          _item(0, Icons.map_outlined, "Karttanäkymä"),
+          _item(0, Icons.area_chart_outlined, "Lumiolosuhteet Pallaksella"),
           Visibility(
             child: _item(
-                1, Icons.area_chart_outlined, "Lumiolosuhteet Pallaksella"),
+                1, Icons.map_outlined, "Karttanäkymä"),
             visible: winter,
           ),
           _item(2, Icons.sunny_snowing, "Sää Pallaksella"),
@@ -96,13 +96,13 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const MapTracking()),
+                MaterialPageRoute(builder: (context) => const MainPage()),
                 (route) => false);
           } else if (index == 1) {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const MainPage()),
+                MaterialPageRoute(builder: (context) => const MapTracking()),
                 (route) => false);
           } else if (index == 2) {
             Navigator.pop(context);
