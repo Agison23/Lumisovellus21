@@ -45,6 +45,10 @@ class HelpNeededState extends State<HelpNeeded> {
     // Add this line to add a user and verify that the dialog stays close if a user is nearby
     // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
 
+    getLatLng().then((usersLatLng) {
+      _markers = getMarkers(_helpers, usersLatLng);
+    });
+
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
       (Timer t) => {
