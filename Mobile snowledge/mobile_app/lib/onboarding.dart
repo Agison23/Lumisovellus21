@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_app/map_tracking.dart';
+import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -179,7 +179,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                 onPressed: () {
                                   Navigator.pushAndRemoveUntil(
                                       context,
-                                      MaterialPageRoute(builder: (context) => const MapTracking()),
+                                      MaterialPageRoute(builder: (context) => const MainPage()),
                                           (route) => false);
                                 }
                             )

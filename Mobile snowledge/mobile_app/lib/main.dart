@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
         title: 'Snowledge',
-        home: (fName == null) ? const OnBoardingPage() : const MapTracking(),
+        home: (fName == null) ? const OnBoardingPage() : const MainPage(),
       ),
     );
   }
