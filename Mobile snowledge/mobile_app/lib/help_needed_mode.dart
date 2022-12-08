@@ -33,6 +33,7 @@ class HelpNeededState extends State<HelpNeeded> {
       _markers.clear();
       _helpers.clear();
     }
+    Dialogs.resetRadioSelection();
     ServerComms.messageToServer('HELP_DELETE');
     _stateUpdateTimer.cancel();
     _timer.cancel();
