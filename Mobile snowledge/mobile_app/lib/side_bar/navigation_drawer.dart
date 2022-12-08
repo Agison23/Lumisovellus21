@@ -51,12 +51,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           Visibility(
             child: _item(
                 1, Icons.map_outlined, "Karttanäkymä"),
-            visible: winter,
+            visible: true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(2, Icons.sunny_snowing, "Sää Pallaksella"),
           Visibility(
             child: _item(3, Icons.ac_unit, "Lumityyppien selitteet"),
-            visible: winter,
+            visible: true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline, "Käyttäjätiedot"),
           _item(5, Icons.menu_book_outlined, "Tietoa palvelusta"),
