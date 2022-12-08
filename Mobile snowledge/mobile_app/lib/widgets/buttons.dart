@@ -52,9 +52,13 @@ class Buttons {
           await ServerComms.messageToServer(locationMessage);
           if (text == 'Soita 112') {
             open112();
-          }
-          Navigator.of(contx).push(
+            Navigator.of(contx).push(
               MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+          }
+
+          if (text == 'Avunpyyntö') {
+            Dialogs().showDialogMinorHelpQuestions(contx);
+          }
         }
       },
       child: Text(
