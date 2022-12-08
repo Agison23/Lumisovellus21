@@ -166,7 +166,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           children: [
                             const SizedBox(height: 70),
                             const Text(
-                                'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa useilla eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä punaisen napin kautta kaikissa näkymissä.',
+                                'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     height: 1,
