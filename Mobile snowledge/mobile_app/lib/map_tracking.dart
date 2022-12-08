@@ -46,35 +46,36 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     });
 
     NotificationHandler().init(context);
-    Timer.run(() => _globalKey.currentState?.openDrawer());
+    // Timer.run(() => _globalKey.currentState?.openDrawer());
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: GpsHandler.getCoordinates(),
-        builder: ((context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: LoadingIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+    var lat;
+    var lng;
+    return SafeArea(
+      child: Scaffold(
+        key: _globalKey,
+        body: Stack(
+          children: [
+            StreamBuilder(
+                stream: GpsHandler.getCoordinates(),
+                builder: ((context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: LoadingIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
 
-          String locationData =
-              snapshot.data.toString().replaceAll(RegExp('[,>]'), '');
-          List<String> dataList = locationData.toString().split(' ');
-          var lat = double.parse(dataList[1]);
-          var lng = double.parse(dataList[3]);
-
-          return SafeArea(
-            child: Scaffold(
-              key: _globalKey,
-              body: Stack(
-                children: [
-                  FlutterMap(
+                  String locationData =
+                      snapshot.data.toString().replaceAll(RegExp('[,>]'), '');
+                  List<String> dataList = locationData.toString().split(' ');
+                  lat = double.parse(dataList[1]);
+                  lng = double.parse(dataList[3]);
+                  return FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
                       minZoom: 6,
@@ -91,61 +92,59 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         rotate: true,
                       ),
                     ],
-                  ),
-                  const Align(
-                      alignment: Alignment.bottomCenter, child: BottomBar()),
-                  IconButton(
-                    iconSize: 30,
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      _globalKey.currentState?.openDrawer();
-                    },
-                    color: Colors.black,
-                  ),
-                  // maptiler logo button
-                  Align(
-                    alignment: const Alignment(-0.95, 0.82),
-                    child: Tooltip(
-                      message:
-                          "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
-                      child: IconButton(
-                        onPressed: () async {
-                          const url = "https://maptiler.com/";
-                          if (await canLaunchUrlString(url)) {
-                            await launchUrlString(url);
-                          } else {
-                            print('ERROR');
-                          }
-                        },
-                        icon: Image.asset('assets/images/MapTiler.png'),
-                        iconSize: 20,
-                      ),
-                    ),
-                  ),
-                  // location centering button
-                  Align(
-                      alignment: const Alignment(0.95, 0.82),
-                      child: IconButton(
-                        icon: const Icon(Icons.my_location),
-                        onPressed: () {
-                          _mapController.moveAndRotate(
-                              LatLng(lat, lng), _mapController.zoom, 0);
-                        },
-                      )),
-                  const Align(
-                      alignment: Alignment.topCenter,
-                      child: Image(
-                        image: AssetImage(
-                            'assets/images/logo_transparent_black.png'),
-                        width: 80,
-                        height: 80,
-                      ))
-                ],
-              ),
-              drawer: const NavigationDrawer(),
+                  );
+                })),
+            const Align(alignment: Alignment.bottomCenter, child: BottomBar()),
+            IconButton(
+              iconSize: 30,
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                _globalKey.currentState?.openDrawer();
+              },
+              color: Colors.black,
             ),
-          );
-        }));
+            // maptiler logo button
+            Align(
+              alignment: const Alignment(-0.95, 0.82),
+              child: Tooltip(
+                message:
+                    "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                child: IconButton(
+                  onPressed: () async {
+                    const url = "https://maptiler.com/";
+                    if (await canLaunchUrlString(url)) {
+                      await launchUrlString(url);
+                    } else {
+                      print('ERROR');
+                    }
+                  },
+                  icon: Image.asset('assets/images/MapTiler.png'),
+                  iconSize: 20,
+                ),
+              ),
+            ),
+            // location centering button
+            Align(
+                alignment: const Alignment(0.95, 0.82),
+                child: IconButton(
+                  icon: const Icon(Icons.my_location),
+                  onPressed: () {
+                    _mapController.moveAndRotate(
+                        LatLng(lat, lng), _mapController.zoom, 0);
+                  },
+                )),
+            const Align(
+                alignment: Alignment.topCenter,
+                child: Image(
+                  image: AssetImage('assets/images/logo_transparent_black.png'),
+                  width: 80,
+                  height: 80,
+                ))
+          ],
+        ),
+        drawer: const NavigationDrawer(),
+      ),
+    );
   }
 
   static String getSummerOrWinterMap() {
