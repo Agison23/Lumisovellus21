@@ -31,13 +31,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Always and when in use!</string>
+	<string>The app's rescue function collects information about your location. With it, we offer rescue support. Using the location, the rescue service can take advantage of your route and you can ask for help from other app users around you. You can help others too. You can disable location at any time.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can I have location always?</string>
+	<string>The app's rescue function collects information about your location. With it, we offer rescue support. Using the location, the rescue service can take advantage of your route and you can ask for help from other app users around you. You can help others too. You can disable location at any time.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>Older devices need location.</string>
+	<string>The app's rescue function collects information about your location. With it, we offer rescue support. Using the location, the rescue service can take advantage of your route and you can ask for help from other app users around you. You can help others too. You can disable location at any time.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need location when in use</string>
+	<string>The app's rescue function collects information about your location. With it, we offer rescue support. Using the location, the rescue service can take advantage of your route and you can ask for help from other app users around you. You can help others too. You can disable location at any time.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
