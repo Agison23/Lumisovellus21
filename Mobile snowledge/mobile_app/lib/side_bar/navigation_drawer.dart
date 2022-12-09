@@ -7,9 +7,10 @@ import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/weather.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:mobile_app/user_info.dart';
 
 import '../state/appState.dart';
-import '../user_information_view.dart';
+//import '../user_information_view.dart';
 
 class NavigationDrawer extends StatefulWidget {
   const NavigationDrawer({Key? key}) : super(key: key);
@@ -117,15 +118,17 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 MaterialPageRoute(builder: (context) => const SnowInfo()),
                 (route) => false);
           } else if (index == 4) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UserInfoPage()),
-            );
+            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => UserInfoPage()),
+                (route) => false);
           } else if (index == 5) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AppInfo()),
-            );
+            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const AppInfo()),
+                (route) => false);
           } else if (index == 6) {
             String url = "https://www.pallaksenpollot.com/";
             var urllaunchable = canLaunchUrlString(
