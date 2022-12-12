@@ -155,6 +155,12 @@ class ServerComms {
               //HELP_WITHDRAWN:ID
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
+              String devId = await _getDeviceID();
+              if (resultParts[1] == devId) {
+                NotificationHandler.cancelPushUpNotification();
+                NotificationHandler.helperCancelledAcceptanceNotification();
+                Dialogs.showHelperCancelledAcceptanceDialog(MyApp.navigatorKey.currentState?.context);
+              }
               break;
             case "HELP_TARGET_UPDATE":
               //HELP_TARGET_UPDATE:ID:GPS
