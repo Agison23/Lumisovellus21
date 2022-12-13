@@ -22,8 +22,8 @@ class NotificationHandler {
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('logo_transparent_black');
 
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
@@ -37,11 +37,11 @@ class NotificationHandler {
             macOS: null);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification:
+        onDidReceiveNotificationResponse:
             onSelectNotification); //(context) => selectNotification
   }
 
-  Future onSelectNotification(String? payload) async {
+  Future onSelectNotification(payload) async {
     try {
       await MyApp.navigatorKey.currentState
           ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload)));
@@ -63,8 +63,8 @@ class NotificationHandler {
 
   NotificationHandler._internal();
 
-  static const IOSNotificationDetails _iosNotificationDetails =
-      IOSNotificationDetails(
+  static const DarwinNotificationDetails _iosNotificationDetails =
+      DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
