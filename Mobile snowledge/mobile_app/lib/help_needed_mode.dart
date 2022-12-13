@@ -18,8 +18,8 @@ class HelpNeeded extends StatefulWidget {
 
 class HelpNeededState extends State<HelpNeeded> {
   final MapController _mapController = MapController();
-  static late Timer _stateUpdateTimer;
-  static late Timer _timer;
+  Timer? _stateUpdateTimer;
+  Timer? _timer;
   static late List<Marker> _markers = [];
   static final List<Marker> _helpers = [];
   static final List _users = ['1'];
@@ -35,8 +35,8 @@ class HelpNeededState extends State<HelpNeeded> {
     }
     Dialogs.resetRadioSelection();
     ServerComms.messageToServer('HELP_DELETE');
-    _stateUpdateTimer.cancel();
-    _timer.cancel();
+    _stateUpdateTimer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class HelpNeededState extends State<HelpNeeded> {
             }
           } else {
             // if no users nearby
-            _stateUpdateTimer.cancel();
+            _stateUpdateTimer?.cancel();
             Dialogs.showNoUserCloseDialog(context);
           }
         })
