@@ -96,69 +96,71 @@ class Dialogs {
       barrierColor: Colors.black.withOpacity(0.9),
       builder: (BuildContext context) {
         return AlertDialog(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Millaista apua tarvitset?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              const Text(
+                'Millaista apua tarvitset?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                child: Text(
+            'Vakavassa hädässä, soita aina hätänumeroon 112.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  child: Text(
-                    'Vakavassa hädässä, soita aina hätänumeroon 112.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+                child: Text(
+            'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
-                  child: Text(
-                    'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return Buttons().helpButton(
-                              !(_snapshot.data ?? false),
-                              context,
-                              'Soita 112',
-                              const Color(0xffd99222));
-                        }),
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return Buttons().helpButton(
-                              !(_snapshot.data ?? false),
-                              context,
-                              'Avunpyyntö',
-                              const Color(0xff7c94b6));
-                        })
-                  ],
-                ),
-              ]);
-            },
-          ),
-        );
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+            FutureBuilder<bool?>(
+              future: GpsHandler.loadGpsSetting(),
+              builder: (context, _snapshot) {
+                return Buttons().helpButton(
+                    !(_snapshot.data ?? false),
+                    context,
+                    'Soita 112',
+                    const Color(0xffd99222));
+              }),
+            FutureBuilder<bool?>(
+              future: GpsHandler.loadGpsSetting(),
+              builder: (context, _snapshot) {
+                return Buttons().helpButton(
+                    !(_snapshot.data ?? false),
+                    context,
+                    'Avunpyyntö',
+                    const Color(0xff7c94b6));
+              })
+                ],
+              ),
+              const SizedBox(height: 80),
+              Buttons.crossIconButton(context)
+            ]);
+          },
+        ),
+            );
       },
     );
   }
@@ -176,55 +178,57 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Sijaintitiedon jakaminen',
+              const Text(
+                'Sijaintitiedon jakaminen',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                child: Text(
+                  'Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  child: Text(
-                    'Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
+                    color: Colors.white,
+                    fontSize: 18,
                   ),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: Text(
-                        'Sijainnin lähettäminen',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                    child: Text(
+                      'Sijainnin lähettäminen',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
                       ),
                     ),
-                    SetSharingLocation(),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                prefs.getString('lastLocationTime') != null
-                    ? Text(
-                        'Viimeinen sijaintitieto lähetetty: \n'
-                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
-                        ' sitten',
-                        textAlign: TextAlign.center,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                      )
-                    : const SizedBox()
-              ]);
+                  ),
+                  SetSharingLocation(),
+                ],
+              ),
+              const SizedBox(height: 20),
+              prefs.getString('lastLocationTime') != null
+                  ? Text(
+                      'Viimeinen sijaintitieto lähetetty: \n'
+                      "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
+                      ' sitten',
+                      textAlign: TextAlign.center,
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 18),
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: 80),
+              Buttons.crossIconButton(context)
+                ]);
             },
           ),
         );
