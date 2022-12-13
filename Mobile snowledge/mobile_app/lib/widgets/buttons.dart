@@ -218,4 +218,13 @@ class Buttons {
         ),
     );
   }
+
+  static IconButton crossIconButton(BuildContext context) {
+    return IconButton(
+      padding: EdgeInsets.zero,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.close_rounded, size: 50, color: Colors.white));
+  }
 }
