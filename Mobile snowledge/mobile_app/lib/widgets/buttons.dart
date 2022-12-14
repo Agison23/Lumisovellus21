@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../help_needed_mode.dart';
+import '../help_offered.dart';
+import '../main.dart';
 import '../main_page.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
@@ -94,6 +96,8 @@ class Buttons {
               MaterialPageRoute(
                   builder: (context) => const MainPage()),
                   (route) => false);
+        } else if (type == 'offer_help') {
+          Navigator.pop(context);
         }
       },
       child: const Text(
@@ -110,6 +114,28 @@ class Buttons {
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
+  }
+
+  static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
+    return ElevatedButton(
+      onPressed: () async => 
+      await MyApp.navigatorKey.currentState
+          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload))),
+
+      child: const Text(
+        'Auta',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xffd99222),
+          padding: const EdgeInsets.all(20.0),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))));
+
   }
 
   /// Go to settings button

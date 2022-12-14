@@ -176,6 +176,8 @@ class ServerComms {
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
+                String payload = resultParts[2] + ':' + resultParts[3];
+                await Dialogs.showHelpRequestedDialog(MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
             case "NO_USERS_NEARBY":
