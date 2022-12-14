@@ -65,7 +65,7 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
             child: const Center(
                 child: Text(
               'Pyydä\napua',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 15),
               textAlign: TextAlign.center,
             )),
           ),

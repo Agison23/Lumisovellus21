@@ -14,6 +14,10 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final pageViewController = PageController();
+  final page1ScrollController = ScrollController();
+  final page2ScrollController = ScrollController();
+  final page3ScrollController = ScrollController();
+  final page4ScrollController = ScrollController();
 
   @override
   void dispose() {
@@ -51,8 +55,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
+                        controller: page1ScrollController,
                         isAlwaysShown: true,
                         child: SingleChildScrollView(
+                          controller: page1ScrollController,
                           child: Column(
                             children: [
                               const SizedBox(height: 120),
@@ -81,8 +87,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
+                        controller: page2ScrollController,
                         isAlwaysShown: true,
                         child: SingleChildScrollView(
+                          controller: page2ScrollController,
                           child: Column(
                             children: [
                               const SizedBox(height: 70),
@@ -140,8 +148,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       child: ScrollConfiguration(
                         behavior: MyScrollBehavior(),
                         child: Scrollbar(
+                          controller: page3ScrollController,
                           isAlwaysShown: true,
                           child: SingleChildScrollView(
+                            controller: page3ScrollController,
                             child: Column(
                               children: [
                                 const Text('Syötäthän oikeat tietosi',
@@ -178,8 +188,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
+                        controller: page4ScrollController,
                         isAlwaysShown: true,
                         child: SingleChildScrollView(
+                          controller: page4ScrollController,
                           child: Column(
                             children: [
                               const SizedBox(height: 70),
