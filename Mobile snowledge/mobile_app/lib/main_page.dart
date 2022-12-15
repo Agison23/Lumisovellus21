@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
 import 'notification_handler.dart';
 
@@ -11,16 +12,27 @@ class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   @override
   void initState() {
     super.initState();
 
     NotificationHandler().init(context);
     
+    // since this is the mainpage, we need to initialize gps here so that users
+    // reqeusting help can see this device as a nearby potential helper
+    // if the main page of the app changes, move these lines as well
+    setAppResumedWithAlwaysOnPermissionsTask(() => {setState(() {})});
+    GpsHandler.setGpsSetting(context, true, insistAlwaysOn: false)
+        .then((gpsOn) async {
+      if (gpsOn) {
+        await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+      }
+        });
+
     // this is force opening the drawer
     /*Timer.run(() => _globalKey.currentState?.openDrawer()); */
   }
