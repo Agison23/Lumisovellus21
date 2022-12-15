@@ -27,6 +27,7 @@ flutter run
 
 Mobiilisovellus on toteutettu Flutterilla. Kattavan ohjeet sen asentamiseen ja alkuun pääsemiseen eri käyttöjärjestelmille löytyy osoitteesta https://docs.flutter.dev/get-started/install.
 Mobiilipuolen tiedostot löytyvät Mobile snowledge kansiosta ja Flutter sovelluksen juuri main.dart tiedosto löytyy snowledge/Mobile snowledge/mobile_app/lib
+Mobiilisovellus koostuu pääosin rescue- elementistä ja se käyttää lumitilanteen ja säätietojen osalta Web puolta
 
 
 [BACKEND OHJEET PUUTTUU]
