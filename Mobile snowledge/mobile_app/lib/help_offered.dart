@@ -5,17 +5,21 @@ import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'helper/utility.dart';
 import 'main_page.dart';
 
 class HelpOffered extends StatefulWidget {
   const HelpOffered(this.payload, {Key? key}) : super(key: key);
   final String? payload;
 
+  
+
   @override
   State<HelpOffered> createState() => HelpOfferedState();
 }
 
 class HelpOfferedState extends State<HelpOffered> {
+  final MapController _mapController = MapController();
   bool _accepted = false;
   static bool _pageOpen = false;
 
@@ -67,6 +71,12 @@ class HelpOfferedState extends State<HelpOffered> {
 
   @override
   Widget build(BuildContext context) {
+    String usersLocation =
+        GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
+    List<String> dataList = usersLocation.toString().split(' ');
+    var lat = double.parse(dataList[1]);
+    var lng = double.parse(dataList[3]);
+
     return WillPopScope(
       onWillPop: () async {
         final value = await showDialog<bool>(
@@ -118,13 +128,27 @@ class HelpOfferedState extends State<HelpOffered> {
           body: Stack(
             children: [
               FlutterMap(
+                mapController: _mapController,
                 options: MapOptions(
                   minZoom: 6,
                   maxZoom: 18,
-                  center: LatLng(68.07, 24.02),
+                  center: LatLng(lat, lng),
                   zoom: 11.0,
                 ),
+                children: [
+                  TileLayer(urlTemplate: getSummerOrWinterMap()),
+                  MarkerLayer(markers: _markers)
+                ],
               ),
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      _mapController.moveAndRotate(
+                          LatLng(lat, lng), _mapController.zoom, 0);
+                    },
+                  )),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -316,5 +340,11 @@ class HelpOfferedState extends State<HelpOffered> {
         ),
       ),
     );
+  }
+  static String getSummerOrWinterMap() {
+    if (Utility.getSummerOrWinter()) {
+      return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
+    }
+    return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 }
