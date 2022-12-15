@@ -157,7 +157,6 @@ class ServerComms {
                   -1, resultParts[1], LatLng(0, 0));
               NotificationHandler.cancelPushUpNotification();
               NotificationHandler.helperCancelledAcceptanceNotification();
-              Dialogs.showHelperCancelledAcceptanceDialog(MyApp.navigatorKey.currentState?.context);
               break;
             case "HELP_TARGET_UPDATE":
               //HELP_TARGET_UPDATE:ID:GPS

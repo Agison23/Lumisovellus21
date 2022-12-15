@@ -434,7 +434,7 @@ class Dialogs {
     );
   }
 
-  static showHelperCancelledAcceptanceDialog(context) async {
+  static showHelperCancelledAcceptanceDialog(context, int count) async {
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -446,10 +446,10 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
-                const Text(
-                  'Auttaja on lopettanut avunannon.',
+                Text(
+                  'Auttaja on lopettanut avunannon. Auttajia on jäljellä $count.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold
