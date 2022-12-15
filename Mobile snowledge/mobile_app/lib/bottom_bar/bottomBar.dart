@@ -63,8 +63,11 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                 color: const Color(0xffd99222),
                 borderRadius: BorderRadius.circular(50.0)),
             child: const Center(
-                child:
-                    Text('Pyydä apua', style: TextStyle(color: Colors.white))),
+                child: Text(
+              'Pyydä\napua',
+              style: TextStyle(color: Colors.white, fontSize: 15),
+              textAlign: TextAlign.center,
+            )),
           ),
         ),
       ),

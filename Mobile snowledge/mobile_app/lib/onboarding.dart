@@ -14,6 +14,10 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   final pageViewController = PageController();
+  final page1ScrollController = ScrollController();
+  final page2ScrollController = ScrollController();
+  final page3ScrollController = ScrollController();
+  final page4ScrollController = ScrollController();
 
   @override
   void dispose() {
@@ -50,109 +54,131 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     //Page1Start
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 120),
-                          const Text(
-                              'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  height: 1,
-                                  fontSize: 20,
-                                  color: Colors.white)),
-                          const SizedBox(height: 150),
-                          Buttons.onboardingButton(context, 'Seuraava',
-                              onPressed: () {
-                            pageViewController.nextPage(
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeInOut,
-                            );
-                          })
-                        ],
+                      child: Scrollbar(
+                        controller: page1ScrollController,
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                          controller: page1ScrollController,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 120),
+                              const Text(
+                                  'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      color: Colors.white)),
+                              const SizedBox(height: 150),
+                              Buttons.onboardingButton(context, 'Seuraava',
+                                  onPressed: () {
+                                pageViewController.nextPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut,
+                                );
+                              })
+                            ],
+                          ),
+                        ),
                       ),
                     ), //Page1end
 
                     //Page2Start
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 70),
-                          const Text(
-                              'SIJAINTITIEDON JAKAMINEN',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  height: 1,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                          const SizedBox(height: 30.0),
-                          const Text(
-                              'Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  height: 1,
-                                  fontSize: 20,
-                                  color: Colors.white)),
-                          const SizedBox(height: 100),
-                          Buttons.onboardingButton(context, 'SALLI KÄYTTÖ',
-                              onPressed: () async {
-                                if (await GpsHandler
-                                    .checkAndAskGpsAlwaysOnPermission(
-                                    context)) {
-                                  pageViewController.nextPage(
-                                    duration:
-                                    const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              },
-                              ),
-                          const SizedBox(height: 10.0),
-                          Buttons.refuseLocationPermissionButton(
-                              context,
-                              onPressed: () {
-                                pageViewController.nextPage(
-                                  duration:
-                                  const Duration(milliseconds: 500),
-                                  curve: Curves.easeInOut,
-                                );
-                              },
-                          )
-                        ],
-                      ),
-                    ), //Page2End
-
-                    //Page3Start
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-                      child: ScrollConfiguration(
-                        behavior: MyScrollBehavior(),
+                      child: Scrollbar(
+                        controller: page2ScrollController,
+                        isAlwaysShown: true,
                         child: SingleChildScrollView(
+                          controller: page2ScrollController,
                           child: Column(
                             children: [
-                              const Text(
-                                  'Syötäthän oikeat tietosi',
+                              const SizedBox(height: 70),
+                              const Text('SIJAINTITIEDON JAKAMINEN',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       height: 1,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white)),
-                              const SizedBox(height: 20.0),
+                              const SizedBox(height: 30.0),
                               const Text(
-                                  'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.',
+                                  'Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 30),
-                              SingleChildScrollView(child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30.0),
-                                child: UserInfoForm(pageController: pageViewController),
-                              ))
+                              const SizedBox(height: 100),
+                              Buttons.onboardingButton(
+                                context,
+                                'SALLI KÄYTTÖ',
+                                onPressed: () async {
+                                  if (await GpsHandler
+                                      .checkAndAskGpsAlwaysOnPermission(
+                                          context)) {
+                                    pageViewController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 10.0),
+                              Buttons.refuseLocationPermissionButton(
+                                context,
+                                onPressed: () {
+                                  pageViewController.nextPage(
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                              )
                             ],
+                          ),
+                        ),
+                      ),
+                    ), //Page2End
+
+                    //Page3Start
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20.0, left: 20.0, right: 20.0),
+                      child: ScrollConfiguration(
+                        behavior: MyScrollBehavior(),
+                        child: Scrollbar(
+                          controller: page3ScrollController,
+                          isAlwaysShown: true,
+                          child: SingleChildScrollView(
+                            controller: page3ScrollController,
+                            child: Column(
+                              children: [
+                                const Text('Syötäthän oikeat tietosi',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        height: 1,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                const SizedBox(height: 20.0),
+                                const Text(
+                                    'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        height: 1,
+                                        fontSize: 20,
+                                        color: Colors.white)),
+                                const SizedBox(height: 30),
+                                SingleChildScrollView(
+                                    child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 30.0),
+                                  child: UserInfoForm(
+                                      pageController: pageViewController),
+                                ))
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -161,29 +187,32 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     //Page4Start
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 70),
-                            const Text(
-                                'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    height: 1,
-                                    fontSize: 20,
-                                    color: Colors.white)),
-                            const SizedBox(height: 100),
-                            Buttons.onboardingButton(
-                                context,
-                                'SEURAAVA',
-                                onPressed: () {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const MainPage()),
-                                          (route) => false);
-                                }
-                            )
-                          ],
+                      child: Scrollbar(
+                        controller: page4ScrollController,
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                          controller: page4ScrollController,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 70),
+                              const Text(
+                                  'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      color: Colors.white)),
+                              const SizedBox(height: 100),
+                              Buttons.onboardingButton(context, 'SEURAAVA',
+                                  onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const MainPage()),
+                                    (route) => false);
+                              })
+                            ],
+                          ),
                         ),
                       ),
                     ), //Page4End
@@ -223,10 +252,7 @@ class UserInfoFormState extends State<UserInfoForm> {
       child: Column(
         children: [
           TextFormField(
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: fNameController,
             validator: (value) {
@@ -239,25 +265,20 @@ class UserInfoFormState extends State<UserInfoForm> {
               return null;
             },
             decoration: InputDecoration(
-              floatingLabelAlignment: FloatingLabelAlignment.center,
+                floatingLabelAlignment: FloatingLabelAlignment.center,
                 enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(width: 2, color: Colors.white),
                 ),
                 label: Center(
-                  child: Text('Etunimi',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 20
-                    ),
-                  ))
-            ),
+                    child: Text(
+                  'Etunimi',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                ))),
           ),
           const SizedBox(height: 10.0),
           TextFormField(
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: lNameController,
             validator: (value) {
@@ -275,20 +296,15 @@ class UserInfoFormState extends State<UserInfoForm> {
                   borderSide: BorderSide(width: 2, color: Colors.white),
                 ),
                 label: Center(
-                    child: Text('Sukunimi',
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 20
-                      ),
-                    ))
-            ),
+                    child: Text(
+                  'Sukunimi',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                ))),
           ),
           const SizedBox(height: 10.0),
           TextFormField(
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -308,31 +324,24 @@ class UserInfoFormState extends State<UserInfoForm> {
                   borderSide: BorderSide(width: 2, color: Colors.white),
                 ),
                 label: Center(
-                    child: Text('Puhelinnumero',
-                      style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 20
-                      ),
-                    ))
-            ),
+                    child: Text(
+                  'Puhelinnumero',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                ))),
           ),
           const SizedBox(height: 30.0),
-          Buttons.onboardingButton(
-              context,
-              'Seuraava',
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _setPreferences(fNameController.text,
-                      lNameController.text, pNumberController.text);
-                  FocusScope.of(context).unfocus();
-                  widget.pageController.nextPage(
-                    duration:
-                    const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              }
-          )
+          Buttons.onboardingButton(context, 'Seuraava', onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _setPreferences(fNameController.text, lNameController.text,
+                  pNumberController.text);
+              FocusScope.of(context).unfocus();
+              widget.pageController.nextPage(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            }
+          })
         ],
       ),
     );
