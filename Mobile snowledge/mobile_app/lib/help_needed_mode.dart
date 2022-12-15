@@ -57,6 +57,9 @@ class HelpNeededState extends State<HelpNeeded> {
           // if users nearby
           if (_users.isNotEmpty) {
             // if users has accepted the request
+            setState(() {
+                _markers = getMarkers(_helpers, usersLatLng);
+              });
             if (_helpers.isNotEmpty) {
               setState(() {
                 _markers = getMarkers(_helpers, usersLatLng);
