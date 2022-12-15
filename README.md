@@ -13,7 +13,7 @@ Lumisovellus koostuu kahdesta palvelusta:
 
 ## Kehitys
 
-Käyttöliittymiä voi kehittää niin, että ne ovat yhteydessä tuotantopuoleen. Tarkoittaa siis sitä, että omaa backend-koodia ei tarvitse laittaa pyörimään locaalisti. Tällöin varmista, että apikutsut tehdään osoitteeseen lumisovellus.fi/[loppupolku], eikä esimerkiksi localhost:3000.
+Käyttöliittymiä voi kehittää niin, että ne ovat yhteydessä tuotantopuoleen. Tarkoittaa siis sitä, että omaa backend-koodia ei tarvitse laittaa pyörimään lokaalisti. Tällöin varmista, että apikutsut tehdään osoitteeseen lumisovellus.fi/[loppupolku], eikä esimerkiksi localhost:3000.
 
 lumisovellus.fi -nettisivun saa toimintaan näin:
 ```sh
@@ -24,6 +24,11 @@ lumisovellus.fi/rescuen  -nettisivun ja puhelinsovelluksen saa toimintaan näin:
 ```sh
 flutter run
 ```
+
+Mobiilisovellus on toteutettu Flutterilla. Kattavan ohjeet sen asentamiseen ja alkuun pääsemiseen eri käyttöjärjestelmille löytyy osoitteesta https://docs.flutter.dev/get-started/install.
+Mobiilipuolen tiedostot löytyvät Mobile snowledge kansiosta ja Flutter sovelluksen juuri main.dart tiedosto löytyy snowledge/Mobile snowledge/mobile_app/lib
+
+
 [BACKEND OHJEET PUUTTUU]
 
 ## Tiedossa olevat virheet / bugit
