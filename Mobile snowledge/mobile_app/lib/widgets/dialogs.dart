@@ -447,7 +447,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
                 Text(
-                  'Auttaja on lopettanut avunannon. Auttajia on jäljellä $count.',
+                  'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
