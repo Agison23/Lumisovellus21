@@ -33,7 +33,11 @@ class HelpOfferedState extends State<HelpOffered> {
   @override
   initState() {
     if (!widget.pushUp!) {
-      _accepted = true;
+      ServerComms.messageToServer('HELP_RESPONSE:1');
+
+      setState(() {
+        _accepted = true;
+      });
     }
     _pageOpen = true;
     List<String> payloadparts = widget.payload!.split(':');
