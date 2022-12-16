@@ -44,7 +44,7 @@ class NotificationHandler {
   Future onSelectNotification(String? payload) async {
     try {
       await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload)));
+          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
     } catch (e) {
       print(e.toString());
     }

@@ -120,7 +120,7 @@ class Buttons {
     return ElevatedButton(
       onPressed: () async => 
       await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload))),
+          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload, false))),
 
       child: const Text(
         'Auta',
