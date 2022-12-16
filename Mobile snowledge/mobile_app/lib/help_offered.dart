@@ -9,8 +9,9 @@ import 'helper/utility.dart';
 import 'main_page.dart';
 
 class HelpOffered extends StatefulWidget {
-  const HelpOffered(this.payload, {Key? key}) : super(key: key);
+  const HelpOffered(this.payload, this.pushUp, {Key? key}) : super(key: key);
   final String? payload;
+  final bool? pushUp; // true if coming from a push up notification or false if coming from the in-app notification
 
   
 
@@ -31,6 +32,13 @@ class HelpOfferedState extends State<HelpOffered> {
   static late String _distance;
   @override
   initState() {
+    if (!widget.pushUp!) {
+      ServerComms.messageToServer('HELP_RESPONSE:1');
+
+      setState(() {
+        _accepted = true;
+      });
+    }
     _pageOpen = true;
     List<String> payloadparts = widget.payload!.split(':');
     _distance = payloadparts[1];
