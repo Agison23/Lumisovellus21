@@ -155,6 +155,8 @@ class ServerComms {
               //HELP_WITHDRAWN:ID
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
+              NotificationHandler.cancelPushUpNotification();
+              NotificationHandler.helperCancelledAcceptanceNotification();
               break;
             case "HELP_TARGET_UPDATE":
               //HELP_TARGET_UPDATE:ID:GPS

@@ -8,6 +8,8 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import 'main.dart';
+
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
   const HelpNeeded(this.tempGps, {Key? key}) : super(key: key);
@@ -56,6 +58,9 @@ class HelpNeededState extends State<HelpNeeded> {
         getLatLng().then((usersLatLng) {
           // if users nearby
           if (_users.isNotEmpty) {
+            setState(() {
+                _markers = getMarkers(_helpers, usersLatLng);
+              });
             // if users has accepted the request
             if (_helpers.isNotEmpty) {
               setState(() {
@@ -109,6 +114,7 @@ class HelpNeededState extends State<HelpNeeded> {
             _helpers.remove(_helpers[i]);
           }
         }
+        Dialogs.showHelperCancelledAcceptanceDialog(MyApp.navigatorKey.currentState?.context, _helpers.length);
         break;
       case 0:
         for (int i = 0; i < _helpers.length; i++) {

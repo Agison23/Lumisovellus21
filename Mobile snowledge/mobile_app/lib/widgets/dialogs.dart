@@ -433,4 +433,46 @@ class Dialogs {
       },
     );
   }
+
+  static showHelperCancelledAcceptanceDialog(context, int count) async {
+    return await showDialog<void>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(mainAxisSize: MainAxisSize.min,children: <Widget>[
+                Text(
+                  'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: SizedBox(
+                    width: 300,
+                    child: Buttons.confirmButton(
+                        context,
+                        'OK',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }
+                    )),
+                )
+              ]);
+            },
+          ),
+        );
+      },
+    );
+  }
 }

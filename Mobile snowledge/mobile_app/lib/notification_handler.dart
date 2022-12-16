@@ -93,6 +93,22 @@ class NotificationHandler {
         );
   }
 
+  static Future<void> helperCancelledAcceptanceNotification({int id = 12345}) async {
+    flutterLocalNotificationsPlugin.show(
+        id,
+        "Auttaja on lopettanut avunannon.",
+        "",
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: 'ticker'),
+            iOS: _iosNotificationDetails),
+        );
+  }
+
   static Future<void> pushUpNotification(String coords, String distance,
       {int id = 12345}) async {
     String payload = coords + ':' + distance;

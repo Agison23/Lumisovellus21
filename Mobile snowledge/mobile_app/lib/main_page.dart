@@ -5,6 +5,7 @@ import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
+import 'notification_handler.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -18,9 +19,10 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
+    NotificationHandler().init(context);
+    
     // this is force opening the drawer
-    /* new NotificationHandler().init(context);
-    Timer.run(() => _globalKey.currentState?.openDrawer()); */
+    /*Timer.run(() => _globalKey.currentState?.openDrawer()); */
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
