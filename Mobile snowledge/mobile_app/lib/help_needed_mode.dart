@@ -31,7 +31,7 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   void dispose() {
     if (widget.tempGps) {
-      GpsHandler.setGpsSetting(context, false);
+      // GpsHandler.setGpsSetting(context, false);
       _markers.clear();
       _helpers.clear();
     }
