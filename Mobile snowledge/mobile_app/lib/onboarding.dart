@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/widgets/buttons.dart';
@@ -18,6 +19,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   final page2ScrollController = ScrollController();
   final page3ScrollController = ScrollController();
   final page4ScrollController = ScrollController();
+  final page5ScrollController = ScrollController();
 
   @override
   void dispose() {
@@ -117,6 +119,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   if (await GpsHandler
                                       .checkAndAskGpsAlwaysOnPermission(
                                           context)) {
+                                    GpsHandler.setGpsSetting(context, true, insistAlwaysOn: true);
                                     pageViewController.nextPage(
                                       duration:
                                           const Duration(milliseconds: 500),
@@ -143,15 +146,58 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
                     //Page3Start
                     Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Scrollbar(
+                        controller: page3ScrollController,
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                          controller: page3ScrollController,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 70),
+                              const Text('SIJAINTITIEDON JAKAMINEN',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                              const SizedBox(height: 30.0),
+                              const Text(
+                                  "Sijainnin jakaminen tulee olla päällä, jotta pystymme paikantamaan sinut avuntarpeessa ja auttajan roolissa. Jos poistat käytöstä sijainnin jakamisen, et saa ilmoituksia apua tarvitsevilta.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 20,
+                                      color: Colors.white)),
+                              const SizedBox(height: 20.0),
+                              SetSharingLocation(),
+                              const SizedBox(height: 50),
+                              Buttons.onboardingButton(context, 'Seuraava',
+                                  onPressed: () {
+                                pageViewController.nextPage(
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOut,
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    //Page3End
+
+                    //Page4Start
+                    Padding(
                       padding: const EdgeInsets.only(
                           top: 20.0, left: 20.0, right: 20.0),
                       child: ScrollConfiguration(
                         behavior: MyScrollBehavior(),
                         child: Scrollbar(
-                          controller: page3ScrollController,
+                          controller: page4ScrollController,
                           isAlwaysShown: true,
                           child: SingleChildScrollView(
-                            controller: page3ScrollController,
+                            controller: page4ScrollController,
                             child: Column(
                               children: [
                                 const Text('Syötäthän oikeat tietosi',
@@ -182,16 +228,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           ),
                         ),
                       ),
-                    ), //Page3End
+                    ), //PageEnd
 
-                    //Page4Start
+                    //Page5Start
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
-                        controller: page4ScrollController,
+                        controller: page5ScrollController,
                         isAlwaysShown: true,
                         child: SingleChildScrollView(
-                          controller: page4ScrollController,
+                          controller: page5ScrollController,
                           child: Column(
                             children: [
                               const SizedBox(height: 70),
@@ -215,7 +261,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           ),
                         ),
                       ),
-                    ), //Page4End
+                    ), //Page5End
                   ],
                 ),
               ),
