@@ -43,6 +43,8 @@ Mobiilisovellus koostuu pääosin rescue- elementistä ja se käyttää lumitila
 - Jostain syystä lumisovellus.fi/rescuen tietokanta menee joskus lukkoon. Se ilmenee sillä, että selain antaa consoliin 500-error koodin. Tämän voi ohittaa käynnistämällä instanssi uudestaan tavu.io -sivulta.
 - Versiohallinnassa lumisovellus.fi/rescue -backendissa on kaksi ylimääräistä fileä. näiden tarvittava sisältö on siirretty \_app.py -tiedostoon, sillä käyttöönoton yhteydessä huomattiin, että mikäli koodit olisivat olleet omassa tiedostossaan, ne olisivat vaatineet 3003 portin toiminnan, eikä sitä osattu silloin asettaa. \_app.py tiedosto käytti jo 3002 porttia, joten koodit siirrettiin sinne.
 
+---
+
 ## Setting up the Flutter Development Environment
 
 This instruction is written for setting up the environment in Windows. First, we setup `Flutter` and make sure that it works on our machine.
@@ -71,3 +73,135 @@ To run the application locally:
 4. In `VSCode`, choose your `Android emulator` that you created. It should pop up as a mobile phone on your screen.
 5. Run `flutter run`. If anything works, then Flutter should build the application using Graddle and install that into your emulation.
 6. Now code! To see your change in the emulator, use `r` to perform an app restart. Use `Shift + r` (a captital `R`) to perform a "hot restart" of the app. This helps when you need "big" changes (implement a new `Widget`, for example).
+
+---
+
+## Setting up the Database with MySQL
+
+This application runs with MySQL database. You would need `MySQL` to run the backend code.
+
+1. Let's install [MySQL](https://dev.mysql.com/downloads/installer/), following [this tutorial](https://www.youtube.com/watch?v=2c2fUOgZMmY). At [3:48](https://youtu.be/2c2fUOgZMmY?t=228), you can choose a `Root Password` of your liking. This will grant us administrator access to the database. You don't need to create a `MySQL User`. We can operate on the database using the `root` user.
+2. After adding `MySQL` into your environment variable `Path` at [5:16](https://youtu.be/2c2fUOgZMmY?t=316), you can check that `MySQL` is working on your computer by running `mysql --version` in your terminal.
+3. We can now populate the database with our data. First, login to the database with the `root` user by running this in the terminal.
+
+   ```
+    mysql -u root -p
+   ```
+
+   The `-u` flag the user `root`, `-p` flag for password. `MySQL` will now prompt you to endter the password for `root` user:
+
+   ```
+   Enter password:
+   ```
+
+   Enter the password you created earlier in Step 1. We should have access to our database now.
+
+   ```
+   Welcome to the MySQL monitor...
+   ...
+   mysql>
+   ```
+
+4. In the `MySQL Shell`, we create a new database called `pallas`:
+
+   ```
+   mysql> create database pallas;
+   ```
+
+   Mind the `;` at the end of the command! We can check that the database is correctly created by using:
+
+   ```
+   mysql> show databases;
+   ```
+
+   Which should result in something like:
+
+   ```
+   +--------------------+
+   | Database           |
+   +--------------------+
+   | information_schema |
+   | mysql              |
+   | pallas             |   <--- This one!
+   | performance_schema |
+   | sys                |
+   +--------------------+
+   ```
+
+5. Select the database we just created with:
+
+   ```
+   mysql> use pallas;
+   ```
+
+   Now we can populate our database with the data in [our SQL files at ./src/sql/](./src/sql/).
+
+6. Copy and paste the content of the file [luonnit.sql](./src/sql/luonnit.sql) into our terminal. `Enter` to create the tables of this database. After that, keep copy and paste the content of [Lumilaadut.sql](./src/sql/Lumilaadut.sql), then [Segmentit.sql](./src/sql/Segmentit.sql), and [Koordinaatit.sql](./src/sql/Koordinaatit.sql) - in that order - into our terminal and run those commands.
+
+7. We can check that the table are properly populated by running:
+
+   ```
+   mysql> show tables;
+   ```
+
+   Which should show us all the populated tables:
+
+   ```
+   +------------------+
+   | Tables_in_pallas |
+   +------------------+
+   | kayttajaarviot   |
+   | kayttajat        |
+   | koordinaatit     |
+   | lumilaadut       |
+   | paivitykset      |
+   | segmentit        |
+   +------------------+
+   ```
+
+Done! Our database is up and running now.
+
+---
+
+## Setting up the React web version and build to run on `localhost:3000`
+
+Let's setup our `React` page now.
+
+1. Navigate to the `./src/map-app/` directory. You should see a `package.json` file there. Run:
+
+   ```
+   npm install
+   npm audit
+   npm audit --force
+   ```
+
+   These commands will install and audit our dependencies so that the app can build properly (well not really, but at least it works).
+
+2. Check that the app can build by running:
+
+   ```
+   npm start
+   ```
+
+   If every works, you should see that the app is up and running in [http://localhost:3000/](http://localhost:3000/).
+
+3. Stop the app by `Ctrl + C` in the terminal. We will now build the app to run with the server using:
+
+   ```
+   npm build
+   ```
+
+4. That's it! Now navigate to `./src/` (you should see an [`app.js`](./src/app.js) file here) and run the `Express` server with:
+
+   ```
+   node app.js
+   ```
+
+   And the server will be up and running at `port 3000`:
+
+   ```
+   Listening to port 3000
+   Listening to port 443
+   ```
+
+   On your browser, navigate to [http://localhost:3000/](http://localhost:3000/) to see that the app is running there.
