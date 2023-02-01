@@ -75,7 +75,7 @@ class _AppInfoState extends State<AppInfo> {
               ),
             ],
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const MyNavigationDrawer(),
         ),
       ),
     );

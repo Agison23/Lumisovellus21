@@ -218,7 +218,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               ),
             ],
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const MyNavigationDrawer(),
         ),
       ),
     );

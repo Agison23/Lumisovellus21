@@ -21,7 +21,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
     super.initState();
 
     NotificationHandler().init(context);
-    
+
     // since this is the mainpage, we need to initialize gps here so that users
     // reqeusting help can see this device as a nearby potential helper
     // if the main page of the app changes, move these lines as well
@@ -31,7 +31,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
       if (gpsOn) {
         await GpsHandler.updateGpsVariable(ignoreSwitch: true);
       }
-        });
+    });
 
     // this is force opening the drawer
     /*Timer.run(() => _globalKey.currentState?.openDrawer()); */
@@ -93,7 +93,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
               ),
             ],
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const MyNavigationDrawer(),
         ),
       ),
     );

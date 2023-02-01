@@ -142,7 +142,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                 ))
           ],
         ),
-        drawer: const NavigationDrawer(),
+        drawer: const MyNavigationDrawer(),
       ),
     );
   }

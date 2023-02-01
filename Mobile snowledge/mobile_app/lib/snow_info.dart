@@ -76,7 +76,7 @@ class _SnowInfoState extends State<SnowInfo> {
               ),
             ],
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const MyNavigationDrawer(),
         ),
       ),
     );

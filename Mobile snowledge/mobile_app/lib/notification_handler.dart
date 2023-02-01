@@ -43,8 +43,8 @@ class NotificationHandler {
 
   Future onSelectNotification(String? payload) async {
     try {
-      await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
+      await MyApp.navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
     } catch (e) {
       print(e.toString());
     }
@@ -54,8 +54,8 @@ class NotificationHandler {
       int? id, String? title, String? body, String? payload) async {
     // display a dialog with the notification details, tap ok to go to another page
     try {
-      await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => const OnBoardingPage()));
+      await MyApp.navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (context) => const OnBoardingPage()));
     } catch (e) {
       print(e.toString());
     }
@@ -79,34 +79,35 @@ class NotificationHandler {
 
   static Future<void> helpRequestCancelledNotification({int id = 12345}) async {
     flutterLocalNotificationsPlugin.show(
-        id,
-        "Avuntarve ohi",
-        "Kiitos avusta!",
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker'),
-            iOS: _iosNotificationDetails),
-        );
+      id,
+      "Avuntarve ohi",
+      "Kiitos avusta!",
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
   }
 
-  static Future<void> helperCancelledAcceptanceNotification({int id = 12345}) async {
+  static Future<void> helperCancelledAcceptanceNotification(
+      {int id = 12345}) async {
     flutterLocalNotificationsPlugin.show(
-        id,
-        "Auttaja on lopettanut avunannon.",
-        "",
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker'),
-            iOS: _iosNotificationDetails),
-        );
+      id,
+      "Auttaja on lopettanut avunannon.",
+      "",
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
   }
 
   static Future<void> pushUpNotification(String coords, String distance,

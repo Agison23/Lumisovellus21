@@ -12,14 +12,14 @@ import 'package:mobile_app/user_info.dart';
 import '../state/appState.dart';
 //import '../user_information_view.dart';
 
-class NavigationDrawer extends StatefulWidget {
-  const NavigationDrawer({Key? key}) : super(key: key);
+class MyNavigationDrawer extends StatefulWidget {
+  const MyNavigationDrawer({Key? key}) : super(key: key);
 
   @override
-  State<NavigationDrawer> createState() => _NavigationDrawerState();
+  State<MyNavigationDrawer> createState() => _MyNavigationDrawerState();
 }
 
-class _NavigationDrawerState extends State<NavigationDrawer> {
+class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   bool winter = Utility.getSummerOrWinter();
 
   @override
@@ -50,14 +50,15 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
         children: [
           _item(0, Icons.area_chart_outlined, "Lumiolosuhteet Pallaksella"),
           Visibility(
-            child: _item(
-                1, Icons.map_outlined, "Karttanäkymä"),
-            visible: true, // replace with winter (line 22) if you want to hide during summertime
+            child: _item(1, Icons.map_outlined, "Karttanäkymä"),
+            visible:
+                true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(2, Icons.sunny_snowing, "Sää Pallaksella"),
           Visibility(
             child: _item(3, Icons.ac_unit, "Lumityyppien selitteet"),
-            visible: true, // replace with winter (line 22) if you want to hide during summertime
+            visible:
+                true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline, "Käyttäjätiedot"),
           _item(5, Icons.menu_book_outlined, "Tietoa palvelusta"),
