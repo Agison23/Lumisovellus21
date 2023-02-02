@@ -31,7 +31,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
+    var appState = Provider.of<AppState>(context);
+
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -66,9 +67,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page1ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 120),
+                              const SizedBox(height: 50),
                               SizedBox(
-                                height: 150,
+                                height: 100,
                                 child: Text(
                                     !appState.isEnglish
                                         ? 'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.'
@@ -123,7 +124,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page2ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              // const SizedBox(height: 20),
                               Text(
                                   !appState.isEnglish
                                       ? 'SIJAINTITIEDON JAKAMINEN'
@@ -144,7 +145,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 70),
+                              const SizedBox(height: 30),
                               Buttons.onboardingButton(
                                 context,
                                 !appState.isEnglish
@@ -193,7 +194,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page3ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              // const SizedBox(height: 70),
                               Text(
                                   !appState.isEnglish
                                       ? 'SIJAINTITIEDON JAKAMINEN'
@@ -214,9 +215,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 20.0),
+                              const SizedBox(height: 20),
                               SetSharingLocation(),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 20),
                               Buttons.onboardingButton(context,
                                   !appState.isEnglish ? 'Seuraava' : 'Continue',
                                   onPressed: () {
@@ -235,7 +236,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     //Page4Start
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 20.0, left: 20.0, right: 20.0),
+                          top: 0.0, left: 20.0, right: 20.0),
                       child: ScrollConfiguration(
                         behavior: MyScrollBehavior(),
                         child: Scrollbar(
@@ -248,14 +249,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                 Text(
                                     !appState.isEnglish
                                         ? 'Syötäthän oikeat tietosi'
-                                        : 'Please enter your correct information',
+                                        : 'Enter your correct information',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         height: 1,
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
-                                const SizedBox(height: 20.0),
+                                const SizedBox(height: 15),
                                 Text(
                                     !appState.isEnglish
                                         ? 'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.'
@@ -265,7 +266,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         height: 1,
                                         fontSize: 20,
                                         color: Colors.white)),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 10),
                                 SingleChildScrollView(
                                     child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -290,7 +291,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page5ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              const SizedBox(height: 10),
                               Text(
                                   !appState.isEnglish
                                       ? 'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.'
@@ -300,7 +301,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 100),
+                              const SizedBox(height: 50),
                               Buttons.onboardingButton(context,
                                   !appState.isEnglish ? 'SEURAAVA' : 'CONTINUE',
                                   onPressed: () {
@@ -369,18 +370,25 @@ class UserInfoFormState extends State<UserInfoForm> {
               return null;
             },
             decoration: InputDecoration(
-                floatingLabelAlignment: FloatingLabelAlignment.center,
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Colors.white),
-                ),
-                label: Center(
-                    child: Text(
-                  !appState.isEnglish ? 'Etunimi' : 'First name',
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
-                ))),
+              floatingLabelAlignment: FloatingLabelAlignment.center,
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 2, color: Colors.white),
+              ),
+              // label: Center(
+              //   child: Text(
+              //     !appState.isEnglish ? 'Etunimi' : 'First name',
+              //     style: TextStyle(
+              //         color: Colors.white.withOpacity(0.5), fontSize: 20),
+              //   ),
+              // ),
+              hintText: !appState.isEnglish ? 'Etunimi' : 'First name',
+              hintStyle: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 20,
+              ),
+            ),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           TextFormField(
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
@@ -399,18 +407,25 @@ class UserInfoFormState extends State<UserInfoForm> {
               return null;
             },
             decoration: InputDecoration(
-                floatingLabelAlignment: FloatingLabelAlignment.center,
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Colors.white),
-                ),
-                label: Center(
-                    child: Text(
-                  !appState.isEnglish ? 'Sukunimi' : 'Last name',
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
-                ))),
+              floatingLabelAlignment: FloatingLabelAlignment.center,
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 2, color: Colors.white),
+              ),
+              // label: Center(
+              //   child: Text(
+              //     !appState.isEnglish ? 'Sukunimi' : 'Last name',
+              //     style: TextStyle(
+              //         color: Colors.white.withOpacity(0.5), fontSize: 20),
+              //   ),
+              // ),
+              hintText: !appState.isEnglish ? 'Sukunimi' : 'Last name',
+              hintStyle: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 20,
+              ),
+            ),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           TextFormField(
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
@@ -429,16 +444,23 @@ class UserInfoFormState extends State<UserInfoForm> {
               return null;
             },
             decoration: InputDecoration(
-                floatingLabelAlignment: FloatingLabelAlignment.center,
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Colors.white),
-                ),
-                label: Center(
-                    child: Text(
-                  !appState.isEnglish ? 'Puhelinnumero' : 'Phone number',
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
-                ))),
+              floatingLabelAlignment: FloatingLabelAlignment.center,
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 2, color: Colors.white),
+              ),
+              // label: Center(
+              //   child: Text(
+              //     !appState.isEnglish ? 'Puhelinnumero' : 'Phone number',
+              //     style: TextStyle(
+              //         color: Colors.white.withOpacity(0.5), fontSize: 20),
+              //   ),
+              // ),
+              hintText: !appState.isEnglish ? 'Puhelinnumero' : 'Phone number',
+              hintStyle: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 20,
+              ),
+            ),
           ),
           const SizedBox(height: 30.0),
           Buttons.onboardingButton(

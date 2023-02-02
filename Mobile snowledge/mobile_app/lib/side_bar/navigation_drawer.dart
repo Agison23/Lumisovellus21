@@ -53,7 +53,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Wrap(
-        runSpacing: 16,
+        runSpacing: 8,
         children: [
           _item(
               0,
@@ -103,7 +103,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
             children: [
               Expanded(
                 child: SizedBox(
-                  // height: 50,
+                  height: 50,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: CupertinoSwitch(
