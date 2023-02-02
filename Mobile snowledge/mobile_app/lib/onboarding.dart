@@ -31,7 +31,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(

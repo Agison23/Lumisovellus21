@@ -23,14 +23,14 @@ class Buttons {
           GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
               .then((gpsOn) async {
             if (gpsOn) {
-              if (text == 'Soita 112') {
+              if (text == 'Soita 112' || text == 'Call 112') {
                 open112();
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
                 Navigator.of(contx).push(MaterialPageRoute(
                     builder: (contx) => const HelpNeeded(true)));
               }
-              if (text == 'Avunpyyntö') {
+              if (text == 'Avunpyyntö' || text == 'Ask for Help') {
                 Dialogs().showDialogMinorHelpQuestions(contx);
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
@@ -54,13 +54,13 @@ class Buttons {
           });
         } else {
           await ServerComms.messageToServer(locationMessage);
-          if (text == 'Soita 112') {
+          if (text == 'Soita 112' || text == 'Call 112') {
             open112();
             Navigator.of(contx).push(
                 MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
           }
 
-          if (text == 'Avunpyyntö') {
+          if (text == 'Avunpyyntö' || text == 'Ask for Help') {
             Dialogs().showDialogMinorHelpQuestions(contx);
           }
         }
@@ -254,5 +254,14 @@ class Buttons {
           Navigator.pop(context);
         },
         icon: const Icon(Icons.close_rounded, size: 50, color: Colors.white));
+  }
+
+  static FloatingActionButton showRescueChatButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () async {
+        Dialogs().showRescueChatDialog(context);
+      },
+      child: Icon(Icons.chat),
+    );
   }
 }
