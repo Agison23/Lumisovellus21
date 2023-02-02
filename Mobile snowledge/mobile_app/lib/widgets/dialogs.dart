@@ -250,6 +250,7 @@ class Dialogs {
 
   /// Open dialog when no user close
   static showNoUserCloseDialog(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -284,7 +285,10 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'help_request'),
+                    Buttons.cancelButton(
+                        context,
+                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
@@ -306,6 +310,7 @@ class Dialogs {
 
   /// Open dialog when no user has accepted the request
   static showNoUserHasAcceptedRequestDialog(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -340,7 +345,10 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'help_request'),
+                    Buttons.cancelButton(
+                        context,
+                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
@@ -363,6 +371,7 @@ class Dialogs {
   /// Open dialog if user is not sharing his location
   static Future<bool> showGPSDialog(context, bool insistAlwaysOn,
       String dialogMessage, String buttonText) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     bool result = false;
     await showDialog<void>(
         context: context,
@@ -393,7 +402,10 @@ class Dialogs {
                             context, insistAlwaysOn, result, buttonText),
                         const SizedBox(height: 10),
                         // Cancel button
-                        Buttons.cancelButton(context, 'location')
+                        Buttons.cancelButton(
+                            context,
+                            !appState.isEnglish ? "Peruuta" : "Cancel",
+                            'location')
                       ],
                     )
                   ],
@@ -481,6 +493,7 @@ class Dialogs {
   }
 
   static showHelpRequestedDialog(context, payload) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -515,7 +528,10 @@ class Dialogs {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Buttons.cancelButton(context, 'offer_help'),
+                    Buttons.cancelButton(
+                        context,
+                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        'offer_help'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
                         builder: (context, _snapshot) {
