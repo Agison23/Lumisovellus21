@@ -10,6 +10,10 @@ import '../state/appState.dart';
 
 class Dialogs {
   static Object? _selectedRadio = 0;
+  // Minor helps:
+  // 1: equipment  problems
+  // 2: health problems
+  // 3: lost (no direction)
   final String minorHelp1 = 'Varusteongelma';
   final String minorHelp2 = 'Terveysongelma';
   final String minorHelp3 = 'Eksynyt';
@@ -87,6 +91,7 @@ class Dialogs {
                         }),
                         child:
                             Text(!appState.isEnglish ? 'Peruuta' : 'Cancel')),
+                    // Press this button will run the help needed mode
                     ElevatedButton(
                         onPressed: (() {
                           Navigator.of(context).push(MaterialPageRoute(

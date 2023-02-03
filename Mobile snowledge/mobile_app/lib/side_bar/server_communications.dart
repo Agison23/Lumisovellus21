@@ -66,11 +66,12 @@ class ServerComms {
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
-          saveLastLocationTimeToSP();
+          saveLastLocationTimeToSharedPreference();
           message =
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
@@ -112,6 +113,7 @@ class ServerComms {
     }
   }
 
+  // Get the ID of device to add into the help message
   static _getDeviceID() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String? devId = "notSet";
@@ -177,7 +179,8 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(MyApp.navigatorKey.currentState?.context, payload);
+                await Dialogs.showHelpRequestedDialog(
+                    MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
             case "NO_USERS_NEARBY":
@@ -195,7 +198,8 @@ class ServerComms {
                     await MyApp.navigatorKey.currentState?.push(
                         MaterialPageRoute(
                             builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(MyApp.navigatorKey.currentState?.context);
+                    await Dialogs.showHelpNeedOverDialog(
+                        MyApp.navigatorKey.currentState?.context);
                   }
                 } catch (e) {
                   print(e.toString());
@@ -223,10 +227,12 @@ class ServerComms {
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
+    // time, first name, last name, gps, phone number
     return [time.toString(), fName, lName, _gps, pNumber];
   }
 
-  static saveLastLocationTimeToSP() async {
+  // Save the last location and time to the app's shared preference
+  static saveLastLocationTimeToSharedPreference() async {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
