@@ -351,20 +351,24 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi',
+                Text(
+                  !appState.isEnglish
+                      ? 'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi'
+                      : 'No nearby user has accepted your help request',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Voit soittaa 112 tai peruuttaa avunpyyntösi.',
+                    !appState.isEnglish
+                        ? 'Voit soittaa 112 tai peruuttaa avunpyyntösi.'
+                        : 'You can call 112 or cancel your request for help.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
@@ -446,6 +450,7 @@ class Dialogs {
 
   /// Open dialog when user has deleted the request
   static showHelpNeedOverDialog(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -457,10 +462,12 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Avuntarve ohi\nKiitos avusta!',
+                Text(
+                  !appState.isEnglish
+                      ? 'Avuntarve ohi\nKiitos avusta!'
+                      : 'The need for help is over.\nThanks for your help!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
@@ -484,6 +491,7 @@ class Dialogs {
   }
 
   static showHelperCancelledAcceptanceDialog(context, int count) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -496,7 +504,9 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.',
+                  !appState.isEnglish
+                      ? 'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.'
+                      : 'A helper has stopped helping. Current number of helpers: $count.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -534,20 +544,24 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Lähellä oleva käyttäjä tarvitsee apua.',
+                Text(
+                  !appState.isEnglish
+                      ? 'Lähellä oleva käyttäjä tarvitsee apua.'
+                      : 'A nearby user needs help.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Voit tarjota apua tai ohittaa pyynnön.',
+                    !appState.isEnglish
+                        ? 'Voit tarjota apua tai ohittaa pyynnön.'
+                        : 'You can offer help or ignore the request.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),

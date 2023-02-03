@@ -119,13 +119,14 @@ class Buttons {
   }
 
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
+    var appState = Provider.of<AppState>(context, listen: false);
     return ElevatedButton(
         onPressed: () async => await MyApp.navigatorKey.currentState?.push(
             MaterialPageRoute(
                 builder: (context) => HelpOffered(payload, false))),
-        child: const Text(
-          'Auta',
-          style: TextStyle(
+        child: Text(
+          !appState.isEnglish ? 'Auta' : 'Accept help',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,
