@@ -33,19 +33,16 @@ class HelpOver extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 100.0),
                 child: SizedBox(
                   width: 300,
-                  child: Buttons.confirmButton(
-                      context,
-                      'OK',
-                      onPressed: () {
-                        var appState = Provider.of<AppState>(context, listen: false);
-                        appState.setPageIndex = 0;
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MapTracking()),
-                                (route) => false);
-                      }
-                  ),
+                  child: Buttons.confirmButton(context, 'OK', onPressed: () {
+                    var appState =
+                        Provider.of<AppState>(context, listen: false);
+                    appState.setPageIndex = 0;
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MapTracking()),
+                        (route) => false);
+                  }),
                 ),
               ),
             ],

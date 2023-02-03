@@ -1,43 +1,31 @@
 module.exports = {
-  "env": {
-    "node": true,
-    "browser": true,
-    "commonjs": true,
-    "es2021": true
+  env: {
+    node: true,
+    browser: true,
+    commonjs: true,
+    es2021: true,
   },
-  "extends": [
+  extends: [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
   ],
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    "ecmaVersion": 12,
-    "sourceType": "module"
+    ecmaVersion: 12,
+    sourceType: "module",
   },
-  "plugins": [
-    "react",
-    "cypress"
-  ],
-  "rules": {
-    "indent": [
-      "error",
-      2
-    ],
+  plugins: ["react", "cypress"],
+  rules: {
+    indent: "off",
     "linebreak-style": [
       "error",
-      (process.platform === "win32" ? "windows" : "unix")
+      process.platform === "win32" ? "windows" : "unix",
     ],
-    "quotes": [
-      "error",
-      "double"
-    ],
-    "semi": [
-      "error",
-      "always"
-    ],
-    "react/prop-types": "off"
-  }
+    quotes: ["error", "double"],
+    semi: ["error", "always"],
+    "react/prop-types": "off",
+  },
 };

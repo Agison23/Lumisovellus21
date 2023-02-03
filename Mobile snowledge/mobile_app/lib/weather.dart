@@ -76,7 +76,7 @@ class _WeatherState extends State<Weather> {
               ),
             ],
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const MyNavigationDrawer(),
         ),
       ),
     );

@@ -6,21 +6,17 @@ String? firstName;
 String? lastName;
 String? phoneNumber;
 
-
 class UserInfoPage extends StatefulWidget {
-
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
 
-class _UserInfoPageState extends State<UserInfoPage>{
-
+class _UserInfoPageState extends State<UserInfoPage> {
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController pNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   int nameMaxLen = 30;
-
 
   @override
   void initState() {
@@ -32,12 +28,10 @@ class _UserInfoPageState extends State<UserInfoPage>{
       lNameController.text = lastName.toString();
       phoneNumber = pref.getString('pNumber');
       pNumberController.text = phoneNumber.toString();
-
     });
   }
 
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -54,11 +48,10 @@ class _UserInfoPageState extends State<UserInfoPage>{
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Form(
-        key: _formKey,
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
-                
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
@@ -69,17 +62,18 @@ class _UserInfoPageState extends State<UserInfoPage>{
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: TextFormField(
                             controller: fNameController,
-                            validator: (value){
-                              if(value == null || value.isEmpty){
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
                                 return 'Anna etunimesi';
                               }
-                              if(value.length > nameMaxLen){
+                              if (value.length > nameMaxLen) {
                                 return 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!';
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
@@ -96,21 +90,22 @@ class _UserInfoPageState extends State<UserInfoPage>{
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: TextFormField(
                             controller: lNameController,
-                            validator: (value){
-                              if(value == null || value.isEmpty){
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
                                 return 'Anna sukunimesi';
                               }
-                              if(value.length > nameMaxLen){
+                              if (value.length > nameMaxLen) {
                                 return 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!';
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               labelText: 'Sukunimi',
                             ),
@@ -129,11 +124,11 @@ class _UserInfoPageState extends State<UserInfoPage>{
                     ],
                     keyboardType: TextInputType.number,
                     controller: pNumberController,
-                    validator: (value){
-                      if(value == null || value.isEmpty){
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
                         return 'Anna puhelinnumerosi';
                       }
-                
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -141,7 +136,7 @@ class _UserInfoPageState extends State<UserInfoPage>{
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       labelText: 'Puhelinnumero',
                     ),
@@ -150,21 +145,20 @@ class _UserInfoPageState extends State<UserInfoPage>{
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    onPressed: (){
-                      if(_formKey.currentState!.validate()){
-                        _updateName(context, fNameController.text, lNameController.text, pNumberController.text);
-                
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _updateName(context, fNameController.text,
+                            lNameController.text, pNumberController.text);
                       }
                     },
-                      child: const Text(
-                        'Tallenna',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
+                    child: const Text(
+                      'Tallenna',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
                       ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       fixedSize: const Size(170, 70),
                       shape: RoundedRectangleBorder(
@@ -173,15 +167,13 @@ class _UserInfoPageState extends State<UserInfoPage>{
                   ),
                 )
               ],
-                
             ),
           ),
-          ),
+        ),
       ),
     );
   }
 }
-
 
 Future _showDialog(BuildContext context, String message) async {
   return await showDialog<void>(
@@ -205,7 +197,8 @@ Future _showDialog(BuildContext context, String message) async {
       });
 }
 
-void _updateName(BuildContext context, String fName, String lName, String pNumber){
+void _updateName(
+    BuildContext context, String fName, String lName, String pNumber) {
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((pref) {
     pref.setString('fName', fName);
@@ -214,4 +207,3 @@ void _updateName(BuildContext context, String fName, String lName, String pNumbe
     _showDialog(context, "Tiedot tallennettu");
   });
 }
-

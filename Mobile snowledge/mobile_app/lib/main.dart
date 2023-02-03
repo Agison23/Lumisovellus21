@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main_page.dart';
 import 'onboarding.dart';
 
-
-
 String? fName;
 
 void main() async {
@@ -29,9 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AppState>(create: (_) => AppState())
-      ],
+      providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,

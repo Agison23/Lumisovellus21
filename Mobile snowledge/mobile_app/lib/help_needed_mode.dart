@@ -59,8 +59,8 @@ class HelpNeededState extends State<HelpNeeded> {
           // if users nearby
           if (_users.isNotEmpty) {
             setState(() {
-                _markers = getMarkers(_helpers, usersLatLng);
-              });
+              _markers = getMarkers(_helpers, usersLatLng);
+            });
             // if users has accepted the request
             if (_helpers.isNotEmpty) {
               setState(() {
@@ -114,7 +114,8 @@ class HelpNeededState extends State<HelpNeeded> {
             _helpers.remove(_helpers[i]);
           }
         }
-        Dialogs.showHelperCancelledAcceptanceDialog(MyApp.navigatorKey.currentState?.context, _helpers.length);
+        Dialogs.showHelperCancelledAcceptanceDialog(
+            MyApp.navigatorKey.currentState?.context, _helpers.length);
         break;
       case 0:
         for (int i = 0; i < _helpers.length; i++) {

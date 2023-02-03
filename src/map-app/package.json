@@ -17,14 +17,14 @@
     "clsx": "^1.1.1",
     "google-maps-react": "^2.0.6",
     "maplibre-gl": "^1.15.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-hook-google-maps": "0.0.3",
     "react-maplibre-ui": "^2.0.0",
     "react-material-ui-carousel": "^2.3.8",
     "react-responsive": "^8.1.0",
     "react-router-dom": "^6.4.4",
-    "react-scripts": "4.0.0",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
@@ -38,7 +38,13 @@
   "watch": {
     "build": "src/"
   },
-  "proxy": "https://lumisovellus.fi",
+  "options": {
+    "allowedHosts": [
+      "localhost",
+      ".localhost"
+    ],
+    "proxy": "https://lumisovellus.fi"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

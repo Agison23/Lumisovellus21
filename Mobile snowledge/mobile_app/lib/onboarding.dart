@@ -119,7 +119,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   if (await GpsHandler
                                       .checkAndAskGpsAlwaysOnPermission(
                                           context)) {
-                                    GpsHandler.setGpsSetting(context, true, insistAlwaysOn: true);
+                                    GpsHandler.setGpsSetting(context, true,
+                                        insistAlwaysOn: true);
                                     pageViewController.nextPage(
                                       duration:
                                           const Duration(milliseconds: 500),

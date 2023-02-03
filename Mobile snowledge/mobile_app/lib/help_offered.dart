@@ -11,9 +11,8 @@ import 'main_page.dart';
 class HelpOffered extends StatefulWidget {
   const HelpOffered(this.payload, this.pushUp, {Key? key}) : super(key: key);
   final String? payload;
-  final bool? pushUp; // true if coming from a push up notification or false if coming from the in-app notification
-
-  
+  final bool?
+      pushUp; // true if coming from a push up notification or false if coming from the in-app notification
 
   @override
   State<HelpOffered> createState() => HelpOfferedState();
@@ -119,8 +118,7 @@ class HelpOfferedState extends State<HelpOffered> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title:
-            Text(
+            title: Text(
               _accepted
                   ? 'Avuntarjoamistila'
                   : 'Käyttäjä on pyytänyt apua $_distance päässä',
@@ -218,7 +216,8 @@ class HelpOfferedState extends State<HelpOffered> {
           ),
         ),
         style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
             backgroundColor: Colors.red[200],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
@@ -240,7 +239,8 @@ class HelpOfferedState extends State<HelpOffered> {
           ),
         ),
         style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
             backgroundColor: Colors.green[200],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
@@ -349,6 +349,7 @@ class HelpOfferedState extends State<HelpOffered> {
       ),
     );
   }
+
   static String getSummerOrWinterMap() {
     if (Utility.getSummerOrWinter()) {
       return "https://api.maptiler.com/maps/winter/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
