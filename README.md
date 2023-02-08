@@ -1,4 +1,4 @@
-# Lumisovellus
+<!-- # Lumisovellus
 
 Lumisovellus koostuu kahdesta palvelusta:
 
@@ -41,7 +41,11 @@ Mobiilisovellus koostuu pääosin rescue- elementistä ja se käyttää lumitila
 ## Tiedossa olevat virheet / bugit
 
 - Jostain syystä lumisovellus.fi/rescuen tietokanta menee joskus lukkoon. Se ilmenee sillä, että selain antaa consoliin 500-error koodin. Tämän voi ohittaa käynnistämällä instanssi uudestaan tavu.io -sivulta.
-- Versiohallinnassa lumisovellus.fi/rescue -backendissa on kaksi ylimääräistä fileä. näiden tarvittava sisältö on siirretty \_app.py -tiedostoon, sillä käyttöönoton yhteydessä huomattiin, että mikäli koodit olisivat olleet omassa tiedostossaan, ne olisivat vaatineet 3003 portin toiminnan, eikä sitä osattu silloin asettaa. \_app.py tiedosto käytti jo 3002 porttia, joten koodit siirrettiin sinne.
+- Versiohallinnassa lumisovellus.fi/rescue -backendissa on kaksi ylimääräistä fileä. näiden tarvittava sisältö on siirretty \_app.py -tiedostoon, sillä käyttöönoton yhteydessä huomattiin, että mikäli koodit olisivat olleet omassa tiedostossaan, ne olisivat vaatineet 3003 portin toiminnan, eikä sitä osattu silloin asettaa. \_app.py tiedosto käytti jo 3002 porttia, joten koodit siirrettiin sinne. -->
+
+# Snowledge - Lumisovellus
+
+This is a repository for the Snowledge application
 
 ---
 
@@ -205,3 +209,101 @@ Let's setup our `React` page now.
    ```
 
    On your browser, navigate to [http://localhost:3000/](http://localhost:3000/) to see that the app is running there.
+
+## Setting up the Python Virtual Environment to run the backend Flask code
+
+We need to install a [virtual environment](https://docs.python.org/3/library/venv.html) for our Python code to keep every dependencies in an isolated folder. We will run our backend code in this virtual environment.
+
+1. Make sure that you have installed [Python](https://www.python.org/), if you haven't done so. You can check using the command:
+
+   ```
+   python --version
+   ```
+
+2. Open your terminal, and navigate to the root directory of the repository, `./snowledge/`. Make sure that you are in the root directory, by checking:
+
+   ```
+   ls
+   ```
+
+   Make sure that the file `requirements.txt` exists.
+
+3. In the root directory, create a new virtual environment. I named mine `myEnv`:
+
+   ```
+   python -m venv myEnv
+   ```
+
+   where `myEnv` is the name of your virtual environment.
+
+4. Still in your root directory, activate the virtual environment:
+
+   - On Windows:
+
+   ```
+   myEnv\Scripts\activate
+   ```
+
+   - On Linux/macOS:
+
+   ```
+   source myEnv/bin/activate
+   ```
+
+5. Verify that the virtual environment is active by checking the prompt in your terminal, which should have changed to include the name of the virtual environment. Something similar to:
+
+   ```
+   (myEnv) ... $
+   ```
+
+6. Install the packages you need for your project using `pip` or `conda`. I use `pip` here:
+
+   ```
+   pip install -r requirements.txt
+   ```
+
+   After this, you should see the `Lib` directory inside your virtual environment folder fills with different packages.
+
+7. You can use the terminal normally, which `ls`, `cd`, etc. You can start the backend server in this virtual environment by `cd` to the backend directory:
+
+   ```
+   cd './Mobile snowledge/Server/back_end'
+   ```
+
+   and run the `server.py` file with:
+
+   ```
+   python server.py
+   ```
+
+   You should see something like:
+
+   ```
+   Server started succesfully!
+   tulee tähän
+   ...
+   ```
+
+8. You can exit from the virtual environment with:
+
+   ```
+   deactivate
+   ```
+
+   this should get your terminal prompt back to normal (no more `(myEnv)`).
+
+9. I have already ignore my virtual environment in the `.gitignore` file. But if you name your environment something different than `myEnv`, you can easily ignore it by putting:
+
+   ```
+   <YOUR ENVIRONMENT FOLDER NAME>/
+   ```
+
+   in the `.gitignore` file so it doesn't push to `master`. Check if this is done correctly by running:
+
+   ```
+   git status
+   ```
+
+   and see if the virtual environment folder is inside the changes.
+
+After this, you should be able to use Python's virtual environment to run the backend server with `Flask`!

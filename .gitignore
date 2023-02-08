@@ -1,3 +1,6 @@
+# Python virtual environment
+myEnv/
+
 #Jetbrains toolbox
 .idea
 
