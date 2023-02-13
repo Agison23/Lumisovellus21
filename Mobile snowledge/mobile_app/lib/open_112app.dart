@@ -5,7 +5,7 @@ Future<void> open112() async {
   var isInstalled = await LaunchApp.isAppInstalled(
       androidPackageName: 'fi.digia.suomi112',
       iosUrlScheme: 'fi.digia.suomi112');
-  print("isInstalled:${isInstalled.toString()}");
+  // print("isInstalled:${isInstalled.toString()}");
   if ((isInstalled.runtimeType == bool && isInstalled) ||
       (isInstalled.runtimeType == int && isInstalled == 1)) {
     await LaunchApp.openApp(

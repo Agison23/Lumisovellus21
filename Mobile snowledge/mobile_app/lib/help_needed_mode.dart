@@ -95,7 +95,7 @@ class HelpNeededState extends State<HelpNeeded> {
       duration,
       (Timer timer) {
         Dialogs.showNoUserHasAcceptedRequestDialog(context);
-        print('no user has accepted');
+        // print('no user has accepted');
         timer.cancel();
       },
     );
@@ -286,7 +286,7 @@ class HelpNeededState extends State<HelpNeeded> {
                           if (await canLaunchUrlString(url)) {
                             await launchUrlString(url);
                           } else {
-                            print('ERROR');
+                            // print('ERROR');
                           }
                         },
                         icon: Image.asset('assets/images/MapTiler.png'),

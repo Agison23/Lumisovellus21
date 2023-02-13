@@ -43,6 +43,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return Container(
       padding: const EdgeInsets.all(24),
       child: Wrap(
@@ -80,75 +81,103 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   Widget _item(int index, IconData iconData, String title) {
     var appState = Provider.of<AppState>(context);
-    return ListTile(
-      leading: Icon(iconData),
-      iconColor:
-          index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
-      textColor:
-          index == appState.pageIndex ? const Color(0xff5A97EE) : Colors.black,
-      title: Text(title),
-      trailing: index == 6 || index == 7 ? const Icon(Icons.launch) : null,
-      onTap: () async {
-        if (index == appState.pageIndex) {
-        } else {
-          setState(() {
-            appState.setPageIndex = index;
-          });
-          if (index == 0) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MainPage()),
-                (route) => false);
-          } else if (index == 1) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MapTracking()),
-                (route) => false);
-          } else if (index == 2) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const Weather()),
-                (route) => false);
-          } else if (index == 3) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const SnowInfo()),
-                (route) => false);
-          } else if (index == 4) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => UserInfoPage()),
-                (route) => false);
-          } else if (index == 5) {
-            Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const AppInfo()),
-                (route) => false);
-          } else if (index == 6) {
-            String url = "https://www.pallaksenpollot.com/";
-            var urllaunchable = canLaunchUrlString(
-                url); //canLaunch is from url_launcher package
-            if (await urllaunchable) {
-              await launchUrlString(
-                  url); //launch is from url_launcher package to launch URL
-            } else {}
-          } else if (index == 7) {
-            String url = "https://www.pallaksenpollot.com/privacypolicy";
-            var urllaunchable = canLaunchUrlString(
-                url); //canLaunch is from url_launcher package
-            if (await urllaunchable) {
-              await launchUrlString(
-                  url); //launch is from url_launcher package to launch URL
-            } else {}
-          } else {}
-        }
-      },
+    return Stack(
+      children: [
+        ListTile(
+          leading: Icon(iconData),
+          iconColor: index == appState.pageIndex
+              ? const Color(0xff5A97EE)
+              : Colors.black,
+          textColor: index == appState.pageIndex
+              ? const Color(0xff5A97EE)
+              : Colors.black,
+          title: Text(title),
+          trailing: index == 6 || index == 7 ? const Icon(Icons.launch) : null,
+          onTap: () async {
+            if (index == appState.pageIndex) {
+            } else {
+              setState(() {
+                appState.setPageIndex = index;
+              });
+              if (index == 0) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MainPage()),
+                    (route) => false);
+              } else if (index == 1) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MapTracking()),
+                    (route) => false);
+              } else if (index == 2) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Weather()),
+                    (route) => false);
+              } else if (index == 3) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SnowInfo()),
+                    (route) => false);
+              } else if (index == 4) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserInfoPage()),
+                    (route) => false);
+              } else if (index == 5) {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AppInfo()),
+                    (route) => false);
+              } else if (index == 6) {
+                String url = "https://www.pallaksenpollot.com/";
+                var urllaunchable = canLaunchUrlString(
+                    url); //canLaunch is from url_launcher package
+                if (await urllaunchable) {
+                  await launchUrlString(
+                      url); //launch is from url_launcher package to launch URL
+                } else {}
+              } else if (index == 7) {
+                String url = "https://www.pallaksenpollot.com/privacypolicy";
+                var urllaunchable = canLaunchUrlString(
+                    url); //canLaunch is from url_launcher package
+                if (await urllaunchable) {
+                  await launchUrlString(
+                      url); //launch is from url_launcher package to launch URL
+                } else {}
+              } else {}
+            }
+          },
+        ),
+        if (appState.numOfHelpRequests > 0 && title == "Karttanäkymä")
+          Positioned(
+            top: 15,
+            right: 0,
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
+              child: const Center(
+                child: Text(
+                  '!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

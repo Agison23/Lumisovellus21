@@ -6,6 +6,8 @@ import 'package:location/location.dart';
 import 'package:mobile_app/helper/loading_indicator.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'bottom_bar/state/setSharingLocation.dart';
 import 'notification_handler.dart';
@@ -36,11 +38,11 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
         Future<bool> checkPermission = GpsHandler.loadGpsSetting();
         if (await checkPermission) {
           SetSharingLocationState.setGpsSwitchState(true);
-          print("Permission Granted!");
+          // print("Permission Granted!");
         } else {
           SetSharingLocationState.setGpsSwitchState(false);
           _location.enableBackgroundMode(enable: false);
-          print("Permission not Granted");
+          // print("Permission not Granted");
         }
       }
     });
@@ -53,6 +55,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     var lat;
     var lng;
     return SafeArea(
@@ -97,7 +100,33 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
             const Align(alignment: Alignment.bottomCenter, child: BottomBar()),
             IconButton(
               iconSize: 30,
-              icon: const Icon(Icons.menu),
+              icon: Stack(
+                children: [
+                  const Icon(Icons.menu),
+                  if (appState.numOfHelpRequests > 0)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: const Center(
+                          child: Text(
+                            '!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               onPressed: () {
                 _globalKey.currentState?.openDrawer();
               },
@@ -115,7 +144,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                     if (await canLaunchUrlString(url)) {
                       await launchUrlString(url);
                     } else {
-                      print('ERROR');
+                      // print('ERROR');
                     }
                   },
                   icon: Image.asset('assets/images/MapTiler.png'),

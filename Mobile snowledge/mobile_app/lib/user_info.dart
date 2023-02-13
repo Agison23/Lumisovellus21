@@ -1,4 +1,6 @@
 import 'package:flutter/services.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
@@ -36,6 +38,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -210,7 +213,33 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   alignment: Alignment.bottomCenter, child: BottomBar()),
               IconButton(
                 iconSize: 30,
-                icon: const Icon(Icons.menu),
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.menu),
+                    if (appState.numOfHelpRequests > 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
                 },

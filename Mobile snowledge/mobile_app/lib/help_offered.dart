@@ -179,7 +179,7 @@ class HelpOfferedState extends State<HelpOffered> {
                           if (await canLaunchUrlString(url)) {
                             await launchUrlString(url);
                           } else {
-                            print('ERROR');
+                            // print('ERROR');
                           }
                         },
                         icon: Image.asset('assets/images/MapTiler.png'),
