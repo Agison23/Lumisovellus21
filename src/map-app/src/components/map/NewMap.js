@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   menu: {
     display: "block",
     backgroundColor: "white",
-    borderRadius: 8
+    borderRadius: 8,
   },
   buttonsCntainer: {
     display: "flex",
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: "60px",
     left: theme.spacing(1),
     zIndex: 1,
-    width: "350px"
+    width: "350px",
   },
   buttonsCntainerMobile: {
     display: "flex",
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: "60px",
     left: theme.spacing(1),
     zIndex: 1,
-    width: "100px"
+    width: "100px",
   },
   eyeIcon: {
     color: "white",
@@ -115,52 +115,75 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     zIndex: 1,
     pointerEvents: "none",
-    paddingTop: "10px"
+    paddingTop: "10px",
   },
   logo: {
     width: "72px",
     height: "44px",
-  }
+  },
 }));
 
 function Map(props) {
-  
   // Use state hooks
   // Snow type to be highlighted on the map, -1 means subsegments only, -2 everything and -3 nothing
-  const [ highlightedSnowType, setHighlightedSnowType ] = React.useState(-3);
+  const [highlightedSnowType, setHighlightedSnowType] = React.useState(-3);
   // An array of snow types that are currently applied to a segment on the map
-  const [ currentSnowTypes, setCurrentSnowTypes ] = React.useState([]);
-  const [ open, setOpen ] = React.useState(false);
-  const [ buttonText, setButtonText ] = React.useState("Näytä ainoastaan...");
+  const [currentSnowTypes, setCurrentSnowTypes] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [buttonText, setButtonText] = React.useState("Näytä ainoastaan...");
 
   // Zoom depends on the size of the screen
-  const zoom = (props.isMobile ? 11 : 11.35);
+  const zoom = props.isMobile ? 11 : 11.35;
 
   React.useEffect(() => {
     // Get all of the snow types that are currently applied to a segment on the map
     let snowTypes = [];
-    props.segments.forEach(segment => {
-      if(segment.update !== null) {
-        if(segment.update.Lumi1 !== undefined && !(snowTypes.filter(e => e.ID === segment.update.Lumi1.ID).length > 0)) {
+    props.segments.forEach((segment) => {
+      if (segment.update !== null) {
+        if (
+          segment.update.Lumi1 !== undefined &&
+          !(
+            snowTypes.filter((e) => e.ID === segment.update.Lumi1.ID).length > 0
+          )
+        ) {
           snowTypes.push(segment.update.Lumi1);
         }
-        if(segment.update.Lumi2 !== undefined && !(snowTypes.filter(e => e.ID === segment.update.Lumi2.ID).length > 0)) {
+        if (
+          segment.update.Lumi2 !== undefined &&
+          !(
+            snowTypes.filter((e) => e.ID === segment.update.Lumi2.ID).length > 0
+          )
+        ) {
           snowTypes.push(segment.update.Lumi2);
         }
-        if(segment.update.Lumi3 !== undefined && !(snowTypes.filter(e => e.ID === segment.update.Lumi3.ID).length > 0)) {
+        if (
+          segment.update.Lumi3 !== undefined &&
+          !(
+            snowTypes.filter((e) => e.ID === segment.update.Lumi3.ID).length > 0
+          )
+        ) {
           snowTypes.push(segment.update.Lumi3);
         }
-        if(segment.update.Lumi4 !== undefined && !(snowTypes.filter(e => e.ID === segment.update.Lumi4.ID).length > 0)) {
+        if (
+          segment.update.Lumi4 !== undefined &&
+          !(
+            snowTypes.filter((e) => e.ID === segment.update.Lumi4.ID).length > 0
+          )
+        ) {
           snowTypes.push(segment.update.Lumi4);
         }
-        if(segment.update.Lumi5 !== undefined && !(snowTypes.filter(e => e.ID === segment.update.Lumi5.ID).length > 0)) {
+        if (
+          segment.update.Lumi5 !== undefined &&
+          !(
+            snowTypes.filter((e) => e.ID === segment.update.Lumi5.ID).length > 0
+          )
+        ) {
           snowTypes.push(segment.update.Lumi5);
         }
       }
       setCurrentSnowTypes(snowTypes);
     });
   }, [props.segments]);
-
 
   /*
    * Event handlers
@@ -171,7 +194,7 @@ function Map(props) {
   }
 
   function updateHighlightedSnowType(snow) {
-    if(highlightedSnowType === snow.ID) {
+    if (highlightedSnowType === snow.ID) {
       setHighlightedSnowType(-3);
       setButtonText("Näytä ainoastaan...");
     } else {
@@ -179,7 +202,7 @@ function Map(props) {
       setButtonText(snow.Nimi);
     }
   }
-  
+
   // Updates the chosen segment
   function updateChosen(segment) {
     props.onClick(segment.ID);
@@ -192,21 +215,25 @@ function Map(props) {
   function handleClickOpen() {
     setOpen(!open);
   }
-  
+
   // Use styles
   const styledClasses = useStyles();
 
   return (
     <div className="map">
-      {props.isMobile ?
+      {props.isMobile ? (
         <div className={styledClasses.logoContainer}>
-          <img className={styledClasses.logo} src="pallaksen_pollot_logo.png"></img>
+          <img
+            className={styledClasses.logo}
+            src="pallaksen_pollot_logo.png"
+          ></img>
         </div>
-        :
-        <div></div>}
+      ) : (
+        <div></div>
+      )}
       <PallasMap
         shownSegment={props.shownSegment}
-        chosenSegment={segment => updateChosen(segment)}
+        chosenSegment={(segment) => updateChosen(segment)}
         segmentColors={props.segmentColors}
         segments={props.segments}
         isMobile={props.isMobile}
@@ -215,28 +242,40 @@ function Map(props) {
         highlightedSnowType={highlightedSnowType}
         showMap={props.showMap}
       ></PallasMap>
-      {props.isMobile ? 
+      {props.isMobile ? (
         <Box className={styledClasses.buttonsCntainerMobile}>
-          <Box style={{paddingRight: "10px"}}>
+          <Box style={{ paddingRight: "10px" }}>
             <IconButton
               onClick={handleClickOpen}
-              style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px", borderRadius: 8}}
+              style={{
+                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
+                height: "40px",
+                borderRadius: 8,
+              }}
             >
               <FilterIcon></FilterIcon>
             </IconButton>
           </Box>
           <Dialog onClose={handleClose} open={open}>
-            <List style={{maxHeight: "500px", overflow: "auto"}}>
+            <List style={{ maxHeight: "500px", overflow: "auto" }}>
               <Box className={styledClasses.menu}>
                 {
                   // Append a snow type to the list if it can be found on a segment
-                  currentSnowTypes.map(snowType => {
-                    return(
+                  currentSnowTypes.map((snowType) => {
+                    return (
                       <Box key={snowType.ID}>
                         <Button
                           fullWidth={true}
-                          onClick={() => {updateHighlightedSnowType(snowType); handleClickOpen();}}
-                          style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                          onClick={() => {
+                            updateHighlightedSnowType(snowType);
+                            handleClickOpen();
+                          }}
+                          style={{
+                            backgroundColor:
+                              highlightedSnowType === snowType.ID
+                                ? "#ed7a72"
+                                : "white",
+                          }}
                         >
                           {snowType.Nimi}
                         </Button>
@@ -246,8 +285,17 @@ function Map(props) {
                 }
                 <Button
                   fullWidth={true}
-                  onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClickOpen();}}
-                  style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+                  onClick={() => {
+                    updateHighlightedSnowType({
+                      Nimi: "Vain laskualueet",
+                      ID: -1,
+                    });
+                    handleClickOpen();
+                  }}
+                  style={{
+                    backgroundColor:
+                      highlightedSnowType === -1 ? "#ed7a72" : "white",
+                  }}
                 >
                   Vain laskualueet
                 </Button>
@@ -257,34 +305,59 @@ function Map(props) {
           <Box className={styledClasses.eyeIconContainer}>
             <IconButton
               className={styledClasses.eyeIcon}
-              onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+              onClick={() => {
+                highlightedSnowType === -2
+                  ? updateHighlightedSnowType({
+                      ID: -3,
+                      Nimi: "Näytä ainoastaan...",
+                    })
+                  : updateHighlightedSnowType({
+                      ID: -2,
+                      Nimi: "Näytä ainoastaan...",
+                    });
+              }}
             >
-              {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              {highlightedSnowType === -2 ? (
+                <VisibilityOffIcon />
+              ) : (
+                <VisibilityIcon />
+              )}
             </IconButton>
           </Box>
         </Box>
-        :
+      ) : (
         <Box className={styledClasses.buttonsCntainer}>
           <Box className={styledClasses.menuContainer}>
             <Button
               onClick={handleClick}
               variant="contained"
-              style={{backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white", height: "40px"}}
+              style={{
+                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
+                height: "40px",
+              }}
             >
               {buttonText}
             </Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <List style={{maxHeight: "500px", overflow: "auto"}}>
+              <List style={{ maxHeight: "500px", overflow: "auto" }}>
                 <Box className={styledClasses.menu}>
                   {
                     // Append a snow type to the list if it can be found on a segment
-                    currentSnowTypes.map(snowType => {
-                      return(
+                    currentSnowTypes.map((snowType) => {
+                      return (
                         <Box key={snowType.ID}>
                           <Button
                             fullWidth={true}
-                            onClick={() => {updateHighlightedSnowType(snowType); handleClick();}}
-                            style={{backgroundColor: highlightedSnowType === snowType.ID ? "#ed7a72" : "white"}}
+                            onClick={() => {
+                              updateHighlightedSnowType(snowType);
+                              handleClick();
+                            }}
+                            style={{
+                              backgroundColor:
+                                highlightedSnowType === snowType.ID
+                                  ? "#ed7a72"
+                                  : "white",
+                            }}
                           >
                             {snowType.Nimi}
                           </Button>
@@ -294,8 +367,17 @@ function Map(props) {
                   }
                   <Button
                     fullWidth={true}
-                    onClick={() => {updateHighlightedSnowType({Nimi: "Vain laskualueet", ID: -1}); handleClick();}}
-                    style={{backgroundColor: highlightedSnowType === -1 ? "#ed7a72" : "white"}}
+                    onClick={() => {
+                      updateHighlightedSnowType({
+                        Nimi: "Vain laskualueet",
+                        ID: -1,
+                      });
+                      handleClick();
+                    }}
+                    style={{
+                      backgroundColor:
+                        highlightedSnowType === -1 ? "#ed7a72" : "white",
+                    }}
                   >
                     Vain laskualueet
                   </Button>
@@ -306,13 +388,27 @@ function Map(props) {
           <Box className={styledClasses.eyeIconContainer}>
             <IconButton
               className={styledClasses.eyeIcon}
-              onClick={() => {highlightedSnowType === -2 ? updateHighlightedSnowType({ID: -3, Nimi: "Näytä ainoastaan..."}) : updateHighlightedSnowType({ID: -2, Nimi: "Näytä ainoastaan..."});}}
+              onClick={() => {
+                highlightedSnowType === -2
+                  ? updateHighlightedSnowType({
+                      ID: -3,
+                      Nimi: "Näytä ainoastaan...",
+                    })
+                  : updateHighlightedSnowType({
+                      ID: -2,
+                      Nimi: "Näytä ainoastaan...",
+                    });
+              }}
             >
-              {highlightedSnowType === -2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              {highlightedSnowType === -2 ? (
+                <VisibilityOffIcon />
+              ) : (
+                <VisibilityIcon />
+              )}
             </IconButton>
           </Box>
         </Box>
-      }
+      )}
     </div>
   );
 }
