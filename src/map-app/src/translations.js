@@ -287,9 +287,9 @@ const translations = {
       en: "New snow"
   },
 
-  freshlyRainedSoftSnow:{
+  newSnowDescription:{
       fi: "Vastasatanut pehmeä lumi.",
-      en: "Freshly rained soft snow"
+      en: "Freshly rained soft snow."
   },
 
   freshWetSnow:{
@@ -384,7 +384,7 @@ const translations = {
 
   wavySnowDescrioption:{
       fi: "Tuulen muotoilema uuden lumen alue.  Aallot ovat pehmeitä ja hyvin rikottavissa.",
-      en: "An area of new snow shaped by the wind. waves are soft and easy to break"
+      en: "An area of new snow shaped by the wind. waves are soft and easy to break."
   },
 
   sastrug:{
@@ -407,7 +407,6 @@ const translations = {
       en: "Flat, wind-layered and compressed tile or lens. Blizzard snow can also accumulate without snowfall if wind moves snow from one place to another. Blizzard snow is usually formed on the side of the fell protected from wind."
   },
 
-  //info about pollot --lisää piste
   changeTerrainBase:{
       fi: "Muuta maastopohjaa",
       en: "Change terrain base"
@@ -460,7 +459,7 @@ const translations = {
 
   saturatedSnowDescription:{
       fi: "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.",
-      en: "Completely wet , slushing and whipped cream like snow"
+      en: "Completely wet , slushing and whipped cream like snow."
   },
 
   mimimalSnow:{
@@ -511,7 +510,7 @@ const translations = {
 
   deletingSegmentDeletesSubsegments:{
       fi: "Segmentin poistaminen poistaa segmentin, alasegmentin ja kaikki niihin liittyvät tiedot. Poista?",
-      en: "Deleting the segment also deletes the subsegments and all other information related to them "
+      en: "Deleting the segment also deletes the subsegments and all other information related to them. Delete?"
   },
 
   noUserReviews:{
@@ -531,7 +530,7 @@ const translations = {
 
   noInformatinByPollot:{
       fi: "Alueella ei ole Pallaksen Pöllöjen vahvistamaa tietoa. Alla oleva tieto pohjautuu tunturissa vierailleen päivitykseen.",
-      en: "The area doesn't have information confirmed by Pallaksen Pöllöt. The information below is based on updates from other users"
+      en: "The area doesn't have information confirmed by Pallaksen Pöllöt. The information below is based on updates from other users."
   },
 
   forestArea:{
@@ -541,7 +540,7 @@ const translations = {
 
   infoIsBasedOnUsers:{
       fi: "Alla oleva tieto pohjautuu tunturissa vierailleen päivitykseen.",
-      en: "The information below is based on updates from other users"
+      en: "The information below is based on updates from other users."
   },
 
   didYouMoveInArea:{
@@ -551,7 +550,7 @@ const translations = {
 
   addEstimationOfSnowConditions:{
       fi: "Kyllä, lisää arvio lumitilanteesta.",
-      en: "Yes, add an estimation of the snow conditions"
+      en: "Yes, add an estimation of the snow conditions."
   },
 
   forestArea:{
@@ -561,7 +560,7 @@ const translations = {
 
   addAnotherObservation:{
       fi: "Lisää muu havainto.",
-      en: "Add another observation"
+      en: "Add another observation."
   },
 
   logOut:{
@@ -636,11 +635,11 @@ const translations = {
 
   addSegmentInfo:{
       fi: "Anna segmentille nimi, maastopohjakuvaus ja rajaavat koordinaatit.",
-      en: "Give a name to the segment, a description of the terrain base and the delimiting cordinates"
+      en: "Give a name to the segment, a description of the terrain base and the delimiting cordinates."
   },
 
   treeCordinatePointsRequired:{
-      fi: "Ainakin kolme koordinaattipistettä vaaditaan",
+      fi: "Ainakin kolme koordinaattipistettä vaaditaan.",
       en: "At least (3) coordinate points are required."
   },
 
