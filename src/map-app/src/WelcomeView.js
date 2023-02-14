@@ -8,12 +8,13 @@ Updated layout for mobile
 Created component
  **/
 
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-import welcomeText from "./welcome_text.txt";
+// import welcomeText from "./welcome_text.txt";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import welcomeText from "./welcomeText.json";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -21,18 +22,18 @@ const useStyles = makeStyles(() => ({
     height: "100vh",
     display: "flex",
     flexFlow: "column",
-    paddingTop: "1rem"
+    paddingTop: "1rem",
   },
   textContainer: {
     overflowY: "scroll",
-    flex: 4
+    flex: 4,
   },
   text: {
     color: "white",
     padding: "5px",
     display: "block",
     fontSize: 20,
-    fontFamily: "Donau"
+    fontFamily: "Donau",
   },
   icon: {
     height: "89px",
@@ -42,7 +43,7 @@ const useStyles = makeStyles(() => ({
     flex: 1,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   sponsorContainer: {
     flex: 1,
@@ -50,80 +51,136 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
     flexWrap: "wrap",
-    marginTop: "20px"
+    marginTop: "20px",
   },
   sponsor: {
     maxWidth: "60px",
     maxHeight: "60px",
-    padding: "10px"
+    padding: "10px",
   },
   mobileRoot: {
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     height: "100%",
     display: "flex",
-    flexFlow: "column"
+    flexFlow: "column",
   },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: "10px"
-  }
+    paddingBottom: "10px",
+  },
 }));
 
 function WelcomeView(props) {
-  const [ text, setText ] = React.useState([]);
+  const [text, setText] = useState([]);
+  console.log(`Language is ${props.language} from WelcomeView`);
 
-  React.useEffect(() => {
-    // Reads the file welcome_text.txt located in the same folder
-    // splits it on newlines and sets the "text"-variable as the resiulting array
-    const readText = async () => {
-      fetch(welcomeText)
-        .then((r) => r.text())
-        .then(text => setText(text.split("\n")));
-    };
-    readText();
+  useEffect(() => {
+    if (props.language === "fi") {
+      setText(welcomeText.fi);
+    } else {
+      setText(welcomeText.en);
+    }
   }, []);
+
+  // React.useEffect(() => {
+  //   // Reads the file welcome_text.txt located in the same folder
+  //   // splits it on newlines and sets the "text"-variable as the resiulting array
+  //   const readText = async () => {
+  //     fetch(welcomeText)
+  //       .then((r) => r.text())
+  //       .then((text) => setText(text.split("\n")));
+  //   };
+  //   readText();
+  // }, []);
 
   const styledClasses = useStyles();
 
-  if(props.isMobile) {
-    return(
+  if (props.isMobile) {
+    return (
       <Box className={styledClasses.mobileRoot}>
-        <Box className={styledClasses.iconContainer} style={{flex: 2}}>
-          <img src="pallaksen_pollot_logo_white.png" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
+        <Box className={styledClasses.iconContainer} style={{ flex: 2 }}>
+          <img
+            src="pallaksen_pollot_logo_white.png"
+            alt="Pallaksen pöllöt logo"
+            className={styledClasses.icon}
+          />
         </Box>
-        <Box className={styledClasses.textContainer} style={{flex: 8, marginLeft: "30px", marginRight: "15px", marginTop: "10px"}}>
-          {
-            text.map((paragraph, index) => {
-              return <Typography key={index} className={styledClasses.text}>{paragraph}</Typography>;
-            })
-          }
+        <Box
+          className={styledClasses.textContainer}
+          style={{
+            flex: 8,
+            marginLeft: "30px",
+            marginRight: "15px",
+            marginTop: "10px",
+          }}
+        >
+          {text.map((paragraph, index) => {
+            return (
+              <Typography key={index} className={styledClasses.text}>
+                {paragraph}
+              </Typography>
+            );
+          })}
         </Box>
 
-        
-        <Box className={styledClasses.sponsorContainer} style={{flex: 2}}>
-          {props.sponsors !== undefined && <>
-            {props.sponsors.length >= 1 && props.sponsors[0].logo !== "" && 
-              <a href={props.sponsors[0].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[0].logo} alt="" className={styledClasses.sponsor} />
-              </a> }
-            {props.sponsors.length >= 2 && props.sponsors[1].logo !== "" && 
-              <a href={props.sponsors[1].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[1].logo} alt="" className={styledClasses.sponsor} />
-              </a> }
-            {props.sponsors.length >= 3 && props.sponsors[2].logo !== "" && 
-              <a href={props.sponsors[2].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[2].logo} alt="" className={styledClasses.sponsor} />
-              </a> }           
-          </>}   
+        <Box className={styledClasses.sponsorContainer} style={{ flex: 2 }}>
+          {props.sponsors !== undefined && (
+            <>
+              {props.sponsors.length >= 1 && props.sponsors[0].logo !== "" && (
+                <a
+                  href={props.sponsors[0].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[0].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+              {props.sponsors.length >= 2 && props.sponsors[1].logo !== "" && (
+                <a
+                  href={props.sponsors[1].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[1].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+              {props.sponsors.length >= 3 && props.sponsors[2].logo !== "" && (
+                <a
+                  href={props.sponsors[2].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[2].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+            </>
+          )}
         </Box>
-        
+
         <Box className={styledClasses.buttonContainer}>
           <Button
             variant="contained"
             onClick={props.updateShowWelcomeView}
-            style={{flex: 1, maxHeight: "50px", maxWidth: "300px", fontWeight: "bold"}}
+            style={{
+              flex: 1,
+              maxHeight: "50px",
+              maxWidth: "300px",
+              fontWeight: "bold",
+            }}
           >
             TUTUSTU LUMITILANTEESEEN
           </Button>
@@ -131,36 +188,73 @@ function WelcomeView(props) {
       </Box>
     );
   } else {
-    return(
+    return (
       <Box className={styledClasses.root}>
         <Box className={styledClasses.iconContainer}>
-          <img src="pallaksen_pollot_logo_white.png" alt="Pallaksen pöllöt logo" className={styledClasses.icon} />
+          <img
+            src="pallaksen_pollot_logo_white.png"
+            alt="Pallaksen pöllöt logo"
+            className={styledClasses.icon}
+          />
         </Box>
-        <Box className={styledClasses.textContainer} style={{marginLeft: "50px", marginRight: "50px"}}>
-          {
-            text.map((paragraph, index) => {
-              return <Typography key={index} className={styledClasses.text}>{paragraph}</Typography>;
-            })
-          }
+        <Box
+          className={styledClasses.textContainer}
+          style={{ marginLeft: "50px", marginRight: "50px" }}
+        >
+          {text.map((paragraph, index) => {
+            return (
+              <Typography key={index} className={styledClasses.text}>
+                {paragraph}
+              </Typography>
+            );
+          })}
         </Box>
-        
+
         <Box className={styledClasses.sponsorContainer}>
-          {props.sponsors !== undefined && <>
-            {props.sponsors.length >= 1 && props.sponsors[0].logo !== "" && 
-              <a href={props.sponsors[0].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[0].logo} alt="" className={styledClasses.sponsor} />
-              </a> }
-            {props.sponsors.length >= 2 && props.sponsors[1].logo !== "" && 
-              <a href={props.sponsors[1].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[1].logo} alt="" className={styledClasses.sponsor} />
-              </a> }
-            {props.sponsors.length >= 3 && props.sponsors[2].logo !== "" && 
-              <a href={props.sponsors[2].address} target="_blank" rel="noopener noreferrer">
-                <img src={"sponsorit/" + props.sponsors[2].logo} alt="" className={styledClasses.sponsor} />
-              </a> }           
-          </>}
+          {props.sponsors !== undefined && (
+            <>
+              {props.sponsors.length >= 1 && props.sponsors[0].logo !== "" && (
+                <a
+                  href={props.sponsors[0].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[0].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+              {props.sponsors.length >= 2 && props.sponsors[1].logo !== "" && (
+                <a
+                  href={props.sponsors[1].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[1].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+              {props.sponsors.length >= 3 && props.sponsors[2].logo !== "" && (
+                <a
+                  href={props.sponsors[2].address}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={"sponsorit/" + props.sponsors[2].logo}
+                    alt=""
+                    className={styledClasses.sponsor}
+                  />
+                </a>
+              )}
+            </>
+          )}
         </Box>
-        
       </Box>
     );
   }

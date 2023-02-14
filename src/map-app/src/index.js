@@ -1,26 +1,15 @@
 // React automatically created file
 
 import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./index.css";
-import App from "./Pallas";
+import App from "./App.js";
+import { GlobalProvider } from "./context/GlobalContext";
 import reportWebVitals from "./reportWebVitals";
-import SnowTypes from "./SnowTypes";
-import WeatherTab from "./weather/WeatherTab";
-import WelcomeView from "./WelcomeView";
-import MobileView from "./MobileView";
+import ReactDOM from "react-dom";
 
 ReactDOM.render(
-  <Router>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/saa" element={<WeatherTab />} />
-      <Route path="/selitteet" element={<SnowTypes />} />
-      <Route path="/tietoasovelluksesta" element={<WelcomeView />} />
-      <Route path="/mobiili" element={<MobileView />} />
-    </Routes>
-  </Router>,
+  <GlobalProvider>
+    <App />
+  </GlobalProvider>,
   document.getElementById("root")
 );
 
