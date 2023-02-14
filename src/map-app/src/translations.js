@@ -70,11 +70,6 @@ const translations = {
       en: "Add an user"
   },
 
-  login:{
-      fi: "Kirjaudu",
-      en: "Log in"
-  },
-
   userManagementRequiresAdminPermission:{
       fi: "Kayttäjänhallinta vaatii admin oikeudet",
       en: "User management requires admin permission"
