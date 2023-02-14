@@ -71,7 +71,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SearchIcon from "@material-ui/icons/Search";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import SnowRecordView from "./SnowRecordView";
+import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
 
@@ -79,11 +79,11 @@ import { useMediaQuery } from "react-responsive";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#000000B3"
+      main: "#000000B3",
     },
     secondary: {
-      main: "#EEEEEE"
-    }
+      main: "#EEEEEE",
+    },
   },
   overrides: {
     MuiCheckbox: {
@@ -142,8 +142,8 @@ const useStyles = makeStyles((theme) => ({
 
     "& .MuiButton-endIcon": {
       position: "absolute",
-      right: 16
-    }
+      right: 16,
+    },
   },
   buttonsWrapper: {
     display: "flex",
@@ -165,9 +165,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 function Info(props) {
-
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
   const [loginOpen, setLoginOpen] = React.useState(false);
@@ -194,19 +192,32 @@ function Info(props) {
    * Event handlers
    */
 
-
   // Segmentin päivitysdialogin avaus
   const openUpdate = () => {
     setSnowTypeList(props.snowtypes);
 
     setEntryVisible(true);
-    setText(props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : "");
+    setText(
+      props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : ""
+    );
     const idArray = [];
 
-    idArray[0] = (props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu_ID1 : 0);
-    idArray[1] = (props.segmentdata.update !== null ? props.segmentdata.update.Lumilaatu_ID2 : 0);
-    idArray[2] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID1 : 0);
-    idArray[3] = (props.segmentdata.update !== null ? props.segmentdata.update.Toissijainen_ID2 : 0);
+    idArray[0] =
+      props.segmentdata.update !== null
+        ? props.segmentdata.update.Lumilaatu_ID1
+        : 0;
+    idArray[1] =
+      props.segmentdata.update !== null
+        ? props.segmentdata.update.Lumilaatu_ID2
+        : 0;
+    idArray[2] =
+      props.segmentdata.update !== null
+        ? props.segmentdata.update.Toissijainen_ID1
+        : 0;
+    idArray[3] =
+      props.segmentdata.update !== null
+        ? props.segmentdata.update.Toissijainen_ID2
+        : 0;
 
     snowRecordStartUp(idArray);
     setLoginOpen(true);
@@ -237,7 +248,6 @@ function Info(props) {
     setWriteReviewEnabled(false);
   }
 
-
   //Open user review -options
   function openForm() {
     setWriteReviewEnabled(true);
@@ -252,29 +262,26 @@ function Info(props) {
     setWriteReviewEnabled(false);
   }
 
-
   // Hides unnecessary information on snow record entry view, if checkbox is checked.
   const updateEntryVisible = (e) => {
     setUpdateEnabled(true);
 
     if (!e.target.checked) {
       setEntryVisible(true);
-    }
-    else if (e.target.checked) {
+    } else if (e.target.checked) {
       setEntryVisible(false);
     }
   };
 
   // opens search
   const handleSearchOpen = (e) => {
-
     setIsSecondary(e.target.value);
     setAddVisible(false);
     setSelectVisible(false);
     setSearchVisible(true);
   };
 
-  // closes search 
+  // closes search
   const handleSearchClose = (e, value) => {
     if (value !== null) {
       addSnowRecordContent(value.ID);
@@ -301,8 +308,7 @@ function Info(props) {
           secondaryCount++;
           newContent = newContent.concat({ id: array[i], secondary: true });
           newDisabled = newDisabled.concat(array[i]);
-        }
-        else {
+        } else {
           primaryCount++;
           newContent = newContent.concat({ id: array[i], secondary: false });
           newDisabled = newDisabled.concat(array[i]);
@@ -324,8 +330,7 @@ function Info(props) {
 
     if (primaryCount + secondaryCount === 4) {
       setAddVisible(false);
-    }
-    else {
+    } else {
       setAddVisible(true);
     }
 
@@ -338,11 +343,10 @@ function Info(props) {
     let primaryValues = 0;
     let secondaryValues = 0;
     // Determines amount of primary and secondary snow types
-    snowRecordContent.forEach(e => {
+    snowRecordContent.forEach((e) => {
       if (e["secondary"] === false) {
         primaryValues++;
-      }
-      else if (e["secondary"] === true) {
+      } else if (e["secondary"] === true) {
         secondaryValues++;
       }
     });
@@ -357,9 +361,7 @@ function Info(props) {
         newValues[0] = true;
         setSelectDisabled(newValues);
       }
-    }
-    else if (isSecondary) {
-
+    } else if (isSecondary) {
       let secondaryContent = { id: id, secondary: true };
       setSnowRecordContent(snowRecordContent.concat(secondaryContent));
 
@@ -375,7 +377,7 @@ function Info(props) {
   function getSnowRecordContentIDs() {
     let idArray = [];
     let secondaryArray = [];
-    snowRecordContent.forEach(element => {
+    snowRecordContent.forEach((element) => {
       if (element.secondary === false) {
         idArray.push(element.id);
       }
@@ -383,13 +385,12 @@ function Info(props) {
 
     if (idArray.length === 1) {
       idArray.push(null);
-    }
-    else if (idArray.length === 0) {
+    } else if (idArray.length === 0) {
       idArray.push(null);
       idArray.push(null);
     }
 
-    snowRecordContent.forEach(element => {
+    snowRecordContent.forEach((element) => {
       if (element.secondary === true) {
         secondaryArray.push(element.id);
       }
@@ -397,8 +398,7 @@ function Info(props) {
 
     if (secondaryArray.length === 1) {
       secondaryArray.push(null);
-    }
-    else if (secondaryArray.length === 0) {
+    } else if (secondaryArray.length === 0) {
       secondaryArray.push(null);
       secondaryArray.push(null);
     }
@@ -412,7 +412,9 @@ function Info(props) {
   const removeSnowtype = (item) => {
     setUpdateEnabled(true);
 
-    const newContent1 = snowRecordContent.filter(snowRecordContent => { return snowRecordContent.id !== item.id; });
+    const newContent1 = snowRecordContent.filter((snowRecordContent) => {
+      return snowRecordContent.id !== item.id;
+    });
     setSnowRecordContent(newContent1);
 
     if (newContent1.length < 4) {
@@ -431,20 +433,23 @@ function Info(props) {
       setSelectDisabled(newValues);
     }
 
-    const newContent2 = disabledSnowTypes.filter(disabledSnowTypes => { return disabledSnowTypes !== item.id; });
+    const newContent2 = disabledSnowTypes.filter((disabledSnowTypes) => {
+      return disabledSnowTypes !== item.id;
+    });
     setDisabledSnowTypes(newContent2);
-
   };
   // Defines the default value of a snowtype box
   const getValue = (id) => {
-    let index = snowTypeList.findIndex((snowTypeList => snowTypeList.ID === id));
+    let index = snowTypeList.findIndex(
+      (snowTypeList) => snowTypeList.ID === id
+    );
     return snowTypeList[index];
   };
   // Checks if an option should be disabled or not
   const checkDisabledValues = (option) => {
     let returnValue = false;
 
-    disabledSnowTypes.forEach(type => {
+    disabledSnowTypes.forEach((type) => {
       if (option.ID === type) {
         returnValue = true;
       }
@@ -458,33 +463,29 @@ function Info(props) {
 
     let itemId = item.id;
     let valueId = value.ID;
-    let index = snowRecordContent.findIndex((snowRecorditem => snowRecorditem.id === itemId));
+    let index = snowRecordContent.findIndex(
+      (snowRecorditem) => snowRecorditem.id === itemId
+    );
 
     const newContent = snowRecordContent;
     newContent[index].id = valueId;
     setSnowRecordContent(newContent);
 
-    let newContent2 = disabledSnowTypes.filter(snowtype => snowtype !== itemId);
+    let newContent2 = disabledSnowTypes.filter(
+      (snowtype) => snowtype !== itemId
+    );
     newContent2 = newContent2.concat(valueId);
     setDisabledSnowTypes(newContent2);
   };
 
-
-
-
-
-
-
   // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
   const sendForm = () => {
-
     const idValues = getSnowRecordContentIDs();
 
     let datavalues = [];
 
     // When checkbox is not checked:
     if (entryVisible) {
-
       datavalues[0] = props.segmentdata.ID;
       datavalues[1] = idValues[0];
       datavalues[2] = idValues[1];
@@ -494,15 +495,17 @@ function Info(props) {
     }
     // When checkbox is checked:
     else {
-      if (props.segmentdata.update !== null && props.segmentdata.update !== undefined) {
+      if (
+        props.segmentdata.update !== null &&
+        props.segmentdata.update !== undefined
+      ) {
         datavalues[0] = props.segmentdata.ID;
         datavalues[1] = props.segmentdata.update.Lumilaatu_ID1;
         datavalues[2] = props.segmentdata.update.Lumilaatu_ID2;
         datavalues[3] = props.segmentdata.update.Toissijainen_ID1;
         datavalues[4] = props.segmentdata.update.Toissijainen_ID2;
         datavalues[5] = props.segmentdata.update.Kuvaus;
-      }
-      else {
+      } else {
         datavalues[0] = props.segmentdata.ID;
         datavalues[1] = null;
         datavalues[2] = null;
@@ -524,16 +527,15 @@ function Info(props) {
 
     const fetchUpdate = async () => {
       //setLoading(true);
-      const response = await fetch("api/update/" + props.segmentdata.ID,
-        {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + props.token
-          },
-          body: JSON.stringify(data),
-        });
+      const response = await fetch("api/update/" + props.segmentdata.ID, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + props.token,
+        },
+        body: JSON.stringify(data),
+      });
       await response.json();
     };
     fetchUpdate();
@@ -547,8 +549,8 @@ function Info(props) {
       const response = await fetch("api/segments");
       const data = await response.json();
 
-      await updateData.forEach(update => {
-        snowdata.forEach(snow => {
+      await updateData.forEach((update) => {
+        snowdata.forEach((snow) => {
           if (snow.ID === update.Lumilaatu_ID1) {
             update.Lumi1 = snow;
           }
@@ -567,9 +569,9 @@ function Info(props) {
         });
       });
 
-      data.forEach(segment => {
+      data.forEach((segment) => {
         segment.update = null;
-        updateData.forEach(update => {
+        updateData.forEach((update) => {
           if (update.Segmentti === segment.ID) {
             segment.update = update;
           }
@@ -579,7 +581,7 @@ function Info(props) {
           }
         });
         if (segment.On_Alasegmentti != null) {
-          data.forEach(mahd_yla_segmentti => {
+          data.forEach((mahd_yla_segmentti) => {
             if (mahd_yla_segmentti.ID === segment.On_Alasegmentti) {
               segment.On_Alasegmentti = mahd_yla_segmentti.Nimi;
             }
@@ -592,7 +594,6 @@ function Info(props) {
 
       // Päivitetään segmentit, jotta ne piirtyvät uudestaan
       props.updateSegments(data);
-
     };
     fetchData();
     closeUpdate();
@@ -600,42 +601,54 @@ function Info(props) {
 
   // Segmenttidataa tulee olla, jotta renderöidään mitään näkyvää
   if (props.segmentdata !== undefined) {
-
     if (props.token !== null && props.token !== undefined) {
-
       // Nämä renderöidään, kun käyttäjä on kirjautunut (muokkaustoiminto lisänä)
       return (
         <div className={isXS ? "mobileInfo" : "info"}>
-
-          <SnowRecordView segmentdata={props.segmentdata} close={closeShownSegment} signedUser={true} sponsors={props.sponsors}/>
+          <SnowRecordView
+            segmentdata={props.segmentdata}
+            close={closeShownSegment}
+            signedUser={true}
+            sponsors={props.sponsors}
+          />
           <IconButton
             className={classes.editButton}
-            style={{padding: 0, paddingLeft: "12px"}}
+            style={{ padding: 0, paddingLeft: "12px" }}
             onClick={openUpdate}
           >
             <EditIcon />
-            <Typography className={classes.smallHeaders} variant="button">Päivitä</Typography>
+            <Typography className={classes.smallHeaders} variant="button">
+              Päivitä
+            </Typography>
           </IconButton>
 
           {/* Segmentin päivitysdialogi - SNOW RECORD ENTRY VIEW*/}
 
           <Dialog
-            fullScreen={(isXS && entryVisible)}
+            fullScreen={isXS && entryVisible}
             onClose={closeUpdate}
             open={loginOpen}
             maxWidth="xl"
           >
             <ThemeProvider theme={theme}>
-              <Box className={classes.box} style={isXS ? {} : { minWidth: "300px" }}>
+              <Box
+                className={classes.box}
+                style={isXS ? {} : { minWidth: "300px" }}
+              >
                 {/*Main header */}
-                <Typography className={classes.largeHeaders}>PÄIVITÄ SEGMENTTIÄ</Typography>
+                <Typography className={classes.largeHeaders}>
+                  PÄIVITÄ SEGMENTTIÄ
+                </Typography>
                 {/*Segment name */}
-                <Typography className={classes.smallHeaders}>{props.segmentdata.Nimi}</Typography>
+                <Typography className={classes.smallHeaders}>
+                  {props.segmentdata.Nimi}
+                </Typography>
                 <Box className={classes.part}>
                   {/* Timestamp update checkbox*/}
-                  <FormControlLabel control={
-                    <Checkbox onChange={updateEntryVisible} />
-                  } label="Päivitä vain aikaleima" />
+                  <FormControlLabel
+                    control={<Checkbox onChange={updateEntryVisible} />}
+                    label="Päivitä vain aikaleima"
+                  />
                 </Box>
 
                 {/*THIS BOX CONTAINS ELEMENTS HIDDEN WHEN THE CHECKBOX IS ACTIVE*/}
@@ -644,111 +657,195 @@ function Info(props) {
                     <Divider variant="middle" />
                     <Box className={classes.part}>
                       {/*Snowtype add button:*/}
-                      {addVisible && (<Box className={classes.buttonsWrapper}>
-                        <Button size="large" variant="contained" onClick={() => { setAddVisible(false); setSelectVisible(true); }} color="primary" endIcon={<SearchIcon fontSize="large" />}
-                          className={classes.buttons}>Lisää
-                        </Button>
-                      </Box>)}
+                      {addVisible && (
+                        <Box className={classes.buttonsWrapper}>
+                          <Button
+                            size="large"
+                            variant="contained"
+                            onClick={() => {
+                              setAddVisible(false);
+                              setSelectVisible(true);
+                            }}
+                            color="primary"
+                            endIcon={<SearchIcon fontSize="large" />}
+                            className={classes.buttons}
+                          >
+                            Lisää
+                          </Button>
+                        </Box>
+                      )}
                       {/*Select whether type is primary or secondary:*/}
-                      {selectVisible && (<Select className={classes.textFields}
-                        fullWidth={true}
-                        displayEmpty
-                        open={true}
-                        onChange={handleSearchOpen}
-                        style={{
-                          backgroundColor: "white", border: "6px solid", color: "#000000B3"
-                        }}
-                      >
-                        <MenuItem disabled={selectDisabled[0]} value={false}>Ensisijainen</MenuItem>
-                        <MenuItem disabled={selectDisabled[1]} value={true}>Toissijainen</MenuItem>
-                      </Select>)}
-                      {/*Autofill search:*/}
-                      {searchVisible && (<Box>
-                        <Autocomplete
+                      {selectVisible && (
+                        <Select
                           className={classes.textFields}
-                          id="snowRecordSearch"
-                          onChange={(event, value) => { handleSearchClose(event, value); }}
-                          open={searchVisible}
-                          autoComplete={true}
-                          options={snowTypeList}
-                          noOptionsText={"Ei tuloksia"}
-                          popupIcon={""}
-                          size="small"
-                          getOptionDisabled={(option) => checkDisabledValues(option)}
-                          getOptionLabel={(option) => option.Nimi}
-                          renderInput={(params) => (<TextField {...params} className={classes.textFields}
-                            size="small"
-                            autoFocus={true}
-                            placeholder="Etsi"
-                            variant="outlined"
-                            style={{ backgroundColor: "white", border: "6px solid", color: "#000000B3" }}
-                          />)}
-                        />
-                      </Box>)}
-                      {/*Snowtype boxes*/}
-                      {snowRecordContent.map(item => (<Box id={item.id} key={item.id}>
-                        <Box className={classes.item} boxShadow={2}>
-                          <Box display="flex" flexDirection="row">
-                            <Typography className={classes.smallHeaders}>{item.secondary ? "Toissijainen tyyppi" : "Ensisijainen tyyppi"}</Typography>
-                            <IconButton onClick={() => removeSnowtype(item)} style={isXS ? { left: "30%" } : { left: "35%" }} id="deleteSnowType">
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
+                          fullWidth={true}
+                          displayEmpty
+                          open={true}
+                          onChange={handleSearchOpen}
+                          style={{
+                            backgroundColor: "white",
+                            border: "6px solid",
+                            color: "#000000B3",
+                          }}
+                        >
+                          <MenuItem disabled={selectDisabled[0]} value={false}>
+                            Ensisijainen
+                          </MenuItem>
+                          <MenuItem disabled={selectDisabled[1]} value={true}>
+                            Toissijainen
+                          </MenuItem>
+                        </Select>
+                      )}
+                      {/*Autofill search:*/}
+                      {searchVisible && (
+                        <Box>
                           <Autocomplete
                             className={classes.textFields}
-                            disableClearable
                             id="snowRecordSearch"
+                            onChange={(event, value) => {
+                              handleSearchClose(event, value);
+                            }}
+                            open={searchVisible}
                             autoComplete={true}
-                            onChange={(e, value) => { handleSelectClose(e, value, item); }}
                             options={snowTypeList}
                             noOptionsText={"Ei tuloksia"}
+                            popupIcon={""}
                             size="small"
-                            getOptionDisabled={(option) => checkDisabledValues(option)}
-                            defaultValue={getValue(item.id)}
+                            getOptionDisabled={(option) =>
+                              checkDisabledValues(option)
+                            }
                             getOptionLabel={(option) => option.Nimi}
-                            renderInput={(params) => (<TextField {...params} fullWidth={true} className={classes.textFields}
-                              size="small" variant="outlined"
-                            />)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className={classes.textFields}
+                                size="small"
+                                autoFocus={true}
+                                placeholder="Etsi"
+                                variant="outlined"
+                                style={{
+                                  backgroundColor: "white",
+                                  border: "6px solid",
+                                  color: "#000000B3",
+                                }}
+                              />
+                            )}
                           />
                         </Box>
-                      </Box>))}
+                      )}
+                      {/*Snowtype boxes*/}
+                      {snowRecordContent.map((item) => (
+                        <Box id={item.id} key={item.id}>
+                          <Box className={classes.item} boxShadow={2}>
+                            <Box display="flex" flexDirection="row">
+                              <Typography className={classes.smallHeaders}>
+                                {item.secondary
+                                  ? "Toissijainen tyyppi"
+                                  : "Ensisijainen tyyppi"}
+                              </Typography>
+                              <IconButton
+                                onClick={() => removeSnowtype(item)}
+                                style={isXS ? { left: "30%" } : { left: "35%" }}
+                                id="deleteSnowType"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
+                            <Autocomplete
+                              className={classes.textFields}
+                              disableClearable
+                              id="snowRecordSearch"
+                              autoComplete={true}
+                              onChange={(e, value) => {
+                                handleSelectClose(e, value, item);
+                              }}
+                              options={snowTypeList}
+                              noOptionsText={"Ei tuloksia"}
+                              size="small"
+                              getOptionDisabled={(option) =>
+                                checkDisabledValues(option)
+                              }
+                              defaultValue={getValue(item.id)}
+                              getOptionLabel={(option) => option.Nimi}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  fullWidth={true}
+                                  className={classes.textFields}
+                                  size="small"
+                                  variant="outlined"
+                                />
+                              )}
+                            />
+                          </Box>
+                        </Box>
+                      ))}
                     </Box>
 
                     <Divider variant="middle" />
                     {/* Description text box*/}
                     <Box className={classes.part}>
-                      <Typography variant="h5" className={classes.smallHeaders}>Kuvaus</Typography>
-                      <TextField className={classes.textFields} value={text} maxRows={6} onChange={updateText} placeholder="Kirjoita..." multiline variant="outlined" />
+                      <Typography variant="h5" className={classes.smallHeaders}>
+                        Kuvaus
+                      </Typography>
+                      <TextField
+                        className={classes.textFields}
+                        value={text}
+                        maxRows={6}
+                        onChange={updateText}
+                        placeholder="Kirjoita..."
+                        multiline
+                        variant="outlined"
+                      />
                     </Box>
-                  </Box>)}
+                  </Box>
+                )}
                 {/* Dialogin toimintopainikkeet.*/}
                 <DialogActions>
-                  <Button id={"dialogClose"} variant="contained" color="secondary" onClick={closeUpdate}>Peruuta</Button>
-                  <Button variant="contained" color="primary" id={"dialogOK"} disabled={!updateEnabled} onClick={sendForm}>Päivitä</Button>
+                  <Button
+                    id={"dialogClose"}
+                    variant="contained"
+                    color="secondary"
+                    onClick={closeUpdate}
+                  >
+                    Peruuta
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    id={"dialogOK"}
+                    disabled={!updateEnabled}
+                    onClick={sendForm}
+                  >
+                    Päivitä
+                  </Button>
                 </DialogActions>
               </Box>
             </ThemeProvider>
           </Dialog>
         </div>
       );
-    }
-    else {
+    } else {
       // Kirjautumattoman käyttäjän näkymät (muokkaustoimintoa ei ole)
       return (
         <div className={isXS ? "mobileInfo" : "info"}>
-
-          <SnowRecordView 
-            segmentdata={props.segmentdata} 
-            writeReviewEnabled={writeReviewEnabled} 
-            openForm={openForm} 
-            openFeedback={openFeedback} 
+          <SnowRecordView
+            segmentdata={props.segmentdata}
+            writeReviewEnabled={writeReviewEnabled}
+            openForm={openForm}
+            openFeedback={openFeedback}
             close={closeShownSegment}
             signedUser={false}
             sponsors={props.sponsors}
           />
 
-          { writeReviewEnabled && (
-            <WriteUserReview segmentdata={props.segmentdata} mode={reviewMode} back={closeReview} close={closeShownSegment}/>
+          {writeReviewEnabled && (
+            <WriteUserReview
+              segmentdata={props.segmentdata}
+              mode={reviewMode}
+              back={closeReview}
+              close={closeShownSegment}
+            />
           )}
         </div>
       );

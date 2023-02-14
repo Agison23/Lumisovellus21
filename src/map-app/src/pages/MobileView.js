@@ -5,20 +5,22 @@ Kopio Pallas.js filusta BottomNavia ja WelcomeViewiä Flutter mobiiliappia varte
 
 import * as React from "react";
 import { useEffect } from "react";
-import "./App.css";
-import "./style.css";
-import Map from "./NewMap";
-import Info from "./Info";
+import "../styles/App.css";
+import "../styles/style.css";
+import Map from "../components/map/NewMap";
+import Info from "../components/Info";
 import { useMediaQuery } from "react-responsive";
 // eslint-disable-next-line no-unused-vars
 import SnowIcon from "@material-ui/icons/AcUnit";
 // eslint-disable-next-line no-unused-vars
 import IconButton from "@material-ui/core/IconButton";
 
-var refreshInterval = setInterval(window.location.reload.bind(window.location), (30*60000));
+var refreshInterval = setInterval(
+  window.location.reload.bind(window.location),
+  30 * 60000
+);
 
 function App() {
-
   // Use state hookit
   const [token, setToken] = React.useState(null);
   const [segments, setSegments] = React.useState([]);
@@ -29,8 +31,7 @@ function App() {
   const [selectedSegment, setSelectedSegment] = React.useState(null);
 
   //imported hook. Kysely näyttöportin koosta
-  const isMobile = useMediaQuery({query: "(max-width:900px)"});
-
+  const isMobile = useMediaQuery({ query: "(max-width:900px)" });
 
   /*
    * Haetaan renderöinnin jälkeen aina tiedot lumilaaduista, päivityksistä ja segmenteistä
@@ -54,13 +55,13 @@ function App() {
       // Mikäli muutetaan, muutettava myös siellä.
       // const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
       const snowcolors = snowdata.map((item) => {
-        return {color: item.Vari, name: item.Nimi, ID: item.ID};
+        return { color: item.Vari, name: item.Nimi, ID: item.ID };
       });
       // Yhdistetään olemassa olevat värit ja "ei tietoa" (viimeiseksi)
       setSegmentColors(snowcolors);
-      
-      await updateData.forEach(update => {
-        snowdata.forEach(snow => {
+
+      await updateData.forEach((update) => {
+        snowdata.forEach((snow) => {
           if (snow.ID === update.Lumilaatu_ID1) {
             update.Lumi1 = snow;
           }
@@ -84,19 +85,18 @@ function App() {
           }
         });
       });
-      
+
       setWoodsSegment(null);
-      data.forEach(segment => {       
+      data.forEach((segment) => {
         segment.update = null;
-        updateData.forEach(update => {
+        updateData.forEach((update) => {
           if (update.Segmentti === segment.ID) {
             segment.update = update;
           }
         });
-        if(segment.On_Alasegmentti != null)
-        {
-          data.forEach(mahd_yla_segmentti => {
-            if(mahd_yla_segmentti.ID === segment.On_Alasegmentti){
+        if (segment.On_Alasegmentti != null) {
+          data.forEach((mahd_yla_segmentti) => {
+            if (mahd_yla_segmentti.ID === segment.On_Alasegmentti) {
               segment.On_Alasegmentti = mahd_yla_segmentti.Nimi;
             }
           });
@@ -106,7 +106,7 @@ function App() {
         }
       });
       updateSegments(data);
- 
+
       console.log("Segments updated");
     };
 
@@ -122,16 +122,16 @@ function App() {
    * Event handlerit
    */
   useEffect(() => {
-    if(selectedSegment !== null) {
-      let selectedId = selectedSegment-1;
+    if (selectedSegment !== null) {
+      let selectedId = selectedSegment - 1;
 
-      if(selectedId >= 0 && selectedId < segments.length) {
-        if(selectedSegment === segments[ selectedId ].ID) {
-          setChoice(segments[ selectedId ]);
+      if (selectedId >= 0 && selectedId < segments.length) {
+        if (selectedSegment === segments[selectedId].ID) {
+          setChoice(segments[selectedId]);
         } else {
           console.log("Could not find segment with reference");
-          segments.forEach(segment => {
-            if(segment.ID === selectedSegment) {
+          segments.forEach((segment) => {
+            if (segment.ID === selectedSegment) {
               setChoice(segment);
             }
           });
@@ -153,7 +153,7 @@ function App() {
   // Token tallennetaan reactin stateen
   // eslint-disable-next-line no-unused-vars
   function updateToken(token) {
-    if (typeof token !== "undefined"){
+    if (typeof token !== "undefined") {
       clearInterval(refreshInterval);
     }
     setToken(token);
@@ -173,24 +173,24 @@ function App() {
     <div className="root">
       <div className="app">
         <div className="map_container mobile">
-          <Map 
+          <Map
             shownSegment={shownSegment}
             segmentColors={segmentColors}
-            segments={segments} 
-            onClick={chooseSegment} 
+            segments={segments}
+            onClick={chooseSegment}
             isMobile={isMobile}
             woodsSegment={woodsSegment}
           />
         </div>
         {/* <div className="guide"></div> */}
-          
+
         {/* Sovelluksen sivupalkki, jossa näytetään kartalta valitun segmentin tietoja
             Näytetään, kun jokin segmentti valittuna, eikä olla hallintanäkymässä */}
         <div className="segment_info">
-          {(shownSegment !== null ? 
+          {shownSegment !== null ? (
             <Info
               //segments={segments}
-              segmentdata={shownSegment} 
+              segmentdata={shownSegment}
               token={token}
               updateSegments={updateSegments}
               onUpdate={chooseSegment}
@@ -198,9 +198,9 @@ function App() {
               updateWoods={updateWoods}
               snowtypes={snowtypes}
             />
-            :
+          ) : (
             <div />
-          )} 
+          )}
         </div>
       </div>
     </div>

@@ -6,7 +6,6 @@
  *
  */
 
- 
 /* 
 .box {
   display: flex;
@@ -17,13 +16,13 @@
 /* .map_container {
   height: 600px;
   /* The height is 600 pixels */
-  /* width: 100%; */
-  /* The width is the width of the web page */
+/* width: 100%; */
+/* The width is the width of the web page */
 /*} */
 
 @font-face {
   font-family: Donau;
-  src: url("fonts/donau.otf") format("opentype");
+  src: url("../fonts/donau.otf") format("opentype");
 }
 
 body {
@@ -50,7 +49,7 @@ body {
   overflow-y: scroll;
   width: 75vw;
   z-index: 4;
-  background: linear-gradient(135deg, #1C4777, #B8C1E0, #539BD5);
+  background: linear-gradient(135deg, #1c4777, #b8c1e0, #539bd5);
 }
 
 .app .map_container {
@@ -172,7 +171,6 @@ body {
     width: 100vw;
     z-index: 6;
   }
-
 }
 
 /*
@@ -183,20 +181,20 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background:rgba(255, 255, 255, 0); 
+  background: rgba(255, 255, 255, 0);
 }
- 
+
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 /* .map {
   height: 600px; */
-  /* The height is 600 pixels */
-  /* width: 100%; */
-  /* The width is the width of the web page */
+/* The height is 600 pixels */
+/* width: 100%; */
+/* The width is the width of the web page */
 /* } */
