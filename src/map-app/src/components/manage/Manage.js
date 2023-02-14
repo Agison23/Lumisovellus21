@@ -30,23 +30,22 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
-import SegmentManage from "./SegmentManage";
-// eslint-disable-next-line no-unused-vars
-import UserManage from "./UserManage";
-import ReviewManage from "./reviewManage";
 
+// eslint-disable-next-line no-unused-vars
+import UserManage from "../users/UserManage";
+import ReviewManage from "./reviewManage";
+import SegmentManage from "../segments/SegmentManage";
 
 const useStyles = makeStyles(() => ({
   tabs: {
     display: "flex",
   },
   tabLinks: {
-    margin: "auto"
-  }
+    margin: "auto",
+  },
 }));
 
 function Manage(props) {
-
   const classes = useStyles();
 
   // Hooks
@@ -57,7 +56,7 @@ function Manage(props) {
   const segmentDisabled = Boolean(showSegments);
   const usersDisabled = Boolean(showUsers);
   const reviewsDisabled = Boolean(showReviews);
-  
+
   /*
    * Event handlers
    */
@@ -84,37 +83,51 @@ function Manage(props) {
   };
 
   // Renderöinti
-  return (  
+  return (
     <div>
       {/* Hallintanäkymän valinta käyttäjät / segmentit */}
       <Box className={classes.tabs}>
-        <Button className={classes.tabLinks} disabled={segmentDisabled} onClick={openSegment}>Segmentit</Button>
-        <Button className={classes.tabLinks} disabled={usersDisabled} onClick={openUser}>Käyttäjät</Button> 
-        <Button className={classes.tabLinks} disabled={reviewsDisabled} onClick={openReview}>Palautteet</Button>      
+        <Button
+          className={classes.tabLinks}
+          disabled={segmentDisabled}
+          onClick={openSegment}
+        >
+          Segmentit
+        </Button>
+        <Button
+          className={classes.tabLinks}
+          disabled={usersDisabled}
+          onClick={openUser}
+        >
+          Käyttäjät
+        </Button>
+        <Button
+          className={classes.tabLinks}
+          disabled={reviewsDisabled}
+          onClick={openReview}
+        >
+          Palautteet
+        </Button>
       </Box>
       <Divider />
 
       {/* Näytetään muuttujan showSegments (boolean) mukaan joko segmenttienhallinta tai käyttäjienhallinta */}
-      { showSegments &&
-        <SegmentManage 
+      {showSegments && (
+        <SegmentManage
           segments={props.segments}
           token={props.token}
           onUpdate={props.onUpdate}
           updateSegments={props.updateSegments}
           shownSegment={props.shownSegment}
           updateWoods={props.updateWoods}
-        /> 
-      }
+        />
+      )}
 
-      {showUsers && 
-        <UserManage token={props.token} role={props.role}/>
-      }
+      {showUsers && <UserManage token={props.token} role={props.role} />}
 
-      {showReviews && 
-        <ReviewManage token={props.token} role={props.role}/>     
-      }
-      
-      <div style={{height: "60px"}}></div>
+      {showReviews && <ReviewManage token={props.token} role={props.role} />}
+
+      <div style={{ height: "60px" }}></div>
     </div>
   );
 }

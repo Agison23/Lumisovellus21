@@ -22,21 +22,21 @@ Arttu Lakkala 15.11 Lisätty päivityksen lisäys segmenttiin.
 
 import * as React from "react";
 import { useEffect } from "react";
-import "./App.css";
-import "./style.css";
-import Map from "./NewMap";
-import Manage from "./Manage";
-import Info from "./Info";
-import WeatherTab from "./weather/WeatherTab";
+import "../styles/App.css";
+import "../styles/style.css";
+import Map from "../components/map/NewMap";
+import Manage from "../components/manage/Manage";
+import Info from "../components/Info";
+import WeatherTab from "../weather/WeatherTab";
 import { useMediaQuery } from "react-responsive";
-import BottomNav from "./BottomNav";
+import BottomNav from "../components/BottomNav";
 import WelcomeView from "./WelcomeView";
-import Login from "./Login";
+import Login from "../components/Login";
 // eslint-disable-next-line no-unused-vars
 import SnowIcon from "@material-ui/icons/AcUnit";
 // eslint-disable-next-line no-unused-vars
 import IconButton from "@material-ui/core/IconButton";
-import Logout from "./Logout";
+import Logout from "../components/Logout";
 import SnowTypes from "./SnowTypes";
 
 var refreshInterval = setInterval(
@@ -44,7 +44,7 @@ var refreshInterval = setInterval(
   30 * 60000
 );
 
-function Pallas({ language }) {
+function App() {
   // Use state hookit
   const [token, setToken] = React.useState(null);
   const [user, setUser] = React.useState(null);
@@ -62,8 +62,6 @@ function Pallas({ language }) {
 
   //imported hook. Kysely näyttöportin koosta
   const isMobile = useMediaQuery({ query: "(max-width:900px)" });
-
-  console.log(`Language is ${language} from Pallas`);
 
   /* Sponsor logos & links
 
