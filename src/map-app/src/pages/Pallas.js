@@ -384,4 +384,4 @@ function App() {
   );
 }
 
-export default Pallas;
+export default App;
