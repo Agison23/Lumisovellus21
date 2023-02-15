@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 class AppState extends ChangeNotifier {
   int _pageIndex = 0;
+  bool _isEnglish = false;
+
+  bool get isEnglish => _isEnglish;
+
+  set toggleLanguage(bool value) {
+    _isEnglish = !_isEnglish;
+    notifyListeners();
+  }
+
   int get pageIndex {
     return _pageIndex;
   }

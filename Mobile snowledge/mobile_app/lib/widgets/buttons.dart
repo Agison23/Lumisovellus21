@@ -13,8 +13,10 @@ import 'dialogs.dart';
 
 class Buttons {
   String locationMessage = 'LOCATION';
+
   /// Help button
-  ElevatedButton helpButton(bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+  ElevatedButton helpButton(
+      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
@@ -25,8 +27,8 @@ class Buttons {
                 open112();
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
-                Navigator.of(contx).push(
-                    MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+                Navigator.of(contx).push(MaterialPageRoute(
+                    builder: (contx) => const HelpNeeded(true)));
               }
               if (text == 'Avunpyyntö') {
                 Dialogs().showDialogMinorHelpQuestions(contx);
@@ -55,7 +57,7 @@ class Buttons {
           if (text == 'Soita 112') {
             open112();
             Navigator.of(contx).push(
-              MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
+                MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
           }
 
           if (text == 'Avunpyyntö') {
@@ -75,34 +77,34 @@ class Buttons {
           backgroundColor: color,
           padding: const EdgeInsets.all(20.0),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 
   /// Cancel button
-  static ElevatedButton cancelButton(BuildContext context, String type) {
+  static ElevatedButton cancelButton(
+      BuildContext context, String text, String type) {
     return ElevatedButton(
       onPressed: () {
         if (type == 'help_request') {
           Navigator.pop(context);
           Navigator.pop(context);
           Navigator.pop(context);
-        } else if (type == 'location'){
+        } else if (type == 'location') {
           var appState = Provider.of<AppState>(context, listen: false);
           Navigator.of(context).pop();
           appState.setPageIndex = 1;
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const MainPage()),
-                  (route) => false);
+              MaterialPageRoute(builder: (context) => const MainPage()),
+              (route) => false);
         } else if (type == 'offer_help') {
           Navigator.pop(context);
         }
       },
-      child: const Text(
-        'Peruuta',
-        style: TextStyle(
+      child: Text(
+        text,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 15,
           fontWeight: FontWeight.bold,
@@ -112,88 +114,85 @@ class Buttons {
           backgroundColor: Colors.transparent,
           padding: const EdgeInsets.all(20.0),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
     return ElevatedButton(
-      onPressed: () async => 
-      await MyApp.navigatorKey.currentState
-          ?.push(MaterialPageRoute(builder: (context) => HelpOffered(payload, false))),
+        onPressed: () async => await MyApp.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+                builder: (context) => HelpOffered(payload, false))),
+        child: const Text(
+          'Auta',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xffd99222),
+            padding: const EdgeInsets.all(20.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50))));
+  }
 
-      child: const Text(
-        'Auta',
-        style: TextStyle(
+  /// Go to settings button
+  static ElevatedButton goToSettingsButton(BuildContext context,
+      bool insistAlwaysOn, bool result, String buttonText) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    return ElevatedButton(
+      onPressed: () async {
+        if (insistAlwaysOn) {
+          await Permission.locationAlways.request();
+          if (!(await Permission.locationAlways.isGranted)) {
+            if (await openAppSettings()) {
+              appState.setUserInAppSettings = true;
+            }
+          }
+          result = await Permission.locationAlways.isGranted;
+          Navigator.pop(context);
+        } else {
+          await Permission.location.request();
+          if (!(await Permission.location.isGranted)) {
+            if (await openAppSettings()) {
+              appState.setUserInAppSettings = true;
+            }
+          }
+          result = await Permission.location.isGranted;
+          Navigator.pop(context);
+        }
+      },
+      child: Text(
+        buttonText,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 15,
           fontWeight: FontWeight.bold,
         ),
       ),
       style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xffd99222),
-          padding: const EdgeInsets.all(20.0),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))));
-
-  }
-
-  /// Go to settings button
-  static ElevatedButton goToSettingsButton(BuildContext context, bool insistAlwaysOn, bool result, String buttonText) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    return ElevatedButton(
-        onPressed: () async {
-          if (insistAlwaysOn) {
-            await Permission.locationAlways.request();
-            if (!(await Permission
-                .locationAlways.isGranted)) {
-              if (await openAppSettings()) {
-                appState.setUserInAppSettings = true;
-              }
-            }
-            result =
-            await Permission.locationAlways.isGranted;
-            Navigator.pop(context);
-          } else {
-            await Permission.location.request();
-            if (!(await Permission.location.isGranted)) {
-              if (await openAppSettings()) {
-                appState.setUserInAppSettings = true;
-              }
-            }
-            result = await Permission.location.isGranted;
-            Navigator.pop(context);
-          }
-        },
-        child: Text(
-          buttonText,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF4B6DD7),
           padding: const EdgeInsets.all(20.0),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50))),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 
-
-   static ElevatedButton confirmButton(BuildContext context, String text, {VoidCallback? onPressed}) {
+  static ElevatedButton confirmButton(BuildContext context, String text,
+      {VoidCallback? onPressed}) {
     return ElevatedButton(
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
         ),
+      ),
       style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -201,13 +200,14 @@ class Buttons {
           side: const BorderSide(
               width: 3, // the thickness
               color: Colors.white // the color of the border
-          ),
+              ),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 
-  static ElevatedButton onboardingButton(BuildContext context, String text, {VoidCallback? onPressed}) {
+  static ElevatedButton onboardingButton(BuildContext context, String text,
+      {VoidCallback? onPressed}) {
     return ElevatedButton(
       onPressed: onPressed,
       child: Text(
@@ -225,29 +225,31 @@ class Buttons {
           side: const BorderSide(
               width: 3, // the thickness
               color: Colors.white // the color of the border
-          ),
+              ),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
     );
   }
 
-  static TextButton refuseLocationPermissionButton(BuildContext context, {VoidCallback? onPressed}) {
+  static TextButton refuseLocationPermissionButton(
+      BuildContext context, String text,
+      {VoidCallback? onPressed}) {
     return TextButton(
-        onPressed: onPressed,
-        child: const Text(
-          'Älä salli sijaintia',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 17,
-          ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
         ),
+      ),
     );
   }
 
   static IconButton crossIconButton(BuildContext context) {
     return IconButton(
-      padding: EdgeInsets.zero,
+        padding: EdgeInsets.zero,
         onPressed: () {
           Navigator.pop(context);
         },

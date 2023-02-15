@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/app_info.dart';
 import 'package:mobile_app/helper/utility.dart';
@@ -43,35 +44,89 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+
+    void _toggleLanguage() {
+      appState.toggleLanguage = true;
+    }
+
     return Container(
       padding: const EdgeInsets.all(24),
       child: Wrap(
         runSpacing: 16,
         children: [
-          _item(0, Icons.area_chart_outlined, "Lumiolosuhteet Pallaksella"),
+          _item(
+              0,
+              Icons.area_chart_outlined,
+              !appState.isEnglish
+                  ? "Lumiolosuhteet Pallaksella"
+                  : "Snow conditions in Pallas"),
           Visibility(
-            child: _item(1, Icons.map_outlined, "Karttanäkymä"),
+            child: _item(1, Icons.map_outlined,
+                !appState.isEnglish ? "Karttanäkymä" : "View Map"),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
-          _item(2, Icons.sunny_snowing, "Sää Pallaksella"),
+          _item(2, Icons.sunny_snowing,
+              !appState.isEnglish ? "Sää Pallaksella" : "Weather in Pallas"),
           Visibility(
-            child: _item(3, Icons.ac_unit, "Lumityyppien selitteet"),
+            child: _item(
+                3,
+                Icons.ac_unit,
+                !appState.isEnglish
+                    ? "Lumityyppien selitteet"
+                    : "Snow types Information"),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
-          _item(4, Icons.person_outline, "Käyttäjätiedot"),
-          _item(5, Icons.menu_book_outlined, "Tietoa palvelusta"),
+          _item(4, Icons.person_outline,
+              !appState.isEnglish ? "Käyttäjätiedot" : "User Information"),
+          _item(
+              5,
+              Icons.menu_book_outlined,
+              !appState.isEnglish
+                  ? "Tietoa palvelusta"
+                  : "Application Information"),
           const Divider(color: Colors.black),
           _item(
             6,
             Icons.downhill_skiing_outlined,
-            "Pallaksen Pöllöt",
+            !appState.isEnglish ? "Pallaksen Pöllöt" : "Pallas (something?)",
           ),
           _item(
             7,
             Icons.privacy_tip_outlined,
-            "Tietosuojaseloste",
+            !appState.isEnglish ? "Tietosuojaseloste" : "Privacy Statement",
+          ),
+          const Divider(color: Colors.black),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  // height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: CupertinoSwitch(
+                      value: appState.isEnglish,
+                      onChanged: (bool value) {
+                        _toggleLanguage();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 60,
+                  child: DrawerHeader(
+                    child: Text(
+                      appState.isEnglish ? 'ENGLISH' : 'SUOMEA',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

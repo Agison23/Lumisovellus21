@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:mobile_app/widgets_binding_observer_state.dart';
+import 'package:provider/provider.dart';
+
+import '../state/appState.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -12,6 +15,7 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return Stack(children: [
       Align(
         alignment: Alignment.bottomCenter,
@@ -38,10 +42,11 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                   Dialogs().showDialogSharingLocation(context);
                 },
                 child: Row(
-                  children: const [
-                    Icon(Icons.near_me_rounded, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text('Sijainti', style: TextStyle(color: Colors.white))
+                  children: [
+                    const Icon(Icons.near_me_rounded, color: Colors.white),
+                    const SizedBox(width: 10),
+                    Text(!appState.isEnglish ? 'Sijainti' : 'Location',
+                        style: const TextStyle(color: Colors.white))
                   ],
                 ),
               )
@@ -62,10 +67,10 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
             decoration: BoxDecoration(
                 color: const Color(0xffd99222),
                 borderRadius: BorderRadius.circular(50.0)),
-            child: const Center(
+            child: Center(
                 child: Text(
-              'Pyydä\napua',
-              style: TextStyle(color: Colors.white, fontSize: 15),
+              !appState.isEnglish ? 'Pyydä\napua' : 'Ask for\n Help',
+              style: const TextStyle(color: Colors.white, fontSize: 15),
               textAlign: TextAlign.center,
             )),
           ),
