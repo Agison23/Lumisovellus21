@@ -162,8 +162,6 @@ function App() {
         }
       });
       updateSegments(data);
-
-      console.log("Segments updated");
     };
 
     fetchData();
@@ -185,7 +183,6 @@ function App() {
         if (selectedSegment === segments[selectedId].ID) {
           setChoice(segments[selectedId]);
         } else {
-          console.log("Could not find segment with reference");
           segments.forEach((segment) => {
             if (segment.ID === selectedSegment) {
               setChoice(segment);

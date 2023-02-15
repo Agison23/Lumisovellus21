@@ -3,21 +3,17 @@ import React, { useState, createContext } from "react";
 const GlobalContext = createContext();
 
 export function GlobalProvider({ children }) {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("fi");
 
-  function toggleFiEn() {
-    if (language === "fi") {
-      setLanguage("en");
-    } else {
-      setLanguage("fi");
-    }
+  function changeToLanguage(languageToChangeTo) {
+    setLanguage(languageToChangeTo);
   }
 
   return (
     <GlobalContext.Provider
       value={{
         language,
-        toggleFiEn,
+        changeToLanguage,
       }}
     >
       {children}

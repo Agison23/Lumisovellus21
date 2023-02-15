@@ -8,10 +8,11 @@ Created component
 
 **/
 
-import * as React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import GlobalContext from "../context/GlobalContext";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function SnowTypes(props) {
+  const { language } = useContext(GlobalContext);
   const styledClasses = useStyles();
   return (
     <div className="snow_tab_inner">
@@ -80,10 +82,10 @@ function SnowTypes(props) {
           style={{ height: "100px", width: "100px" }}
         ></img>
         <Typography variant="h4">
-          {props.language === "fi" ? "Lumivyöryvaroitus" : "Avalanche warning"}
+          {language === "fi" ? "Lumivyöryvaroitus" : "Avalanche warning"}
         </Typography>
         <Typography style={{ paddingTop: "25px" }}>
-          {props.language === "fi"
+          {language === "fi"
             ? `Pallaksen lumivyörymaastoja ovat useat kurut kuten Pyhäkuru,
           Palkaskuru, Rihmakuru sekä yli 25 asteiset jyrkät rinteet
           Lommoltunturissa, Keimiötunturissa ja Lehmäkerolla. Yksittäisiä
@@ -100,7 +102,7 @@ function SnowTypes(props) {
       </Box>
       <Box className={styledClasses.snowHeader}>
         <Typography variant="h4">
-          {props.language === "fi" ? "Lumityypit" : "Snow types"}
+          {language === "fi" ? "Lumityypit" : "Snow types"}
         </Typography>
       </Box>
       <Box className={styledClasses.content}>
@@ -112,10 +114,10 @@ function SnowTypes(props) {
             ></img>
             <Box>
               <Typography variant="h5">
-                {props.language === "fi" ? "Uusi lumi" : "New snow"}
+                {language === "fi" ? "Uusi lumi" : "New snow"}
               </Typography>
               <Typography>
-                {props.language === "fi"
+                {language === "fi"
                   ? "Vastasatanut pehmeä lumi."
                   : "Freshly fallen soft snow."}
               </Typography>
@@ -132,7 +134,7 @@ function SnowTypes(props) {
             ></img>
             <Box>
               <Typography variant="h5">
-                {props.language === "fi" ? "Märkä uusi lumi" : "Wet new snow"}
+                {language === "fi" ? "Märkä uusi lumi" : "Wet new snow"}
               </Typography>
               <Typography>
                 Lunta, josta voit helposti tehdä lumipallon. Märkää lunta

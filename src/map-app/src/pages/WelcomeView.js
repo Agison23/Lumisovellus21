@@ -8,13 +8,14 @@ Updated layout for mobile
 Created component
  **/
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 // import welcomeText from "./welcome_text.txt";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import welcomeText from "./welcomeText.json";
+import GlobalContext from "../context/GlobalContext";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -73,27 +74,16 @@ const useStyles = makeStyles(() => ({
 }));
 
 function WelcomeView(props) {
+  const { language } = useContext(GlobalContext);
   const [text, setText] = useState([]);
-  console.log(`Language is ${props.language} from WelcomeView`);
 
   useEffect(() => {
-    if (props.language === "fi") {
+    if (language === "fi") {
       setText(welcomeText.fi);
     } else {
       setText(welcomeText.en);
     }
   }, []);
-
-  // React.useEffect(() => {
-  //   // Reads the file welcome_text.txt located in the same folder
-  //   // splits it on newlines and sets the "text"-variable as the resiulting array
-  //   const readText = async () => {
-  //     fetch(welcomeText)
-  //       .then((r) => r.text())
-  //       .then((text) => setText(text.split("\n")));
-  //   };
-  //   readText();
-  // }, []);
 
   const styledClasses = useStyles();
 
