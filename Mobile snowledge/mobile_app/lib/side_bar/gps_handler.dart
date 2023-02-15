@@ -3,10 +3,13 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
+
+import '../state/appState.dart';
 
 class GpsHandler {
   static late Timer _timer;
@@ -82,6 +85,7 @@ class GpsHandler {
   }
 
   static Future<bool> checkAndAskGpsAlwaysOnPermission(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     //check permission
     if (!await Permission.locationAlways.isGranted) {
       if (Platform.isAndroid) {
@@ -92,17 +96,25 @@ class GpsHandler {
         if (androidVersion > 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(
               context,
-              'Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                  '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
-                  '\n\n->Sijainti: Salli aina',
-              "Siirry asetuksiin");
+              !appState.isEnglish
+                  ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
+                      '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
+                      '\n\n->Sijainti: Salli aina')
+                  : ('The application needs permission to use the location even when the screen is closed.' +
+                      '\n\nDo you allow the collection of location data when the app is running in the background?' +
+                      "\n\n->Location: Always Allow"),
+              !appState.isEnglish ? "Siirry asetuksiin" : "Go to Settings");
         } else if (androidVersion == 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(
               context,
-              'Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                  '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
-                  '\n\nkyllä?->Salli aina',
-              "Seuraava");
+              !appState.isEnglish
+                  ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
+                      '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
+                      '\n\n->Sijainti: Salli aina')
+                  : ('The application needs permission to use the location even when the screen is closed.' +
+                      '\n\nDo you allow the collection of location data when the app is running in the background?' +
+                      "\n\n->Location: Always Allow"),
+              !appState.isEnglish ? "Seuraava" : "Continue");
         } else {
           await Permission.locationAlways.request();
           return await Permission.locationAlways.isGranted;
@@ -110,9 +122,14 @@ class GpsHandler {
       } else if (Platform.isIOS) {
         return await _askWhenInUseAndThenAlwaysLocationPermission(
             context,
-            'Sovellus tarvitsee  luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?',
-            "Seuraava");
+            !appState.isEnglish
+                ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
+                    '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
+                    '\n\n->Sijainti: Salli aina')
+                : ('The application needs permission to use the location even when the screen is closed.' +
+                    '\n\nDo you allow the collection of location data when the app is running in the background?' +
+                    "\n\n->Location: Always Allow"),
+            !appState.isEnglish ? "Seuraava" : "Continue");
       } else {
         throw ErrorDescription("The platform must be either Android or IOS!");
       }
@@ -126,7 +143,8 @@ class GpsHandler {
     if (!(await Permission.locationWhenInUse.isGranted)) {
       return false;
     }
-    return await Dialogs.showGPSDialog(context, true, dialogMessage, buttonText);
+    return await Dialogs.showGPSDialog(
+        context, true, dialogMessage, buttonText);
   }
 
   ///check if phones gps is on
