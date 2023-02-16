@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./index.css";
-import Pallas from "./Pallas";
-import SnowTypes from "./SnowTypes";
-import WeatherTab from "./weather/WeatherTab";
-import WelcomeView from "./WelcomeView";
-import MobileView from "./MobileView";
+import "./styles/index.css";
+import Pallas from "./pages/Pallas";
+import SnowTypes from "./pages/SnowTypes";
+import WeatherTab from "./pages/WeatherTab";
+import WelcomeView from "./pages/WelcomeView";
+import MobileView from "./pages/MobileView";
 
 function App() {
   return (

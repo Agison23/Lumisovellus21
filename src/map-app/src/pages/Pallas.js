@@ -27,7 +27,7 @@ import "../styles/style.css";
 import Map from "../components/map/NewMap";
 import Manage from "../components/manage/Manage";
 import Info from "../components/Info";
-import WeatherTab from "../weather/WeatherTab";
+import WeatherTab from "./WeatherTab";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../components/BottomNav";
 import WelcomeView from "./WelcomeView";
@@ -368,7 +368,11 @@ function App() {
         </div>
       )}
       {token === null || token === undefined ? (
-        <Login updateToken={updateToken} updateUser={updateUser} />
+        <Login
+          updateToken={updateToken}
+          updateUser={updateUser}
+          isMobile={isMobile}
+        />
       ) : (
         <Logout
           updateToken={updateToken}

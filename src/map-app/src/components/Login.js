@@ -16,7 +16,7 @@ Pieniä muotoiluseikkoja säädetty
 
 **/
 
-import * as React from "react";
+import React, { useContext, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
@@ -36,6 +36,8 @@ import SnowIcon from "@material-ui/icons/AcUnit";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import CloseIcon from "@material-ui/icons/Close";
+import GlobalContext from "../context/GlobalContext";
+import { Select, MenuItem } from "@material-ui/core";
 
 // Tyylejä sisäänkirjautumislomakkeen osille
 const useStyles = makeStyles((theme) => ({
@@ -49,25 +51,39 @@ const useStyles = makeStyles((theme) => ({
   snowIcon: {
     position: "absolute",
     top: "5px",
-    right: "5px"
+    right: "5px",
   },
   snackbar: {
     position: "absolute",
-    bottom: "130px"
-  }
+    bottom: "130px",
+  },
+  select: {
+    color: "#fff",
+    "&:before": {
+      borderColor: "#fff",
+    },
+    "&:after": {
+      borderColor: "#fff",
+    },
+  },
 }));
 
-
 function Login(props) {
-
   // Hooks
-  const [loading, setLoading] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [loginOpen, setLoginOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginOpen, setLoginOpen] = useState(false);
   // State of snackbar
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Language
+  const { language, changeToLanguage } = useContext(GlobalContext);
+  const handleChange = (event) => {
+    const languageToChangeTo = event.target.value;
+    changeToLanguage(languageToChangeTo);
+  };
 
   /*
    * Event handlers
@@ -119,20 +135,19 @@ function Login(props) {
     };
     const fetchLogin = async () => {
       setLoading(true);
-      const response = await fetch("api/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data),
-        });
+      const response = await fetch("api/user/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
       const res = await response.json();
 
       props.updateToken(res.token);
       props.updateUser(res.user);
-      if(res.user === undefined) setOpen(true);
+      if (res.user === undefined) setOpen(true);
       setLoading(false);
     };
     fetchLogin();
@@ -144,27 +159,51 @@ function Login(props) {
   return (
     <div className="login">
       {/* Kirjautumisen avaava ikonipainike */}
-      <div className={styledClasses.snowIcon} >
-        {loading ? <CircularProgress color="secondary" size={20} /> :
-          <IconButton
-            title={"openloginwindow"}
-            onClick={openLogin}
-          >
+
+      <div className={styledClasses.snowIcon}>
+        <Select
+          style={{
+            color: props.isMobile ? "#4d4d4d" : "#e6e6e6",
+            fontWeight: "bold",
+            padding: "5px",
+          }}
+          value={language}
+          onChange={handleChange}
+          className={"select"}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="fi">Suomi</MenuItem>
+        </Select>
+        {loading ? (
+          <CircularProgress color="secondary" size={20} />
+        ) : (
+          <IconButton title={"openloginwindow"} onClick={openLogin}>
             {/* <Typography variant="button">{(loading ? "Kirjaudutaan" : "Kirjaudu")}</Typography>
             {(loading ? <CircularProgress color="secondary" size={20} /> : <VpnKeyIcon />)} */}
-            <SnowIcon style={{ color: "#4d4d4d" }} />
-          </IconButton>}
+            <SnowIcon
+              style={{ color: props.isMobile ? "#4d4d4d" : "#e6e6e6" }}
+            />
+          </IconButton>
+        )}
       </div>
 
       {/* Kirjautumisdialogi */}
-      <Dialog
-        onClose={closeLogin}
-        open={loginOpen}
-      >
+      <Dialog onClose={closeLogin} open={loginOpen}>
         <DialogTitle id="login-dialog">Kirjaudu sisään</DialogTitle>
-        <TextField id="email" label="email" value={email} onChange={updateEmail} className={styledClasses.email} />
+        <TextField
+          id="email"
+          label="email"
+          value={email}
+          onChange={updateEmail}
+          className={styledClasses.email}
+        />
         <FormControl className={styledClasses.password}>
-          <InputLabel htmlFor="standard-adornment-password" className={styledClasses.password}>Salasana</InputLabel>
+          <InputLabel
+            htmlFor="standard-adornment-password"
+            className={styledClasses.password}
+          >
+            Salasana
+          </InputLabel>
           <Input
             id="standard-adornment-password"
             type={showPassword ? "text" : "password"}
@@ -185,8 +224,17 @@ function Login(props) {
         </FormControl>
         <DialogActions>
           <Divider />
-          <Button id={"dialogClose"} onClick={closeLogin}>Sulje</Button>
-          <Button variant="contained" color="primary" id={"dialogOK"} onClick={sendForm}>Kirjaudu</Button>
+          <Button id={"dialogClose"} onClick={closeLogin}>
+            Sulje
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            id={"dialogOK"}
+            onClick={sendForm}
+          >
+            Kirjaudu
+          </Button>
         </DialogActions>
       </Dialog>
       <Snackbar
@@ -197,8 +245,8 @@ function Login(props) {
         onClose={handleClose}
       >
         <SnackbarContent
-          style={{backgroundColor: "#ed7a72", color: "black"}}
-          message="Virheellinen sähköposti tai salasana!" 
+          style={{ backgroundColor: "#ed7a72", color: "black" }}
+          message="Virheellinen sähköposti tai salasana!"
           action={
             <IconButton
               size="small"
@@ -213,7 +261,6 @@ function Login(props) {
       </Snackbar>
     </div>
   );
-
 }
 
 export default Login;
