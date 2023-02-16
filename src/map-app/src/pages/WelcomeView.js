@@ -15,7 +15,7 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import welcomeText from "./welcomeText.json";
-import GlobalContext from "../context/GlobalContext";
+import GlobalContext from "../context/GlobalContext.js";
 
 const useStyles = makeStyles(() => ({
   root: {
