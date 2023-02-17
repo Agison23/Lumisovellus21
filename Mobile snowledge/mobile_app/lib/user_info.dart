@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'bottom_bar/bottomBar.dart';
 
 String? firstName;

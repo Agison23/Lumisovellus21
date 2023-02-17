@@ -9,12 +9,18 @@ import 'package:mobile_app/weather.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:mobile_app/user_info.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../state/appState.dart';
 //import '../user_information_view.dart';
 
 class MyNavigationDrawer extends StatefulWidget {
-  const MyNavigationDrawer({Key? key}) : super(key: key);
+  const MyNavigationDrawer({
+    Key? key,
+    this.webViewController,
+  }) : super(key: key);
+
+  final Future<WebViewController>? webViewController;
 
   @override
   State<MyNavigationDrawer> createState() => _MyNavigationDrawerState();
@@ -46,7 +52,13 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   Widget buildMenuItems(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
-    void _toggleLanguage() {
+    void _toggleLanguage() async {
+      final controller = await widget.webViewController;
+      if (controller != null) {
+        controller.runJavascript("""
+                window.alert("Hello from flutter!");
+              """);
+      }
       appState.toggleLanguage = true;
     }
 
@@ -109,6 +121,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                     child: CupertinoSwitch(
                       value: appState.isEnglish,
                       onChanged: (bool value) {
+                        // I want to use the webViewController here
                         _toggleLanguage();
                       },
                     ),

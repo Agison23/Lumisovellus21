@@ -40,6 +40,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final Completer<WebViewController> _controller =
+        Completer<WebViewController>();
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -73,11 +75,18 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
       child: SafeArea(
         child: Scaffold(
           key: _globalKey,
+          // floatingActionButton: FloatingActionButton(onPressed: () {
+          //   print("Hi!");
+          // }),
           body: Stack(
             children: [
-              const WebView(
+              WebView(
                 initialUrl: 'https://lumisovellus.fi/mobiili',
                 // initialUrl: 'http://localhost:3000/mobiili',
+                // initialUrl: 'https://youtube.com',
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview
@@ -93,7 +102,9 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
               ),
             ],
           ),
-          drawer: const MyNavigationDrawer(),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
         ),
       ),
     );

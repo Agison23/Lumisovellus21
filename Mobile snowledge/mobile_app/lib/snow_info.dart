@@ -22,6 +22,8 @@ class _SnowInfoState extends State<SnowInfo> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final Completer<WebViewController> _controller =
+        Completer<WebViewController>();
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -57,10 +59,13 @@ class _SnowInfoState extends State<SnowInfo> {
           key: _globalKey,
           body: Stack(
             children: [
-              const WebView(
+              WebView(
                 initialUrl: 'https://lumisovellus.fi/selitteet',
                 // initialUrl: 'http://localhost:3000/selitteet',
                 javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
               ),
               // Stacking the bottom bar on top of the webview
               // Remove comments when changes has made to lumisovellus
@@ -76,7 +81,9 @@ class _SnowInfoState extends State<SnowInfo> {
               ),
             ],
           ),
-          drawer: const MyNavigationDrawer(),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
         ),
       ),
     );
