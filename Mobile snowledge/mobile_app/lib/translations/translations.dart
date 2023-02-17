@@ -412,12 +412,12 @@ Map translations = {
     'fi':
         "Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.",
     'en':
-        "The app's rescue feature collects information about your location. With it, we can provide help for rescue. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You too can help others, too. Location sharing can be disabled at any time.",
+        "The app's rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You can help other users, too. Location sharing can be disabled at any time.",
   },
 
-  'allowAccess': {
-    'fi': 'SALLI KÄYTTÖ',
-    'en': 'ALLOW ACCESS',
+  'allowSharing': {
+    'fi': 'SALLI JAKO',
+    'en': 'ALLOW SHARING',
   },
 
   'noLocationShare': {
@@ -429,7 +429,7 @@ Map translations = {
     'fi':
         'Sijainnin jakaminen tulee olla päällä, jotta pystymme paikantamaan sinut avuntarpeessa ja auttajan roolissa. Jos poistat käytöstä sijainnin jakamisen, et saa ilmoituksia apua tarvitsevilta.',
     'en':
-        'Location sharing must be turned on so that others can locate you in need of help and you can locate them when helping. If you disable location sharing, you will not receive notifications from other users who need help.',
+        'Location sharing must be turned on so that others can locate you in need of help and so that you can locate them when helping. If you disable location sharing, you will not receive notifications about other users who need help.',
   },
 
   'correctInfo': {
@@ -448,7 +448,7 @@ Map translations = {
     'fi':
         'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.',
     'en':
-        'The snow application produced by Pallaksen Pöllöt often works in different ways in the fells. By navigating the hamburger menu, you can get acquainted with the snow observations of the Pallas fell area, which are updated by the guides, users, and weather information. The rescue functio in the app is available all year round and can be found via the orange button in all views',
+        'The snow application produced by Pallaksen Pöllöt often works in different ways in the fells. By navigating the hamburger menu, you can get acquainted with snow observations from the Pallas fell area, which are updated by guides, other users, and weather data. The rescue function in the app is available all year round and can be accessed using the round orange button in all views',
   },
 
   'fNameQuery': {

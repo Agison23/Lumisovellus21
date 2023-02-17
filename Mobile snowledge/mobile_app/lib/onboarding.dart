@@ -34,6 +34,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+
+    void setLanguage(String language) {
+      appState.setLanguage = language;
+    }
+
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -96,17 +101,22 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                 ),
                               ),
                               const SizedBox(height: 15),
-                              Container(
-                                width: 250,
-                                child: Buttons.onboardingButton(
-                                  context,
-                                  translations['languageOpt']
-                                      [appState.language],
-                                  onPressed: () {
-                                    //IMPLEMENT THIS
-
-                                    //THIS
-                                  },
+                              Center(
+                                child: Expanded(
+                                  child: DropdownButton<String>(
+                                    value: appState.languageName,
+                                    onChanged: (String? value) {
+                                      setLanguage(value!);
+                                    },
+                                    items: appState.allLanguages.keys
+                                        .toList()
+                                        .map<DropdownMenuItem<String>>((item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item,
+                                        child: Text(item),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
                             ],
@@ -147,7 +157,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               const SizedBox(height: 70),
                               Buttons.onboardingButton(
                                 context,
-                                translations['allowAccess'][appState.language],
+                                translations['allowSharing'][appState.language],
                                 onPressed: () async {
                                   if (await GpsHandler
                                       .checkAndAskGpsAlwaysOnPermission(
