@@ -28,7 +28,7 @@ Segmentin muokkaus ja niiden lisääminen puuttuu vielä
 
 **/
 
-import * as React from "react";
+import React, {useContext, useState} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -53,6 +53,8 @@ import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import GlobalContext from "../../context/GlobalContext.js";
+import translations from "../../translations";
 
 const useStyles = makeStyles((theme) => ({
   segmentCard: {
@@ -75,15 +77,16 @@ function SegmentManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [anchorElMenu, setAnchorElMenu] = React.useState(null);
-  const [selected, setSelected] = React.useState(null);
-  const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [name, setName] = React.useState(null);
-  const [terrain, setTerrain] = React.useState(null);
-  const [danger, setDanger] = React.useState(null);
-  const [initials, setInitials] = React.useState(null);
-  const [points, setPoints] = React.useState(null);
+  const [anchorElMenu, setAnchorElMenu] =useState(null);
+  const [selected, setSelected] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [name, setName] = useState(null);
+  const [terrain, setTerrain] = useState(null);
+  const [danger, setDanger] = useState(null);
+  const [initials, setInitials] = useState(null);
+  const [points, setPoints] = useState(null);
+  const { language } = useContext(GlobalContext);
 
   const menuOpen = Boolean(anchorElMenu);
 
@@ -369,9 +372,9 @@ function SegmentManage(props) {
                     open={menuOpen}
                     onClose={handleMenuClose}
                   >
-                    <MenuItem onClick={openEdit}>Muokkaa</MenuItem>
+                    <MenuItem onClick={openEdit}>{translations["edit"][language]}</MenuItem>
                     <Divider />
-                    <MenuItem onClick={() => openDelete()}>Poista</MenuItem>
+                    <MenuItem onClick={() => openDelete()}>{translations["delete"][language]}</MenuItem>
                   </Menu>
 
                   {/* Segmenttikortti sisältää mahdollisen teidon lumivyöryvaarasta,
@@ -384,7 +387,7 @@ function SegmentManage(props) {
                         align="left"
                         component="p"
                       >
-                        Lumivyöryherkkä alue
+                        {translations["avalancheProneArea"][language]}
                       </Typography>
                     ) : null}
 
@@ -422,15 +425,14 @@ function SegmentManage(props) {
 
       {/* Segmentin poistodialogi */}
       <Dialog onClose={closeDelete} open={deleteOpen}>
-        <DialogTitle id="delete_segment">Poista segmentti?</DialogTitle>
+        <DialogTitle id="delete_segment">{translations["deleteSegment"][language]}</DialogTitle>
         <Typography>
-          Segmentin poistaminen poistaa segmentin, alasegmentin ja kaikki niihin
-          liittyvät tiedot. Poista?
+        {translations["deletingSegmentDeletesSubsegments"][language]}
         </Typography>
         <DialogActions>
           <Divider />
           <Button id={"deleteClose"} onClick={closeDelete}>
-            Sulje
+            close{translations["edit"][language]}
           </Button>
           <Button
             variant="contained"
@@ -438,19 +440,19 @@ function SegmentManage(props) {
             id={"delete"}
             onClick={handleDelete}
           >
-            Poista
+            {translations["delete"][language]}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Muokkausdialogi (lomake) */}
       <Dialog onClose={closeEdit} open={editOpen}>
-        <DialogTitle id="edit_segment">Muokkaa segmenttiä</DialogTitle>
+        <DialogTitle id="edit_segment">{translations["editSegment"][language]}</DialogTitle>
         <Typography id="edit_segment_info" variant="caption">
-          Jätä muuttamattomaksi kohdat, joita et aio muokata
+        {translations["untouchedSections"][language]}
         </Typography>
         <FormControl>
-          <InputLabel htmlFor="name">Muuta nimeä</InputLabel>
+          <InputLabel htmlFor="name">{translations["changeName"][language]}</InputLabel>
           <Input
             id="name"
             type="text"
@@ -461,7 +463,7 @@ function SegmentManage(props) {
           />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="terrain">Muuta maastopohjaa</InputLabel>
+          <InputLabel htmlFor="terrain">{translations["changeTerrainBase"][language]}</InputLabel>
           <Input
             id="terrain"
             type="text"
@@ -535,13 +537,13 @@ function SegmentManage(props) {
             onClick={addNewRow}
           >
             <AddCircleOutlineIcon />
-            <Typography variant="button">Lisää piste</Typography>
+            <Typography variant="button">{translations["addPoint"][language]}</Typography>
           </IconButton>
         </Box>
         <DialogActions>
           <Divider />
           <Button id={"editClose"} onClick={closeEdit}>
-            Sulje
+            {translations["close"][language]}
           </Button>
           <Button
             variant="contained"
@@ -549,7 +551,7 @@ function SegmentManage(props) {
             id={"save_edit"}
             onClick={handleEdit}
           >
-            Tallenna muutokset
+            {translations["saveChanges"][language]}
           </Button>
         </DialogActions>
       </Dialog>

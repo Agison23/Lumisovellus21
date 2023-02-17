@@ -37,6 +37,8 @@ import Link from "@material-ui/core/Link";
 import DisplaySnowType from "./DisplaySnowType";
 import { Box } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import GlobalContext from "../../context/GlobalContext";
+import translations from "../../translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -237,6 +239,8 @@ function SnowRecordView({
   const [guideTime, setGuideTime] = React.useState("");
   const [userTimes, setUserTimes] = React.useState([]);
 
+
+  const { language } = React.useContext(GlobalContext);
   //Calculate all timestamps only in the first render
   React.useEffect(() => {
     // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
@@ -372,7 +376,7 @@ function SnowRecordView({
             color="error"
             display="inline"
           >
-            Tarkista lumivyörytilanne nettisivuiltamme:{" "}
+             {translations["checkAvalanceStatus"][language]}{" "}
           </Typography>
           <Link
             className={classes.normalText}
@@ -630,7 +634,7 @@ function SnowRecordView({
                     variant="body1"
                     component="p"
                   >
-                    Metsäalue
+                    {translations["forestArea"][language]}
                   </Typography>
                 </Grid>
               </Grid>
@@ -698,8 +702,7 @@ function SnowRecordView({
             {!ifGuideInfoExists() && (
               <>
                 <Typography className={classes.smallText}>
-                  Alueella ei ole Pallaksen Pöllöjen vahvistamaa tietoa. Alla
-                  oleva tieto pohjautuu tunturissa vierailleen päivitykseen.
+                {translations["noInformatinByPollot"][language]}
                 </Typography>
                 <Grid item xs={12} sm={6}>
                   <DisplaySnowType
@@ -767,7 +770,7 @@ function SnowRecordView({
                             className={classes.mediumText}
                             style={{ marginRight: "5px", color: "#FFF" }}
                           >
-                            Käyttäjäarviot
+                            {translations["userReviews"][language]}
                           </Typography>
                           <Typography
                             className={
@@ -783,8 +786,7 @@ function SnowRecordView({
 
                       <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <Typography className={classes.smallText}>
-                          Alla oleva tieto pohjautuu tunturissa vierailleen
-                          päivitykseen.
+                        {translations["infoIsBasedOnUsers"][language]}
                         </Typography>
 
                         {segmentdata.update.Lumi5 !== undefined && (
@@ -912,7 +914,7 @@ function SnowRecordView({
                       className={classes.mediumText}
                       style={{ padding: "0px 0px 10px 5px" }}
                     >
-                      Liikuitko alueella?
+                      {translations["didYouMoveInArea"][language]}
                     </Typography>
                   </Grid>
 
@@ -928,7 +930,7 @@ function SnowRecordView({
                         style={{ backgroundColor: "#374B6A" }}
                         onClick={openForm}
                       >
-                        Kyllä, lisää arvio lumitilanteesta.
+                        {translations["addEstimationOfSnowConditions"][language]}
                       </Button>
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -938,7 +940,7 @@ function SnowRecordView({
                         style={{ backgroundColor: "#4C4C4C" }}
                         onClick={openFeedback}
                       >
-                        Lisää muu havainto.
+                        {translations["addAnotherObservation"][language]}
                       </Button>
                     </Grid>
                   </Grid>
@@ -952,7 +954,7 @@ function SnowRecordView({
               className={classes.timeStamp}
               style={{ marginBottom: "10px" }}
             >
-              Ei havaintoja alueelta.
+             {translations["noObservationsInTheArea"][language]}
             </Typography>
 
             {!signedUser && (
@@ -962,7 +964,7 @@ function SnowRecordView({
                     className={classes.mediumText}
                     style={{ padding: "0px 0px 10px 5px" }}
                   >
-                    Liikuitko alueella?
+                    {translations["didYouMoveInArea"][language]}
                   </Typography>
                 </Grid>
 
@@ -978,7 +980,7 @@ function SnowRecordView({
                       style={{ backgroundColor: "#374B6A" }}
                       onClick={openForm}
                     >
-                      Kyllä, lisää arvio lumitilanteesta.
+                      {translations["addEstimationOfSnowConditions"][language]}
                     </Button>
                   </Grid>
                   <Grid item xs={12} sm={5}>
@@ -988,7 +990,7 @@ function SnowRecordView({
                       style={{ backgroundColor: "#4C4C4C" }}
                       onClick={openFeedback}
                     >
-                      Lisää muu havainto.
+                      {translations["addAnotherObservation"][language]}
                     </Button>
                   </Grid>
                 </Grid>

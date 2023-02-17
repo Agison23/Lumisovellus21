@@ -52,7 +52,7 @@ Segmentin tiedot näyttävän kortin voi sulkea
 Ensimmäinen versio segmenttien päivittämisestä
 **/
 
-import * as React from "react";
+import React, {useContext} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -74,6 +74,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
+
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({
@@ -185,6 +188,8 @@ function Info(props) {
 
   const [writeReviewEnabled, setWriteReviewEnabled] = React.useState(false);
   const [reviewMode, setReviewMode] = React.useState("category");
+
+  const { language } = useContext(GlobalContext);
 
   const classes = useStyles();
 
@@ -618,7 +623,7 @@ function Info(props) {
           >
             <EditIcon />
             <Typography className={classes.smallHeaders} variant="button">
-              Päivitä
+              {translations["update"][language]}
             </Typography>
           </IconButton>
 
@@ -637,7 +642,7 @@ function Info(props) {
               >
                 {/*Main header */}
                 <Typography className={classes.largeHeaders}>
-                  PÄIVITÄ SEGMENTTIÄ
+                  {translations["updateSegment"][language]}
                 </Typography>
                 {/*Segment name */}
                 <Typography className={classes.smallHeaders}>
@@ -670,7 +675,7 @@ function Info(props) {
                             endIcon={<SearchIcon fontSize="large" />}
                             className={classes.buttons}
                           >
-                            Lisää
+                            {translations["add"][language]}
                           </Button>
                         </Box>
                       )}
@@ -689,10 +694,10 @@ function Info(props) {
                           }}
                         >
                           <MenuItem disabled={selectDisabled[0]} value={false}>
-                            Ensisijainen
+                          {translations["primary"][language]}
                           </MenuItem>
                           <MenuItem disabled={selectDisabled[1]} value={true}>
-                            Toissijainen
+                          {translations["secondary"][language]}
                           </MenuItem>
                         </Select>
                       )}
@@ -786,7 +791,7 @@ function Info(props) {
                     {/* Description text box*/}
                     <Box className={classes.part}>
                       <Typography variant="h5" className={classes.smallHeaders}>
-                        Kuvaus
+                        {translations["description"][language]}
                       </Typography>
                       <TextField
                         className={classes.textFields}
@@ -808,7 +813,7 @@ function Info(props) {
                     color="secondary"
                     onClick={closeUpdate}
                   >
-                    Peruuta
+                    {translations["cancel"][language]}
                   </Button>
                   <Button
                     variant="contained"
@@ -817,7 +822,7 @@ function Info(props) {
                     disabled={!updateEnabled}
                     onClick={sendForm}
                   >
-                    Päivitä
+                    {translations["update"][language]}
                   </Button>
                 </DialogActions>
               </Box>

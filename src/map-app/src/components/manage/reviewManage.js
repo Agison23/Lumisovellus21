@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useEffect, useState, useContext} from "react";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,6 +7,9 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
+import GlobalContext from "../../context/GlobalContext.js";
+import translations from "../../translations";
+
 
 const useStyles = makeStyles(() => ({
   userCard: {
@@ -95,9 +98,10 @@ function ReviewManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [reviewData, setReviewData] = React.useState([]);
+  const [reviewData, setReviewData] = useState([]);
+  const { language } = useContext(GlobalContext);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchReviews();
     
     const interval = setInterval(() => {
@@ -137,7 +141,7 @@ function ReviewManage(props) {
           {
             reviewData.length === 0
               ? 
-              <p style={{padding: "10px"}}>Ei käyttäjäarvioita</p>
+              <p style={{padding: "10px"}}>{translations["noUserReviews"][language]}</p>
               :
               reviewData.map((item, index) => {
                 return (

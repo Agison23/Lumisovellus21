@@ -1,4 +1,4 @@
-const translations = {
+ const translations = {
 
   weather:{
       fi: "Sää",
@@ -16,7 +16,7 @@ const translations = {
   },
 
   wintersWeatherObservaions:{
-      fi: "Talven sää havainnot",
+      fi: "Talven säähavainnot",
       en: "Winter's weather observations"
   },
 
@@ -60,10 +60,6 @@ const translations = {
       en: "Manage"
   },
 
-  users:{
-      fi: "Käyttäjät",
-      en: "Users"
-  },
 
   addUser:{
       fi: "Lisää käyttäjä",
@@ -76,6 +72,27 @@ const translations = {
   },
 
   infoTextAboutPollot:{
+    fi: [
+      "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista. Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin, joiden sisällä lumi on tyypillisesti hyvin samanlaista.",
+  
+      "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti. Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta.",
+  
+      "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja koko kaudelta löydät sääpainikkeen takaa.",
+  
+      "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme, tunturista ja sen kauneudesta."
+    ],
+    en: [
+      "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar./n",
+  
+      "The information in the application is the subjective observations of the guides and the conditions can change quickly. When using snow data, it is worth taking into account the time stamp of the observation, as well as what additional information has been given about the segment and what the weather data about the area says. In the fells, the traveler is responsible for applying the observations, and the application does not in any way reduce his own responsibility./n",
+  
+      "More detailed snow information for each segment opens by clicking on it. You can find information about the weather for the last few days and the entire season behind the weather button./n",
+  
+      "Please remember to share your location with someone, for example on Whatsapp. Let's take care of ourselves, the fell and its beauty./n"
+    ]
+  },
+
+  /*{
       fi: "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista." + 
       "Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin," + 
       "joiden sisällä lumi on tyypillisesti hyvin samanlaista." +
@@ -108,7 +125,7 @@ const translations = {
       
       "Remember to share your location with someone, with for example Whatsapp. Let's take" + 
       "care of ourselves, the fell and its beauty."
-  },
+  },*/
 
   freshlyRainedSnow:{
       fi: "Uutta/vastasatanutta",
@@ -130,10 +147,6 @@ const translations = {
       en: "Wet"
   },
 
-  crust:{
-      fi: "Korppu",
-      en: "Crust"
-  },
 
 
   minor:{
@@ -201,12 +214,7 @@ const translations = {
       en: "User management requires admin rights"
   },
 
-  confirmNewPassword:{
-      fi: "Vahvista salasana",
-      en: "Confirm new password"
-  },
-
-  passwordsDonNotMatch:{
+  passwordsDoNotMatch:{
       fi: "Salasana ja vahvistus eivät täsmää",
       en: "passwords don't match"
   },
@@ -246,7 +254,7 @@ const translations = {
       en: "Edit user"
   },
 
-  deletesAndDataRelated:{
+  deleteUserAndDataRelated:{
       fi: "Poistetaan käyttäjä ja kaikki käyttäjään liittyvät tiedot. Poista?",
       en: "Deletes the user and all data related to the user. Delete?"
   },
@@ -298,13 +306,8 @@ const translations = {
   },
 
   freshWetSnowDescriptoion:{
-      fi: "Lunta, josta voit helposti tehdä lumipallon. ",
-      en: "Snow, from which you can easily make a snowball."
-  },
-
-  wetSnowDescription:{
-      fi: "Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
-      en: "Wet snow forms when it rains close to or above zero degrees."
+      fi: "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
+      en: "Snow, from which you can easily make a snowball. Wet snow forms when it rains close to or above zero degrees."
   },
 
   powderSnow:{
@@ -407,10 +410,6 @@ const translations = {
       en: "Flat, wind-layered and compressed tile or lens. Blizzard snow can also accumulate without snowfall if wind moves snow from one place to another. Blizzard snow is usually formed on the side of the fell protected from wind."
   },
 
-  changeTerrainBase:{
-      fi: "Muuta maastopohjaa",
-      en: "Change terrain base"
-  },
 
   ice:{
       fi: "Jää",
@@ -422,7 +421,7 @@ const translations = {
       en: "A hard and unbreakable icy layer on the surface of the snow. Ice forms as a result of the snow melts and freezes again."
   },
 
-  brekableIce:{
+  breakableIce:{
       fi: "Rikkoutuva jää",
       en: "Brekable ice"
   },
@@ -462,7 +461,7 @@ const translations = {
       en: "Completely wet , slushing and whipped cream like snow."
   },
 
-  mimimalSnow:{
+  minimalSnow:{
       fi: "Vähäinen lumi",
       en: "Minimal snow"
   },
@@ -498,7 +497,7 @@ const translations = {
       en: "Change terrain base"
   },
 
-  unTouchedSections:{
+  untouchedSections:{
       fi: "Jätä muuttamattomaksi kohdat, joita et aio muokata",
       en: "Leave untouched the sections you are not going to edit"
   },
@@ -518,10 +517,6 @@ const translations = {
       en: "No user reviews"
   },
 
-  deleteSegment:{
-      fi: "Poista segmentti?",
-      en: "Delete segment?"
-  },
   
   checkAvalanceStatus:{
       fi: "Tarkista lumivyörytilanne nettisivuiltamme:",
@@ -553,10 +548,6 @@ const translations = {
       en: "Yes, add an estimation of the snow conditions."
   },
 
-  forestArea:{
-      fi: "Metsäalue",
-      en: "Forest area"
-  },
 
   addAnotherObservation:{
       fi: "Lisää muu havainto.",
@@ -590,7 +581,7 @@ const translations = {
 
   confirmNewPassword:{
       fi: "Vahvista uusi salasana",
-      en: "Save changes"
+      en: "confirm new password"
   },
 
   description:{
@@ -639,7 +630,7 @@ const translations = {
   },
 
   treeCordinatePointsRequired:{
-      fi: "Ainakin kolme koordinaattipistettä vaaditaan.",
+      fi: "Ainakin kolme (3) koordinaattipistettä vaaditaan.",
       en: "At least (3) coordinate points are required."
   },
 
@@ -661,6 +652,113 @@ const translations = {
   login:{
       fi: "Kirjaudu sisään",
       en: "Log in"
+  },
+
+  log:{
+    fi: "Kirjaudu",
+    en: "Log"
+  },
+
+  allTextFieldsAreRequired:{
+    fi: "Kaikki tekstikentät ovat pakollisia",
+    en: "All text fields are required"
+  },
+
+  userReviews:{
+    fi: "käyttäjäarviot",
+    en: "user reviews"
+  },
+
+  noObservationsInTheArea:{
+    fi: "Ei havaintoja alueelta.",
+    en: "No observations in the area."
+  },
+
+  skiability:{
+    fi: "Hiihdettävyys",
+    en: "Skiability"
+  },
+
+  snowWas:{
+    fi: "Kertoisitko, oliko lumi",
+    en: "Would you tell, if snow was"
+  },
+
+  editYourData:{
+    fi: "Muokkaa tietojasi",
+    en: "Edit your data"
+  },
+
+  dataNow:{
+    fi: "Tiedot nyt:",
+    en: "Data now:"
+  },
+
+  temperature:{
+    fi: "Lämpötila",
+    en: "Temperature"
+  },
+
+  depthOfSnow:{
+    fi: "Lumen syvyys",
+    en: "Depth Of snow"
+  },
+
+  wind:{
+    fi: "Tuuli",
+    en: "Wind"
+  },
+
+  airPressure:{
+    fi: "Ilmanpaine",
+    en: "Air pressure"
+  },
+
+  increaseInSnowDepth:{
+    fi: "Lumensyvyyden kasvu",
+    en: "Increase in snow depth"
+  },
+
+  temperatureDuringThreeDays:{
+    fi: "Lämpötila 3 vuorokauden aikana",
+    en: "Temperature during three days"
+  },
+
+  windDuringThreeDays:{
+    fi: "Tuuli 3 vuorokauden aikana",
+    en: "Wind during three days"
+  },
+
+  strongWind:{
+    fi: "Tuuli (yli 10 m/s)",
+    en: "Wind (over 10 m/s)"
+  },
+
+  availabilityOfWintersWeatherObservations:{
+    fi: "Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)",
+    en: "Winter's weather observations are available during wintertime (2.12.-31.5.)"
+  },
+
+  changes:{
+    fi: "Muutokset",
+    en: "Changes"
+  },
+
+  bigDefinitions:{
+    fi: "SELITTEET",
+    en: "DEFINITIONS"
+  },
+
+  avalancheWarning:{
+    fi: "Lumivyöryvaroitus",
+    en: "Avalanche warning"
+  },
+
+  avalancheProneArea:{
+    fi: "Lumivyöryherkkä alue",
+    en: "Avalanche-prone area"
   }
 
-}
+};
+
+export default translations;

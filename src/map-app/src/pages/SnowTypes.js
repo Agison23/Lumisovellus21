@@ -13,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -74,7 +75,7 @@ function SnowTypes(props) {
         className={styledClasses.header}
         style={props.isMobile ? { width: "100vw" } : {}}
       >
-        <Typography variant="h3">SELITTEET</Typography>
+        <Typography variant="h3">{translations["bigDefinitions"][language]}</Typography>
       </Box>
       <Box className={styledClasses.avalanche}>
         <img
@@ -82,27 +83,15 @@ function SnowTypes(props) {
           style={{ height: "100px", width: "100px" }}
         ></img>
         <Typography variant="h4">
-          {language === "fi" ? "Lumivyöryvaroitus" : "Avalanche warning"}
+          {translations["avalancheWarning"][language]}
         </Typography>
         <Typography style={{ paddingTop: "25px" }}>
-          {language === "fi"
-            ? `Pallaksen lumivyörymaastoja ovat useat kurut kuten Pyhäkuru,
-          Palkaskuru, Rihmakuru sekä yli 25 asteiset jyrkät rinteet
-          Lommoltunturissa, Keimiötunturissa ja Lehmäkerolla. Yksittäisiä
-          pienempiä vyöryjä voi tapahtua myös muualla jyrkkien maastonmuotojen
-          läheisyydessä. Todennäköisyys lumivyöryyn kasvaa säänmuutosten
-          yhteydessä.`
-            : `Avalanche terrains in Pallas include several gorges such as Pyhäkuru,
-          Palkaskuru, Rihmakuru and steep slopes of over 25 degrees
-          Lommoltunturi, Keimiötunturi and Lehmäkero. Individuals
-          smaller landslides can also occur in other steep terrains
-          in the vicinity of. The probability of an avalanche increases with weather changes
-          in connection with.`}
+          {translations["avalancheTerrains"][language]}
         </Typography>
       </Box>
       <Box className={styledClasses.snowHeader}>
         <Typography variant="h4">
-          {language === "fi" ? "Lumityypit" : "Snow types"}
+          {translations["snowTypes"][language]}
         </Typography>
       </Box>
       <Box className={styledClasses.content}>
@@ -114,12 +103,10 @@ function SnowTypes(props) {
             ></img>
             <Box>
               <Typography variant="h5">
-                {language === "fi" ? "Uusi lumi" : "New snow"}
+              {translations["newSnow"][language]}
               </Typography>
               <Typography>
-                {language === "fi"
-                  ? "Vastasatanut pehmeä lumi."
-                  : "Freshly fallen soft snow."}
+                {translations["newSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -134,12 +121,10 @@ function SnowTypes(props) {
             ></img>
             <Box>
               <Typography variant="h5">
-                {language === "fi" ? "Märkä uusi lumi" : "Wet new snow"}
+                {translations["freshWetSnow"][language]}
               </Typography>
               <Typography>
-                Lunta, josta voit helposti tehdä lumipallon. Märkää lunta
-                muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan
-                puolella.
+                {translations["freshWetSnowDescriptoion"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -153,11 +138,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Puuterilumi</Typography>
+              <Typography variant="h5">{translations["powderSnow"][language]}</Typography>
               <Typography>
-                Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä
-                lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja
-                kovalla pakkasella.
+                {translations["powderSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/5.svg"
@@ -171,10 +154,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Vitilumi</Typography>
+              <Typography variant="h5">{translations["freshSnow"][language]}</Typography>
               <Typography>
-                Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää
-                pakkaslunta.
+                {translations["freshSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/5.svg"
@@ -190,10 +172,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Korppu</Typography>
+              <Typography variant="h5">{translations["crust"][language]}</Typography>
               <Typography>
-                Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan
-                tasaista tai rosoista.
+                {translations["crustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -207,10 +188,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Kantava korppu</Typography>
+              <Typography variant="h5">{translations["supportingCrust"][language]}</Typography>
               <Typography>
-                Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja
-                tiivistä.
+                {translations["supporttingCrustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -224,10 +204,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Ohut korppu</Typography>
+              <Typography variant="h5">{translations["thinCrust"][language]}</Typography>
               <Typography>
-                Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi
-                olla paikoitellen upottavaa.
+                {translations["thinCrustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -241,10 +220,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Rikkoutuva korppu</Typography>
+              <Typography variant="h5">{translations["breakableCrust"][language]}</Typography>
               <Typography>
-                Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi
-                voi olla hyvinkin paksu, jos sen alla on huokoista lunta.
+                {translations["breakableCrustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -260,9 +238,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Tuulen pieksemä lumi</Typography>
+              <Typography variant="h5">{translations["windsweptSnow"][language]}</Typography>
               <Typography>
-                Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.
+                {translations["windsweptSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -276,10 +254,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Aaltoileva lumi</Typography>
+              <Typography variant="h5">{translations["wavySnow"][language]}</Typography>
               <Typography>
-                Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja
-                hyvin rikottavissa.
+                {translations["wavySnowDescrioption"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -293,10 +270,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Sastrugi</Typography>
+              <Typography variant="h5">{translations["sastrug"][language]}</Typography>
               <Typography>
-                Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja
-                terväharjanteista.{" "}
+                {translations["sastrugDescription"][language]}{" "}
               </Typography>
               <img
                 src="/icons/skiability/1.svg"
@@ -310,12 +286,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Tuiskulumi</Typography>
+              <Typography variant="h5">{translations["blizzardSnow"][language]}</Typography>
               <Typography>
-                Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi.
-                Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää
-                lunta paikasta toiseen. Tuiskulunta syntyy yleensä
-                suojapuolelle.
+                {translations["blizzardSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -331,10 +304,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Jää</Typography>
+              <Typography variant="h5">{translations["ice"][language]}</Typography>
               <Typography>
-                Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää
-                on syntynyt sulamis-jäätymisreaktion tuloksena.
+                {translations["iceDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -348,9 +320,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Rikkoutuva jää</Typography>
+              <Typography variant="h5">{translations["breakableIce"][language]}</Typography>
               <Typography>
-                Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.
+                {translations["breakableIceDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/1.svg"
@@ -366,9 +338,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Sohjo</Typography>
+              <Typography variant="h5">{translations["slushySnow"][language]}</Typography>
               <Typography>
-                Vesipitoinen ja osittain sulanut lumi suojasäällä.
+                {translations["slushySnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -382,10 +354,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Kastuva lumi</Typography>
+              <Typography variant="h5">{translations["wettingSnow"][language]}</Typography>
               <Typography>
-                Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai
-                kostea lumi.
+                {translations["wettingSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -399,9 +370,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Saturoitunut lumi</Typography>
+              <Typography variant="h5">{translations["saturatedSnow"][language]}</Typography>
               <Typography>
-                Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.
+                {translations["saturatedSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -417,7 +388,7 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">Vähäinen lumi</Typography>
+              <Typography variant="h5">{translations["minimalSnow"][language]}</Typography>
             </Box>
           </Box>
         </Box>

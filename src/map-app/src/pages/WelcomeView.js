@@ -14,8 +14,9 @@ import Box from "@material-ui/core/Box";
 // import welcomeText from "./welcome_text.txt";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import welcomeText from "./welcomeText.json";
+//import welcomeText from "./welcomeText.json";
 import GlobalContext from "../context/GlobalContext.js";
+import translations from "../translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -78,12 +79,8 @@ function WelcomeView(props) {
   const [text, setText] = useState([]);
 
   useEffect(() => {
-    if (language === "fi") {
-      setText(welcomeText.fi);
-    } else {
-      setText(welcomeText.en);
-    }
-  }, []);
+    setText(translations["infoTextAboutPollot"][language]);
+  });
 
   const styledClasses = useStyles();
 
@@ -109,7 +106,7 @@ function WelcomeView(props) {
           {text.map((paragraph, index) => {
             return (
               <Typography key={index} className={styledClasses.text}>
-                {paragraph}
+                {paragraph}{translations["infoTextAboutPollot"][language]}
               </Typography>
             );
           })}
@@ -172,7 +169,7 @@ function WelcomeView(props) {
               fontWeight: "bold",
             }}
           >
-            TUTUSTU LUMITILANTEESEEN
+            {translations["getToKnowSnowConditions"][language]}
           </Button>
         </Box>
       </Box>
@@ -190,14 +187,10 @@ function WelcomeView(props) {
         <Box
           className={styledClasses.textContainer}
           style={{ marginLeft: "50px", marginRight: "50px" }}
-        >
-          {text.map((paragraph, index) => {
-            return (
-              <Typography key={index} className={styledClasses.text}>
-                {paragraph}
-              </Typography>
-            );
-          })}
+        >          
+          <Typography className={styledClasses.text}>
+            {translations["infoTextAboutPollot"][language]}
+          </Typography> 
         </Box>
 
         <Box className={styledClasses.sponsorContainer}>

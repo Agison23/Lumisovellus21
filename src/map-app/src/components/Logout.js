@@ -12,7 +12,7 @@ Korjattu niin, että uloskirjautuessa näkymä palaa karttaan
 
 **/
 
-import * as React from "react";
+import React, { useContext } from "react";
 import Button from "@material-ui/core/IconButton";
 // eslint-disable-next-line no-unused-vars
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -25,6 +25,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 const useStyles = makeStyles(() => ({
   snowIcon: {
@@ -37,6 +39,7 @@ const useStyles = makeStyles(() => ({
 function Logout(props) {
   // Hooks
   const [logoutOpen, setLogoutOpen] = React.useState(false);
+  const { language } = useContext(GlobalContext);
 
   // Event handlers
 
@@ -74,10 +77,10 @@ function Logout(props) {
         onClose={closeLogout} 
         open={logoutOpen}
       >
-        <DialogTitle id="logout-dialog">Kirjaudu ulos?</DialogTitle>
+        <DialogTitle id="logout-dialog"> {translations["logOut"][language]}</DialogTitle>
         <DialogActions>
           <Divider/>
-          <Button id={"dialogClose"} onClick={closeLogout}>Peruuta</Button>
+          <Button id={"dialogClose"} onClick={closeLogout}>{translations["cancel"][language]}</Button>
           <Button color="primary" id={"dialogOK"} onClick={logout}>OK</Button>
         </DialogActions>
       </Dialog>

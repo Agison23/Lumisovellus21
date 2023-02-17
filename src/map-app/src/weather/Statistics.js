@@ -14,7 +14,7 @@ Create initial components for showing weather statistics
 
 **/
 
-import * as React from "react";
+import React, {useContext} from "react";
 import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -26,6 +26,8 @@ import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Paper from "@material-ui/core/Paper";
 import Carousel from "react-material-ui-carousel";
 import {toDegrees, getWindDirection} from "./DataCalculations";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 
 const useStyles = makeStyles(() => ({
@@ -92,21 +94,22 @@ function KeyValuePair({keyName, value}) {
 function ShortIntervalStatsPaper({weatherState}) {
   const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
 
-      <h2 className={classes.paperHeader}>Lähipäivien sää</h2>
+      <h2 className={classes.paperHeader}>{translations["weatherLately"][language]}</h2>
 
       {/* Snow depth growth during last seven days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>Lumensyvyyden kasvu</p>
+        <p className={classes.cardHeader}>{translations["increaseInSnowDepth"][language]}</p>
         <KeyValuePair keyName="7 vuorokauden aikana" value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
       </Card>
 
       {/* Temperature statistics during last three days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>Lämpötila 3 vuorokauden aikana</p>
+        <p className={classes.cardHeader}>{translations["temperatureDuringThreeDays"][language]}</p>
         <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
         <Divider className={classes.divider}/>
         <KeyValuePair keyName="matalin" value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
@@ -121,7 +124,7 @@ function ShortIntervalStatsPaper({weatherState}) {
 
       {/* Wind speed and direction statistics during last three days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>Tuuli 3 vuorokauden aikana</p>
+        <p className={classes.cardHeader}>{translations["windDuringThreeDays"][language]}</p>
         <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
         <Divider className={classes.divider}/>
         <KeyValuePair keyName="kesk. suunta" value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
@@ -138,6 +141,7 @@ function ShortIntervalStatsPaper({weatherState}) {
 function WinterStatsPaper({weatherState}) {
   const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
@@ -145,11 +149,11 @@ function WinterStatsPaper({weatherState}) {
       {weatherState.winter.season === true ?
         <div>
 
-          <h2 className={classes.paperHeader}>Talven säähavainnot</h2>
+          <h2 className={classes.paperHeader}>{translations["wintersWeatherObservaions"][language]}</h2>
 
           {/* Temperature statistics during winter */}
           <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-            <p className={classes.cardHeader}>Lämpötila</p>
+            <p className={classes.cardHeader}>{translations["temperature"][language]}</p>
             <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
             <Divider className={classes.divider}/>
             <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
@@ -157,7 +161,7 @@ function WinterStatsPaper({weatherState}) {
           
           {/* Wind direction and speed statistics during winter */}
           <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-            <p className={classes.cardHeader}>Tuuli (yli 10 m/s)</p>
+            <p className={classes.cardHeader}>{translations["strongWind"][language]}</p>
             <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
             <Divider className={classes.divider}/>
             <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
@@ -166,7 +170,7 @@ function WinterStatsPaper({weatherState}) {
           </Card>
 
         </div> :
-        <h2 className={classes.cardHeader}>Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)</h2>
+        <h2 className={classes.cardHeader}>{translations["availabilityOfWintersWeatherObservations"][language]}</h2>
       }
     </Paper>
   );
@@ -176,6 +180,7 @@ function WinterStatsPaper({weatherState}) {
 // Element for displaying short interval and winter weather statistics
 function Statistics({weatherState, handleReturnClick}) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <div>
@@ -238,7 +243,7 @@ function Statistics({weatherState, handleReturnClick}) {
                 fontSize: "3vh"}}
               startIcon={<NavigateBeforeIcon/>}
             >
-              Takaisin
+              {translations["back"][language]}
             </Button>
           </Grid>
         </Grid>

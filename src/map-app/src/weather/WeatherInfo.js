@@ -14,7 +14,7 @@ Create initial components for showing weather statistics
 
 **/
 
-import * as React from "react";
+import React, { useContext } from "react";
 import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -30,6 +30,8 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Carousel from "react-material-ui-carousel";
 import {getWindDirection} from "./DataCalculations";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 
 const useStyles = makeStyles(() => ({
@@ -117,6 +119,7 @@ const useStyles = makeStyles(() => ({
 function FirstDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.firstDayAverage - 180});
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
@@ -125,7 +128,7 @@ function FirstDayWeatherPaper({weatherState}) {
 
         {/* Temperature on day before yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lämpötila</Typography>
+          <Typography className={classes.cardHeader}>{translations["temperature"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -143,7 +146,7 @@ function FirstDayWeatherPaper({weatherState}) {
 
         {/* Snow depth info on day before yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lumen syvyys</Typography>
+          <Typography className={classes.cardHeader}>{translations["depthOfSnow"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -161,7 +164,7 @@ function FirstDayWeatherPaper({weatherState}) {
 
         {/* Wind direction and speed on day before yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Tuuli</Typography>
+          <Typography className={classes.cardHeader}>{translations["wind"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -180,7 +183,7 @@ function FirstDayWeatherPaper({weatherState}) {
         
         {/* Air pressure info on day before yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Ilmanpaine</Typography>
+          <Typography className={classes.cardHeader}>{translations["airPressure"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -207,6 +210,7 @@ function FirstDayWeatherPaper({weatherState}) {
 function SecondDayWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.secondDayAverage - 180});
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
@@ -215,7 +219,7 @@ function SecondDayWeatherPaper({weatherState}) {
 
         {/* Temperature on yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lämpötila</Typography>
+          <Typography className={classes.cardHeader}>{translations["temperature"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -233,7 +237,7 @@ function SecondDayWeatherPaper({weatherState}) {
 
         {/* Snow depth info on yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lumen syvyys</Typography>
+          <Typography className={classes.cardHeader}>{translations["depthOfSnow"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -251,7 +255,7 @@ function SecondDayWeatherPaper({weatherState}) {
 
         {/* Wind direction and speed on yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Tuuli</Typography>
+          <Typography className={classes.cardHeader}>{translations["wind"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -270,7 +274,7 @@ function SecondDayWeatherPaper({weatherState}) {
         
         {/* Air pressure info on yesterday */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Ilmanpaine</Typography>
+          <Typography className={classes.cardHeader}>{translations["airPressure"][language]}</Typography>
         </Grid>
         <Grid item xs={10} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -297,6 +301,7 @@ function SecondDayWeatherPaper({weatherState}) {
 function CurrentWeatherPaper({weatherState}) {
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180, airpressureDirection: weatherState.airpressure.direction - 45});
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
+  const { language } = useContext(GlobalContext);
 
   return (
     <Paper className={classes.paper} style={isXS ? {marginTop: "30px"} : {}} align="center">
@@ -305,7 +310,7 @@ function CurrentWeatherPaper({weatherState}) {
 
         {/* Current temperature info */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lämpötila</Typography>
+          <Typography className={classes.cardHeader}>{translations["temperature"][language]}</Typography>
         </Grid>
         <Grid item xs={12} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -323,7 +328,7 @@ function CurrentWeatherPaper({weatherState}) {
 
         {/* Current snow depth info */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Lumen syvyys</Typography>
+          <Typography className={classes.cardHeader}>{translations["depthOfSnow"][language]}</Typography>
         </Grid>
         <Grid item xs={12} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -341,7 +346,7 @@ function CurrentWeatherPaper({weatherState}) {
 
         {/* Current wind direction and speed info */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Tuuli</Typography>
+          <Typography className={classes.cardHeader}>{translations["wind"][language]}</Typography>
         </Grid>
         <Grid item xs={12} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -360,7 +365,7 @@ function CurrentWeatherPaper({weatherState}) {
         
         {/* Current air pressure info */}
         <Grid item xs={8} sm={8}>
-          <Typography className={classes.cardHeader}>Ilmanpaine</Typography>
+          <Typography className={classes.cardHeader}>{translations["airPressure"][language]}</Typography>
         </Grid>
         <Grid item xs={12} sm={12} container className={classes.gridContainer}>
           <Grid item xs={2} sm={2}>
@@ -374,7 +379,7 @@ function CurrentWeatherPaper({weatherState}) {
           <Grid item xs={6} sm={6}>
             <Typography className={classes.text}>{`${weatherState.airpressure.current} mBar`}</Typography>
             
-            <Typography className={classes.subText} style={{verticalAlign: "middle", display: "flex", left: "1%"}}>muutos
+            <Typography className={classes.subText} style={{verticalAlign: "middle", display: "flex", left: "1%"}}>{translations["changes"][language]}
               <CallMadeIcon className={classes.airpressureDirection} />
             </Typography>
           </Grid>
@@ -393,6 +398,7 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
   const classes = useStyles({windDirection: weatherState.winddirection.current - 180});
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
   const [carouselSlide, setCarouselSlide] = React.useState(2);
+  const { language } = useContext(GlobalContext);
 
   const handleChange = (event, newValue) => {
     setCarouselSlide(newValue);
@@ -412,9 +418,9 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
               textColor="primary"
               centered
             >
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography><Typography className={classes.tabsText}>Toissapäivänä</Typography></div>} />
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.secondDay}</Typography><Typography className={classes.tabsText}>Eilen</Typography></div>} />
-              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.thirdDay}</Typography><Typography className={classes.tabsText}>Nyt</Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography><Typography className={classes.tabsText}> {translations["theDayBeforeYesterday"][language]} </Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.secondDay}</Typography><Typography className={classes.tabsText}>{translations["yesterday"][language]}</Typography></div>} />
+              <Tab label={<div><Typography className={classes.tabsText}>{weatherState.dates.thirdDay}</Typography><Typography className={classes.tabsText}>{translations["now"][language]}</Typography></div>} />
             </Tabs>
           </Paper>
           
@@ -470,15 +476,15 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
           <Grid item xs={12} sm={12} container style={{padding: "30px", position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}>
             <Grid item xs={4} sm={4}>
               <Typography className={classes.tabsText}>{weatherState.dates.firstDay}</Typography>
-              <Typography className={classes.tabsText}>Toissapäivänä</Typography>
+              <Typography className={classes.tabsText}>{translations["theDayBeforeYesterday"][language]}</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
               <Typography className={classes.tabsText}>{weatherState.dates.secondDay}</Typography>
-              <Typography className={classes.tabsText}>Eilen</Typography>
+              <Typography className={classes.tabsText}>{translations["yesterday"][language]}</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
               <Typography className={classes.tabsText}>{weatherState.dates.thirdDay}</Typography>
-              <Typography className={classes.tabsText}>Nyt</Typography>
+              <Typography className={classes.tabsText}>{translations["now"][language]}</Typography>
             </Grid>
             <Grid item xs={4} sm={4}>
               <FirstDayWeatherPaper weatherState={weatherState}/>
@@ -501,7 +507,7 @@ function WeatherInfo({weatherState, handleMoreInformationClick}) {
                   fontSize: "3vh"}}
                 startIcon={<EqualizerIcon/>}
               >
-                Lisätietoja
+                {translations["moreInfo"][language]}
               </Button>
             </Grid>
           </Grid>
