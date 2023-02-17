@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:location/location.dart';
 
 import '../state/appState.dart';
+import '../translations/translations.dart';
 
 class GpsHandler {
   static late Timer _timer;
@@ -96,25 +97,17 @@ class GpsHandler {
         if (androidVersion > 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(
               context,
-              !appState.isEnglish
-                  ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                      '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
-                      '\n\n->Sijainti: Salli aina')
-                  : ('The application needs permission to use the location even when the screen is closed.' +
-                      '\n\nDo you allow the collection of location data when the app is running in the background?' +
-                      "\n\n->Location: Always Allow"),
-              !appState.isEnglish ? "Siirry asetuksiin" : "Go to Settings");
+              translations['closedGps'][appState.language] +
+                  translations['backgroundGps'][appState.language] +
+                  translations['allowAlways'][appState.language],
+              translations['toSettings'][appState.language]);
         } else if (androidVersion == 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(
               context,
-              !appState.isEnglish
-                  ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                      '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
-                      '\n\n->Sijainti: Salli aina')
-                  : ('The application needs permission to use the location even when the screen is closed.' +
-                      '\n\nDo you allow the collection of location data when the app is running in the background?' +
-                      "\n\n->Location: Always Allow"),
-              !appState.isEnglish ? "Seuraava" : "Continue");
+              translations['closedGps'][appState.language] +
+                  translations['backgroundGps'][appState.language] +
+                  translations['allowAlways'][appState.language],
+              translations['next'][appState.language]);
         } else {
           await Permission.locationAlways.request();
           return await Permission.locationAlways.isGranted;
@@ -122,14 +115,10 @@ class GpsHandler {
       } else if (Platform.isIOS) {
         return await _askWhenInUseAndThenAlwaysLocationPermission(
             context,
-            !appState.isEnglish
-                ? ('Sovellus tarvitsee luvan käyttää sijaintia myös näytön ollessa kiinni.' +
-                    '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?' +
-                    '\n\n->Sijainti: Salli aina')
-                : ('The application needs permission to use the location even when the screen is closed.' +
-                    '\n\nDo you allow the collection of location data when the app is running in the background?' +
-                    "\n\n->Location: Always Allow"),
-            !appState.isEnglish ? "Seuraava" : "Continue");
+            translations['closedGps'][appState.language] +
+                translations['backgroundGps'][appState.language] +
+                translations['allowAlways'][appState.language],
+            translations['next'][appState.language]);
       } else {
         throw ErrorDescription("The platform must be either Android or IOS!");
       }

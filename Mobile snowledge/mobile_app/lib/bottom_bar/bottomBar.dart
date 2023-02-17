@@ -4,6 +4,7 @@ import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
 
 import '../state/appState.dart';
+import '../translations/translations.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -45,11 +46,13 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                   children: [
                     const Icon(Icons.near_me_rounded, color: Colors.white),
                     const SizedBox(width: 10),
-                    Text(!appState.isEnglish ? 'Sijainti' : 'Location',
-                        style: const TextStyle(color: Colors.white))
+                    Text(
+                      translations['location'][appState.language],
+                      style: const TextStyle(color: Colors.white),
+                    )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -68,11 +71,12 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
                 color: const Color(0xffd99222),
                 borderRadius: BorderRadius.circular(50.0)),
             child: Center(
-                child: Text(
-              !appState.isEnglish ? 'Pyydä\napua' : 'Ask for\n Help',
-              style: const TextStyle(color: Colors.white, fontSize: 15),
-              textAlign: TextAlign.center,
-            )),
+              child: Text(
+                translations['askHelp'][appState.language],
+                style: const TextStyle(color: Colors.white, fontSize: 15),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ),
       ),

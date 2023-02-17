@@ -8,6 +8,8 @@ import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 import '../state/appState.dart';
 
+import '../translations/translations.dart';
+
 class Dialogs {
   static Object? _selectedRadio = 0;
   final String minorHelp1 = 'Varusteongelma';
@@ -106,9 +108,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Millaista apua tarvitset?'
-                      : 'What kind of help do you need?',
+                  translations['helpQuery'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -118,9 +118,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Vakavassa hädässä, soita aina hätänumeroon 112.'
-                        : 'In a serious emergency, always call the emergency number 112.',
+                    translations['alwaysCall'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -131,9 +129,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.'
-                        : 'The Ask for Help button informs nearby users of your location and your need for help.',
+                    translations['helpButtonDesc'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -151,7 +147,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              !appState.isEnglish ? 'Soita 112' : 'Call 112',
+                              translations['call112'][appState.language],
                               const Color(0xffd99222));
                         }),
                     FutureBuilder<bool?>(
@@ -160,9 +156,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              !appState.isEnglish
-                                  ? 'Avunpyyntö'
-                                  : 'Ask for Help',
+                              translations['helpReq'][appState.language],
                               const Color(0xff7c94b6));
                         })
                   ],
@@ -287,7 +281,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -347,7 +341,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -404,7 +398,7 @@ class Dialogs {
                         // Cancel button
                         Buttons.cancelButton(
                             context,
-                            !appState.isEnglish ? "Peruuta" : "Cancel",
+                            translations['cancel'][appState.language],
                             'location')
                       ],
                     )
@@ -530,7 +524,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'offer_help'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),

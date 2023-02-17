@@ -8,6 +8,8 @@ import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'translations/translations.dart';
+
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
 
@@ -70,9 +72,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               SizedBox(
                                 height: 150,
                                 child: Text(
-                                    !appState.isEnglish
-                                        ? 'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.'
-                                        : 'The snow application produced by Pallasen Pöllöje provides information about the prevailing snow conditions in the area.',
+                                    translations['snowAppInfo']
+                                        [appState.language],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         height: 1,
@@ -84,7 +85,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                 width: 250,
                                 child: Buttons.onboardingButton(
                                   context,
-                                  !appState.isEnglish ? 'Seuraava' : 'Continue',
+                                  translations['next'][appState.language],
                                   onPressed: () {
                                     pageViewController.nextPage(
                                       duration:
@@ -99,11 +100,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                 width: 250,
                                 child: Buttons.onboardingButton(
                                   context,
-                                  appState.isEnglish
-                                      ? 'Suomen kielellä'
-                                      : 'In English',
+                                  translations['languageOpt']
+                                      [appState.language],
                                   onPressed: () {
-                                    appState.toggleLanguage = true;
+                                    //IMPLEMENT THIS
+
+                                    //THIS
                                   },
                                 ),
                               ),
@@ -125,9 +127,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             children: [
                               const SizedBox(height: 70),
                               Text(
-                                  !appState.isEnglish
-                                      ? 'SIJAINTITIEDON JAKAMINEN'
-                                      : 'SHARING OF LOCATION INFORMATION',
+                                  translations['sharingLocation']
+                                      [appState.language],
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       height: 1,
@@ -136,9 +137,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       color: Colors.white)),
                               const SizedBox(height: 30.0),
                               Text(
-                                  !appState.isEnglish
-                                      ? 'Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.'
-                                      : "The app's rescue function collects information about your location. With it, we offer rescue support. Using the location, the rescue service can take advantage of your route and you can ask for help from passers-by around you. You too can help others. You can disable location at any time.",
+                                  translations['rescueFeatureInfo']
+                                      [appState.language],
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       height: 1,
@@ -147,9 +147,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               const SizedBox(height: 70),
                               Buttons.onboardingButton(
                                 context,
-                                !appState.isEnglish
-                                    ? 'SALLI KÄYTTÖ'
-                                    : 'ALLOW ACCESS',
+                                translations['allowAccess'][appState.language],
                                 onPressed: () async {
                                   if (await GpsHandler
                                       .checkAndAskGpsAlwaysOnPermission(
@@ -167,9 +165,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               const SizedBox(height: 10.0),
                               Buttons.refuseLocationPermissionButton(
                                 context,
-                                !appState.isEnglish
-                                    ? 'Älä salli sijaintia'
-                                    : 'Do not allow location access',
+                                translations['noLocationShare']
+                                    [appState.language],
                                 onPressed: () {
                                   pageViewController.nextPage(
                                     duration: const Duration(milliseconds: 500),
@@ -195,9 +192,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             children: [
                               const SizedBox(height: 70),
                               Text(
-                                  !appState.isEnglish
-                                      ? 'SIJAINTITIEDON JAKAMINEN'
-                                      : 'SHARING OF LOCATION INFORMATION',
+                                  translations['sharingLocation']
+                                      [appState.language],
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       height: 1,
@@ -206,9 +202,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       color: Colors.white)),
                               const SizedBox(height: 30.0),
                               Text(
-                                  !appState.isEnglish
-                                      ? "Sijainnin jakaminen tulee olla päällä, jotta pystymme paikantamaan sinut avuntarpeessa ja auttajan roolissa. Jos poistat käytöstä sijainnin jakamisen, et saa ilmoituksia apua tarvitsevilta."
-                                      : "Location sharing must be turned on so that we can locate you in need of help and in the role of a helper. If you disable location sharing, you will not receive notifications from those who need help.",
+                                  translations['whyLocationShare']
+                                      [appState.language],
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       height: 1,
@@ -218,7 +213,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               SetSharingLocation(),
                               const SizedBox(height: 50),
                               Buttons.onboardingButton(context,
-                                  !appState.isEnglish ? 'Seuraava' : 'Continue',
+                                  translations['next'][appState.language],
                                   onPressed: () {
                                 pageViewController.nextPage(
                                   duration: const Duration(milliseconds: 500),
@@ -246,9 +241,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             child: Column(
                               children: [
                                 Text(
-                                    !appState.isEnglish
-                                        ? 'Syötäthän oikeat tietosi'
-                                        : 'Please enter your correct information',
+                                    translations['correctInfo']
+                                        [appState.language],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         height: 1,
@@ -257,9 +251,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         color: Colors.white)),
                                 const SizedBox(height: 20.0),
                                 Text(
-                                    !appState.isEnglish
-                                        ? 'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.'
-                                        : "Your information is used for the application's rescue function.\nThe function allows the rescue service to find you more easily in the event of an alarm.",
+                                    translations['infoUsage']
+                                        [appState.language],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         height: 1,
@@ -292,9 +285,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             children: [
                               const SizedBox(height: 70),
                               Text(
-                                  !appState.isEnglish
-                                      ? 'Pallaksen Pöllöjen tuottama lumisovellus toimii tunturissa usein eri tavoin. Hampurilaisvalikosta navigoimalla voit tutustua Pallaksen tunturialueen lumihavaintoihin, joita sekä oppaat että käyttäjät jättävät, ja säätietoihin. Pelastustoiminto sovelluksessa on käytössä ympäri vuoden ja se on löydettävissä oranssin napin kautta kaikissa näkymissä.'
-                                      : "The snow application produced by Pallas Pöllöj often works in different ways in the fells. By navigating the hamburger menu, you can familiarize yourself with the snow observations of the Pallas fell area, which are left by both guides and users, and weather information. The rescue function in the application is available all year round and can be found via the orange button in all views.",
+                                  translations['appFuncDesc']
+                                      [appState.language],
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       height: 1,
@@ -302,7 +294,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       color: Colors.white)),
                               const SizedBox(height: 100),
                               Buttons.onboardingButton(context,
-                                  !appState.isEnglish ? 'SEURAAVA' : 'CONTINUE',
+                                  translations['next'][appState.language],
                                   onPressed: () {
                                 Navigator.pushAndRemoveUntil(
                                     context,
@@ -357,14 +349,12 @@ class UserInfoFormState extends State<UserInfoForm> {
             controller: fNameController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return !appState.isEnglish
-                    ? 'Anna etunimesi'
-                    : 'Enter your first name';
+                return translations['fNameQuery'][appState.language];
               }
               if (value.length > nameMaxLen) {
-                return !appState.isEnglish
-                    ? 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!'
-                    : 'The maximum length of a first name is ${nameMaxLen} characters!';
+                return translations['fNameMaxLen1'][appState.language] +
+                    nameMaxLen +
+                    translations['fNameMaxLen2'][appState.language];
               }
               return null;
             },
@@ -375,7 +365,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                 ),
                 label: Center(
                     child: Text(
-                  !appState.isEnglish ? 'Etunimi' : 'First name',
+                  translations['fName'][appState.language],
                   style: TextStyle(
                       color: Colors.white.withOpacity(0.5), fontSize: 20),
                 ))),
@@ -387,14 +377,12 @@ class UserInfoFormState extends State<UserInfoForm> {
             controller: lNameController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return !appState.isEnglish
-                    ? 'Anna sukunimesi'
-                    : 'Enter your last name';
+                return translations['surnameQuery'][appState.language];
               }
               if (value.length > nameMaxLen) {
-                return !appState.isEnglish
-                    ? 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!'
-                    : 'The maximum length of the last name is ${nameMaxLen} characters!';
+                return translations['surnameMaxLen1'][appState.language] +
+                    nameMaxLen +
+                    translations['surnameMaxLen2'][appState.language];
               }
               return null;
             },
@@ -405,7 +393,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                 ),
                 label: Center(
                     child: Text(
-                  !appState.isEnglish ? 'Sukunimi' : 'Last name',
+                  translations['surname'][appState.language],
                   style: TextStyle(
                       color: Colors.white.withOpacity(0.5), fontSize: 20),
                 ))),
@@ -421,9 +409,7 @@ class UserInfoFormState extends State<UserInfoForm> {
             controller: pNumberController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return !appState.isEnglish
-                    ? 'Anna puhelinnumerosi'
-                    : 'Enter your phone number';
+                return translations['numQuery'][appState.language];
               }
 
               return null;
@@ -435,15 +421,14 @@ class UserInfoFormState extends State<UserInfoForm> {
                 ),
                 label: Center(
                     child: Text(
-                  !appState.isEnglish ? 'Puhelinnumero' : 'Phone number',
+                  translations['phoneNum'][appState.language],
                   style: TextStyle(
                       color: Colors.white.withOpacity(0.5), fontSize: 20),
                 ))),
           ),
           const SizedBox(height: 30.0),
           Buttons.onboardingButton(
-              context, !appState.isEnglish ? 'Seuraava' : 'Continue',
-              onPressed: () {
+              context, translations['next'][appState.language], onPressed: () {
             if (_formKey.currentState!.validate()) {
               _setPreferences(fNameController.text, lNameController.text,
                   pNumberController.text);
