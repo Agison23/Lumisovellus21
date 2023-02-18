@@ -315,7 +315,7 @@ function AddSegment(props) {
         <DialogActions>   
           <Divider />
           <Button id={"deleteClose"} onClick={closeAdd}>{translations["close"][language]}</Button>
-          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>Lisää</Button>
+          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>{translations["add"][language]}</Button>
         </DialogActions>
       
       </Dialog>

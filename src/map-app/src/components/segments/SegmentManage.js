@@ -432,7 +432,7 @@ function SegmentManage(props) {
         <DialogActions>
           <Divider />
           <Button id={"deleteClose"} onClick={closeDelete}>
-            close{translations["edit"][language]}
+            {translations["close"][language]}
           </Button>
           <Button
             variant="contained"

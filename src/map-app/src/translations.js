@@ -757,6 +757,16 @@
   avalancheProneArea:{
     fi: "Lumivyöryherkkä alue",
     en: "Avalanche-prone area"
+  },
+
+  firstName:{
+    fi: "Etunimi",
+    en: "First name"
+  },
+
+  lastName:{
+    fi: "Sukunimi",
+    en: "Lastst name"
   }
 
 };
