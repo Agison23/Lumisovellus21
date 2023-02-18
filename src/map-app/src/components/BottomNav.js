@@ -103,7 +103,7 @@ function BottomNav(props) {
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label= {translations["info"][language]}
+            label= {translations["definitions"][language]}
             icon={<InfoIcon />}
           />
           <BottomNavigationAction
