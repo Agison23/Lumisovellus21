@@ -10,6 +10,7 @@ import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
 import '../state/appState.dart';
 import 'dialogs.dart';
+import '../translations/translations.dart';
 
 class Buttons {
   String locationMessage = 'LOCATION';
@@ -17,20 +18,21 @@ class Buttons {
   /// Help button
   ElevatedButton helpButton(
       bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+      var appState = Provider.of<AppState>(contx);
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
           GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
               .then((gpsOn) async {
             if (gpsOn) {
-              if (text == 'Soita 112') {
+              if (text == translations['call112'][appState.language]) {
                 open112();
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
                 Navigator.of(contx).push(MaterialPageRoute(
                     builder: (contx) => const HelpNeeded(true)));
               }
-              if (text == 'Avunpyyntö') {
+              if (text == translations['helpReq'][appState.language]) {
                 Dialogs().showDialogMinorHelpQuestions(contx);
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
@@ -40,12 +42,12 @@ class Buttons {
                   context: contx,
                   builder: (contx) {
                     return AlertDialog(
-                      title: const Text(
-                          'Toiminto vaatii luvan käyttää laitteen GPS:ää'),
+                      title: Text(
+                          translations['funcNeedsGps'][appState.language]),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(contx),
-                          child: const Text('Ok'),
+                          child: Text(translations['ok'][appState.language]),
                         ),
                       ],
                     );
@@ -54,13 +56,13 @@ class Buttons {
           });
         } else {
           await ServerComms.messageToServer(locationMessage);
-          if (text == 'Soita 112') {
+          if (text == translations['call112'][appState.language]) {
             open112();
             Navigator.of(contx).push(
                 MaterialPageRoute(builder: (contx) => const HelpNeeded(true)));
           }
 
-          if (text == 'Avunpyyntö') {
+          if (text == translations['helpReq'][appState.language]) {
             Dialogs().showDialogMinorHelpQuestions(contx);
           }
         }
@@ -119,13 +121,14 @@ class Buttons {
   }
 
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
+  var appState = Provider.of<AppState>(context);
     return ElevatedButton(
         onPressed: () async => await MyApp.navigatorKey.currentState?.push(
             MaterialPageRoute(
                 builder: (context) => HelpOffered(payload, false))),
-        child: const Text(
-          'Auta',
-          style: TextStyle(
+        child: Text(
+          translations['help'][appState.language],
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,

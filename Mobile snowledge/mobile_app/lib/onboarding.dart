@@ -363,7 +363,7 @@ class UserInfoFormState extends State<UserInfoForm> {
               }
               if (value.length > nameMaxLen) {
                 return translations['fNameMaxLen1'][appState.language] +
-                    nameMaxLen +
+                    '${nameMaxLen}' +
                     translations['fNameMaxLen2'][appState.language];
               }
               return null;
@@ -391,7 +391,7 @@ class UserInfoFormState extends State<UserInfoForm> {
               }
               if (value.length > nameMaxLen) {
                 return translations['surnameMaxLen1'][appState.language] +
-                    nameMaxLen +
+                    '${nameMaxLen}' +
                     translations['surnameMaxLen2'][appState.language];
               }
               return null;

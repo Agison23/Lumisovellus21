@@ -7,6 +7,9 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'helper/utility.dart';
 import 'main_page.dart';
+import 'package:provider/provider.dart';
+import '../state/appState.dart';
+import '../translations/translations.dart';
 
 class HelpOffered extends StatefulWidget {
   const HelpOffered(this.payload, this.pushUp, {Key? key}) : super(key: key);
@@ -78,6 +81,7 @@ class HelpOfferedState extends State<HelpOffered> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     String usersLocation =
         GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
@@ -90,11 +94,11 @@ class HelpOfferedState extends State<HelpOffered> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Haluatko perua avun tarjoamisen?'),
+                title: Text(translations['cancelHelp'][appState.language]),
                 actions: [
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('En'),
+                    child: Text(translations['no'][appState.language]),
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -105,7 +109,7 @@ class HelpOfferedState extends State<HelpOffered> {
                                 builder: (context) => const MainPage()),
                             (route) => false);
                       },
-                      child: const Text('Kyllä')),
+                      child: Text(translations['yes'][appState.language])),
                 ],
               );
             });
@@ -120,8 +124,8 @@ class HelpOfferedState extends State<HelpOffered> {
           appBar: AppBar(
             title: Text(
               _accepted
-                  ? 'Avuntarjoamistila'
-                  : 'Käyttäjä on pyytänyt apua $_distance päässä',
+                  ? translations['helpMode'][appState.language]
+                  : translations['userReqDist1'][appState.language] + _distance + translations['userReqDist2'][appState.language],
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -197,6 +201,7 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Widget> decisionbuttons() {
+    var appState = Provider.of<AppState>(context);
     return <Widget>[
       ElevatedButton(
         onPressed: () {
@@ -206,10 +211,10 @@ class HelpOfferedState extends State<HelpOffered> {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         },
-        child: const Text(
-          'Hylkää',
+        child: Text(
+          translations['decline'][appState.language],
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.red,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -229,10 +234,10 @@ class HelpOfferedState extends State<HelpOffered> {
             _accepted = true;
           });
         },
-        child: const Text(
-          'Hyväksy',
+        child: Text(
+          translations['accept'][appState.language],
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.green,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -249,6 +254,7 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Widget> returnbutton() {
+    var appState = Provider.of<AppState>(context);
     return <Widget>[
       ElevatedButton(
         onPressed: () async {
@@ -256,11 +262,11 @@ class HelpOfferedState extends State<HelpOffered> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: const Text('Haluatko lopettaa avuntarjoamisen?'),
+                  title: Text(translations['stopHelpQuery'][appState.language]),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('En'),
+                      child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                         onPressed: () {
@@ -270,7 +276,7 @@ class HelpOfferedState extends State<HelpOffered> {
                                   builder: (context) => const MainPage()),
                               (route) => false);
                         },
-                        child: const Text('Kyllä')),
+                        child: Text(translations['yes'][appState.language])),
                   ],
                 );
               });
@@ -280,10 +286,10 @@ class HelpOfferedState extends State<HelpOffered> {
             return Future.value(false);
           }
         },
-        child: const Text(
-          'Lopeta avuntarjoaminen',
+        child: Text(
+          translations['stopHelp'][appState.language],
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,

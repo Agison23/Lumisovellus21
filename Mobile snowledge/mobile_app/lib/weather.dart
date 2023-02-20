@@ -6,6 +6,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
 
+import 'package:provider/provider.dart';
+import '../state/appState.dart';
+import '../translations/translations.dart';
+
 class Weather extends StatefulWidget {
   const Weather({Key? key}) : super(key: key);
 
@@ -22,6 +26,7 @@ class _WeatherState extends State<Weather> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -32,15 +37,15 @@ class _WeatherState extends State<Weather> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Haluatko poistua sovelluksesta?'),
+                  title: Text(translations['quitApp'][appState.language]),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('En'),
+                      child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Kyllä'),
+                      child: Text(translations['yes'][appState.language]),
                     ),
                   ],
                 );

@@ -7,6 +7,9 @@ import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:provider/provider.dart';
+import '../state/appState.dart';
+import '../translations/translations.dart';
 
 import 'main.dart';
 
@@ -145,6 +148,7 @@ class HelpNeededState extends State<HelpNeeded> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     String usersLocation =
         GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
@@ -157,11 +161,11 @@ class HelpNeededState extends State<HelpNeeded> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Haluatko lopettaa avunpyynnön?'),
+                title: Text(translations['endRequest'][appState.language]),
                 actions: [
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('En'),
+                    child: Text(translations['no'][appState.language]),
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -171,7 +175,7 @@ class HelpNeededState extends State<HelpNeeded> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
-                      child: const Text('Kyllä')),
+                      child: Text(translations['yes'][appState.language])),
                 ],
               );
             });
@@ -185,7 +189,7 @@ class HelpNeededState extends State<HelpNeeded> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Avunpyyntö päällä\n\n Hyväksynyt: ${_helpers.length} henkilöä',
+              translations['peopleAccepted1'][appState.language] + '${_helpers.length}' + translations['peopleAccepted2'][appState.language],
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -229,12 +233,12 @@ class HelpNeededState extends State<HelpNeeded> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: const Text('Haluatko lopettaa avunpyynnön?'),
+                            title: Text(translations['endRequest'][appState.language]),
                             actions: [
                               ElevatedButton(
                                 onPressed: () =>
                                     Navigator.of(context).pop(false),
-                                child: const Text('En'),
+                                child: Text(translations['no'][appState.language]),
                               ),
                               ElevatedButton(
                                   onPressed: () {
@@ -246,7 +250,7 @@ class HelpNeededState extends State<HelpNeeded> {
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Kyllä')),
+                                  child: Text(translations['yes'][appState.language])),
                             ],
                           );
                         });
@@ -256,10 +260,10 @@ class HelpNeededState extends State<HelpNeeded> {
                       return Future.value(false);
                     }
                   },
-                  child: const Text(
-                    'Lopeta avun hälyttäminen',
+                  child: Text(
+                    translations['stopReq'][appState.language],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

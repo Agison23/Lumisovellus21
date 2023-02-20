@@ -115,8 +115,8 @@ Map translations = {
   },
 
   'locSharing': {
-    'fi': 'Sijainnin lähettäminen:',
-    'en': 'Location sharing:',
+    'fi': 'Sijainnin lähettäminen',
+    'en': 'Location sharing',
   },
 
   'dataInterval': {
@@ -155,9 +155,18 @@ Map translations = {
 
   'emergButtonInfo2': {
     'fi':
-        ' aukaisee \"soita 112\" ilmoituksen näytön alareunaan jota painamalla puhelin soittaa hätänumeroon!" : " ohjaa automaattisesti 112 sovellukseen tai soittamaan hätänumeroon jos sovellusta ei ole ladattu!',
+        ' aukaisee \"soita 112\" ilmoituksen näytön alareunaan jota painamalla puhelin soittaa hätänumeroon!',
     'en':
-        ' opens \"call 112\" a notification at the bottom of the screen. By pressing it phone calls to the emergency number!" : " automatically redirect to 112 applications or call the emergency number if application is not loaded to phone!',
+        ' opens \"call 112\" a notification at the bottom of the screen. By pressing it phone calls to the emergency number!',
+  },
+
+  // : väliin
+
+  'emergButtonInfo3': {
+    'fi':
+        'ohjaa automaattisesti 112 sovellukseen tai soittamaan hätänumeroon jos sovellusta ei ole ladattu!',
+    'en':
+        'automatically redirect to 112 applications or call the emergency number if application is not loaded to phone!',
   },
 
   'funcNeedsGps': {
@@ -244,9 +253,19 @@ Map translations = {
 
   'fullGpsInfo': {
     'fi':
-        "Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä. Viimeinen sijaintitieto lähetetty: \n' {} sitten",
+        "Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.",
     'en':
-        "The application collects information about your location. We need your location to provide help for you in an emergency. You can stop sharing your location at any time. Last location data sent: \n {}  ago",
+        "The application collects information about your location. We need your location to provide help for you in an emergency. You can stop sharing your location at any time.",
+  },
+
+  'lastShare1': {
+    'fi': 'Viimeinen sijaintitieto lähetetty: \n',
+    'en': 'Last location data sent: \n',
+  },
+
+  'lastShare2': {
+    'fi': ' sitten',
+    'en': ' ago',
   },
 
   'noNearUsers': {
@@ -457,8 +476,8 @@ Map translations = {
   },
 
   'fNameMaxLen1': {
-    'fi': 'Etunimen enimmäispituus on ',
-    'en': 'The maximum length of a first name is ',
+    'fi': 'Maksimissaan ',
+    'en': 'Maximum of ',
   },
 
   // ${nameMaxLen} välissä
@@ -479,8 +498,8 @@ Map translations = {
   },
 
   'surnameMaxLen1': {
-    'fi': 'Sukunimen enimmäispituus on ',
-    'en': 'The maximum length of the last name is ',
+    'fi': 'Maksimissaan',
+    'en': 'Maximum of ',
   },
 
   // ${nameMaxLen} välissä
@@ -741,5 +760,13 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
   'skiAreasOnly': {
     'fi': 'Vain laskualueet',
     'en': 'Skiing areas only',
+  },
+  'no': {
+    'fi': 'En',
+    'en': 'No',
+  },
+  'yes': {
+    'fi': 'Kyllä',
+    'en': 'Yes',
   },
 };

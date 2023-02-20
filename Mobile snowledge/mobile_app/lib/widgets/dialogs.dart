@@ -37,18 +37,19 @@ class Dialogs {
   }
 
   Future showDialogMinorHelpQuestions(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     _selectedRadio = 1;
     return await showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Millaista apua tarvitset?'),
+            title: Text(translations['helpQuery'][appState.language]),
             content: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: [
                 RadioListTile(
-                  title: const Text('Varusteongelma'),
+                  title: Text(translations['eqptProblem'][appState.language]),
                   value: 1,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -56,7 +57,7 @@ class Dialogs {
                   },
                 ),
                 RadioListTile(
-                  title: const Text('Terveysogelma'),
+                  title: Text(translations['healthIssue'][appState.language]),
                   value: 2,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -64,7 +65,7 @@ class Dialogs {
                   },
                 ),
                 RadioListTile(
-                  title: const Text('Olen eksynyt'),
+                  title: Text(translations['lost'][appState.language]),
                   value: 3,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -79,13 +80,13 @@ class Dialogs {
                           resetRadioSelection();
                           Navigator.pop(context);
                         }),
-                        child: const Text('Peruuta')),
+                        child: Text(translations['cancel'][appState.language])),
                     ElevatedButton(
                         onPressed: (() {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (contx) => const HelpNeeded(true)));
                         }),
-                        child: const Text('Jatka'))
+                        child: Text(translations['continue'][appState.language]))
                   ],
                 )
               ]);
@@ -173,6 +174,7 @@ class Dialogs {
 
   /// Open the sharing location dialog
   Future showDialogSharingLocation(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     var prefs = await SharedPreferences.getInstance();
     return await showDialog<void>(
       context: context,
@@ -184,20 +186,20 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Sijaintitiedon jakaminen',
+                Text(
+                  translations['gpsSharing'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.',
+                    translations['fullGpsInfo'][appState.language],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
@@ -206,13 +208,13 @@ class Dialogs {
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
-                        'Sijainnin lähettäminen',
+                        translations['locSharing'][appState.language],
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                         ),
@@ -221,12 +223,12 @@ class Dialogs {
                     SetSharingLocation(),
                   ],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 prefs.getString('lastLocationTime') != null
                     ? Text(
-                        'Viimeinen sijaintitieto lähetetty: \n'
-                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
-                        ' sitten',
+                        translations['lastShare1'][appState.language] +
+                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" +
+                        translations['lastShare2'][appState.language],
                         textAlign: TextAlign.center,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
@@ -256,20 +258,20 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Sovelluksen käyttäjiä ei ole lähistöllä',
+                Text(
+                  translations['noNearUsers'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Voit soittaa 112 tai peruuttaa avunpyyntösi.',
+                    translations['callOrCancel'][appState.language],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
@@ -316,20 +318,20 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi',
+                Text(
+                  translations['notAccepted'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Voit soittaa 112 tai peruuttaa avunpyyntösi.',
+                    translations['callOrCancel'][appState.language],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
@@ -411,6 +413,7 @@ class Dialogs {
 
   /// Open dialog when user has deleted the request
   static showHelpNeedOverDialog(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -422,10 +425,10 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Avuntarve ohi\nKiitos avusta!',
+                Text(
+                  translations['requestOver'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
@@ -449,6 +452,7 @@ class Dialogs {
   }
 
   static showHelperCancelledAcceptanceDialog(context, int count) async {
+    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -461,7 +465,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.',
+                  translations['helpOver'][appState.language] + '$count.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -499,20 +503,20 @@ class Dialogs {
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                const Text(
-                  'Lähellä oleva käyttäjä tarvitsee apua.',
+                Text(
+                  translations['nearbyReq'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.bold),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    'Voit tarjota apua tai ohittaa pyynnön.',
+                    translations['actionOptions'][appState.language],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
