@@ -52,7 +52,7 @@ Segmentin tiedot näyttävän kortin voi sulkea
 Ensimmäinen versio segmenttien päivittämisestä
 **/
 
-import React, {useContext} from "react";
+import React, {useState,useContext} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -171,23 +171,23 @@ const useStyles = makeStyles((theme) => ({
 function Info(props) {
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
-  const [loginOpen, setLoginOpen] = React.useState(false);
-  const [text, setText] = React.useState("");
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [text, setText] = useState("");
 
-  const [entryVisible, setEntryVisible] = React.useState(true);
-  const [addVisible, setAddVisible] = React.useState(true);
-  const [selectVisible, setSelectVisible] = React.useState(false);
-  const [searchVisible, setSearchVisible] = React.useState(false);
+  const [entryVisible, setEntryVisible] = useState(true);
+  const [addVisible, setAddVisible] = useState(true);
+  const [selectVisible, setSelectVisible] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
 
-  const [selectDisabled, setSelectDisabled] = React.useState([false, false]);
-  const [isSecondary, setIsSecondary] = React.useState(false);
-  const [snowRecordContent, setSnowRecordContent] = React.useState([]);
-  const [snowTypeList, setSnowTypeList] = React.useState([]);
-  const [disabledSnowTypes, setDisabledSnowTypes] = React.useState([]);
-  const [updateEnabled, setUpdateEnabled] = React.useState(false);
+  const [selectDisabled, setSelectDisabled] = useState([false, false]);
+  const [isSecondary, setIsSecondary] = useState(false);
+  const [snowRecordContent, setSnowRecordContent] = useState([]);
+  const [snowTypeList, setSnowTypeList] = useState([]);
+  const [disabledSnowTypes, setDisabledSnowTypes] = useState([]);
+  const [updateEnabled, setUpdateEnabled] = useState(false);
 
-  const [writeReviewEnabled, setWriteReviewEnabled] = React.useState(false);
-  const [reviewMode, setReviewMode] = React.useState("category");
+  const [writeReviewEnabled, setWriteReviewEnabled] = useState(false);
+  const [reviewMode, setReviewMode] = useState("category");
 
   const { language } = useContext(GlobalContext);
 
@@ -798,7 +798,7 @@ function Info(props) {
                         value={text}
                         maxRows={6}
                         onChange={updateText}
-                        placeholder="Kirjoita..."
+                        placeholder={translations["description"][language]}
                         multiline
                         variant="outlined"
                       />

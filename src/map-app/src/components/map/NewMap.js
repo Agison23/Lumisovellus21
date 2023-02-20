@@ -61,7 +61,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations from "../../translations";
+import translations  from "../../translations";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -124,6 +124,19 @@ const useStyles = makeStyles((theme) => ({
     height: "44px",
   },
 }));
+
+function getTranslationkey(snowTypeInFinish,lan = "fi"){
+  for (let snowType in translations){
+    let snowTypeObject = translations[snowType];
+    let snowTypeInFi = snowTypeObject[lan];
+
+    if(snowTypeInFi == snowTypeInFinish){
+      return snowType;
+    }
+  }
+    //shouldn't be possible
+  return "snowTypeError";
+}
 
 function Map(props) {
   // Use state hooks
@@ -192,20 +205,37 @@ function Map(props) {
    * Event handlers
    */
 
+  useEffect(() => {
+    
+    let showOnlyString = translations["showOnly"][language];
+    let snowName = "";
+    if(highlightedSnowType === -3){
+      setButtonText(showOnlyString);
+    }else{
+      if(language === "fi"){
+        snowName = translations[getTranslationkey(buttonText,"en")][language];
+      }else{
+        snowName = translations[getTranslationkey(buttonText)][language];
+      }
+      setButtonText(snowName);
+    }
+  },language);
+
   function handleClick() {
     setOpen(!open);
   }
 
   function updateHighlightedSnowType(snow) {
+    let showOnlyString = translations["showOnly"][language];
+    let snowName = translations[getTranslationkey(snow.Nimi)][language];
     if (highlightedSnowType === snow.ID) {
       setHighlightedSnowType(-3);
-      setButtonText("Näytä ainoastaan...");
+      setButtonText(showOnlyString);
     } else {
       setHighlightedSnowType(snow.ID);
-      setButtonText(snow.Nimi);
+      setButtonText(snowName);
     }
   }
-
   // Updates the chosen segment
   function updateChosen(segment) {
     props.onClick(segment.ID);
@@ -280,7 +310,7 @@ function Map(props) {
                                 : "white",
                           }}
                         >
-                          {snowType.Nimi}
+                          {translations[getTranslationkey(snowType.Nimi)][language]}
                         </Button>
                       </Box>
                     );
@@ -362,7 +392,7 @@ function Map(props) {
                                   : "white",
                             }}
                           >
-                            {snowType.Nimi}
+                            {translations[getTranslationkey(snowType.Nimi)][language]}
                           </Button>
                         </Box>
                       );
@@ -382,7 +412,7 @@ function Map(props) {
                         highlightedSnowType === -1 ? "#ed7a72" : "white",
                     }}
                   >
-                    Vain laskualueet
+                    {translations["skiingAreasOnly"][language]}
                   </Button>
                 </Box>
               </List>

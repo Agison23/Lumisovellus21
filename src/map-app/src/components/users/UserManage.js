@@ -43,7 +43,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import GlobalContext from "../../context/GlobalContext";
 import translations from "../../translations";
 
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AddUser from "./AddUser";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,19 +66,19 @@ function UserManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [anchorElMenu, setAnchorElMenu] = React.useState(null);
-  const [selected, setSelected] = React.useState(null);
-  const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [firstName, setFirstName] = React.useState(null);
-  const [lastName, setLastName] = React.useState(null);
-  const [email, setEmail] = React.useState(null);
-  const [password, setPassword] = React.useState("");
-  const [confirm, setConfirm] = React.useState("");
-  const [mismatch, setMismatch] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [initials, setInitials] = React.useState(null);
-  const [users, setUsers] = React.useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [mismatch, setMismatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [initials, setInitials] = useState(null);
+  const [users, setUsers] = useState(null);
   const language = useContext(GlobalContext);
 
   const menuOpen = Boolean(anchorElMenu);

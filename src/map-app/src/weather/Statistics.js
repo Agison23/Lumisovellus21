@@ -104,32 +104,32 @@ function ShortIntervalStatsPaper({weatherState}) {
       {/* Snow depth growth during last seven days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>{translations["increaseInSnowDepth"][language]}</p>
-        <KeyValuePair keyName="7 vuorokauden aikana" value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
+        <KeyValuePair keyName={translations["duringSevenDays"][language]} value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
       </Card>
 
       {/* Temperature statistics during last three days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>{translations["temperatureDuringThreeDays"][language]}</p>
-        <KeyValuePair keyName="korkein" value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
+        <KeyValuePair keyName={translations["highest"][language]} value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName="matalin" value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
+        <KeyValuePair keyName={translations["lowest"][language]} value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName="suojapäivien määrä" value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
+        <KeyValuePair keyName={translations["amountOfPlusDays"][language]} value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
         {weatherState.temperature.thawDays.length !== 0 &&
         <div style={{paddingBottom: "50px"}}>
           <Divider className={classes.divider}/>
-          <KeyValuePair keyName="suojapäivät" value={weatherState.temperature.thawDays.join("\r\n")}/>
+          <KeyValuePair keyName={translations["plusDays"][language]} value={weatherState.temperature.thawDays.join("\r\n")}/>
         </div>}
       </Card>
 
       {/* Wind speed and direction statistics during last three days */}
       <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
         <p className={classes.cardHeader}>{translations["windDuringThreeDays"][language]}</p>
-        <KeyValuePair keyName="kesk. nopeus" value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
+        <KeyValuePair keyName={translations["AverSpeed"][language]} value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName="kesk. suunta" value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
+        <KeyValuePair keyName={translations["AverDirection"][language]} value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName="kovin tuuli" value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
+        <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
       </Card>
 
     </Paper>
@@ -154,19 +154,19 @@ function WinterStatsPaper({weatherState}) {
           {/* Temperature statistics during winter */}
           <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
             <p className={classes.cardHeader}>{translations["temperature"][language]}</p>
-            <KeyValuePair keyName="suojapäivät" value={weatherState.winter.thawDays + " kpl"}/>
+            <KeyValuePair keyName={translations["plusDays"][language]} value={weatherState.winter.thawDays + " kpl"}/>
             <Divider className={classes.divider}/>
-            <KeyValuePair keyName="mediaani" value={weatherState.winter.median + " \xB0C"}/>
+            <KeyValuePair keyName={translations["median"][language]} value={weatherState.winter.median + " \xB0C"}/>
           </Card>
           
           {/* Wind direction and speed statistics during winter */}
           <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
             <p className={classes.cardHeader}>{translations["strongWind"][language]}</p>
-            <KeyValuePair keyName="kovin tuuli" value={weatherState.winter.maxWind + " m/s"}/>
+            <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.winter.maxWind + " m/s"}/>
             <Divider className={classes.divider}/>
-            <KeyValuePair keyName="kesk. suunta" value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
+            <KeyValuePair keyName={translations["AverDirection"][language]} value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
             <Divider className={classes.divider}/>
-            <KeyValuePair keyName="päivien lkm" value={weatherState.winter.strongWindDays}/>
+            <KeyValuePair keyName={translations["amountOfDays"][language]} value={weatherState.winter.strongWindDays}/>
           </Card>
 
         </div> :

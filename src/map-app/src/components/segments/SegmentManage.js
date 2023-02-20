@@ -345,7 +345,7 @@ function SegmentManage(props) {
                 <Card className={classes.segmentCard}>
                   <CardHeader
                     title={item.Nimi}
-                    subheader={"Pohjamaasto: " + item.Maasto}
+                    subheader={translations["terrainBase"][language] + ": " + item.Maasto}
                     action={
                       <IconButton
                         id={item.ID}
@@ -398,7 +398,7 @@ function SegmentManage(props) {
                       component="p"
                     >
                       {item.On_Alasegmentti !== null
-                        ? "Segmentin " + item.On_Alasegmentti + " alasegmentti"
+                        ? translations["subsegmentOf"][language] + item.On_Alasegmentti + translations["subsegmentOfEnd"][language]
                         : ""}
                     </Typography>
 
@@ -482,7 +482,7 @@ function SegmentManage(props) {
               color="primary"
             />
           }
-          label="Lumivyöryriskialue"
+          label={translations["avalancheProneArea"][language]}
         />
 
         {points !== null ? (

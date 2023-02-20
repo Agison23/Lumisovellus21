@@ -124,7 +124,7 @@ function SnowTypes(props) {
                 {translations["freshWetSnow"][language]}
               </Typography>
               <Typography>
-                {translations["freshWetSnowDescriptoion"][language]}
+                {translations["freshWetSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -190,7 +190,7 @@ function SnowTypes(props) {
             <Box>
               <Typography variant="h5">{translations["supportingCrust"][language]}</Typography>
               <Typography>
-                {translations["supporttingCrustDescription"][language]}
+                {translations["supportingCrustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -256,7 +256,7 @@ function SnowTypes(props) {
             <Box>
               <Typography variant="h5">{translations["wavySnow"][language]}</Typography>
               <Typography>
-                {translations["wavySnowDescrioption"][language]}
+                {translations["wavySnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"

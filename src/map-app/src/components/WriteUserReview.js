@@ -154,6 +154,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+function getTranslationkey(snowTypeInFinish){
+  for (let key in translations){
+    let translationObject = translations[key];
+    let translationString = translationObject["fi"];
+
+    if(translationString == snowTypeInFinish){
+      return key;
+    }
+  }
+    //shouldn't be possible
+  return "snowTypeError";
+  }
 
 
 function WriteUserReview(props) {
@@ -391,7 +403,7 @@ function WriteUserReview(props) {
                         alt="lumityypin logo"
                         className={styles.snowInfo}
                       />
-                      <Typography className={styles.mediumText}>{data.Nimi}</Typography>                 
+                      <Typography className={styles.mediumText}>{translations[getTranslationkey(data.Nimi)][language]}</Typography>                 
                     </IconButton>  
                   </Grid>                
                 );
@@ -403,11 +415,11 @@ function WriteUserReview(props) {
           {/* Lumitiedon kuvausteksti */}
           { selectedType !== null && (
             <Box className={styles.description}>
-              <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>{selectedType.Nimi}</Typography>
+              <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>
+                {translations[getTranslationkey(selectedType.Nimi)][language]}</Typography>
               <p 
-                className={styles.mediumText}
-                style={{marginRight: "1px"}}
-              >{selectedType.Lumityyppi_selite}</p>
+                className={styles.mediumText}style={{marginRight: "1px"}}
+              >{translations[getTranslationkey(selectedType.Nimi) + "Description"][language]}</p>
 
               { selectedType.Hiihdettavyys > 0 && (
                 <img className={styles.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/" + selectedType.Hiihdettavyys + ".svg"} alt="skiability" />
@@ -467,12 +479,12 @@ function WriteUserReview(props) {
         <div className={styles.div}>
 
           {props.mode === "category" &&
-            <Typography className={styles.smallHeaders}>{translations["Kiitos palautteesta!"][language]} </Typography>        
+            <Typography className={styles.smallHeaders}>{translations["thanksForTheFeedback"][language]} </Typography>        
           }
 
           <Box className={styles.part}>
             <Typography variant="h5" className={styles.mediumText}>{translations["observationsOrGreetingsToPollot"][language]} </Typography>
-            <TextField className={styles.textFields} value={text} maxRows={6} onChange={updateText} placeholder="Kirjoita..." multiline variant="outlined" />
+            <TextField className={styles.textFields} value={text} maxRows={6} onChange={updateText} placeholder={translations["thanksForTheFeedback"][language]} multiline variant="outlined" />
           </Box>    
 
           <Box className={styles.buttonsRight}>         

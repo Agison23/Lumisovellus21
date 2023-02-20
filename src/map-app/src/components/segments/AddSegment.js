@@ -264,7 +264,7 @@ function AddSegment(props) {
               color="primary"
             />
           }
-          label="Lumivyöryriskialue"
+          label={translations["avalancheProneArea"][language]}
         />
         
         {/* Luodaan rivejä koordinaattipisteille 

@@ -193,7 +193,7 @@ function Login(props) {
         <DialogTitle id="login-dialog">{translations["login"][language]}</DialogTitle>
         <TextField
           id="email"
-          label="email"
+          label={translations["email"][language]}
           value={email}
           onChange={updateEmail}
           className={styledClasses.email}

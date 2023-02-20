@@ -5,7 +5,7 @@ Luonut: Markku Nirkkonen 9.1.2021
 
 **/
 
-import * as React from "react";
+import React, {useState, useContext } from "react";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -48,14 +48,14 @@ const useStyles = makeStyles((theme) => ({
 function AddUser(props) {
 
   // Hooks
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [admin, setAdmin] = React.useState(false);
-  const [addOpen, setAddOpen] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const language = React.useContext(GlobalContext);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [admin, setAdmin] = useState(false);
+  const [addOpen, setAddOpen] =useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const language = useContext(GlobalContext);
 
   // Tarkistuksia lisäyspainikkeen aktivoitumiselle lisäysdialogissa
   const formOK = Boolean(!(firstName !== "" && lastName !== "" && email !== "" && password.length >= 7));
@@ -168,7 +168,7 @@ function AddUser(props) {
         onClose={closeAdd} 
         open={addOpen}
       >
-        <DialogTitle id="add_segment">{translations["adduser"][language]}</DialogTitle>
+        <DialogTitle id="add_segment">{translations["addUser"][language]}</DialogTitle>
         <Typography variant="caption">{translations["allTextFieldsAreRequired"][language]}</Typography>
         <Typography variant="caption">{translations["tooShortPassword"][language]}</Typography>
         <FormControl>
