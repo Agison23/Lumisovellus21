@@ -291,7 +291,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              'Soita 112',
+                              translations['call112'][appState.language],
                               const Color(0xFFDA7272));
                         })
                   ],

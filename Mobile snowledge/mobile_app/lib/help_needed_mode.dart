@@ -320,17 +320,17 @@ class HelpNeededState extends State<HelpNeeded> {
       width: 45.0,
       height: 20.0,
       point: gps,
-      builder: (ctx) => Container(
+      builder: (BuildContext ctx) => Container(
         width: 1.0,
         height: 1.0,
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 60, 77, 98),
         ),
-        child: const Align(
+        child: Align(
           alignment: Alignment.center,
           child: Text(
-            'Avunantaja',
-            style: TextStyle(
+            translations['helper'][Provider.of<AppState>(ctx, listen: false).language],
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 8.0,
             ),

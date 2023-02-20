@@ -125,7 +125,9 @@ class HelpOfferedState extends State<HelpOffered> {
             title: Text(
               _accepted
                   ? translations['helpMode'][appState.language]
-                  : translations['userReqDist1'][appState.language] + _distance + translations['userReqDist2'][appState.language],
+                  : translations['userReqDist1'][appState.language] +
+                      _distance +
+                      translations['userReqDist2'][appState.language],
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -311,17 +313,18 @@ class HelpOfferedState extends State<HelpOffered> {
         width: 45.0,
         height: 20.0,
         point: toBeHelpedLatLng,
-        builder: (ctx) => Container(
+        builder: (BuildContext ctx) => Container(
           width: 1.0,
           height: 1.0,
           decoration: const BoxDecoration(
             color: Color.fromARGB(250, 239, 154, 154),
           ),
-          child: const Align(
+          child: Align(
             alignment: Alignment.center,
             child: Text(
-              'Avunpyytäjä',
-              style: TextStyle(
+              translations['helper']
+                  [Provider.of<AppState>(ctx, listen: false).language],
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 8.0,
               ),
@@ -337,16 +340,17 @@ class HelpOfferedState extends State<HelpOffered> {
       width: 50.0,
       height: 30.0,
       point: usersLatLng,
-      builder: (ctx) => Container(
+      builder: (BuildContext ctx) => Container(
         width: 1.0,
         height: 1.0,
         decoration:
             const BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
-        child: const Align(
+        child: Align(
           alignment: Alignment.center,
           child: Text(
-            'Olet\ntässä',
-            style: TextStyle(
+            translations['Userlocation']
+                [Provider.of<AppState>(ctx, listen: false).language],
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 8.0,
             ),

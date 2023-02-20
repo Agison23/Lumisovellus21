@@ -71,8 +71,8 @@ class GpsHandler {
               result = await Dialogs.showGPSDialog(
                   context,
                   false,
-                  'Sovellus tarvitsee paikannukseen luvan käyttää sijaintia.\n\nSallitko sijaintiedon keräämisen?',
-                  "Etene antamaan GPS luvat");
+                  translations['gpsRequired'][Provider.of<AppState>(context).language] + translations['gpsPermission'][Provider.of<AppState>(context).language],
+                   translations['continueGps'][Provider.of<AppState>(context).language]);
             }
           } else {
             result = true;
