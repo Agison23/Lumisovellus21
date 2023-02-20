@@ -51,12 +51,13 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    var languageToChangeTo = appState.isEnglish ? "fi" : "en";
 
     void _toggleLanguage() async {
       final controller = await widget.webViewController;
       if (controller != null) {
         controller.runJavascript("""
-                window.alert("Hello from flutter!");
+                window.changeLanguageTo("$languageToChangeTo");
               """);
       }
       appState.toggleLanguage = true;

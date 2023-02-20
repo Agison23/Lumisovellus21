@@ -60,8 +60,8 @@ class _AppInfoState extends State<AppInfo> {
           body: Stack(
             children: [
               WebView(
-                initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
-                // initialUrl: 'http://localhost:3000/tietoasovelluksesta',
+                // initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
+                initialUrl: 'http://10.0.2.2:3000/tietoasovelluksesta',
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);

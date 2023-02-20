@@ -81,8 +81,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
           body: Stack(
             children: [
               WebView(
-                initialUrl: 'https://lumisovellus.fi/mobiili',
-                // initialUrl: 'http://localhost:3000/mobiili',
+                // initialUrl: 'https://lumisovellus.fi/mobiili',
+                initialUrl: 'http://10.0.2.2:3000/mobiili',
                 // initialUrl: 'https://youtube.com',
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
