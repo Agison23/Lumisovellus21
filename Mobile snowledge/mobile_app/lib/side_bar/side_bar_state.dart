@@ -65,8 +65,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-        child: Text(
-            translations['dataForRescue'][appState.language],
+        child: Text(translations['dataForRescue'][appState.language],
             style: const TextStyle(
               height: 1,
               fontSize: 18,
@@ -81,7 +80,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
               if (await canLaunchUrlString(url)) {
                 await launchUrlString(url);
               } else {
-                print('ERROR');
+                // print('ERROR');
               }
             },
             child: Align(
@@ -90,18 +89,15 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
                   translations['privPolicy'][appState.language],
                   textAlign: TextAlign.left,
                 )),
-          )
-      ),
+          )),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
         child: TextButton(
-          child: Text(
-            translations['personalInfo'][appState.language]
-          ),
+          child: Text(translations['personalInfo'][appState.language]),
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  UserInfoPage()),
+              context,
+              MaterialPageRoute(builder: (context) => UserInfoPage()),
             );
           },
         ),
@@ -109,7 +105,8 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(translations['locSharing'][appState.language], style: const TextStyle(fontSize: 19)),
+          Text(translations['locSharing'][appState.language],
+              style: const TextStyle(fontSize: 19)),
           FutureBuilder<bool?>(
               future: GpsHandler.loadGpsSetting(),
               builder: (context, _snapshot) {
@@ -161,8 +158,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
 
       Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 10.0),
-        child: Text(
-            translations['callInfo'][appState.language],
+        child: Text(translations['callInfo'][appState.language],
             style: const TextStyle(
               height: 1,
               fontSize: 13,
@@ -180,8 +176,11 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
   List<DropdownMenuItem<String>> get dropdownItems {
     var appState = Provider.of<AppState>(context);
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text(translations['mild'][appState.language]), value: "Lievä"),
-      DropdownMenuItem(child: Text(translations['serious'][appState.language]), value: "Vakava"),
+      DropdownMenuItem(
+          child: Text(translations['mild'][appState.language]), value: "Lievä"),
+      DropdownMenuItem(
+          child: Text(translations['serious'][appState.language]),
+          value: "Vakava"),
     ];
     return menuItems;
   }
@@ -194,7 +193,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red[200],
-          title:  Text(
+          title: Text(
               '${translations['emergButtonInfo1'][appState.language]} ${Platform.isIOS ? translations['emergButtonInfo2'][appState.language] : translations['emergButtonInfo3'][appState.language]}'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {

@@ -4,11 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'helper/utility.dart';
 import 'main_page.dart';
-import 'package:provider/provider.dart';
-import '../state/appState.dart';
 import '../translations/translations.dart';
 
 class HelpOffered extends StatefulWidget {
@@ -185,7 +185,7 @@ class HelpOfferedState extends State<HelpOffered> {
                           if (await canLaunchUrlString(url)) {
                             await launchUrlString(url);
                           } else {
-                            print('ERROR');
+                            // print('ERROR');
                           }
                         },
                         icon: Image.asset('assets/images/MapTiler.png'),
@@ -256,7 +256,7 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Widget> returnbutton() {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     return <Widget>[
       ElevatedButton(
         onPressed: () async {
@@ -307,6 +307,7 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Marker> getMarkers(LatLng usersLatLng, LatLng toBeHelpedLatLng) {
+    var appState = Provider.of<AppState>(context, listen: false);
     return [
       getToBeHelpedMarker(usersLatLng),
       Marker(

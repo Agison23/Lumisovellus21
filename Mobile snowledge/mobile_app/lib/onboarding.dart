@@ -73,9 +73,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page1ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 120),
+                              const SizedBox(height: 50),
                               SizedBox(
-                                height: 150,
+                                height: 100,
                                 child: Text(
                                     translations['snowAppInfo']
                                         [appState.language],
@@ -135,7 +135,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page2ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              // const SizedBox(height: 20),
                               Text(
                                   translations['sharingLocation']
                                       [appState.language],
@@ -154,7 +154,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 70),
+                              const SizedBox(height: 30),
                               Buttons.onboardingButton(
                                 context,
                                 translations['allowSharing'][appState.language],
@@ -200,7 +200,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page3ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              // const SizedBox(height: 70),
                               Text(
                                   translations['sharingLocation']
                                       [appState.language],
@@ -219,9 +219,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 20.0),
+                              const SizedBox(height: 20),
                               SetSharingLocation(),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 20),
                               Buttons.onboardingButton(context,
                                   translations['next'][appState.language],
                                   onPressed: () {
@@ -240,7 +240,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     //Page4Start
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 20.0, left: 20.0, right: 20.0),
+                          top: 0.0, left: 20.0, right: 20.0),
                       child: ScrollConfiguration(
                         behavior: MyScrollBehavior(),
                         child: Scrollbar(
@@ -259,7 +259,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
-                                const SizedBox(height: 20.0),
+                                const SizedBox(height: 15),
                                 Text(
                                     translations['infoUsage']
                                         [appState.language],
@@ -268,7 +268,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         height: 1,
                                         fontSize: 20,
                                         color: Colors.white)),
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 10),
                                 SingleChildScrollView(
                                     child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -293,7 +293,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           controller: page5ScrollController,
                           child: Column(
                             children: [
-                              const SizedBox(height: 70),
+                              const SizedBox(height: 10),
                               Text(
                                   translations['appFuncDesc']
                                       [appState.language],
@@ -302,7 +302,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       height: 1,
                                       fontSize: 20,
                                       color: Colors.white)),
-                              const SizedBox(height: 100),
+                              const SizedBox(height: 50),
                               Buttons.onboardingButton(context,
                                   translations['next'][appState.language],
                                   onPressed: () {
@@ -380,7 +380,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                       color: Colors.white.withOpacity(0.5), fontSize: 20),
                 ))),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           TextFormField(
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
@@ -408,7 +408,7 @@ class UserInfoFormState extends State<UserInfoForm> {
                       color: Colors.white.withOpacity(0.5), fontSize: 20),
                 ))),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           TextFormField(
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,

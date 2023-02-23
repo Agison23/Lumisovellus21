@@ -7,7 +7,6 @@ class AppState extends ChangeNotifier {
   String _languageName = 'SUOMI';
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
-  //final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en', 'SVENSKA': 'se'};
 
   Map get allLanguages => _allLanguages;
 
@@ -37,6 +36,20 @@ class AppState extends ChangeNotifier {
 
   set setUserInAppSettings(bool value) {
     _userInAppSettings = value;
+    notifyListeners();
+  }
+
+  int _numOfHelpRequests = 0;
+  int get numOfHelpRequests => _numOfHelpRequests;
+
+  set setNumOfHelpRequest(int value) {
+    print(value > 0
+        ? "Hey, another help request was sent!"
+        : "One less help request, good job!");
+    _numOfHelpRequests += value;
+    if (_numOfHelpRequests < 0) {
+      _numOfHelpRequests = 0;
+    }
     notifyListeners();
   }
 }

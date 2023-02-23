@@ -5,13 +5,13 @@ import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
+import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:provider/provider.dart';
-import '../state/appState.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../translations/translations.dart';
-
 import 'main.dart';
+import 'widgets/buttons.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
@@ -98,7 +98,7 @@ class HelpNeededState extends State<HelpNeeded> {
       duration,
       (Timer timer) {
         Dialogs.showNoUserHasAcceptedRequestDialog(context);
-        print('no user has accepted');
+        // print('no user has accepted');
         timer.cancel();
       },
     );
@@ -189,7 +189,9 @@ class HelpNeededState extends State<HelpNeeded> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              translations['peopleAccepted1'][appState.language] + '${_helpers.length}' + translations['peopleAccepted2'][appState.language],
+              translations['peopleAccepted1'][appState.language] +
+                  '${_helpers.length}' +
+                  translations['peopleAccepted2'][appState.language],
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -233,12 +235,14 @@ class HelpNeededState extends State<HelpNeeded> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text(translations['endRequest'][appState.language]),
+                            title: Text(
+                                translations['endRequest'][appState.language]),
                             actions: [
                               ElevatedButton(
                                 onPressed: () =>
                                     Navigator.of(context).pop(false),
-                                child: Text(translations['no'][appState.language]),
+                                child:
+                                    Text(translations['no'][appState.language]),
                               ),
                               ElevatedButton(
                                   onPressed: () {
@@ -250,7 +254,8 @@ class HelpNeededState extends State<HelpNeeded> {
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
-                                  child: Text(translations['yes'][appState.language])),
+                                  child: Text(
+                                      translations['yes'][appState.language])),
                             ],
                           );
                         });
@@ -290,7 +295,7 @@ class HelpNeededState extends State<HelpNeeded> {
                           if (await canLaunchUrlString(url)) {
                             await launchUrlString(url);
                           } else {
-                            print('ERROR');
+                            // print('ERROR');
                           }
                         },
                         icon: Image.asset('assets/images/MapTiler.png'),
@@ -302,6 +307,8 @@ class HelpNeededState extends State<HelpNeeded> {
               ),
             ],
           ),
+          floatingActionButton: Buttons.showRescueChatButton(context),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         ),
       ),
     );
@@ -329,7 +336,8 @@ class HelpNeededState extends State<HelpNeeded> {
         child: Align(
           alignment: Alignment.center,
           child: Text(
-            translations['helper'][Provider.of<AppState>(ctx, listen: false).language],
+            translations['helper']
+                [Provider.of<AppState>(ctx, listen: false).language],
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 8.0,

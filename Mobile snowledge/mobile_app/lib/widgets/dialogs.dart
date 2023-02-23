@@ -12,6 +12,10 @@ import '../translations/translations.dart';
 
 class Dialogs {
   static Object? _selectedRadio = 0;
+  // Minor helps:
+  // 1: equipment  problems
+  // 2: health problems
+  // 3: lost (no direction)
   final String minorHelp1 = 'Varusteongelma';
   final String minorHelp2 = 'Terveysongelma';
   final String minorHelp3 = 'Eksynyt';
@@ -36,6 +40,7 @@ class Dialogs {
     _selectedRadio = 0;
   }
 
+  // Open the "What kind of help do you need?" dialog
   Future showDialogMinorHelpQuestions(context) async {
     var appState = Provider.of<AppState>(context, listen: false);
     _selectedRadio = 1;
@@ -86,7 +91,8 @@ class Dialogs {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (contx) => const HelpNeeded(true)));
                         }),
-                        child: Text(translations['continue'][appState.language]))
+                        child:
+                            Text(translations['continue'][appState.language]))
                   ],
                 )
               ]);
@@ -220,15 +226,15 @@ class Dialogs {
                         ),
                       ),
                     ),
-                    SetSharingLocation(),
+                    const SetSharingLocation(),
                   ],
                 ),
                 SizedBox(height: 20),
                 prefs.getString('lastLocationTime') != null
                     ? Text(
                         translations['lastShare1'][appState.language] +
-                        "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" +
-                        translations['lastShare2'][appState.language],
+                            "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" +
+                            translations['lastShare2'][appState.language],
                         textAlign: TextAlign.center,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
@@ -539,6 +545,37 @@ class Dialogs {
                 ),
               ]);
             },
+          ),
+        );
+      },
+    );
+  }
+
+  Future showRescueChatDialog(context) async {
+    var appState = Provider.of<AppState>(context, listen: false);
+    return await showDialog<void>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: Colors.transparent,
+            child: Dialog(
+              child: SizedBox(
+                height: 200,
+                width: 300,
+                child: Column(
+                  children: const <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text('This is going to be the rescue chat'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       },

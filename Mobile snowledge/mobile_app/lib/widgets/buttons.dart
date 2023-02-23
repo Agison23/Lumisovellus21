@@ -18,7 +18,7 @@ class Buttons {
   /// Help button
   ElevatedButton helpButton(
       bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
-      var appState = Provider.of<AppState>(contx);
+    var appState = Provider.of<AppState>(contx);
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {
@@ -42,8 +42,8 @@ class Buttons {
                   context: contx,
                   builder: (contx) {
                     return AlertDialog(
-                      title: Text(
-                          translations['funcNeedsGps'][appState.language]),
+                      title:
+                          Text(translations['funcNeedsGps'][appState.language]),
                       actions: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(contx),
@@ -121,7 +121,7 @@ class Buttons {
   }
 
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
-  var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context);
     return ElevatedButton(
         onPressed: () async => await MyApp.navigatorKey.currentState?.push(
             MaterialPageRoute(
@@ -257,5 +257,14 @@ class Buttons {
           Navigator.pop(context);
         },
         icon: const Icon(Icons.close_rounded, size: 50, color: Colors.white));
+  }
+
+  static FloatingActionButton showRescueChatButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () async {
+        Dialogs().showRescueChatDialog(context);
+      },
+      child: Icon(Icons.chat),
+    );
   }
 }
