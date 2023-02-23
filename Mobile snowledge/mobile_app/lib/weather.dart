@@ -63,8 +63,10 @@ class _WeatherState extends State<Weather> {
           body: Stack(
             children: [
               WebView(
-                // initialUrl: 'https://lumisovellus.fi/saa',
-                initialUrl: 'http://10.0.2.2:3000/saa',
+                initialUrl: 'https://lumisovellus.fi/saa',
+
+                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
+                // initialUrl: 'http://10.0.2.2:3000/saa',
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
