@@ -9,6 +9,7 @@ import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
 
 
 const useStyles = makeStyles(() => ({
@@ -92,20 +93,6 @@ function getRelativeTimestamp(current, previous, language) {
   }
 }
 
-function getTranslationkey(snowTypeInFinish){
-  for (let key in translations){
-    let translationObject = translations[key];
-    let translationString = translationObject["fi"];
-
-    if(translationString == snowTypeInFinish){
-      return key;
-    }
-  }
-    //shouldn't be possible
-  return "snowTypeError";
-  }
-
-
 // eslint-disable-next-line no-unused-vars
 function ReviewManage(props) {
 
@@ -138,7 +125,7 @@ function ReviewManage(props) {
     await data.forEach(item => {
       item.CurrentTime = new Date();
       item.LatestUpdateTime = new Date(item.Aika);
-      item.TranslationsKey = getTranslationkey(item.Lumi);
+      item.TranslationsKey = getTranslationKey(item.Lumi);
     });
     setReviewData(data);
   };

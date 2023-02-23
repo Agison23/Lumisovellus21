@@ -28,6 +28,7 @@ import Carousel from "react-material-ui-carousel";
 import {toDegrees, getWindDirection} from "./DataCalculations";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations";
+import getTranslationKey from "../gettranslationskey";
 
 
 const useStyles = makeStyles(() => ({
@@ -114,7 +115,8 @@ function ShortIntervalStatsPaper({weatherState}) {
         <Divider className={classes.divider}/>
         <KeyValuePair keyName={translations["lowest"][language]} value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["amountOfPlusDays"][language]} value={`${weatherState.temperature.thawDaysOutOfThree} kpl`}/>
+        <KeyValuePair keyName={translations["amountOfPlusDays"][language]} value={`${weatherState.temperature.thawDaysOutOfThree} 
+        ${translations["pcs"][language]}`}/>
         {weatherState.temperature.thawDays.length !== 0 &&
         <div style={{paddingBottom: "50px"}}>
           <Divider className={classes.divider}/>
@@ -127,7 +129,8 @@ function ShortIntervalStatsPaper({weatherState}) {
         <p className={classes.cardHeader}>{translations["windDuringThreeDays"][language]}</p>
         <KeyValuePair keyName={translations["AverSpeed"][language]} value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
         <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["AverDirection"][language]} value={getWindDirection(weatherState.winddirection.threeDaysAverage)}/>
+        <KeyValuePair keyName={translations["AverDirection"][language]} 
+        value={translations[getTranslationKey(getWindDirection(weatherState.winddirection.threeDaysAverage))][language]}/>
         <Divider className={classes.divider}/>
         <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
       </Card>
@@ -154,7 +157,7 @@ function WinterStatsPaper({weatherState}) {
           {/* Temperature statistics during winter */}
           <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
             <p className={classes.cardHeader}>{translations["temperature"][language]}</p>
-            <KeyValuePair keyName={translations["plusDays"][language]} value={weatherState.winter.thawDays + " kpl"}/>
+            <KeyValuePair keyName={translations["plusDays"][language]} value={`${weatherState.winter.thawDays}  ${translations["pcs"][language]}`}/>
             <Divider className={classes.divider}/>
             <KeyValuePair keyName={translations["median"][language]} value={weatherState.winter.median + " \xB0C"}/>
           </Card>
@@ -164,7 +167,8 @@ function WinterStatsPaper({weatherState}) {
             <p className={classes.cardHeader}>{translations["strongWind"][language]}</p>
             <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.winter.maxWind + " m/s"}/>
             <Divider className={classes.divider}/>
-            <KeyValuePair keyName={translations["AverDirection"][language]} value={getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360)}/>
+            <KeyValuePair keyName={translations["AverDirection"][language]} 
+            value={translations[getTranslationKey(getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360))][language]}/>
             <Divider className={classes.divider}/>
             <KeyValuePair keyName={translations["amountOfDays"][language]} value={weatherState.winter.strongWindDays}/>
           </Card>

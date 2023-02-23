@@ -15,6 +15,9 @@ Käyttäjien muokkaustoiminnot näkyvät vain, jos kirjautuneen käyttäjän roo
 Markku Nirkkonen 19.12.2020
 Muokkaaminen ja poistaminen toimivat.
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import IconButton from "@material-ui/core/IconButton";

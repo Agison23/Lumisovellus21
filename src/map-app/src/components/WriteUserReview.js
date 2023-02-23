@@ -8,6 +8,7 @@ import {useMediaQuery} from "react-responsive";
 import Divider from "@material-ui/core/Divider";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations";
+import getTranslationKey from  "../gettranslationskey";
 
 
 // eslint-disable-next-line no-unused-vars
@@ -153,19 +154,6 @@ const useStyles = makeStyles(() => ({
     padding: "5px 15px"
   },
 }));
-
-function getTranslationkey(snowTypeInFinish){
-  for (let key in translations){
-    let translationObject = translations[key];
-    let translationString = translationObject["fi"];
-
-    if(translationString == snowTypeInFinish){
-      return key;
-    }
-  }
-    //shouldn't be possible
-  return "snowTypeError";
-  }
 
 
 function WriteUserReview(props) {
@@ -403,7 +391,7 @@ function WriteUserReview(props) {
                         alt="lumityypin logo"
                         className={styles.snowInfo}
                       />
-                      <Typography className={styles.mediumText}>{translations[getTranslationkey(data.Nimi)][language]}</Typography>                 
+                      <Typography className={styles.mediumText}>{translations[getTranslationKey(data.Nimi)][language]}</Typography>                 
                     </IconButton>  
                   </Grid>                
                 );
@@ -416,10 +404,10 @@ function WriteUserReview(props) {
           { selectedType !== null && (
             <Box className={styles.description}>
               <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>
-                {translations[getTranslationkey(selectedType.Nimi)][language]}</Typography>
+                {translations[getTranslationKey(selectedType.Nimi)][language]}</Typography>
               <p 
                 className={styles.mediumText}style={{marginRight: "1px"}}
-              >{translations[getTranslationkey(selectedType.Nimi) + "Description"][language]}</p>
+              >{translations[getTranslationKey(selectedType.Nimi) + "Description"][language]}</p>
 
               { selectedType.Hiihdettavyys > 0 && (
                 <img className={styles.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/" + selectedType.Hiihdettavyys + ".svg"} alt="skiability" />

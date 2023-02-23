@@ -23,6 +23,9 @@ Segmentin poisto toimivaksi, lisätty varmistusdialogi poistamiseen
 Pohja, segmenttien listaus, segmentin poisto
 Segmentin muokkaus ja niiden lisääminen puuttuu vielä
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, {useState ,useContext} from "react";

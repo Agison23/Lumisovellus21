@@ -3,6 +3,9 @@ Käyttäjän lisäykseen liittyvät toiminnot
 
 Luonut: Markku Nirkkonen 9.1.2021
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, {useState, useContext } from "react";

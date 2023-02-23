@@ -26,6 +26,9 @@ Segmentin poisto toimivaksi, lisätty varmistusdialogi poistamiseen
 Pohja, segmenttien listaus, segmentin poisto
 Segmentin muokkaus ja niiden lisääminen puuttuu vielä
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, {useContext, useState} from "react";
@@ -55,6 +58,7 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
 
 const useStyles = makeStyles((theme) => ({
   segmentCard: {
@@ -72,19 +76,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-
-export function getTranslationkey(snowTypeInFinish,lan = "fi"){
-  for (let snowType in translations){
-    let snowTypeObject = translations[snowType];
-    let snowTypeInFi = snowTypeObject[lan];
-
-    if(snowTypeInFi == snowTypeInFinish){
-      return snowType;
-    }
-  }
-    //shouldn't be possible
-  return "snowTypeError";
-}
 
 function SegmentManage(props) {
   const classes = useStyles();
@@ -359,7 +350,7 @@ function SegmentManage(props) {
                   <CardHeader
                     title={item.Nimi}
                     subheader={translations["terrainBase"][language] + ": " +
-                      translations[getTranslationkey(item.Maasto)][language]}
+                      translations[getTranslationKey(item.Maasto)][language]}
                     action={
                       <IconButton
                         id={item.ID}

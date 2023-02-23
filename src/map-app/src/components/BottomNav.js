@@ -7,6 +7,9 @@ Recent changes:
 29.11 Emil Calonius
 Created component
 
+23.2 2023 otso tikkkanen
+Added english version
+
  **/
 
 import  React, { useState, useContext } from "react";

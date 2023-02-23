@@ -50,6 +50,9 @@ Segmentin tiedot näyttävän kortin voi sulkea
 
 17.11. Markku Nirkkonen 
 Ensimmäinen versio segmenttien päivittämisestä
+
+23.2 2023 otso tikkkanen
+Added english version
 **/
 
 import React, {useState,useContext} from "react";
@@ -75,7 +78,8 @@ import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
+import translations  from "../translations";
+import getTranslationKey from  "../gettranslationskey";
 
 
 // Changes button color palette. Muuttaa nappien väripalettia.
@@ -652,7 +656,7 @@ function Info(props) {
                   {/* Timestamp update checkbox*/}
                   <FormControlLabel
                     control={<Checkbox onChange={updateEntryVisible} />}
-                    label="Päivitä vain aikaleima"
+                    label={translations["updateDateOfReviewOnly"][language]}
                   />
                 </Box>
 
@@ -713,7 +717,7 @@ function Info(props) {
                             open={searchVisible}
                             autoComplete={true}
                             options={snowTypeList}
-                            noOptionsText={"Ei tuloksia"}
+                            noOptionsText={translations["noResults"][language]}
                             popupIcon={""}
                             size="small"
                             getOptionDisabled={(option) =>
@@ -726,7 +730,7 @@ function Info(props) {
                                 className={classes.textFields}
                                 size="small"
                                 autoFocus={true}
-                                placeholder="Etsi"
+                                placeholder={translations["search"][language]}
                                 variant="outlined"
                                 style={{
                                   backgroundColor: "white",
@@ -745,8 +749,8 @@ function Info(props) {
                             <Box display="flex" flexDirection="row">
                               <Typography className={classes.smallHeaders}>
                                 {item.secondary
-                                  ? "Toissijainen tyyppi"
-                                  : "Ensisijainen tyyppi"}
+                                  ? translations["secondary"][language]
+                                  : translations["primary"][language]}
                               </Typography>
                               <IconButton
                                 onClick={() => removeSnowtype(item)}
@@ -765,13 +769,13 @@ function Info(props) {
                                 handleSelectClose(e, value, item);
                               }}
                               options={snowTypeList}
-                              noOptionsText={"Ei tuloksia"}
+                              noOptionsText={translations["noResults"][language]}
                               size="small"
                               getOptionDisabled={(option) =>
                                 checkDisabledValues(option)
                               }
                               defaultValue={getValue(item.id)}
-                              getOptionLabel={(option) => option.Nimi}
+                              getOptionLabel={(option) => translations[getTranslationKey(option.Nimi)][language]}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}

@@ -17,7 +17,8 @@ Korjattu niin, että uloskirjautuessa näkymä palaa karttaan
 Markku Nirkkonen 26.11.2020
 Suomennoksia, ei siis käytännön muutoksia
 
-
+23.2 2023 otso tikkkanen
+Added english version
 
 **/
 

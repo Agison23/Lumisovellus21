@@ -1,17 +1,8 @@
- /*
- export function getTranslationkey(snowTypeInFinish,lan = "fi"){
-    for (let snowType in translations){
-      let snowTypeObject = translations[snowType];
-      let snowTypeInFi = snowTypeObject[lan];
-  
-      if(snowTypeInFi == snowTypeInFinish){
-        return snowType;
-      }
-    }
-      //shouldn't be possible
-    return "snowTypeError";
-}
-*/
+ /**
+This file contains datastructure that 
+allows application to be in manylanguages 
+**/
+ 
  
  const translations = {
 
@@ -953,9 +944,73 @@
   torWetland:{
     fi: "Kivirakka, alhaalla kosteikkoa",
     en: "tor, wetland at the bottom"
+  },
+
+  updateDateOfReviewOnly:{
+    fi: "Päivitä vain aikaleima",
+    en: "Update date of review only"
+  },
+
+  search:{
+    fi: "Etsi",
+    en: "Search"
+  },
+
+  noResults:{
+    fi: "Ei tuloksia",
+    en: "No results"
+  },
+
+  getToKnowTheSnowSituation:{
+    fi: "TUTUSTU LUMITILANTEESEEN",
+    en: "GET TO KNOW THE SNOW SITUATION"
+  },
+
+  pcs:{
+    fi: "kpl",
+    en: "pcs"
+  },
+
+  north:{
+    fi: "Pohjoinen",
+    en: "North"
+  },
+
+  south:{
+    fi: "Etelä",
+    en: "South"
+  },
+
+  east:{
+    fi: "Itä",
+    en: "East"
+  },
+
+  west:{
+    fi: "Länsi",
+    en: "West"
+  },
+
+  northeast:{
+    fi: "Koillinen",
+    en: "Northeast"
+  },
+
+  southeast:{
+    fi: "Kaakko",
+    en: "Southeast"
+  },
+
+  southwest:{
+    fi: "Lounas",
+    en: "Southwest"
+  },
+
+  northwest:{
+    fi: "Luode",
+    en: "Northwest"
   }
 
 };
 
-//module.exports = {translations, getTranslationkey};
 export default translations;

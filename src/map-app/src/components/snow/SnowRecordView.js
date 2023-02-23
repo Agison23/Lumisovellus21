@@ -21,6 +21,9 @@ Changed layout design & added relative timestamp, skiability elements and sub sn
 18.10.2021
 Moved here from Info.js
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import * as React from "react";
@@ -39,6 +42,7 @@ import { Box } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import GlobalContext from "../../context/GlobalContext";
 import translations from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -210,18 +214,6 @@ function getRelativeTimestamp(current, previous, language) {
   }
 }
 
-function getTranslationkey(snowTypeInFinish){
-  for (let key in translations){
-    let translationObject = translations[key];
-    let translationString = translationObject["fi"];
-
-    if(translationString == snowTypeInFinish){
-      return key;
-    }
-  }
-    //shouldn't be possible
-  return "snowTypeError";
-  }
 
 function SnowRecordView({
   segmentdata,
@@ -672,7 +664,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Lumilaatu_ID1}
-                      Nimi={translations[getTranslationkey(segmentdata.update.Lumi1.Nimi)][language]}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi1.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi1.Hiihdettavyys}
                       Main={true}
                       Guide={true}
@@ -684,7 +676,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Lumilaatu_ID2}
-                      Nimi={translations[getTranslationkey(segmentdata.update.Lumi2.Nimi)][language]}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi2.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi2.Hiihdettavyys}
                       Main={true}
                       Guide={true}
@@ -696,7 +688,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Toissijainen_ID1}
-                      Nimi={translations[getTranslationkey(segmentdata.update.Lumi3.Nimi)][language]}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi3.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi3.Hiihdettavyys}
                       Main={false}
                       Guide={true}
@@ -707,7 +699,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Toissijainen_ID2}
-                      Nimi={translations[getTranslationkey(segmentdata.update.Lumi4.Nimi)][language]}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi4.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi4.Hiihdettavyys}
                       Main={false}
                       Guide={true}
@@ -724,7 +716,7 @@ function SnowRecordView({
                 <Grid item xs={12} sm={6}>
                   <DisplaySnowType
                     Lumilaatu={segmentdata.update.Lumi5.ID}
-                    Nimi={translations[getTranslationkey(segmentdata.update.Lumi5.Nimi)][language]}
+                    Nimi={translations[getTranslationKey(segmentdata.update.Lumi5.Nimi)][language]}
                     Hiihdettavyys={segmentdata.update.Lumi5.Hiihdettavyys}
                     Main={true}
                     Guide={false}
@@ -817,7 +809,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi5.ID}
-                                Nimi={translations[getTranslationkey(segmentdata.update.Lumi5.Nimi)][language]}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi5.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi5.Hiihdettavyys
                                 }
@@ -852,7 +844,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi6.ID}
-                                Nimi={translations[getTranslationkey(segmentdata.update.Lumi6.Nimi)][language]}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi6.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi6.Hiihdettavyys
                                 }
@@ -888,7 +880,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi7.ID}
-                                Nimi={translations[getTranslationkey(segmentdata.update.Lumi7.Nimi)][language]}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi7.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi7.Hiihdettavyys
                                 }

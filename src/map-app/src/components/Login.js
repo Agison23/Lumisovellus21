@@ -14,6 +14,9 @@ Suomennoksia, ei siis käytännön muutoksia
 Markku Nirkkonen 17.11.
 Pieniä muotoiluseikkoja säädetty
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, { useContext, useState } from "react";

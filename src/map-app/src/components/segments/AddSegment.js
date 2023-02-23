@@ -10,6 +10,9 @@ Lisäyksiä segmentin lisäämiseen, esimerkiksi segmentin asettaminen lumivyör
 Jatkettu segmentin lisäyslomakkeen toteuttamista.
 Segmentin lisääminen toimii, mutta lomake ei tarkista vielä kaikkia syötteitä.
 
+23.2 2023 otso tikkkanen
+Added english version
+
 
 **/
 

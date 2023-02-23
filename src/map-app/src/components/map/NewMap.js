@@ -46,6 +46,9 @@ Add a filter feature
 Emil Calonius 9.12.2021
 Edited layout of filter feature for mobile
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, {useContext, useState, useEffect} from "react";
@@ -62,6 +65,7 @@ import Dialog from "@material-ui/core/Dialog";
 import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations  from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -124,19 +128,6 @@ const useStyles = makeStyles((theme) => ({
     height: "44px",
   },
 }));
-
-function getTranslationkey(snowTypeInFinish,lan = "fi"){
-  for (let snowType in translations){
-    let snowTypeObject = translations[snowType];
-    let snowTypeInFi = snowTypeObject[lan];
-
-    if(snowTypeInFi == snowTypeInFinish){
-      return snowType;
-    }
-  }
-    //shouldn't be possible
-  return "snowTypeError";
-}
 
 function Map(props) {
   // Use state hooks
@@ -213,9 +204,9 @@ function Map(props) {
       setButtonText(showOnlyString);
     }else{
       if(language === "fi"){
-        snowName = translations[getTranslationkey(buttonText,"en")][language];
+        snowName = translations[getTranslationKey(buttonText,"en")][language];
       }else{
-        snowName = translations[getTranslationkey(buttonText)][language];
+        snowName = translations[getTranslationKey(buttonText)][language];
       }
       setButtonText(snowName);
     }
@@ -227,7 +218,7 @@ function Map(props) {
 
   function updateHighlightedSnowType(snow) {
     let showOnlyString = translations["showOnly"][language];
-    let snowName = translations[getTranslationkey(snow.Nimi)][language];
+    let snowName = translations[getTranslationKey(snow.Nimi)][language];
     if (highlightedSnowType === snow.ID) {
       setHighlightedSnowType(-3);
       setButtonText(showOnlyString);
@@ -310,7 +301,7 @@ function Map(props) {
                                 : "white",
                           }}
                         >
-                          {translations[getTranslationkey(snowType.Nimi)][language]}
+                          {translations[getTranslationKey(snowType.Nimi)][language]}
                         </Button>
                       </Box>
                     );
@@ -392,7 +383,7 @@ function Map(props) {
                                   : "white",
                             }}
                           >
-                            {translations[getTranslationkey(snowType.Nimi)][language]}
+                            {translations[getTranslationKey(snowType.Nimi)][language]}
                           </Button>
                         </Box>
                       );

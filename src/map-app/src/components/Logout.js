@@ -10,6 +10,9 @@ Suomennoksia, ei siis käytännön muutoksia
 2.12.2020 Markku Nirkkonen
 Korjattu niin, että uloskirjautuessa näkymä palaa karttaan
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React,{useState, useContext } from "react";
