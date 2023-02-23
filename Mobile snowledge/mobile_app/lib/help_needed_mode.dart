@@ -9,9 +9,9 @@ import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:mobile_app/widgets/buttons.dart';
-
+import '../translations/translations.dart';
 import 'main.dart';
+import 'widgets/buttons.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
@@ -148,12 +148,12 @@ class HelpNeededState extends State<HelpNeeded> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     String usersLocation =
         GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
     var lat = double.parse(dataList[1]);
     var lng = double.parse(dataList[3]);
-    var appState = Provider.of<AppState>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
@@ -161,13 +161,11 @@ class HelpNeededState extends State<HelpNeeded> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text(!appState.isEnglish
-                    ? 'Haluatko lopettaa avunpyynnön?'
-                    : 'Do you want to end the help request?'),
+                title: Text(translations['endRequest'][appState.language]),
                 actions: [
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('En'),
+                    child: Text(translations['no'][appState.language]),
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -177,7 +175,7 @@ class HelpNeededState extends State<HelpNeeded> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
-                      child: Text(!appState.isEnglish ? 'Kyllä' : 'Yes')),
+                      child: Text(translations['yes'][appState.language])),
                 ],
               );
             });
@@ -191,9 +189,9 @@ class HelpNeededState extends State<HelpNeeded> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              !appState.isEnglish
-                  ? 'Avunpyyntö päällä\n\n Hyväksynyt: ${_helpers.length} henkilöä'
-                  : 'Help request on\n\n Accepted by: ${_helpers.length} people',
+              translations['peopleAccepted1'][appState.language] +
+                  '${_helpers.length}' +
+                  translations['peopleAccepted2'][appState.language],
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -231,65 +229,56 @@ class HelpNeededState extends State<HelpNeeded> {
                   )),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: 250,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final value = await showDialog<bool>(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                !appState.isEnglish
-                                    ? 'Haluatko lopettaa avunpyynnön?'
-                                    : 'Do you want to end the help request?',
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final value = await showDialog<bool>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                                translations['endRequest'][appState.language]),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child:
+                                    Text(translations['no'][appState.language]),
                               ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child:
-                                      Text(!appState.isEnglish ? 'En' : 'No'),
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      _markers.clear();
-                                      _helpers.clear();
-                                      /* Navigator.pushAndRemoveUntil(context,
-                                          MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      !appState.isEnglish ? 'Kyllä' : 'Yes',
-                                    )),
-                              ],
-                            );
-                          });
-                      if (value != null) {
-                        return Future.value(value);
-                      } else {
-                        return Future.value(false);
-                      }
-                    },
-                    child: Text(
-                      !appState.isEnglish
-                          ? 'Lopeta avun hälyttäminen'
-                          : 'Stop calling for help',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    _markers.clear();
+                                    _helpers.clear();
+                                    /* Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                      translations['yes'][appState.language])),
+                            ],
+                          );
+                        });
+                    if (value != null) {
+                      return Future.value(value);
+                    } else {
+                      return Future.value(false);
+                    }
+                  },
+                  child: Text(
+                    translations['stopReq'][appState.language],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff3c4d62),
-                        fixedSize: const Size(200, 75),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
                   ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff3c4d62),
+                      fixedSize: const Size(200, 75),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
               ),
               Align(
@@ -338,17 +327,18 @@ class HelpNeededState extends State<HelpNeeded> {
       width: 45.0,
       height: 20.0,
       point: gps,
-      builder: (ctx) => Container(
+      builder: (BuildContext ctx) => Container(
         width: 1.0,
         height: 1.0,
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 60, 77, 98),
         ),
-        child: const Align(
+        child: Align(
           alignment: Alignment.center,
           child: Text(
-            'Avunantaja',
-            style: TextStyle(
+            translations['helper']
+                [Provider.of<AppState>(ctx, listen: false).language],
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 8.0,
             ),

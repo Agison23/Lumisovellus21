@@ -11,12 +11,12 @@ class WidgetsBindingObserverState<T extends StatefulWidget> extends State
     super.initState();
     setAppResumedWithAlwaysOnPermissionsTask(
         () => {appState.setUserInAppSettings = false});
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

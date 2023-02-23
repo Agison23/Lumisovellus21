@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 
 class AppState extends ChangeNotifier {
   int _pageIndex = 0;
-  bool _isEnglish = false;
 
-  bool get isEnglish => _isEnglish;
+  String _language = 'fi'; //Default language is Finnish
+  String _languageName = 'SUOMI';
 
-  set toggleLanguage(bool value) {
-    _isEnglish = !_isEnglish;
+  final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
+
+  Map get allLanguages => _allLanguages;
+
+  String get language => _language;
+
+  String get languageName => _languageName;
+
+  set setLanguage(String language) {
+    _language = _allLanguages[language];
+    _languageName = language;
     notifyListeners();
   }
 

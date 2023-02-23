@@ -5,6 +5,7 @@ import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/snow_info.dart';
+import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -46,8 +47,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   Widget buildMenuItems(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
-    void _toggleLanguage() {
-      appState.toggleLanguage = true;
+    void setLanguage(String language) {
+      appState.setLanguage = language;
     }
 
     return Container(
@@ -55,78 +56,55 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       child: Wrap(
         runSpacing: 8,
         children: [
-          _item(
-              0,
-              Icons.area_chart_outlined,
-              !appState.isEnglish
-                  ? "Lumiolosuhteet Pallaksella"
-                  : "Snow conditions in Pallas"),
+          _item(0, Icons.area_chart_outlined,
+              translations['conditions'][appState.language]),
           Visibility(
             child: _item(1, Icons.map_outlined,
-                !appState.isEnglish ? "Karttanäkymä" : "View Map"),
+                translations['mapView'][appState.language]),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(2, Icons.sunny_snowing,
-              !appState.isEnglish ? "Sää Pallaksella" : "Weather in Pallas"),
+              translations['weather'][appState.language]),
           Visibility(
-            child: _item(
-                3,
-                Icons.ac_unit,
-                !appState.isEnglish
-                    ? "Lumityyppien selitteet"
-                    : "Snow types Information"),
+            child: _item(3, Icons.ac_unit,
+                translations['snowDescription'][appState.language]),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
-              !appState.isEnglish ? "Käyttäjätiedot" : "User Information"),
-          _item(
-              5,
-              Icons.menu_book_outlined,
-              !appState.isEnglish
-                  ? "Tietoa palvelusta"
-                  : "Application Information"),
+              translations['userInfo'][appState.language]),
+          _item(5, Icons.menu_book_outlined,
+              translations['serviceInfo'][appState.language]),
           const Divider(color: Colors.black),
           _item(
             6,
             Icons.downhill_skiing_outlined,
-            !appState.isEnglish ? "Pallaksen Pöllöt" : "Pallas (something?)",
+            translations['appName'][appState.language],
           ),
           _item(
             7,
             Icons.privacy_tip_outlined,
-            !appState.isEnglish ? "Tietosuojaseloste" : "Privacy Statement",
+            translations['privacy'][appState.language],
           ),
           const Divider(color: Colors.black),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: CupertinoSwitch(
-                      value: appState.isEnglish,
-                      onChanged: (bool value) {
-                        _toggleLanguage();
-                      },
-                    ),
-                  ),
-                ),
+          Center(
+            child: Expanded(
+              child: DropdownButton<String>(
+                value: appState.languageName,
+                onChanged: (String? value) {
+                  setLanguage(value!);
+                },
+                items: appState.allLanguages.keys
+                    .toList()
+                    .map<DropdownMenuItem<String>>((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList(),
               ),
-              Expanded(
-                child: SizedBox(
-                  height: 60,
-                  child: DrawerHeader(
-                    child: Text(
-                      appState.isEnglish ? 'ENGLISH' : 'SUOMEA',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),

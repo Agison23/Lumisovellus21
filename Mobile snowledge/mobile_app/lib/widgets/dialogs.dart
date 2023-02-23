@@ -8,6 +8,8 @@ import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 import '../state/appState.dart';
 
+import '../translations/translations.dart';
+
 class Dialogs {
   static Object? _selectedRadio = 0;
   // Minor helps:
@@ -47,16 +49,12 @@ class Dialogs {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(!appState.isEnglish
-                ? 'Millaista apua tarvitset?'
-                : 'What kind of help do you need?'),
+            title: Text(translations['helpQuery'][appState.language]),
             content: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: [
                 RadioListTile(
-                  title: Text(!appState.isEnglish
-                      ? 'Varusteongelma'
-                      : 'Equipment problems'),
+                  title: Text(translations['eqptProblem'][appState.language]),
                   value: 1,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -64,9 +62,7 @@ class Dialogs {
                   },
                 ),
                 RadioListTile(
-                  title: Text(!appState.isEnglish
-                      ? 'Terveysogelma'
-                      : 'Health problems'),
+                  title: Text(translations['healthIssue'][appState.language]),
                   value: 2,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -74,8 +70,7 @@ class Dialogs {
                   },
                 ),
                 RadioListTile(
-                  title:
-                      Text(!appState.isEnglish ? 'Olen eksynyt' : "I'm lost"),
+                  title: Text(translations['lost'][appState.language]),
                   value: 3,
                   groupValue: _selectedRadio,
                   onChanged: (value) {
@@ -90,15 +85,14 @@ class Dialogs {
                           resetRadioSelection();
                           Navigator.pop(context);
                         }),
-                        child:
-                            Text(!appState.isEnglish ? 'Peruuta' : 'Cancel')),
-                    // Press this button will run the help needed mode
+                        child: Text(translations['cancel'][appState.language])),
                     ElevatedButton(
                         onPressed: (() {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (contx) => const HelpNeeded(true)));
                         }),
-                        child: Text(!appState.isEnglish ? 'Jatka' : 'Choose'))
+                        child:
+                            Text(translations['continue'][appState.language]))
                   ],
                 )
               ]);
@@ -121,10 +115,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Millaista apua tarvitset?'
-                      : 'What kind of help do you need?',
-                  // 'What kind of help do you need?',
+                  translations['helpQuery'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -134,10 +125,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Vakavassa hädässä, soita aina hätänumeroon 112.'
-                        : 'In a serious emergency, always call the emergency number 112.',
-                    // 'In a serious emergency, always call the emergency number 112.',
+                    translations['alwaysCall'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -148,10 +136,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.'
-                        : 'The Ask for Help button informs nearby users of your location and your need for help.',
-                    // 'The Ask for Help button informs nearby users of your location and your need for help.',
+                    translations['helpButtonDesc'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -169,8 +154,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              !appState.isEnglish ? 'Soita 112' : 'Call 112',
-                              // 'Call 112',
+                              translations['call112'][appState.language],
                               const Color(0xffd99222));
                         }),
                     FutureBuilder<bool?>(
@@ -179,10 +163,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              !appState.isEnglish
-                                  ? 'Avunpyyntö'
-                                  : 'Ask for Help',
-                              // 'Ask for Help',
+                              translations['helpReq'][appState.language],
                               const Color(0xff7c94b6));
                         })
                   ],
@@ -199,8 +180,8 @@ class Dialogs {
 
   /// Open the sharing location dialog
   Future showDialogSharingLocation(context) async {
-    var prefs = await SharedPreferences.getInstance();
     var appState = Provider.of<AppState>(context, listen: false);
+    var prefs = await SharedPreferences.getInstance();
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -212,9 +193,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Sijaintitiedon jakaminen'
-                      : 'Sharing location information',
+                  translations['gpsSharing'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -224,9 +203,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.'
-                        : 'The application collects information about your location. We need your location to help you in an emergency. You can disable location at any time.',
+                    translations['fullGpsInfo'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -241,9 +218,7 @@ class Dialogs {
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
-                        !appState.isEnglish
-                            ? 'Sijainnin lähettäminen'
-                            : 'Sending Location',
+                        translations['locSharing'][appState.language],
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -254,16 +229,12 @@ class Dialogs {
                     const SetSharingLocation(),
                   ],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 prefs.getString('lastLocationTime') != null
                     ? Text(
-                        !appState.isEnglish
-                            ? 'Viimeinen sijaintitieto lähetetty: \n'
-                                "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
-                                ' sitten'
-                            : 'Last location data sent: \n'
-                                "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}"
-                                ' ago',
+                        translations['lastShare1'][appState.language] +
+                            "${Utility.getTimeAgo(prefs.getString('lastLocationTime'))}" +
+                            translations['lastShare2'][appState.language],
                         textAlign: TextAlign.center,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
@@ -294,9 +265,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Sovelluksen käyttäjiä ei ole lähistöllä'
-                      : 'There are no users of the application nearby',
+                  translations['noNearUsers'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -306,9 +275,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Voit soittaa 112 tai peruuttaa avunpyyntösi.'
-                        : 'You can call 112 or cancel your request for help.',
+                    translations['callOrCancel'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -322,7 +289,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -330,7 +297,7 @@ class Dialogs {
                           return Buttons().helpButton(
                               !(_snapshot.data ?? false),
                               context,
-                              !appState.isEnglish ? 'Soita 112' : 'Call 112',
+                              translations['call112'][appState.language],
                               const Color(0xFFDA7272));
                         })
                   ],
@@ -358,9 +325,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Kukaan lähellä oleva käyttäjä ei ole hyväksynyt avunpyyntöäsi'
-                      : 'No nearby user has accepted your help request',
+                  translations['notAccepted'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -368,11 +333,9 @@ class Dialogs {
                       fontWeight: FontWeight.bold),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Voit soittaa 112 tai peruuttaa avunpyyntösi.'
-                        : 'You can call 112 or cancel your request for help.',
+                    translations['callOrCancel'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -386,7 +349,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'help_request'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),
@@ -443,7 +406,7 @@ class Dialogs {
                         // Cancel button
                         Buttons.cancelButton(
                             context,
-                            !appState.isEnglish ? "Peruuta" : "Cancel",
+                            translations['cancel'][appState.language],
                             'location')
                       ],
                     )
@@ -469,9 +432,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Avuntarve ohi\nKiitos avusta!'
-                      : 'The need for help is over.\nThanks for your help!',
+                  translations['requestOver'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -510,9 +471,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: $count.'
-                      : 'A helper has stopped helping. Current number of helpers: $count.',
+                  translations['helpOver'][appState.language] + '$count.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -551,9 +510,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  !appState.isEnglish
-                      ? 'Lähellä oleva käyttäjä tarvitsee apua.'
-                      : 'A nearby user needs help.',
+                  translations['nearbyReq'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -563,9 +520,7 @@ class Dialogs {
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                   child: Text(
-                    !appState.isEnglish
-                        ? 'Voit tarjota apua tai ohittaa pyynnön.'
-                        : 'You can offer help or ignore the request.',
+                    translations['actionOptions'][appState.language],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -579,7 +534,7 @@ class Dialogs {
                   children: [
                     Buttons.cancelButton(
                         context,
-                        !appState.isEnglish ? "Peruuta" : "Cancel",
+                        translations['cancel'][appState.language],
                         'offer_help'),
                     FutureBuilder<bool?>(
                         future: GpsHandler.loadGpsSetting(),

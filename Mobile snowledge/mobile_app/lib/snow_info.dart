@@ -8,6 +8,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
 
+import 'package:provider/provider.dart';
+import '../state/appState.dart';
+import '../translations/translations.dart';
+
+
 class SnowInfo extends StatefulWidget {
   const SnowInfo({Key? key}) : super(key: key);
 
@@ -35,15 +40,15 @@ class _SnowInfoState extends State<SnowInfo> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Haluatko poistua sovelluksesta?'),
+                  title: Text(translations['quitApp'][appState.language]),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('En'),
+                      child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Kyllä'),
+                      child: Text(translations['yes'][appState.language]),
                     ),
                   ],
                 );
