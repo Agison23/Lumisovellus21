@@ -60,8 +60,10 @@ class _SnowInfoState extends State<SnowInfo> {
           body: Stack(
             children: [
               WebView(
-                // initialUrl: 'https://lumisovellus.fi/selitteet',
-                initialUrl: 'http://10.0.2.2:3000/selitteet',
+                initialUrl: 'https://lumisovellus.fi/selitteet',
+
+                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
+                // initialUrl: 'http://10.0.2.2:3000/selitteet',
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
