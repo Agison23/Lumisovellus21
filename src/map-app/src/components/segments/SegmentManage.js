@@ -73,6 +73,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export function getTranslationkey(snowTypeInFinish,lan = "fi"){
+  for (let snowType in translations){
+    let snowTypeObject = translations[snowType];
+    let snowTypeInFi = snowTypeObject[lan];
+
+    if(snowTypeInFi == snowTypeInFinish){
+      return snowType;
+    }
+  }
+    //shouldn't be possible
+  return "snowTypeError";
+}
+
 function SegmentManage(props) {
   const classes = useStyles();
 
@@ -345,7 +358,8 @@ function SegmentManage(props) {
                 <Card className={classes.segmentCard}>
                   <CardHeader
                     title={item.Nimi}
-                    subheader={translations["terrainBase"][language] + ": " + item.Maasto}
+                    subheader={translations["terrainBase"][language] + ": " +
+                      translations[getTranslationkey(item.Maasto)][language]}
                     action={
                       <IconButton
                         id={item.ID}

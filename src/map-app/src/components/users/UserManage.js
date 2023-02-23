@@ -79,7 +79,7 @@ function UserManage(props) {
   const [showPassword, setShowPassword] = useState(false);
   const [initials, setInitials] = useState(null);
   const [users, setUsers] = useState(null);
-  const language = useContext(GlobalContext);
+  const { language } = useContext(GlobalContext);
 
   const menuOpen = Boolean(anchorElMenu);
 
@@ -338,8 +338,8 @@ function UserManage(props) {
                           component="p"
                         >
                           {item.Rooli !== null
-                            ? "Rooli: " + item.Rooli
-                            : "Ei määriteltyä roolia"}
+                            ? translations["role"][language] + item.Rooli
+                            : translations["noDefinedRole"][language]}
                         </Typography>
                       </CardContent>
                     </Card>

@@ -55,7 +55,7 @@ function AddUser(props) {
   const [admin, setAdmin] = useState(false);
   const [addOpen, setAddOpen] =useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const language = useContext(GlobalContext);
+  const { language } = useContext(GlobalContext);
 
   // Tarkistuksia lisäyspainikkeen aktivoitumiselle lisäysdialogissa
   const formOK = Boolean(!(firstName !== "" && lastName !== "" && email !== "" && password.length >= 7));
@@ -224,7 +224,7 @@ function AddUser(props) {
               color="primary"
             />
           }
-          label="Admin-käyttäjä"
+          label={translations["adminUser"][language]}
         />
         
         {/* Painikkeet lomakkeen lopussa */}

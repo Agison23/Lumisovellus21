@@ -1,5 +1,5 @@
  /*
- function getTranslationkey(snowTypeInFinish,lan = "fi"){
+ export function getTranslationkey(snowTypeInFinish,lan = "fi"){
     for (let snowType in translations){
       let snowTypeObject = translations[snowType];
       let snowTypeInFi = snowTypeObject[lan];
@@ -883,10 +883,79 @@
   amountOfDays:{
     fi: "päivien lkm",
     en: "Amount of days"
+  },
+
+  erroneousEmailOrPassword:{
+    fi: "Virheellinen sähköposti tai salasana!",
+    en: "Erroneous email or password!"
+  },
+
+  adminUser:{
+    fi: "Admin-käyttäjä",
+    en: "Admin-user"
+  },
+
+  role:{
+    fi: "Rooli ",
+    en: "Role "
+  },
+
+  noDefinedRole:{
+    fi: "Ei määriteltyä roolia",
+    en: "No defined role"
+  },
+
+  forest:{
+    fi: "Metsä",
+    en: "Forest"
+  },
+
+  borealForest:{
+    fi: "Tuulikangas",
+    en: "Boreal forest"
+  },
+
+  borealForestAndBrush:{
+    fi: "Tuulikangas ja varvikko",
+    en: "Boreal forest and brush"
+  },
+
+  borealForestAndRiver:{
+    fi: "Tuulikangas, keskellä rehevä katajainen joenuoma",
+    en: "Boreal forest and river"
+  },
+
+  torAndJuniper:{
+    fi: "Rakka, puurajassa varvikko",
+    en: "Tor, juniter by the treeline"
+  },
+
+  borealForestAndJuniper:{
+    fi: "Tuulikangas alaosassa puronvarsilla katajikko",
+    en: "Boreal forest, juniper by the creek"
+  },
+
+  rockyGround:{
+    fi: "Raakakivikko",
+    en: "rocky ground"
+  },
+
+  rockyGroundAndBorealForest:{
+    fi: "Raakakivikko ja tuulikangas",
+    en: "Rocky ground and boreal forest"
+  },
+
+  constant:{
+    fi: "Vakio",
+    en: "Constant"
+  },
+
+  torWetland:{
+    fi: "Kivirakka, alhaalla kosteikkoa",
+    en: "tor, wetland at the bottom"
   }
 
 };
 
-//export getTranslationkey;
 //module.exports = {translations, getTranslationkey};
 export default translations;
