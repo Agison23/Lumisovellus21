@@ -8,6 +8,7 @@ import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
@@ -16,6 +17,7 @@ import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
 import '../notification_handler.dart';
+import '../state/appState.dart';
 import 'gps_handler.dart';
 
 class ServerComms {
@@ -38,7 +40,7 @@ class ServerComms {
   }
 
   static void _listenServerTimerInsides(int minutesBetweenLocationMessages) {
-    print(_timer.tick);
+    // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
@@ -54,23 +56,28 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer() {
-    listenServer();
+  static void startListeningServer(BuildContext context) {
+    // static void startListeningServer() {
+    // listenServer();
+    listenServer(context);
   }
 
+  // Constructing different messages to server
   static messageToServer(String messagetype) async {
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
 
       String message;
+      // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
-          saveLastLocationTimeToSP();
+          saveLastLocationTimeToSharedPreference();
           message =
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
@@ -98,7 +105,7 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      print(message);
+      // print(message);
       rDgS.then(
         (RawDatagramSocket udpSocket) {
           udpSocket.writeEventsEnabled = true;
@@ -112,6 +119,7 @@ class ServerComms {
     }
   }
 
+  // Get the ID of device to add into the help message
   static _getDeviceID() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     String? devId = "notSet";
@@ -125,33 +133,37 @@ class ServerComms {
     return devId;
   }
 
-  static listenServer() {
+  static listenServer(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
-      print("socket: $udpSocket");
+      // print("socket: $udpSocket");
       String result;
       udpSocket.listen((event) async {
         // await NotificationHandler.pushUpNotification("65.010954,25.466237", "5km"); //TODO REMOVE
-        print("recv e: $event");
+        // print("recv e: $event");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
-          print("result: $result");
+          // print("result: $result");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
+              // New helper accepted the help request
               //HELPER_ACCEPTED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               HelpNeededState.helperAmountUpdate(1, resultParts[1],
                   LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_UPDATED":
+              // Update current helpers
               //HELP_UPDATED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               HelpNeededState.helperAmountUpdate(0, resultParts[1],
                   LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_WITHDRAWN":
+              // A helper withdrawn the help request
               //HELP_WITHDRAWN:ID
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
@@ -159,33 +171,42 @@ class ServerComms {
               NotificationHandler.helperCancelledAcceptanceNotification();
               break;
             case "HELP_TARGET_UPDATE":
-              //HELP_TARGET_UPDATE:ID:GPS
               print(
-                  "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
+                  "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
+              //HELP_TARGET_UPDATE:ID:GPS
+              // print(
+              //     "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
-              print("resultParts[1] ${resultParts[1]}     devId ${devId}");
+              // print("resultParts[1] ${resultParts[1]}     devId ${devId}");
               if (resultParts[1] == devId) {
                 HelpOfferedState.setToBeHelpedLatLng(
                     LatLng(double.parse(res2[0]), double.parse(res2[1])));
               }
               break;
             case "NOTIFY":
+              // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
+              print("Notify!");
+              appState.setNumOfHelpRequest = 1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(MyApp.navigatorKey.currentState?.context, payload);
+                await Dialogs.showHelpRequestedDialog(
+                    MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
+
             case "NO_USERS_NEARBY":
-              print('Working');
+              // print('Working');
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
+              print("help over!");
               // HELP_OVER:ID
+              appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
@@ -195,22 +216,23 @@ class ServerComms {
                     await MyApp.navigatorKey.currentState?.push(
                         MaterialPageRoute(
                             builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(MyApp.navigatorKey.currentState?.context);
+                    await Dialogs.showHelpNeedOverDialog(
+                        MyApp.navigatorKey.currentState?.context);
                   }
                 } catch (e) {
-                  print(e.toString());
+                  // print(e.toString());
                 }
               }
               break;
             default:
-              print("invalid message: $result");
+              // print("invalid message: $result");
               return;
           }
         }
       }, onError: (error) {
-        print("server listening error: $error");
+        // print("server listening error: $error");
       }, onDone: () {
-        print("server listening done!");
+        // print("server listening done!");
       }, cancelOnError: true);
     });
   }
@@ -223,10 +245,12 @@ class ServerComms {
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
+    // time, first name, last name, gps, phone number
     return [time.toString(), fName, lName, _gps, pNumber];
   }
 
-  static saveLastLocationTimeToSP() async {
+  // Save the last location and time to the app's shared preference
+  static saveLastLocationTimeToSharedPreference() async {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());

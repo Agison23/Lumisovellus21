@@ -1,4 +1,6 @@
 import 'package:flutter/services.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
@@ -36,6 +38,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -46,7 +49,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Haluatko poistua sovelluksesta?'),
+                  title: Text(!appState.isEnglish
+                      ? 'Haluatko poistua sovelluksesta?'
+                      : 'Do you want to exit the app?'),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
@@ -54,7 +59,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Kyllä'),
+                      child: Text(!appState.isEnglish ? 'Kyllä' : 'Yes'),
                     ),
                   ],
                 );
@@ -92,10 +97,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                     controller: fNameController,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Anna etunimesi';
+                                        return !appState.isEnglish
+                                            ? 'Anna etunimesi'
+                                            : 'Enter your first name';
                                       }
                                       if (value.length > nameMaxLen) {
-                                        return 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+                                        return !appState.isEnglish
+                                            ? 'Etunimen enimmäispituus on ${nameMaxLen} merkkiä!'
+                                            : 'Maximum length of first name is ${nameMaxLen} characters!';
                                       }
                                       return null;
                                     },
@@ -107,7 +116,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      labelText: 'Etunimi',
+                                      labelText: !appState.isEnglish
+                                          ? 'Etunimi'
+                                          : 'First name',
                                     ),
                                   ),
                                 ),
@@ -121,10 +132,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                     controller: lNameController,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Anna sukunimesi';
+                                        return !appState.isEnglish
+                                            ? 'Anna sukunimesi'
+                                            : 'Enter your last name';
                                       }
                                       if (value.length > nameMaxLen) {
-                                        return 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!';
+                                        return !appState.isEnglish
+                                            ? 'Sukunimen enimmäispituus on ${nameMaxLen} merkkiä!'
+                                            : 'Maximum length of last name is ${nameMaxLen} characters!';
                                       }
                                       return null;
                                     },
@@ -136,7 +151,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      labelText: 'Sukunimi',
+                                      labelText: !appState.isEnglish
+                                          ? 'Sukunimi'
+                                          : 'Last name',
                                     ),
                                   ),
                                 ),
@@ -156,7 +173,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             controller: pNumberController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Anna puhelinnumerosi';
+                                return !appState.isEnglish
+                                    ? 'Anna puhelinnumerosi'
+                                    : 'Enter your phone number';
                               }
 
                               return null;
@@ -169,7 +188,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: 'Puhelinnumero',
+                              labelText: !appState.isEnglish
+                                  ? 'Puhelinnumero'
+                                  : 'Phone number',
                             ),
                           ),
                         ),
@@ -185,11 +206,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
                                     pNumberController.text);
                               }
                             },
-                            child: const Text(
-                              'Tallenna',
+                            child: Text(
+                              !appState.isEnglish ? 'Tallenna' : 'Save',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
+                              style: const TextStyle(
+                                color: Colors.white,
                                 fontSize: 20,
                               ),
                             ),
@@ -210,7 +231,33 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   alignment: Alignment.bottomCenter, child: BottomBar()),
               IconButton(
                 iconSize: 30,
-                icon: const Icon(Icons.menu),
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.menu),
+                    if (appState.numOfHelpRequests > 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
                 },
@@ -249,11 +296,16 @@ Future _showDialog(BuildContext context, String message) async {
 
 void _updateName(
     BuildContext context, String fName, String lName, String pNumber) {
+  var appState = Provider.of<AppState>(context, listen: false);
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   prefs.then((pref) {
     pref.setString('fName', fName);
     pref.setString('lName', lName);
     pref.setString('pNumber', pNumber);
-    _showDialog(context, "Tiedot tallennettu");
+    _showDialog(
+        context,
+        !appState.isEnglish
+            ? "Tiedot tallennettu"
+            : "User information has been saved");
   });
 }
