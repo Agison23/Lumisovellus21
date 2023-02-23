@@ -62,11 +62,13 @@ class ServerComms {
     listenServer(context);
   }
 
+  // Constructing different messages to server
   static messageToServer(String messagetype) async {
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
 
       String message;
+      // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -112,8 +114,8 @@ class ServerComms {
         },
       );
     } else {
-      //   print(
-      //       "FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
+      print(
+          "FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
     }
   }
 
@@ -131,10 +133,8 @@ class ServerComms {
     return devId;
   }
 
-  // static listenServer() {
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
-    print("Start listening to server in serverComms!");
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
       // print("socket: $udpSocket");
@@ -145,22 +145,25 @@ class ServerComms {
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
-          print("result: $result");
+          // print("result: $result");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
+              // New helper accepted the help request
               //HELPER_ACCEPTED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               HelpNeededState.helperAmountUpdate(1, resultParts[1],
                   LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_UPDATED":
+              // Update current helpers
               //HELP_UPDATED:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               HelpNeededState.helperAmountUpdate(0, resultParts[1],
                   LatLng(double.parse(res2[0]), double.parse(res2[1])));
               break;
             case "HELPER_WITHDRAWN":
+              // A helper withdrawn the help request
               //HELP_WITHDRAWN:ID
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
@@ -168,6 +171,8 @@ class ServerComms {
               NotificationHandler.helperCancelledAcceptanceNotification();
               break;
             case "HELP_TARGET_UPDATE":
+              print(
+                  "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
               //HELP_TARGET_UPDATE:ID:GPS
               // print(
               //     "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
@@ -180,6 +185,7 @@ class ServerComms {
               }
               break;
             case "NOTIFY":
+              // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
               appState.setNumOfHelpRequest = 1;

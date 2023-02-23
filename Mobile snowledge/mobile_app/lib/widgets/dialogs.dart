@@ -38,6 +38,7 @@ class Dialogs {
     _selectedRadio = 0;
   }
 
+  // Open the "What kind of help do you need?" dialog
   Future showDialogMinorHelpQuestions(context) async {
     var appState = Provider.of<AppState>(context, listen: false);
     _selectedRadio = 1;
