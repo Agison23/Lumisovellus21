@@ -120,7 +120,6 @@ def create_help_entry(connection, help):
         sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=? WHERE dev_id=?"
         cur.execute(sql, (help[1], help[2], help[3], help[0]))
 
-    print(sql)
     connection.commit()
     return
 
