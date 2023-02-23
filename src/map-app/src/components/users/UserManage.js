@@ -15,6 +15,9 @@ Käyttäjien muokkaustoiminnot näkyvät vain, jos kirjautuneen käyttäjän roo
 Markku Nirkkonen 19.12.2020
 Muokkaaminen ja poistaminen toimivat.
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import IconButton from "@material-ui/core/IconButton";
@@ -40,8 +43,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import GlobalContext from "../../context/GlobalContext";
+import translations from "../../translations";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AddUser from "./AddUser";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,19 +69,20 @@ function UserManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [anchorElMenu, setAnchorElMenu] = React.useState(null);
-  const [selected, setSelected] = React.useState(null);
-  const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [firstName, setFirstName] = React.useState(null);
-  const [lastName, setLastName] = React.useState(null);
-  const [email, setEmail] = React.useState(null);
-  const [password, setPassword] = React.useState("");
-  const [confirm, setConfirm] = React.useState("");
-  const [mismatch, setMismatch] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [initials, setInitials] = React.useState(null);
-  const [users, setUsers] = React.useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [mismatch, setMismatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [initials, setInitials] = useState(null);
+  const [users, setUsers] = useState(null);
+  const { language } = useContext(GlobalContext);
 
   const menuOpen = Boolean(anchorElMenu);
 
@@ -322,9 +328,9 @@ function UserManage(props) {
                         open={menuOpen}
                         onClose={handleMenuClose}
                       >
-                        <MenuItem onClick={openEdit}>Muokkaa</MenuItem>
+                        <MenuItem onClick={openEdit}>{translations["edit"][language]}</MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => openDelete()}>Poista</MenuItem>
+                        <MenuItem onClick={() => openDelete()}>{translations["delete"][language]}</MenuItem>
                       </Menu>
 
                       <CardContent>
@@ -335,8 +341,8 @@ function UserManage(props) {
                           component="p"
                         >
                           {item.Rooli !== null
-                            ? "Rooli: " + item.Rooli
-                            : "Ei määriteltyä roolia"}
+                            ? translations["role"][language] + item.Rooli
+                            : translations["noDefinedRole"][language]}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -349,14 +355,14 @@ function UserManage(props) {
 
         {/* Käyttäjän poistodialogi */}
         <Dialog onClose={closeDelete} open={deleteOpen}>
-          <DialogTitle id="delete_user">Poista käyttäjä?</DialogTitle>
+          <DialogTitle id="delete_user">{translations["deleteUser"][language]}</DialogTitle>
           <Typography>
-            Poistetaan käyttäjä ja kaikki käyttäjään liittyvät tiedot. Poista?
+          {translations["deleteUserAndDataRelated"][language]}
           </Typography>
           <DialogActions>
             <Divider />
             <Button id={"deleteClose"} onClick={closeDelete}>
-              Peruuta
+              {translations["cancel"][language]}
             </Button>
             <Button
               variant="contained"
@@ -364,22 +370,22 @@ function UserManage(props) {
               id={"delete"}
               onClick={handleDelete}
             >
-              Poista
+              {translations["delete"][language]}
             </Button>
           </DialogActions>
         </Dialog>
 
         {/* Muokkausdialogi (lomake) */}
         <Dialog onClose={closeEdit} open={editOpen}>
-          <DialogTitle id="edit_user">Muokkaa käyttäjää</DialogTitle>
+          <DialogTitle id="edit_user">{translations["editUser"][language]}</DialogTitle>
           <Typography variant="caption">
-            Jätä tyhjäksi kentät, joita ei muuteta
+          {translations["leaveBlank"][language]}
           </Typography>
           <Typography variant="caption">
-            Uuden salasanan tulee olla vähintään 7 merkkiä pitkä
+          {translations["tooShortPassword"][language]}
           </Typography>
           <FormControl>
-            <InputLabel htmlFor="firstname">Muuta etunimeä</InputLabel>
+            <InputLabel htmlFor="firstname">{translations["changeFirstName"][language]}</InputLabel>
             <Input
               id="firstname"
               type="text"
@@ -388,7 +394,7 @@ function UserManage(props) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel htmlFor="lastname">Muuta sukunimeä</InputLabel>
+            <InputLabel htmlFor="lastname">{translations["changeLastName"][language]}</InputLabel>
             <Input
               id="lastname"
               type="text"
@@ -397,7 +403,7 @@ function UserManage(props) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel htmlFor="email">Muuta sähköpostia</InputLabel>
+            <InputLabel htmlFor="email">{translations["changeEmail"][language]}</InputLabel>
             <Input
               id="email"
               type="text"
@@ -407,7 +413,7 @@ function UserManage(props) {
           </FormControl>
           <FormControl error={mismatch}>
             <InputLabel htmlFor="standard-adornment-password">
-              Uusi salasana
+            {translations["newPassword"][language]}
             </InputLabel>
             <Input
               id="standard-adornment-password"
@@ -428,13 +434,13 @@ function UserManage(props) {
             />
           </FormControl>
           {mismatch ? (
-            <FormHelperText>Salasana ja vahvistus eivät täsmää</FormHelperText>
+            <FormHelperText>{translations["passwordsDoNotMatch"][language]}</FormHelperText>
           ) : (
             <div />
           )}
 
           <FormControl error={mismatch}>
-            <InputLabel htmlFor="confirm">Vahvista uusi salasana</InputLabel>
+            <InputLabel htmlFor="confirm">{translations["confirmNewPassword"][language]}</InputLabel>
             <Input
               id="confirm"
               type="password"
@@ -446,7 +452,7 @@ function UserManage(props) {
           <DialogActions>
             <Divider />
             <Button id={"editClose"} onClick={closeEdit}>
-              Peruuta
+            {translations["cancel"][language]}
             </Button>
             <Button
               variant="contained"
@@ -455,7 +461,7 @@ function UserManage(props) {
               onClick={handleEdit}
               disabled={!editFormOK}
             >
-              Tallenna muutokset
+              {translations["saveChanges"][language]}
             </Button>
           </DialogActions>
         </Dialog>
@@ -465,7 +471,7 @@ function UserManage(props) {
     // Operator-tason käyttäjä ei voi hallita muita käyttäjiä
     return (
       <Typography variant="h6">
-        Käyttäjähallinta vaatii admin-oikeudet
+        {translations["userManagementRequiresAdminPermission"][language]} 
       </Typography>
     );
   }

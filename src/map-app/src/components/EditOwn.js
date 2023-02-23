@@ -17,7 +17,8 @@ Korjattu niin, että uloskirjautuessa näkymä palaa karttaan
 Markku Nirkkonen 26.11.2020
 Suomennoksia, ei siis käytännön muutoksia
 
-
+23.2 2023 otso tikkkanen
+Added english version
 
 **/
 
@@ -36,6 +37,8 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 function EditOwn(props) {
   const [firstName, setFirstName] = React.useState(null);
@@ -46,6 +49,7 @@ function EditOwn(props) {
   const [confirm, setConfirm] = React.useState("");
   const [mismatch, setMismatch] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const { language } = useContext(GlobalContext);
 
   // Määrittää, onko muokkauslomakkeen tallennuspainike aktiivinen (tyhjillä/muuttamattomilla syötteillä ei ole)
   const saveDisabled = Boolean(
@@ -175,15 +179,15 @@ function EditOwn(props) {
   return (
     <div>
       {/* Dialogi näyttää nykyiset tiedot ja sisältää muokkauskentät, sekä toimintopainikkeet muokkaamista varten */}
-      <DialogTitle id="edit_user">Muokkaa tietojasi</DialogTitle>
+      <DialogTitle id="edit_user">{translations["editYourData"][language]}</DialogTitle>
       <DialogContent>
-        <Typography variant="subtitle2">Tiedot nyt:</Typography>
+        <Typography variant="subtitle2">{translations["dataNow"][language]}</Typography>
         <Typography>
           {props.user.Etunimi + " " + props.user.Sukunimi}
         </Typography>
         <Typography>{props.user.Sähköposti}</Typography>
         <FormControl>
-          <InputLabel htmlFor="firstname">Muuta etunimeä</InputLabel>
+          <InputLabel htmlFor="firstname">{translations["changeName"][language]}</InputLabel>
           <Input
             id="firstname"
             type="text"
@@ -193,7 +197,7 @@ function EditOwn(props) {
         </FormControl>
         <br />
         <FormControl>
-          <InputLabel htmlFor="lastname">Muuta sukunimeä</InputLabel>
+          <InputLabel htmlFor="lastname">{translations["changeLastName"][language]}</InputLabel>
           <Input
             id="lastname"
             type="text"
@@ -203,7 +207,7 @@ function EditOwn(props) {
         </FormControl>
         <br />
         <FormControl>
-          <InputLabel htmlFor="email">Muuta sähköpostia</InputLabel>
+          <InputLabel htmlFor="email">{translations["changeEmail"][language]}</InputLabel>
           <Input
             id="email"
             type="text"
@@ -214,7 +218,7 @@ function EditOwn(props) {
         <br />
         <FormControl error={mismatch}>
           <InputLabel htmlFor="standard-adornment-password">
-            Uusi salasana
+          {translations["newPassword"][language]}
           </InputLabel>
           <Input
             id="standard-adornment-password"
@@ -237,7 +241,7 @@ function EditOwn(props) {
         {mismatch ? <FormHelperText>{message}</FormHelperText> : <div />}
 
         <FormControl error={mismatch}>
-          <InputLabel htmlFor="confirm">Vahvista uusi salasana</InputLabel>
+          <InputLabel htmlFor="confirm">{translations["confirmNewPassword"][language]}</InputLabel>
           <Input
             id="confirm"
             type="password"
@@ -250,7 +254,7 @@ function EditOwn(props) {
       <DialogActions>
         <Divider />
         <Button id={"editClose"} onClick={handleClose}>
-          Sulje
+        {translations["close"][language]}
         </Button>
         <Button
           variant="contained"
@@ -259,7 +263,7 @@ function EditOwn(props) {
           onClick={handleEdit}
           disabled={saveDisabled}
         >
-          Tallenna muutokset
+          {translations["saveChanges"][language]}
         </Button>
       </DialogActions>
     </div>

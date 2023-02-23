@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import Button from "@material-ui/core/Button";
 import {Box, CardMedia, IconButton, TextField} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
@@ -6,6 +6,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import {useMediaQuery} from "react-responsive";
 import Divider from "@material-ui/core/Divider";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
+import getTranslationKey from  "../gettranslationskey";
 
 
 // eslint-disable-next-line no-unused-vars
@@ -153,7 +156,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-
 function WriteUserReview(props) {
 
   const styles = useStyles();
@@ -168,6 +170,7 @@ function WriteUserReview(props) {
   const [branches, setBranches] = React.useState(false);
   const [text, setText] = React.useState("");
   const [updateID, setUpdateID] = React.useState(null);
+  const  { language }  = useContext(GlobalContext);
   //const [onlyFeedback, setOnlyFeedback] = React.useState(false);
 
   React.useMemo(() => {
@@ -335,30 +338,30 @@ function WriteUserReview(props) {
       { view === "category" && (
         <div className={styles.div}>
     
-          <Typography className={styles.smallHeaders}>Kertoisitko, oliko lumi </Typography>
+          <Typography className={styles.smallHeaders}>{translations["snowWas"][language]} </Typography>
 
           <Divider className={styles.divider} />
     
           <Box className={styles.buttonsCenter}>
           
-            <Button variant="contained" className={styles.lightBlue} onClick={() => {fetchSnowTypes("1");}}>uutta/vastasatanutta</Button>
+            <Button variant="contained" className={styles.lightBlue} onClick={() => {fetchSnowTypes("1");}}>{translations["freshlyRainedSnow"][language]}</Button>
             
-            <Button variant="contained" className={styles.purple} onClick={() => {fetchSnowTypes("2");}}>tuulen muovaamaa</Button>
+            <Button variant="contained" className={styles.purple} onClick={() => {fetchSnowTypes("2");}}>{translations["shapedByTheWind"][language]}</Button>
             
-            <Button variant="contained" className={styles.lime} onClick={() => {fetchSnowTypes("3");}}>jäistä</Button>
+            <Button variant="contained" className={styles.lime} onClick={() => {fetchSnowTypes("3");}}>{translations["icy"][language]}</Button>
             
-            <Button variant="contained" className={styles.grey} onClick={() => {fetchSnowTypes("4");}}>märkää</Button>
+            <Button variant="contained" className={styles.grey} onClick={() => {fetchSnowTypes("4");}}>{translations["wet"][language]}</Button>
             
-            <Button variant="contained" className={styles.blue} onClick={() => {fetchSnowTypes("5");}}>korppua</Button>
+            <Button variant="contained" className={styles.blue} onClick={() => {fetchSnowTypes("5");}}>{translations["crust"][language]}</Button>
             
-            <Button variant="contained" className={styles.brown} onClick={() => {fetchSnowTypes("6");}}>vähäistä</Button>
+            <Button variant="contained" className={styles.brown} onClick={() => {fetchSnowTypes("6");}}>{translations["minor"][language]}</Button>
           
           </Box>
 
           <Divider className={styles.divider} />
 
           <Box className={styles.buttonsRight}>
-            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>Takaisin</Button>
+            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>{translations["back"][language]}</Button>
           </Box>
         </div>        
       )}
@@ -368,7 +371,7 @@ function WriteUserReview(props) {
       { view === "selection" && (
         <div className={styles.div}>
 
-          <Typography className={styles.smallHeaders} style={{justifyContent: "center"}}>Lumityypin tarkennus: </Typography>
+          <Typography className={styles.smallHeaders} style={{justifyContent: "center"}}>{translations["elaborationOfSnowType"][language]} </Typography>
 
           <Grid container className={styles.grid}>
             {
@@ -388,7 +391,7 @@ function WriteUserReview(props) {
                         alt="lumityypin logo"
                         className={styles.snowInfo}
                       />
-                      <Typography className={styles.mediumText}>{data.Nimi}</Typography>                 
+                      <Typography className={styles.mediumText}>{translations[getTranslationKey(data.Nimi)][language]}</Typography>                 
                     </IconButton>  
                   </Grid>                
                 );
@@ -400,11 +403,11 @@ function WriteUserReview(props) {
           {/* Lumitiedon kuvausteksti */}
           { selectedType !== null && (
             <Box className={styles.description}>
-              <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>{selectedType.Nimi}</Typography>
+              <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>
+                {translations[getTranslationKey(selectedType.Nimi)][language]}</Typography>
               <p 
-                className={styles.mediumText}
-                style={{marginRight: "1px"}}
-              >{selectedType.Lumityyppi_selite}</p>
+                className={styles.mediumText}style={{marginRight: "1px"}}
+              >{translations[getTranslationKey(selectedType.Nimi) + "Description"][language]}</p>
 
               { selectedType.Hiihdettavyys > 0 && (
                 <img className={styles.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/" + selectedType.Hiihdettavyys + ".svg"} alt="skiability" />
@@ -415,7 +418,7 @@ function WriteUserReview(props) {
           <Divider className={styles.divider} />
 
 
-          <Typography className={styles.smallHeaders}>Voit vielä lisätä, jos alueella oli: </Typography>
+          <Typography className={styles.smallHeaders}> {translations["additionalMentions"][language]} </Typography>
           <Grid container>
             <Grid item xs={6} sm={6} align="center">
               <IconButton
@@ -431,7 +434,7 @@ function WriteUserReview(props) {
                   alt="lumityypin logo"
                   className={styles.snowInfo}
                 />
-                <Typography className={styles.mediumText}>Kiviä</Typography>                 
+                <Typography className={styles.mediumText}>{translations["stones"][language]}</Typography>                 
               </IconButton> 
             </Grid> 
             <Grid item xs={6} sm={6} align="center">
@@ -448,14 +451,14 @@ function WriteUserReview(props) {
                   alt="lumityypin logo"
                   className={styles.snowInfo}
                 />
-                <Typography className={styles.mediumText}>Oksia</Typography>                 
+                <Typography className={styles.mediumText}>{translations["branches"][language]}</Typography>                 
               </IconButton> 
             </Grid>
           </Grid>
 
           <Box className={styles.buttonsRight}>
-            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>Takaisin</Button>
-            <Button variant="contained" className={styles.darkGrey} onClick={postSnowType}>Lähetä</Button>
+            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>{translations["back"][language]}</Button>
+            <Button variant="contained" className={styles.darkGrey} onClick={postSnowType}>{translations["send"][language]}</Button>
           </Box>
         </div>
       )}
@@ -464,18 +467,18 @@ function WriteUserReview(props) {
         <div className={styles.div}>
 
           {props.mode === "category" &&
-            <Typography className={styles.smallHeaders}>Kiitos palautteesta! </Typography>        
+            <Typography className={styles.smallHeaders}>{translations["thanksForTheFeedback"][language]} </Typography>        
           }
 
           <Box className={styles.part}>
-            <Typography variant="h5" className={styles.mediumText}>Muu huomio tai terveiset Pallaksen Pöllöille: </Typography>
-            <TextField className={styles.textFields} value={text} maxRows={6} onChange={updateText} placeholder="Kirjoita..." multiline variant="outlined" />
+            <Typography variant="h5" className={styles.mediumText}>{translations["observationsOrGreetingsToPollot"][language]} </Typography>
+            <TextField className={styles.textFields} value={text} maxRows={6} onChange={updateText} placeholder={translations["thanksForTheFeedback"][language]} multiline variant="outlined" />
           </Box>    
 
           <Box className={styles.buttonsRight}>         
-            <Button variant="contained" className={styles.darkGrey} onClick={props.close}>Sulje</Button>
+            <Button variant="contained" className={styles.darkGrey} onClick={props.close}>{postSnowType}&gt;{translations["close"][language]} </Button>
             <Button variant="contained" className={styles.darkGrey}
-              disabled={ text === "" } onClick={postFeedback}>Lähetä</Button>
+              disabled={ text === "" } onClick={postFeedback}>{postSnowType}&gt;{translations["send"][language]}</Button>
           </Box>    
   
         </div>

@@ -7,9 +7,12 @@ Recent changes:
 29.11 Emil Calonius
 Created component
 
+23.2 2023 otso tikkkanen
+Added english version
+
  **/
 
-import * as React from "react";
+import  React, { useState, useContext } from "react";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import MapIcon from "@material-ui/icons/Map";
@@ -18,6 +21,8 @@ import CloudIcon from "@material-ui/icons/Cloud";
 import { makeStyles } from "@material-ui/core/styles";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
 
 
 const useStyles = makeStyles(() => ({
@@ -40,10 +45,12 @@ const navBarTheme = createTheme({
 
 function BottomNav(props) {
   // Hooks
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const { language } = useContext(GlobalContext);
 
   // Use styles
   const styledClasses = useStyles();
+
 
   if(props.user === null || props.user === undefined) {
     return(
@@ -61,17 +68,17 @@ function BottomNav(props) {
         >
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Kartta"
+            label= {translations["map"][language]}
             icon={<MapIcon />}
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Selitteet"
+            label={translations["definitions"][language]}
             icon={<InfoIcon />}
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Sää"
+            label={translations["weather"][language]}
             icon={<CloudIcon />}
           />
         </BottomNavigation>
@@ -94,22 +101,22 @@ function BottomNav(props) {
         >
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Kartta"
+            label= {translations["map"][language]}
             icon={<MapIcon />}
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Info"
+            label= {translations["definitions"][language]}
             icon={<InfoIcon />}
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Sää"
+            label={translations["weather"][language]}
             icon={<CloudIcon />}
           />
           <BottomNavigationAction
             className={styledClasses.button}
-            label="Hallitse"
+            label={translations["manage"][language]}
             icon={<SettingsIcon />}
           />
         </BottomNavigation>

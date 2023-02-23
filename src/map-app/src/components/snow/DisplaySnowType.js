@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { CardMedia } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { useMediaQuery } from "react-responsive";
+import GlobalContext from "../../context/GlobalContext";
+import translations from "../../translations";
 
 
 // eslint-disable-next-line no-unused-vars
@@ -67,6 +69,8 @@ const useStyles = makeStyles(() => ({
 //Icon and skiability size's determined by if the snow type is main or secondary type
 function DisplaySnowType(props) {
 
+
+  const { language } = useContext(GlobalContext);
   const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
@@ -101,7 +105,7 @@ function DisplaySnowType(props) {
         {props.Hiihdettavyys !== null &&
         <Grid item xs={12} sm={12}>
           <Typography xs={12} sm={12} className={props.Main? classes.mainText : classes.secondaryText} variant="body2" component="p">
-            Hiihdettävyys
+            {translations["skiability"][language]}
             <img className={props.Main? classes.mainskiabilityIcon : classes.secondarySkiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/" + props.Hiihdettavyys + ".svg"} alt="skiability" />
           </Typography>
         </Grid> }

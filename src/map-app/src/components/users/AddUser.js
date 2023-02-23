@@ -3,9 +3,12 @@ Käyttäjän lisäykseen liittyvät toiminnot
 
 Luonut: Markku Nirkkonen 9.1.2021
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
-import * as React from "react";
+import React, {useState, useContext } from "react";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -24,6 +27,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import GlobalContext from "../../context/GlobalContext";
+import translations from "../../translations";
 
 const useStyles = makeStyles((theme) => ({
   add: {
@@ -46,13 +51,14 @@ const useStyles = makeStyles((theme) => ({
 function AddUser(props) {
 
   // Hooks
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [admin, setAdmin] = React.useState(false);
-  const [addOpen, setAddOpen] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [admin, setAdmin] = useState(false);
+  const [addOpen, setAddOpen] =useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { language } = useContext(GlobalContext);
 
   // Tarkistuksia lisäyspainikkeen aktivoitumiselle lisäysdialogissa
   const formOK = Boolean(!(firstName !== "" && lastName !== "" && email !== "" && password.length >= 7));
@@ -155,7 +161,7 @@ function AddUser(props) {
       <Box className={classes.add}>
         <Button>
           <AddCircleOutlineIcon />
-          <Typography variant="button" onClick={openAdd}>Lisää käyttäjä</Typography>
+          <Typography variant="button" onClick={openAdd}>{translations["addUser"][language]}</Typography>
           
         </Button>
       </Box>
@@ -165,11 +171,11 @@ function AddUser(props) {
         onClose={closeAdd} 
         open={addOpen}
       >
-        <DialogTitle id="add_segment">Lisää käyttäjä</DialogTitle>
-        <Typography variant="caption">Kaikki tekstikentät ovat pakollisia</Typography>
-        <Typography variant="caption">Salasanan tulee olla 7 merkkiä</Typography>
+        <DialogTitle id="add_segment">{translations["addUser"][language]}</DialogTitle>
+        <Typography variant="caption">{translations["allTextFieldsAreRequired"][language]}</Typography>
+        <Typography variant="caption">{translations["tooShortPassword"][language]}</Typography>
         <FormControl>
-          <InputLabel htmlFor="firstname" >Etunimi</InputLabel>
+          <InputLabel htmlFor="firstname" >{translations["firstName"][language]}</InputLabel>
           <Input
             id="firstname"
             type='text'
@@ -177,7 +183,7 @@ function AddUser(props) {
           />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="lastname" >Sukunimi</InputLabel>
+          <InputLabel htmlFor="lastname" >{translations["lastName"][language]}</InputLabel>
           <Input
             id="lastname"
             type='text'
@@ -185,7 +191,7 @@ function AddUser(props) {
           />
         </FormControl>
         <FormControl>  
-          <InputLabel htmlFor="email" >Sähköposti</InputLabel>
+          <InputLabel htmlFor="email" >{translations["email"][language]}</InputLabel>
           <Input
             id="email"
             type='text'
@@ -193,7 +199,7 @@ function AddUser(props) {
           />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="standard-adornment-password">Salasana</InputLabel>
+          <InputLabel htmlFor="standard-adornment-password">{translations["password"][language]}</InputLabel>
           <Input
             id="standard-adornment-password"
             type={showPassword ? "text" : "password"}
@@ -221,14 +227,14 @@ function AddUser(props) {
               color="primary"
             />
           }
-          label="Admin-käyttäjä"
+          label={translations["adminUser"][language]}
         />
         
         {/* Painikkeet lomakkeen lopussa */}
         <DialogActions>   
           <Divider />
-          <Button id={"deleteClose"} onClick={closeAdd}>Sulje</Button>
-          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>Lisää</Button>
+          <Button id={"deleteClose"} onClick={closeAdd}>{translations["close"][language]}</Button>
+          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>{translations["add"][language]}</Button>
         </DialogActions>
       
       </Dialog>

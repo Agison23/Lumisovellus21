@@ -10,9 +10,12 @@ Suomennoksia, ei siis käytännön muutoksia
 2.12.2020 Markku Nirkkonen
 Korjattu niin, että uloskirjautuessa näkymä palaa karttaan
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
-import * as React from "react";
+import React,{useState, useContext } from "react";
 import Button from "@material-ui/core/IconButton";
 // eslint-disable-next-line no-unused-vars
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -25,6 +28,10 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
+import GlobalContext from "../context/GlobalContext";
+import translations from "../translations";
+
+import { Select, MenuItem } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
   snowIcon: {
@@ -36,7 +43,14 @@ const useStyles = makeStyles(() => ({
 
 function Logout(props) {
   // Hooks
-  const [logoutOpen, setLogoutOpen] = React.useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const { language, changeToLanguage } = useContext(GlobalContext);
+  const handleChange = (event) => {
+    const languageToChangeTo = event.target.value;
+    changeToLanguage(languageToChangeTo);
+  };
+
 
   // Event handlers
 
@@ -64,6 +78,20 @@ function Logout(props) {
   return (
     <div className="logout">
       <div className={styledClasses.snowIcon} >
+      <Select
+          style={{
+            color: props.isMobile ? "#4d4d4d" : "#e6e6e6",
+            fontWeight: "bold",
+            padding: "5px",
+          }}
+          value={language}
+          onChange={handleChange}
+          className={"select"}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="fi">Suomi</MenuItem>
+        </Select>
+ 
         <IconButton 
           onClick={openLogout}
         >
@@ -74,10 +102,10 @@ function Logout(props) {
         onClose={closeLogout} 
         open={logoutOpen}
       >
-        <DialogTitle id="logout-dialog">Kirjaudu ulos?</DialogTitle>
+        <DialogTitle id="logout-dialog">{translations["logOut"][language]}</DialogTitle>
         <DialogActions>
           <Divider/>
-          <Button id={"dialogClose"} onClick={closeLogout}>Peruuta</Button>
+          <Button id={"dialogClose"} onClick={closeLogout}>{translations["cancel"][language]}</Button>
           <Button color="primary" id={"dialogOK"} onClick={logout}>OK</Button>
         </DialogActions>
       </Dialog>

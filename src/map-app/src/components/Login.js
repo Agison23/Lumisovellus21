@@ -14,6 +14,9 @@ Suomennoksia, ei siis käytännön muutoksia
 Markku Nirkkonen 17.11.
 Pieniä muotoiluseikkoja säädetty
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, { useContext, useState } from "react";
@@ -38,6 +41,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import CloseIcon from "@material-ui/icons/Close";
 import GlobalContext from "../context/GlobalContext";
 import { Select, MenuItem } from "@material-ui/core";
+import translations from "../translations";
 
 // Tyylejä sisäänkirjautumislomakkeen osille
 const useStyles = makeStyles((theme) => ({
@@ -189,10 +193,10 @@ function Login(props) {
 
       {/* Kirjautumisdialogi */}
       <Dialog onClose={closeLogin} open={loginOpen}>
-        <DialogTitle id="login-dialog">Kirjaudu sisään</DialogTitle>
+        <DialogTitle id="login-dialog">{translations["login"][language]}</DialogTitle>
         <TextField
           id="email"
-          label="email"
+          label={translations["email"][language]}
           value={email}
           onChange={updateEmail}
           className={styledClasses.email}
@@ -202,7 +206,7 @@ function Login(props) {
             htmlFor="standard-adornment-password"
             className={styledClasses.password}
           >
-            Salasana
+            {translations["password"][language]}
           </InputLabel>
           <Input
             id="standard-adornment-password"
@@ -225,7 +229,7 @@ function Login(props) {
         <DialogActions>
           <Divider />
           <Button id={"dialogClose"} onClick={closeLogin}>
-            Sulje
+          {translations["close"][language]}
           </Button>
           <Button
             variant="contained"
@@ -233,7 +237,7 @@ function Login(props) {
             id={"dialogOK"}
             onClick={sendForm}
           >
-            Kirjaudu
+            {translations["log"][language]}
           </Button>
         </DialogActions>
       </Dialog>

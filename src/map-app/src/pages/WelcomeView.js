@@ -11,11 +11,12 @@ Created component
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-// import welcomeText from "./welcome_text.txt";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import { Select, MenuItem } from "@material-ui/core";
 import welcomeText from "./welcomeText.json";
 import GlobalContext from "../context/GlobalContext.js";
+import translations from "../translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -74,22 +75,41 @@ const useStyles = makeStyles(() => ({
 }));
 
 function WelcomeView(props) {
-  const { language } = useContext(GlobalContext);
+  const { language, changeToLanguage } = useContext(GlobalContext);
+  const handleChange = (event) => {
+    const languageToChangeTo = event.target.value;
+    changeToLanguage(languageToChangeTo);
+  };
   const [text, setText] = useState([]);
 
   useEffect(() => {
-    if (language === "fi") {
-      setText(welcomeText.fi);
-    } else {
-      setText(welcomeText.en);
-    }
-  }, []);
+      setText(welcomeText[language]);
+  }, language);
 
   const styledClasses = useStyles();
 
   if (props.isMobile) {
     return (
+
+
+      
+ 
+
+
       <Box className={styledClasses.mobileRoot}>
+        <Select
+        style={{
+          color: "#e6e6e6" ,
+          fontWeight: "bold",
+          padding: "5px",
+        }}
+        value={language}
+        onChange={handleChange}
+        className={"select"}
+      >
+        <MenuItem value="en">English</MenuItem>
+        <MenuItem value="fi">Suomi</MenuItem>
+      </Select>
         <Box className={styledClasses.iconContainer} style={{ flex: 2 }}>
           <img
             src="pallaksen_pollot_logo_white.png"
@@ -172,7 +192,7 @@ function WelcomeView(props) {
               fontWeight: "bold",
             }}
           >
-            TUTUSTU LUMITILANTEESEEN
+            {translations["getToKnowTheSnowSituation"][language]}
           </Button>
         </Box>
       </Box>
