@@ -8,6 +8,7 @@ import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/side_bar.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
@@ -16,6 +17,7 @@ import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
 import '../notification_handler.dart';
+import '../state/appState.dart';
 import 'gps_handler.dart';
 
 class ServerComms {
@@ -38,7 +40,7 @@ class ServerComms {
   }
 
   static void _listenServerTimerInsides(int minutesBetweenLocationMessages) {
-    print(_timer.tick);
+    // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
@@ -54,8 +56,10 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer() {
-    listenServer();
+  static void startListeningServer(BuildContext context) {
+    // static void startListeningServer() {
+    // listenServer();
+    listenServer(context);
   }
 
   static messageToServer(String messagetype) async {
@@ -99,7 +103,7 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      print(message);
+      // print(message);
       rDgS.then(
         (RawDatagramSocket udpSocket) {
           udpSocket.writeEventsEnabled = true;
@@ -108,8 +112,8 @@ class ServerComms {
         },
       );
     } else {
-      print(
-          "FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
+      //   print(
+      //       "FAILED TO SEND MESSAGE BECAUSE OF THERE IS NO GPS PERMISSIONS GRANTED");
     }
   }
 
@@ -127,14 +131,17 @@ class ServerComms {
     return devId;
   }
 
-  static listenServer() {
+  // static listenServer() {
+  static listenServer(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+    print("Start listening to server in serverComms!");
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
-      print("socket: $udpSocket");
+      // print("socket: $udpSocket");
       String result;
       udpSocket.listen((event) async {
         // await NotificationHandler.pushUpNotification("65.010954,25.466237", "5km"); //TODO REMOVE
-        print("recv e: $event");
+        // print("recv e: $event");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
@@ -162,11 +169,11 @@ class ServerComms {
               break;
             case "HELP_TARGET_UPDATE":
               //HELP_TARGET_UPDATE:ID:GPS
-              print(
-                  "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
+              // print(
+              //     "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
-              print("resultParts[1] ${resultParts[1]}     devId ${devId}");
+              // print("resultParts[1] ${resultParts[1]}     devId ${devId}");
               if (resultParts[1] == devId) {
                 HelpOfferedState.setToBeHelpedLatLng(
                     LatLng(double.parse(res2[0]), double.parse(res2[1])));
@@ -174,6 +181,8 @@ class ServerComms {
               break;
             case "NOTIFY":
               //NOTIFY:ID:GPS:DISTANCE:
+              print("Notify!");
+              appState.setNumOfHelpRequest = 1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
@@ -183,12 +192,15 @@ class ServerComms {
                     MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
+
             case "NO_USERS_NEARBY":
-              print('Working');
+              // print('Working');
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
+              print("help over!");
               // HELP_OVER:ID
+              appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
@@ -202,19 +214,19 @@ class ServerComms {
                         MyApp.navigatorKey.currentState?.context);
                   }
                 } catch (e) {
-                  print(e.toString());
+                  // print(e.toString());
                 }
               }
               break;
             default:
-              print("invalid message: $result");
+              // print("invalid message: $result");
               return;
           }
         }
       }, onError: (error) {
-        print("server listening error: $error");
+        // print("server listening error: $error");
       }, onDone: () {
-        print("server listening done!");
+        // print("server listening done!");
       }, cancelOnError: true);
     });
   }
