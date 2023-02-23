@@ -46,7 +46,7 @@ class NotificationHandler {
       await MyApp.navigatorKey.currentState?.push(
           MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
   }
 
@@ -57,7 +57,7 @@ class NotificationHandler {
       await MyApp.navigatorKey.currentState?.push(
           MaterialPageRoute(builder: (context) => const OnBoardingPage()));
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
     }
   }
 

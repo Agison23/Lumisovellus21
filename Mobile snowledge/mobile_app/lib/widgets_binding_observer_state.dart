@@ -42,7 +42,7 @@ class WidgetsBindingObserverState<T extends StatefulWidget> extends State
         }
         break;
       default:
-        print("didChangeAppLifecycleState: ${state}");
+        // print("didChangeAppLifecycleState: ${state}");
         break;
     }
     if (state == AppLifecycleState.resumed) {}

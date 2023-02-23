@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:mobile_app/side_bar/server_communications.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
 import 'notification_handler.dart';
+import 'package:logging/logging.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -42,6 +46,10 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
+    ServerComms.startListeningServer(context);
+    var appState = Provider.of<AppState>(context);
+    int num = appState.numOfHelpRequests;
+    print("This is the current number of help requests: $num");
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -95,7 +103,33 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                   alignment: Alignment.bottomCenter, child: BottomBar()),
               IconButton(
                 iconSize: 30,
-                icon: const Icon(Icons.menu),
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.menu),
+                    if (appState.numOfHelpRequests > 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
                 },

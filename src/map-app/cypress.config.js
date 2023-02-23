@@ -8,7 +8,8 @@ module.exports = defineConfig({
       return require("./cypress/plugins/index.js")(on, config);
     },
     baseUrl: "http://localhost:3000",
-    specPattern: "cypress/integrationTests/**/*.cy.{js,jsx,ts,tsx}"
+    specPattern: "cypress/integrationTests/**/*.cy.{js,jsx,ts,tsx}",
+    experimentalRunAllSpecs: true
   },
 
   component: {

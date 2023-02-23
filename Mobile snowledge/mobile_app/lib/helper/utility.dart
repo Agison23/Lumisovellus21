@@ -41,12 +41,14 @@ class Utility {
     if ((month > 5 && month < 11)) {
       if (month == 6 && day < 10) {
         winter = true;
-      } else if (month == 10 && day > 15){
+      } else if (month == 10 && day > 15) {
         winter = true;
+      } else {
+        winter = false;
       }
-      else {winter = false;}
+    } else {
+      winter = true;
     }
-    else {winter = true;}
 
     return winter;
   }

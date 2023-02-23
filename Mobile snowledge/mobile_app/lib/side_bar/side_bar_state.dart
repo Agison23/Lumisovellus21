@@ -78,7 +78,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
               if (await canLaunchUrlString(url)) {
                 await launchUrlString(url);
               } else {
-                print('ERROR');
+                // print('ERROR');
               }
             },
             child: const Align(
@@ -87,18 +87,15 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
                   "Privacy Policy",
                   textAlign: TextAlign.left,
                 )),
-          )
-      ),
+          )),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
         child: TextButton(
-          child: Text(
-            'Omat tiedot'
-          ),
+          child: Text('Omat tiedot'),
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  UserInfoPage()),
+              context,
+              MaterialPageRoute(builder: (context) => UserInfoPage()),
             );
           },
         ),
@@ -106,7 +103,8 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          const Text(' Sijainnin lähettäminen:', style: TextStyle(fontSize: 19)),
+          const Text(' Sijainnin lähettäminen:',
+              style: TextStyle(fontSize: 19)),
           FutureBuilder<bool?>(
               future: GpsHandler.loadGpsSetting(),
               builder: (context, _snapshot) {
@@ -189,7 +187,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red[200],
-          title:  Text(
+          title: Text(
               'Painamalla hätänappia kaikki lähellä olevat sovelluksen käyttäjät saavat sijaintisi näkyviin.\n\nHUOM!\nVakavassa hädässä sovellus ${Platform.isIOS ? "aukaisee \"soita 112\" ilmoituksen näytön alareunaan jota painamalla puhelin soittaa hätänumeroon!" : " ohjaa automaattisesti 112 sovellukseen tai soittamaan hätänumeroon jos sovellusta ei ole ladattu!"}'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {

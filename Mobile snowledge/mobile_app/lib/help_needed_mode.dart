@@ -5,8 +5,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
+import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:mobile_app/widgets/buttons.dart';
 
 import 'main.dart';
 
@@ -95,7 +98,7 @@ class HelpNeededState extends State<HelpNeeded> {
       duration,
       (Timer timer) {
         Dialogs.showNoUserHasAcceptedRequestDialog(context);
-        print('no user has accepted');
+        // print('no user has accepted');
         timer.cancel();
       },
     );
@@ -150,6 +153,7 @@ class HelpNeededState extends State<HelpNeeded> {
     List<String> dataList = usersLocation.toString().split(' ');
     var lat = double.parse(dataList[1]);
     var lng = double.parse(dataList[3]);
+    var appState = Provider.of<AppState>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
@@ -157,7 +161,9 @@ class HelpNeededState extends State<HelpNeeded> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Haluatko lopettaa avunpyynnön?'),
+                title: Text(!appState.isEnglish
+                    ? 'Haluatko lopettaa avunpyynnön?'
+                    : 'Do you want to end the help request?'),
                 actions: [
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -171,7 +177,7 @@ class HelpNeededState extends State<HelpNeeded> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
-                      child: const Text('Kyllä')),
+                      child: Text(!appState.isEnglish ? 'Kyllä' : 'Yes')),
                 ],
               );
             });
@@ -185,7 +191,9 @@ class HelpNeededState extends State<HelpNeeded> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Avunpyyntö päällä\n\n Hyväksynyt: ${_helpers.length} henkilöä',
+              !appState.isEnglish
+                  ? 'Avunpyyntö päällä\n\n Hyväksynyt: ${_helpers.length} henkilöä'
+                  : 'Help request on\n\n Accepted by: ${_helpers.length} people',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -223,53 +231,65 @@ class HelpNeededState extends State<HelpNeeded> {
                   )),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final value = await showDialog<bool>(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Haluatko lopettaa avunpyynnön?'),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: const Text('En'),
+                child: Container(
+                  width: 250,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final value = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                !appState.isEnglish
+                                    ? 'Haluatko lopettaa avunpyynnön?'
+                                    : 'Do you want to end the help request?',
                               ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    _markers.clear();
-                                    _helpers.clear();
-                                    /* Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Kyllä')),
-                            ],
-                          );
-                        });
-                    if (value != null) {
-                      return Future.value(value);
-                    } else {
-                      return Future.value(false);
-                    }
-                  },
-                  child: const Text(
-                    'Lopeta avun hälyttäminen',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child:
+                                      Text(!appState.isEnglish ? 'En' : 'No'),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _markers.clear();
+                                      _helpers.clear();
+                                      /* Navigator.pushAndRemoveUntil(context,
+                                          MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      !appState.isEnglish ? 'Kyllä' : 'Yes',
+                                    )),
+                              ],
+                            );
+                          });
+                      if (value != null) {
+                        return Future.value(value);
+                      } else {
+                        return Future.value(false);
+                      }
+                    },
+                    child: Text(
+                      !appState.isEnglish
+                          ? 'Lopeta avun hälyttäminen'
+                          : 'Stop calling for help',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff3c4d62),
+                        fixedSize: const Size(200, 75),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
                   ),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff3c4d62),
-                      fixedSize: const Size(200, 75),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
                 ),
               ),
               Align(
@@ -286,7 +306,7 @@ class HelpNeededState extends State<HelpNeeded> {
                           if (await canLaunchUrlString(url)) {
                             await launchUrlString(url);
                           } else {
-                            print('ERROR');
+                            // print('ERROR');
                           }
                         },
                         icon: Image.asset('assets/images/MapTiler.png'),
@@ -298,6 +318,8 @@ class HelpNeededState extends State<HelpNeeded> {
               ),
             ],
           ),
+          floatingActionButton: Buttons.showRescueChatButton(context),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         ),
       ),
     );

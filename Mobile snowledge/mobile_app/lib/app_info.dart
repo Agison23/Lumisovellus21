@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:mobile_app/state/appState.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
@@ -24,6 +26,7 @@ class _AppInfoState extends State<AppInfo> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
+    var appState = Provider.of<AppState>(context);
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -74,7 +77,33 @@ class _AppInfoState extends State<AppInfo> {
                   alignment: Alignment.bottomCenter, child: BottomBar()),
               IconButton(
                 iconSize: 30,
-                icon: const Icon(Icons.menu),
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.menu),
+                    if (appState.numOfHelpRequests > 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
                 },
