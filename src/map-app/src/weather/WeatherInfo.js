@@ -32,6 +32,7 @@ import Carousel from "react-material-ui-carousel";
 import {getWindDirection} from "./DataCalculations";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations";
+import getTranslationKey from "../gettranslationskey";
 
 
 const useStyles = makeStyles(() => ({
@@ -177,7 +178,8 @@ function FirstDayWeatherPaper({weatherState}) {
           </Grid>
           <Grid item xs={8} sm={6} style={{alignContent: "center"}}>
             <Typography className={classes.text}>{`${weatherState.windspeed.firstDayAverage.toFixed(1)} m/s`}</Typography>
-            <Typography className={classes.subText}>{getWindDirection(weatherState.winddirection.firstDayAverage)}</Typography>
+            <Typography className={classes.subText}>{
+            translations[getTranslationKey(getWindDirection(weatherState.winddirection.firstDayAverage))][language]}</Typography>
           </Grid>
         </Grid>
         
@@ -268,7 +270,8 @@ function SecondDayWeatherPaper({weatherState}) {
           </Grid>
           <Grid item xs={8} sm={6} style={{alignContent: "center"}}>
             <Typography className={classes.text}>{`${weatherState.windspeed.secondDayAverage.toFixed(1)} m/s`}</Typography>
-            <Typography className={classes.subText}>{getWindDirection(weatherState.winddirection.secondDayAverage)}</Typography>
+            <Typography className={classes.subText}>
+              {translations[getTranslationKey(getWindDirection(weatherState.winddirection.secondDayAverage))][language]}</Typography>
           </Grid>
         </Grid>
         
@@ -359,7 +362,8 @@ function CurrentWeatherPaper({weatherState}) {
           </Grid>
           <Grid item xs={6} sm={6} style={{alignContent: "center"}}>
             <Typography className={classes.text}>{`${weatherState.windspeed.current} m/s`}</Typography>
-            <Typography className={classes.subText}>{getWindDirection(weatherState.winddirection.current)}</Typography>
+            <Typography className={classes.subText}>
+              {translations[getTranslationKey(getWindDirection(weatherState.winddirection.current))][language]}</Typography>
           </Grid>
         </Grid>
         
