@@ -50,9 +50,12 @@ Segmentin tiedot näyttävän kortin voi sulkea
 
 17.11. Markku Nirkkonen 
 Ensimmäinen versio segmenttien päivittämisestä
+
+23.2 2023 otso tikkkanen
+Added english version
 **/
 
-import * as React from "react";
+import React, {useState,useContext} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -74,6 +77,10 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
+import GlobalContext from "../context/GlobalContext";
+import translations  from "../translations";
+import getTranslationKey from  "../gettranslationskey";
+
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({
@@ -168,23 +175,25 @@ const useStyles = makeStyles((theme) => ({
 function Info(props) {
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
 
-  const [loginOpen, setLoginOpen] = React.useState(false);
-  const [text, setText] = React.useState("");
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [text, setText] = useState("");
 
-  const [entryVisible, setEntryVisible] = React.useState(true);
-  const [addVisible, setAddVisible] = React.useState(true);
-  const [selectVisible, setSelectVisible] = React.useState(false);
-  const [searchVisible, setSearchVisible] = React.useState(false);
+  const [entryVisible, setEntryVisible] = useState(true);
+  const [addVisible, setAddVisible] = useState(true);
+  const [selectVisible, setSelectVisible] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
 
-  const [selectDisabled, setSelectDisabled] = React.useState([false, false]);
-  const [isSecondary, setIsSecondary] = React.useState(false);
-  const [snowRecordContent, setSnowRecordContent] = React.useState([]);
-  const [snowTypeList, setSnowTypeList] = React.useState([]);
-  const [disabledSnowTypes, setDisabledSnowTypes] = React.useState([]);
-  const [updateEnabled, setUpdateEnabled] = React.useState(false);
+  const [selectDisabled, setSelectDisabled] = useState([false, false]);
+  const [isSecondary, setIsSecondary] = useState(false);
+  const [snowRecordContent, setSnowRecordContent] = useState([]);
+  const [snowTypeList, setSnowTypeList] = useState([]);
+  const [disabledSnowTypes, setDisabledSnowTypes] = useState([]);
+  const [updateEnabled, setUpdateEnabled] = useState(false);
 
-  const [writeReviewEnabled, setWriteReviewEnabled] = React.useState(false);
-  const [reviewMode, setReviewMode] = React.useState("category");
+  const [writeReviewEnabled, setWriteReviewEnabled] = useState(false);
+  const [reviewMode, setReviewMode] = useState("category");
+
+  const { language } = useContext(GlobalContext);
 
   const classes = useStyles();
 
@@ -618,7 +627,7 @@ function Info(props) {
           >
             <EditIcon />
             <Typography className={classes.smallHeaders} variant="button">
-              Päivitä
+              {translations["update"][language]}
             </Typography>
           </IconButton>
 
@@ -637,7 +646,7 @@ function Info(props) {
               >
                 {/*Main header */}
                 <Typography className={classes.largeHeaders}>
-                  PÄIVITÄ SEGMENTTIÄ
+                  {translations["updateSegment"][language]}
                 </Typography>
                 {/*Segment name */}
                 <Typography className={classes.smallHeaders}>
@@ -647,7 +656,7 @@ function Info(props) {
                   {/* Timestamp update checkbox*/}
                   <FormControlLabel
                     control={<Checkbox onChange={updateEntryVisible} />}
-                    label="Päivitä vain aikaleima"
+                    label={translations["updateDateOfReviewOnly"][language]}
                   />
                 </Box>
 
@@ -670,7 +679,7 @@ function Info(props) {
                             endIcon={<SearchIcon fontSize="large" />}
                             className={classes.buttons}
                           >
-                            Lisää
+                            {translations["add"][language]}
                           </Button>
                         </Box>
                       )}
@@ -689,10 +698,10 @@ function Info(props) {
                           }}
                         >
                           <MenuItem disabled={selectDisabled[0]} value={false}>
-                            Ensisijainen
+                          {translations["primary"][language]}
                           </MenuItem>
                           <MenuItem disabled={selectDisabled[1]} value={true}>
-                            Toissijainen
+                          {translations["secondary"][language]}
                           </MenuItem>
                         </Select>
                       )}
@@ -708,7 +717,7 @@ function Info(props) {
                             open={searchVisible}
                             autoComplete={true}
                             options={snowTypeList}
-                            noOptionsText={"Ei tuloksia"}
+                            noOptionsText={translations["noResults"][language]}
                             popupIcon={""}
                             size="small"
                             getOptionDisabled={(option) =>
@@ -721,7 +730,7 @@ function Info(props) {
                                 className={classes.textFields}
                                 size="small"
                                 autoFocus={true}
-                                placeholder="Etsi"
+                                placeholder={translations["search"][language]}
                                 variant="outlined"
                                 style={{
                                   backgroundColor: "white",
@@ -740,8 +749,8 @@ function Info(props) {
                             <Box display="flex" flexDirection="row">
                               <Typography className={classes.smallHeaders}>
                                 {item.secondary
-                                  ? "Toissijainen tyyppi"
-                                  : "Ensisijainen tyyppi"}
+                                  ? translations["secondary"][language]
+                                  : translations["primary"][language]}
                               </Typography>
                               <IconButton
                                 onClick={() => removeSnowtype(item)}
@@ -760,13 +769,13 @@ function Info(props) {
                                 handleSelectClose(e, value, item);
                               }}
                               options={snowTypeList}
-                              noOptionsText={"Ei tuloksia"}
+                              noOptionsText={translations["noResults"][language]}
                               size="small"
                               getOptionDisabled={(option) =>
                                 checkDisabledValues(option)
                               }
                               defaultValue={getValue(item.id)}
-                              getOptionLabel={(option) => option.Nimi}
+                              getOptionLabel={(option) => translations[getTranslationKey(option.Nimi)][language]}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -786,14 +795,14 @@ function Info(props) {
                     {/* Description text box*/}
                     <Box className={classes.part}>
                       <Typography variant="h5" className={classes.smallHeaders}>
-                        Kuvaus
+                        {translations["description"][language]}
                       </Typography>
                       <TextField
                         className={classes.textFields}
                         value={text}
                         maxRows={6}
                         onChange={updateText}
-                        placeholder="Kirjoita..."
+                        placeholder={translations["description"][language]}
                         multiline
                         variant="outlined"
                       />
@@ -808,7 +817,7 @@ function Info(props) {
                     color="secondary"
                     onClick={closeUpdate}
                   >
-                    Peruuta
+                    {translations["cancel"][language]}
                   </Button>
                   <Button
                     variant="contained"
@@ -817,7 +826,7 @@ function Info(props) {
                     disabled={!updateEnabled}
                     onClick={sendForm}
                   >
-                    Päivitä
+                    {translations["update"][language]}
                   </Button>
                 </DialogActions>
               </Box>

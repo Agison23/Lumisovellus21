@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'helper/utility.dart';
 import 'main_page.dart';
+import '../translations/translations.dart';
 
 class HelpOffered extends StatefulWidget {
   const HelpOffered(this.payload, this.pushUp, {Key? key}) : super(key: key);
@@ -80,12 +81,12 @@ class HelpOfferedState extends State<HelpOffered> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     String usersLocation =
         GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
     var lat = double.parse(dataList[1]);
     var lng = double.parse(dataList[3]);
-    var appState = Provider.of<AppState>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
@@ -93,13 +94,11 @@ class HelpOfferedState extends State<HelpOffered> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text(!appState.isEnglish
-                    ? 'Haluatko perua avun tarjoamisen?'
-                    : 'Do you want to cancel the help offer?'),
+                title: Text(translations['cancelHelp'][appState.language]),
                 actions: [
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(!appState.isEnglish ? 'En' : 'No'),
+                    child: Text(translations['no'][appState.language]),
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -110,7 +109,7 @@ class HelpOfferedState extends State<HelpOffered> {
                                 builder: (context) => const MainPage()),
                             (route) => false);
                       },
-                      child: Text(!appState.isEnglish ? 'Kyllä' : 'Yes')),
+                      child: Text(translations['yes'][appState.language])),
                 ],
               );
             });
@@ -125,10 +124,10 @@ class HelpOfferedState extends State<HelpOffered> {
           appBar: AppBar(
             title: Text(
               _accepted
-                  ? (!appState.isEnglish ? 'Avuntarjoamistila' : 'Helping mode')
-                  : (!appState.isEnglish
-                      ? 'Käyttäjä on pyytänyt apua $_distance päässä'
-                      : "A user has requested help at $_distance"),
+                  ? translations['helpMode'][appState.language]
+                  : translations['userReqDist1'][appState.language] +
+                      _distance +
+                      translations['userReqDist2'][appState.language],
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -204,6 +203,7 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Widget> decisionbuttons() {
+    var appState = Provider.of<AppState>(context);
     return <Widget>[
       ElevatedButton(
         onPressed: () {
@@ -213,10 +213,10 @@ class HelpOfferedState extends State<HelpOffered> {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         },
-        child: const Text(
-          'Hylkää',
+        child: Text(
+          translations['decline'][appState.language],
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.red,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -236,10 +236,10 @@ class HelpOfferedState extends State<HelpOffered> {
             _accepted = true;
           });
         },
-        child: const Text(
-          'Hyväksy',
+        child: Text(
+          translations['accept'][appState.language],
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.green,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -264,13 +264,11 @@ class HelpOfferedState extends State<HelpOffered> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text(!appState.isEnglish
-                      ? 'Haluatko lopettaa avuntarjoamisen?'
-                      : "Do you want to stop offering help?"),
+                  title: Text(translations['stopHelpQuery'][appState.language]),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(!appState.isEnglish ? 'En' : 'No'),
+                      child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                         onPressed: () {
@@ -280,7 +278,7 @@ class HelpOfferedState extends State<HelpOffered> {
                                   builder: (context) => const MainPage()),
                               (route) => false);
                         },
-                        child: Text(!appState.isEnglish ? 'Kyllä' : 'Yes')),
+                        child: Text(translations['yes'][appState.language])),
                   ],
                 );
               });
@@ -291,7 +289,7 @@ class HelpOfferedState extends State<HelpOffered> {
           }
         },
         child: Text(
-          !appState.isEnglish ? 'Lopeta avuntarjoaminen' : 'Stop offering help',
+          translations['stopHelp'][appState.language],
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: Colors.black,
@@ -311,12 +309,12 @@ class HelpOfferedState extends State<HelpOffered> {
   List<Marker> getMarkers(LatLng usersLatLng, LatLng toBeHelpedLatLng) {
     var appState = Provider.of<AppState>(context, listen: false);
     return [
-      getToBeHelpedMarker(usersLatLng, appState.isEnglish),
+      getToBeHelpedMarker(usersLatLng),
       Marker(
         width: 45.0,
         height: 20.0,
         point: toBeHelpedLatLng,
-        builder: (ctx) => Container(
+        builder: (BuildContext ctx) => Container(
           width: 1.0,
           height: 1.0,
           decoration: const BoxDecoration(
@@ -325,7 +323,8 @@ class HelpOfferedState extends State<HelpOffered> {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              !appState.isEnglish ? 'Avunpyytäjä' : 'Help seeker',
+              translations['helper']
+                  [Provider.of<AppState>(ctx, listen: false).language],
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 8.0,
@@ -337,12 +336,12 @@ class HelpOfferedState extends State<HelpOffered> {
     ];
   }
 
-  static Marker getToBeHelpedMarker(LatLng usersLatLng, bool isEnglish) {
+  static Marker getToBeHelpedMarker(LatLng usersLatLng) {
     return Marker(
       width: 50.0,
       height: 30.0,
       point: usersLatLng,
-      builder: (ctx) => Container(
+      builder: (BuildContext ctx) => Container(
         width: 1.0,
         height: 1.0,
         decoration:
@@ -350,7 +349,8 @@ class HelpOfferedState extends State<HelpOffered> {
         child: Align(
           alignment: Alignment.center,
           child: Text(
-            !isEnglish ? 'Olet\ntässä' : 'Your\nlocation',
+            translations['Userlocation']
+                [Provider.of<AppState>(ctx, listen: false).language],
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 8.0,

@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
+import 'package:dart_ipify/dart_ipify.dart';
 import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
@@ -22,11 +23,22 @@ import 'gps_handler.dart';
 
 class ServerComms {
   static late Timer _timer;
-  static String serverIP = '185.87.111.109';
   static Future<RawDatagramSocket> rDgS =
-      RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+      RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
 
   static bool _isOfferingHelp = false;
+  static String address = getAddress();
+
+  static getAddress() async {
+    //Get user ip address type
+    final address_type = InternetAddress(await Ipify.ipv64()).type;
+
+    var response =
+        await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
+
+    address = response[0].address;
+    return address;
+  }
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
   static void startSendingLocationMessages() {
@@ -110,7 +122,7 @@ class ServerComms {
         (RawDatagramSocket udpSocket) {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(data, InternetAddress(serverIP), 50943);
+          udpSocket.send(data, InternetAddress(address), 50943);
         },
       );
     } else {
@@ -135,6 +147,7 @@ class ServerComms {
 
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    getAddress(); // save the right server address to "address" variable
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
       String result;

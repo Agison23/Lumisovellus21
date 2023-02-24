@@ -108,17 +108,18 @@ def create_data_entry(connection, data):
 
 
 def create_help_entry(connection, help):
-    sql = ''' INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
-              VALUES (?,?,?,?)'''
-
     _, exists = check_if_entry_exists(
         connection, 'help', 'dev_id', 'dev_id', help[0], False)
-
-    if exists:
-        return
-
     cur = connection.cursor()
-    cur.execute(sql, help)
+
+    if not exists:
+        sql = '''INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
+              VALUES (?,?,?,?)'''
+        cur.execute(sql, help)
+    else:
+        sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=? WHERE dev_id=?"
+        cur.execute(sql, (help[1], help[2], help[3], help[0]))
+
     connection.commit()
     return
 

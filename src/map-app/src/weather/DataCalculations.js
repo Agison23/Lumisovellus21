@@ -350,6 +350,6 @@ export function getWinterWindStats(speeds, directions) {
 
 // Return verbal wind direction for degrees
 export function getWindDirection(degrees) {
-  const directions = ["pohjoinen", "koillinen", "itä", "kaakko", "etelä", "lounas", "länsi", "luode"];
+  const directions = ["Pohjoinen", "Koillinen", "Itä", "Kaakko", "Etelä", "Lounas", "Länsi", "Luode"];
   return directions[Math.round(degrees / 45) % 8];
 }

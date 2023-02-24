@@ -3,12 +3,14 @@ import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
+import '../translations/translations.dart';
 
 class HelpOver extends StatelessWidget {
   const HelpOver({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return SafeArea(
       child: Scaffold(
           body: Container(
@@ -21,9 +23,9 @@ class HelpOver extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text('Avuntarve ohi\nKiitos avusta!',
+              Text(translations['requestOver'][appState.language],
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     height: 3,

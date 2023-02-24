@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useEffect, useState, useContext} from "react";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,6 +7,10 @@ import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
+import GlobalContext from "../../context/GlobalContext.js";
+import translations from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
+
 
 const useStyles = makeStyles(() => ({
   userCard: {
@@ -23,7 +27,7 @@ const useStyles = makeStyles(() => ({
   smallHeaders: {
     fontFamily: "Donau",
     letterSpacing: 2,
-    textTransform: "uppercase",
+    //textTransform: "uppercase",
     fontWeight: 600,
     display: "block",
     fontSize: "medium",
@@ -47,7 +51,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-function getRelativeTimestamp(current, previous) {
+function getRelativeTimestamp(current, previous, language) {
   var msPerMinute = 60 * 1000;
   var msPerHour = msPerMinute * 60;
   var msPerDay = msPerHour * 24;
@@ -58,34 +62,34 @@ function getRelativeTimestamp(current, previous) {
 
   if (elapsed < msPerMinute) {
     if (Math.round(elapsed / 1000) == 1) {
-      return "1 sekunti sitten";
+      return `1  ${translations["secondAgo"][language]}`;
     }
-    return `${Math.round(elapsed / 1000)} sekuntia sitten`;
+    return `${Math.round(elapsed / 1000)} ${translations["secondsAgo"][language]}`;
   } else if (elapsed < msPerHour) {
     if (Math.round(elapsed / msPerMinute) == 1) {
-      return "1 minuutti sitten";
+      return `1  ${translations["minuteAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerMinute)} minuuttia sitten`;
+    return `${Math.round(elapsed / msPerMinute)} ${translations["minutesAgo"][language]}`;
   } else if (elapsed < msPerDay) {
     if (Math.round(elapsed / msPerHour) == 1) {
-      return "1 tunti sitten";
+      return `1  ${translations["hourAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerHour)} tuntia sitten`;
+    return `${Math.round(elapsed / msPerHour)} ${translations["hoursAgo"][language]}`;
   } else if (elapsed < msPerMonth) {
     if (Math.round(elapsed / msPerDay) == 1) {
-      return "1 päivä sitten";
+      return `1  ${translations["dayAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerDay)} päivää sitten`;
+    return `${Math.round(elapsed / msPerDay)} ${translations["daysAgo"][language]}`;
   } else if (elapsed < msPerYear) {
     if (Math.round(elapsed / msPerMonth) == 1) {
-      return "1 kuukausi sitten";
+      return `1  ${translations["monthAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerMonth)} kuukautta sitten`;
+    return `${Math.round(elapsed / msPerMonth)} ${translations["monthsAgo"][language]}`;
   } else {
     if (Math.round(elapsed / msPerYear) == 1) {
-      return "1 vuosi sitten";
+      return `1  ${translations["yearAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerYear)} vuotta sitten`;
+    return `${Math.round(elapsed / msPerYear)} ${translations["yearsAgo"][language]}`;
   }
 }
 
@@ -95,9 +99,10 @@ function ReviewManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [reviewData, setReviewData] = React.useState([]);
+  const [reviewData, setReviewData] = useState([]);
+  const { language } = useContext(GlobalContext);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchReviews();
     
     const interval = setInterval(() => {
@@ -115,12 +120,12 @@ function ReviewManage(props) {
     const reviews = await fetch("api/allReviews");
     const data = await reviews.json();
 
-    let currentTime = new Date();
+    
 
     await data.forEach(item => {
-
-      let latestUpdateTime = new Date(item.Aika);
-      item.TimeString = `${getRelativeTimestamp(currentTime, latestUpdateTime)}`;
+      item.CurrentTime = new Date();
+      item.LatestUpdateTime = new Date(item.Aika);
+      item.TranslationsKey = getTranslationKey(item.Lumi);
     });
     setReviewData(data);
   };
@@ -137,7 +142,7 @@ function ReviewManage(props) {
           {
             reviewData.length === 0
               ? 
-              <p style={{padding: "10px"}}>Ei käyttäjäarvioita</p>
+              <p style={{padding: "10px"}}>{translations["noUserReviews"][language]}</p>
               :
               reviewData.map((item, index) => {
                 return (
@@ -166,7 +171,7 @@ function ReviewManage(props) {
                             <Grid item container xs={6} sm={11} className={classes.snowInfo}>
                               <Grid item xs={12} sm={12}>
                                 <Typography className={classes.smallHeaders} variant="body1" component="p">
-                                  {item.Lumi}
+                                {translations[item.TranslationsKey][language]}
                                 </Typography>
                               </Grid>
                             </Grid>
@@ -178,7 +183,7 @@ function ReviewManage(props) {
                         }
 
 
-                        <Typography className={classes.timeStamp}>{item.TimeString}</Typography>
+                        <Typography className={classes.timeStamp}>{`${getRelativeTimestamp(item.CurrentTime, item.LatestUpdateTime, language)}`}</Typography>
 
 
                       </CardContent>

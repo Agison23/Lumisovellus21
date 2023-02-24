@@ -21,6 +21,9 @@ Changed layout design & added relative timestamp, skiability elements and sub sn
 18.10.2021
 Moved here from Info.js
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import * as React from "react";
@@ -37,6 +40,9 @@ import Link from "@material-ui/core/Link";
 import DisplaySnowType from "./DisplaySnowType";
 import { Box } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import GlobalContext from "../../context/GlobalContext";
+import translations from "../../translations";
+import getTranslationKey from  "../../gettranslationskey";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -166,7 +172,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function getRelativeTimestamp(current, previous) {
+function getRelativeTimestamp(current, previous, language) {
   var msPerMinute = 60 * 1000;
   var msPerHour = msPerMinute * 60;
   var msPerDay = msPerHour * 24;
@@ -177,36 +183,37 @@ function getRelativeTimestamp(current, previous) {
 
   if (elapsed < msPerMinute) {
     if (Math.round(elapsed / 1000) == 1) {
-      return "1 sekunti sitten";
+      return `1  ${translations["secondAgo"][language]}`;
     }
-    return `${Math.round(elapsed / 1000)} sekuntia sitten`;
+    return `${Math.round(elapsed / 1000)} ${translations["secondsAgo"][language]}`;
   } else if (elapsed < msPerHour) {
     if (Math.round(elapsed / msPerMinute) == 1) {
-      return "1 minuutti sitten";
+      return `1  ${translations["minuteAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerMinute)} minuuttia sitten`;
+    return `${Math.round(elapsed / msPerMinute)} ${translations["minutesAgo"][language]}`;
   } else if (elapsed < msPerDay) {
     if (Math.round(elapsed / msPerHour) == 1) {
-      return "1 tunti sitten";
+      return `1  ${translations["hourAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerHour)} tuntia sitten`;
+    return `${Math.round(elapsed / msPerHour)} ${translations["hoursAgo"][language]}`;
   } else if (elapsed < msPerMonth) {
     if (Math.round(elapsed / msPerDay) == 1) {
-      return "1 päivä sitten";
+      return `1  ${translations["dayAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerDay)} päivää sitten`;
+    return `${Math.round(elapsed / msPerDay)} ${translations["daysAgo"][language]}`;
   } else if (elapsed < msPerYear) {
     if (Math.round(elapsed / msPerMonth) == 1) {
-      return "1 kuukausi sitten";
+      return `1  ${translations["monthAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerMonth)} kuukautta sitten`;
+    return `${Math.round(elapsed / msPerMonth)} ${translations["monthsAgo"][language]}`;
   } else {
     if (Math.round(elapsed / msPerYear) == 1) {
-      return "1 vuosi sitten";
+      return `1  ${translations["yearAgo"][language]}`;
     }
-    return `noin ${Math.round(elapsed / msPerYear)} vuotta sitten`;
+    return `${Math.round(elapsed / msPerYear)} ${translations["yearsAgo"][language]}`;
   }
 }
+
 
 function SnowRecordView({
   segmentdata,
@@ -237,6 +244,8 @@ function SnowRecordView({
   const [guideTime, setGuideTime] = React.useState("");
   const [userTimes, setUserTimes] = React.useState([]);
 
+
+  const { language } = React.useContext(GlobalContext);
   //Calculate all timestamps only in the first render
   React.useEffect(() => {
     // Parsitaan päivämäärä ja aika päivityksestä, mikäli päivitys löytyy
@@ -249,9 +258,10 @@ function SnowRecordView({
       ) {
         // Datasta saadaan viimeisin päivitysaika
         let latestUpdateTime = new Date(segmentdata.update.Aika);
-        let guideUpdateTime = `Viimeksi päivitetty: ${getRelativeTimestamp(
+        let guideUpdateTime = `${translations["lastUpdated"][language]} ${getRelativeTimestamp(
           currentTime,
-          latestUpdateTime
+          latestUpdateTime,
+          language
         )}`;
         setGuideTime(guideUpdateTime);
       }
@@ -263,25 +273,28 @@ function SnowRecordView({
       if (segmentdata.update.A1_Aika !== null) {
         // Datasta saadaan viimeisin päivitysaika
         let latestUpdateTime = new Date(segmentdata.update.A1_Aika);
-        userTime1 = `Viimeksi päivitetty: ${getRelativeTimestamp(
+        userTime1 = `${translations["lastUpdated"][language]} ${getRelativeTimestamp(
           currentTime,
-          latestUpdateTime
+          latestUpdateTime,
+          language
         )}`;
       }
       if (segmentdata.update.A2_Aika !== null) {
         // Datasta saadaan viimeisin päivitysaika
         let latestUpdateTime = new Date(segmentdata.update.A2_Aika);
-        userTime2 = `Viimeksi päivitetty: ${getRelativeTimestamp(
+        userTime2 = `${translations["lastUpdated"][language]} ${getRelativeTimestamp(
           currentTime,
-          latestUpdateTime
+          latestUpdateTime,
+          language
         )}`;
       }
       if (segmentdata.update.A3_Aika !== null) {
         // Datasta saadaan viimeisin päivitysaika
         let latestUpdateTime = new Date(segmentdata.update.A3_Aika);
-        userTime3 = `Viimeksi päivitetty: ${getRelativeTimestamp(
+        userTime3 = `${translations["lastUpdated"][language]} ${getRelativeTimestamp(
           currentTime,
-          latestUpdateTime
+          latestUpdateTime,
+          language
         )}`;
       }
 
@@ -372,7 +385,7 @@ function SnowRecordView({
             color="error"
             display="inline"
           >
-            Tarkista lumivyörytilanne nettisivuiltamme:{" "}
+             {translations["checkAvalanceStatus"][language]}{" "}
           </Typography>
           <Link
             className={classes.normalText}
@@ -412,7 +425,7 @@ function SnowRecordView({
           >
             <DisplaySnowType
               Lumilaatu={21}
-              Nimi={"Kiviä"}
+              Nimi={translations["stones"][language]}
               Hiihdettavyys={null}
               Main={false}
               Guide={false}
@@ -427,7 +440,7 @@ function SnowRecordView({
           >
             <DisplaySnowType
               Lumilaatu={22}
-              Nimi={"Oksia"}
+              Nimi={translations["branches"][language]}
               Hiihdettavyys={null}
               Main={false}
               Guide={false}
@@ -438,14 +451,14 @@ function SnowRecordView({
           <Grid style={{ display: "flex", padding: isXS ? "0px 15px" : "0px" }}>
             <DisplaySnowType
               Lumilaatu={21}
-              Nimi={"Kiviä"}
+              Nimi={translations["stones"][language]}
               Hiihdettavyys={null}
               Main={false}
               Guide={false}
             />
             <DisplaySnowType
               Lumilaatu={22}
-              Nimi={"Oksia"}
+              Nimi={translations["branches"][language]}
               Hiihdettavyys={null}
               Main={false}
               Guide={false}
@@ -549,7 +562,7 @@ function SnowRecordView({
                 color: props.fromGuide ? "#FFF" : "#000",
               }}
             >
-              {props.fromGuide ? "Pallaksen Pöllöt" : "Vierailija"}
+              {props.fromGuide ? "Pallaksen Pöllöt" : translations["visitor"][language]}
             </Typography>
           </Grid>
         )}
@@ -630,7 +643,7 @@ function SnowRecordView({
                     variant="body1"
                     component="p"
                   >
-                    Metsäalue
+                    {translations["forestArea"][language]}
                   </Typography>
                 </Grid>
               </Grid>
@@ -651,7 +664,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Lumilaatu_ID1}
-                      Nimi={segmentdata.update.Lumi1.Nimi}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi1.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi1.Hiihdettavyys}
                       Main={true}
                       Guide={true}
@@ -663,7 +676,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Lumilaatu_ID2}
-                      Nimi={segmentdata.update.Lumi2.Nimi}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi2.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi2.Hiihdettavyys}
                       Main={true}
                       Guide={true}
@@ -675,7 +688,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Toissijainen_ID1}
-                      Nimi={segmentdata.update.Lumi3.Nimi}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi3.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi3.Hiihdettavyys}
                       Main={false}
                       Guide={true}
@@ -686,7 +699,7 @@ function SnowRecordView({
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
                       Lumilaatu={segmentdata.update.Toissijainen_ID2}
-                      Nimi={segmentdata.update.Lumi4.Nimi}
+                      Nimi={translations[getTranslationKey(segmentdata.update.Lumi4.Nimi)][language]}
                       Hiihdettavyys={segmentdata.update.Lumi4.Hiihdettavyys}
                       Main={false}
                       Guide={true}
@@ -698,13 +711,12 @@ function SnowRecordView({
             {!ifGuideInfoExists() && (
               <>
                 <Typography className={classes.smallText}>
-                  Alueella ei ole Pallaksen Pöllöjen vahvistamaa tietoa. Alla
-                  oleva tieto pohjautuu tunturissa vierailleen päivitykseen.
+                {translations["noInformatinByPollot"][language]}
                 </Typography>
                 <Grid item xs={12} sm={6}>
                   <DisplaySnowType
                     Lumilaatu={segmentdata.update.Lumi5.ID}
-                    Nimi={segmentdata.update.Lumi5.Nimi}
+                    Nimi={translations[getTranslationKey(segmentdata.update.Lumi5.Nimi)][language]}
                     Hiihdettavyys={segmentdata.update.Lumi5.Hiihdettavyys}
                     Main={true}
                     Guide={false}
@@ -767,7 +779,7 @@ function SnowRecordView({
                             className={classes.mediumText}
                             style={{ marginRight: "5px", color: "#FFF" }}
                           >
-                            Käyttäjäarviot
+                            {translations["userReviews"][language]}
                           </Typography>
                           <Typography
                             className={
@@ -783,8 +795,7 @@ function SnowRecordView({
 
                       <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <Typography className={classes.smallText}>
-                          Alla oleva tieto pohjautuu tunturissa vierailleen
-                          päivitykseen.
+                        {translations["infoIsBasedOnUsers"][language]}
                         </Typography>
 
                         {segmentdata.update.Lumi5 !== undefined && (
@@ -798,7 +809,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi5.ID}
-                                Nimi={segmentdata.update.Lumi5.Nimi}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi5.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi5.Hiihdettavyys
                                 }
@@ -833,7 +844,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi6.ID}
-                                Nimi={segmentdata.update.Lumi6.Nimi}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi6.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi6.Hiihdettavyys
                                 }
@@ -869,7 +880,7 @@ function SnowRecordView({
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
                                 Lumilaatu={segmentdata.update.Lumi7.ID}
-                                Nimi={segmentdata.update.Lumi7.Nimi}
+                                Nimi={translations[getTranslationKey(segmentdata.update.Lumi7.Nimi)][language]}
                                 Hiihdettavyys={
                                   segmentdata.update.Lumi7.Hiihdettavyys
                                 }
@@ -912,7 +923,7 @@ function SnowRecordView({
                       className={classes.mediumText}
                       style={{ padding: "0px 0px 10px 5px" }}
                     >
-                      Liikuitko alueella?
+                      {translations["didYouMoveInArea"][language]}
                     </Typography>
                   </Grid>
 
@@ -928,7 +939,7 @@ function SnowRecordView({
                         style={{ backgroundColor: "#374B6A" }}
                         onClick={openForm}
                       >
-                        Kyllä, lisää arvio lumitilanteesta.
+                        {translations["addEstimationOfSnowConditions"][language]}
                       </Button>
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -938,7 +949,7 @@ function SnowRecordView({
                         style={{ backgroundColor: "#4C4C4C" }}
                         onClick={openFeedback}
                       >
-                        Lisää muu havainto.
+                        {translations["addAnotherObservation"][language]}
                       </Button>
                     </Grid>
                   </Grid>
@@ -952,7 +963,7 @@ function SnowRecordView({
               className={classes.timeStamp}
               style={{ marginBottom: "10px" }}
             >
-              Ei havaintoja alueelta.
+             {translations["noObservationsInTheArea"][language]}
             </Typography>
 
             {!signedUser && (
@@ -962,7 +973,7 @@ function SnowRecordView({
                     className={classes.mediumText}
                     style={{ padding: "0px 0px 10px 5px" }}
                   >
-                    Liikuitko alueella?
+                    {translations["didYouMoveInArea"][language]}
                   </Typography>
                 </Grid>
 
@@ -978,7 +989,7 @@ function SnowRecordView({
                       style={{ backgroundColor: "#374B6A" }}
                       onClick={openForm}
                     >
-                      Kyllä, lisää arvio lumitilanteesta.
+                      {translations["addEstimationOfSnowConditions"][language]}
                     </Button>
                   </Grid>
                   <Grid item xs={12} sm={5}>
@@ -988,7 +999,7 @@ function SnowRecordView({
                       style={{ backgroundColor: "#4C4C4C" }}
                       onClick={openFeedback}
                     >
-                      Lisää muu havainto.
+                      {translations["addAnotherObservation"][language]}
                     </Button>
                   </Grid>
                 </Grid>

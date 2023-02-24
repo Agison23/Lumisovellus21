@@ -23,9 +23,12 @@ Segmentin poisto toimivaksi, lisätty varmistusdialogi poistamiseen
 Pohja, segmenttien listaus, segmentin poisto
 Segmentin muokkaus ja niiden lisääminen puuttuu vielä
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
-import * as React from "react";
+import React, {useState ,useContext} from "react";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
@@ -35,6 +38,8 @@ import Button from "@material-ui/core/Button";
 import UserManage from "../users/UserManage";
 import ReviewManage from "./reviewManage";
 import SegmentManage from "../segments/SegmentManage";
+import GlobalContext from "../../context/GlobalContext.js";
+import translations from "../../translations";
 
 const useStyles = makeStyles(() => ({
   tabs: {
@@ -49,9 +54,10 @@ function Manage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [showSegments, setShowSegments] = React.useState(true);
-  const [showUsers, setShowUsers] = React.useState(false);
-  const [showReviews, setShowReviews] = React.useState(false);
+  const [showSegments, setShowSegments] = useState(true);
+  const [showUsers, setShowUsers] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
+  const { language } = useContext(GlobalContext);
 
   const segmentDisabled = Boolean(showSegments);
   const usersDisabled = Boolean(showUsers);
@@ -92,21 +98,21 @@ function Manage(props) {
           disabled={segmentDisabled}
           onClick={openSegment}
         >
-          Segmentit
+          {translations["segments"][language]}
         </Button>
         <Button
           className={classes.tabLinks}
           disabled={usersDisabled}
           onClick={openUser}
         >
-          Käyttäjät
+          {translations["users"][language]}
         </Button>
         <Button
           className={classes.tabLinks}
           disabled={reviewsDisabled}
           onClick={openReview}
         >
-          Palautteet
+          {translations["feedbacks"][language]}
         </Button>
       </Box>
       <Divider />

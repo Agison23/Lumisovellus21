@@ -1,4 +1,136 @@
-const translations = {
+ /**
+This file contains datastructure that 
+allows application to be in manylanguages 
+**/
+ 
+ 
+ const translations = {
+
+    newSnow:{
+        fi: "Uusi lumi",
+        en: "New snow"
+    },
+
+
+    freshWetSnow:{
+        fi: "Märkä uusi lumi",
+        en: "Fresh wet snow"
+    },
+
+
+    powderSnow:{
+        fi: "Puuterilumi",
+        en: "Powder snow"
+    },
+
+    freshSnow:{
+        fi: "Vitilumi",
+        en: "Fresh snow"
+    },
+
+    crust:{
+        fi: "Korppu",
+        en: "Crust"
+    },
+
+    supportingCrust:{
+        fi: "Kantava korppu",
+        en: "Supporting crust"
+    },
+
+    thinCrust:{
+        fi: "Ohut korppu",
+        en: "Thin crust"
+    },
+
+    breakableCrust:{
+        fi: "Rikkoutuva korppu",
+        en: "Breakable crust"
+    },
+
+    windsweptSnow:{
+        fi: "Tuulen pieksemä lumi",
+        en: "Windswept snow"
+    },
+
+    wavySnow:{
+        fi: "Aaltoileva lumi",
+        en: "Wavy snow"
+    },
+
+    sastrug:{
+        fi: "Sastrugi",
+        en: "Sastrug"
+    },
+
+    blizzardSnow:{
+        fi: "Tuiskulumi",
+        en: "Blizzard snow"
+    },
+
+
+    ice:{
+        fi: "Jää",
+        en: "Ice"
+    },
+
+
+    breakableIce:{
+        fi: "Rikkoutuva jää",
+        en: "Brekable ice"
+    },
+
+
+    slushySnow:{
+        fi: "Sohjo",
+        en: "Slushy snow"
+    }, 
+
+    wettingSnow:{
+        fi: "Kastuva lumi",
+        en: "Wetting snow"
+    }, 
+
+    saturatedSnow:{
+        fi: "Saturoitunut lumi",
+        en: "Saturated snow"
+    }, 
+
+    minimalSnow:{
+        fi: "Vähäinen lumi",
+        en: "Minimal snow"
+    },
+
+    snowLessLand:{
+        fi: "Lumeton maa",
+        en: "Snowless land"
+    },
+
+    branches:{
+        fi: "Oksia",
+        en: "Branches"
+    },
+
+    
+    stones:{
+      fi: "Kiviä",
+      en: "Stones"
+    },
+
+    snowTypeError:{
+        fi: "Lumityyppivirhe",
+        en: "Snowtype error"
+      },
+
+      showOnly:{
+        fi: "Näytä ainoastaan...",
+        en: "Show only..."
+      },
+
+      skiingAreasOnly:{
+        fi: "Vain laskualueet",
+        en: "Skiing areas only"
+    },
 
   weather:{
       fi: "Sää",
@@ -16,7 +148,7 @@ const translations = {
   },
 
   wintersWeatherObservaions:{
-      fi: "Talven sää havainnot",
+      fi: "Talven säähavainnot",
       en: "Winter's weather observations"
   },
 
@@ -60,10 +192,6 @@ const translations = {
       en: "Manage"
   },
 
-  users:{
-      fi: "Käyttäjät",
-      en: "Users"
-  },
 
   addUser:{
       fi: "Lisää käyttäjä",
@@ -73,41 +201,6 @@ const translations = {
   userManagementRequiresAdminPermission:{
       fi: "Kayttäjänhallinta vaatii admin oikeudet",
       en: "User management requires admin permission"
-  },
-
-  infoTextAboutPollot:{
-      fi: "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista." + 
-      "Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin," + 
-      "joiden sisällä lumi on tyypillisesti hyvin samanlaista." +
-      
-      "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti." + 
-      "Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa" +
-      "segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa" + 
-      "havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta." +
-      
-      "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja" + 
-      "koko kaudelta löydät sääpainikkeen takaa." +
-      
-      "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme," +
-      "tunturista ja sen kauneudesta.",
-      en: "The snow app produced by Pallaksen Pöllöt provides information about the" +
-      "snow conditions prevailing in the area. The application is in active use" +
-      "from February to May. The fell area is divided into segments, within which" + 
-      "the snow is typically very similar." +
-      
-      "The information in the application is the subjective observations of the" + 
-      "guides and the circumstances can change rapidly. When utilising snow data," + 
-      "it is worth noting the timestamp of the observation, as well as what additional" + 
-      "information has been given about the segment and what the weather data about" +
-      "the area tells us. In the fells, the traveller is responsible for themselves," +
-      "and the application does not in any way reduce the user's own responsibility." +
-      
-      "More detailed snow information for each segment can be opened by clicking on it." + 
-      "Information about the weather for the past few days and the whole season can be " +
-      "found behind the weather button." +  
-      
-      "Remember to share your location with someone, with for example Whatsapp. Let's take" + 
-      "care of ourselves, the fell and its beauty."
   },
 
   freshlyRainedSnow:{
@@ -130,12 +223,6 @@ const translations = {
       en: "Wet"
   },
 
-  crust:{
-      fi: "Korppu",
-      en: "Crust"
-  },
-
-
   minor:{
       fi: "Vähäistä",
       en: "Minor"
@@ -154,11 +241,6 @@ const translations = {
   additionalMentions:{
       fi: "Voit vielä lisätä, jos alueella oli: ",
       en: "You can also mention if the area had:"
-  },
-
-  branches:{
-      fi: "Oksia",
-      en: "Branches"
   },
 
   return:{
@@ -186,11 +268,6 @@ const translations = {
       en: "Close"
   },
 
-  stones:{
-      fi: "Kiviä",
-      en: "Stones"
-  },
-
   getToKnowSnowConditions:{
       fi: "TUTUSTU LUMITILANTEESEEN",
       en: "GET TO KNOW THE SNOW CONDITIONS"
@@ -201,12 +278,7 @@ const translations = {
       en: "User management requires admin rights"
   },
 
-  confirmNewPassword:{
-      fi: "Vahvista salasana",
-      en: "Confirm new password"
-  },
-
-  passwordsDonNotMatch:{
+  passwordsDoNotMatch:{
       fi: "Salasana ja vahvistus eivät täsmää",
       en: "passwords don't match"
   },
@@ -246,7 +318,7 @@ const translations = {
       en: "Edit user"
   },
 
-  deletesAndDataRelated:{
+  deleteUserAndDataRelated:{
       fi: "Poistetaan käyttäjä ja kaikki käyttäjään liittyvät tiedot. Poista?",
       en: "Deletes the user and all data related to the user. Delete?"
   },
@@ -282,34 +354,14 @@ const translations = {
       en: "Snow types"
   },
 
-  newSnow:{
-      fi: "Uusi lumi",
-      en: "New snow"
-  },
-
   newSnowDescription:{
       fi: "Vastasatanut pehmeä lumi.",
       en: "Freshly rained soft snow."
   },
 
-  freshWetSnow:{
-      fi: "Märkä uusi lumi",
-      en: "Fresh wet snow"
-  },
-
-  freshWetSnowDescriptoion:{
-      fi: "Lunta, josta voit helposti tehdä lumipallon. ",
-      en: "Snow, from which you can easily make a snowball."
-  },
-
-  wetSnowDescription:{
-      fi: "Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
-      en: "Wet snow forms when it rains close to or above zero degrees."
-  },
-
-  powderSnow:{
-      fi: "Puuterilumi",
-      en: "Powder snow"
+  freshWetSnowDescription:{
+      fi: "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
+      en: "Snow, from which you can easily make a snowball. Wet snow forms when it rains close to or above zero degrees."
   },
 
   powderSnowDescription:{
@@ -317,19 +369,9 @@ const translations = {
       en: "Fresh, loose ja extreamly light snow. Powder is usually formed in calm and freezing weather."
   },
 
-  freshSnow:{
-      fi: "Vitilumi",
-      en: "Fresh snow"
-  },
-
   freshSnowDescription:{
       fi: "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.",
       en: "Fresh, light, soft and slightly packed snow."
-  },
-
-  crust:{
-      fi: "Korppu",
-      en: "Crust"
   },
 
   crustDescription:{
@@ -337,19 +379,9 @@ const translations = {
       en: "A hard crust on the surface of the snow. The crust can be flat or jagged."
   },
 
-  supportingCrust:{
-      fi: "Kantava korppu",
-      en: "Supporting crust"
-  },
-
-  supporttingCrustDescription:{
+  supportingCrustDescription:{
       fi: "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.",
       en: "Solid and supporting snow crust, which is usually extreamly hard and compact."
-  },
-
-  thinCrust:{
-      fi: "Ohut korppu",
-      en: "Thin crust"
   },
 
   thinCrustDescription:{
@@ -357,19 +389,9 @@ const translations = {
       en: "A crust that would break from the weight of a Skier. Under the crust, the snow can be submersive."
   },
 
-  breakableCrust:{
-      fi: "Rikkoutuva korpput",
-      en: "Breakable crust"
-  },
-
   breakableCrustDescription:{
       fi: "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.",
       en: "Partly supportive, occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath."
-  },
-
-  windsweptSnow:{
-      fi: "Tuulen pieksemä lumi",
-      en: "Windswept snow"
   },
 
   windsweptSnowDescription:{
@@ -377,19 +399,9 @@ const translations = {
       en: "Snow hardened by the wind and uneven in many places."
   },
 
-  wavySnow:{
-      fi: "Aaltoileva lumi",
-      en: "Wavy snow"
-  },
-
-  wavySnowDescrioption:{
+  wavySnowDescription:{
       fi: "Tuulen muotoilema uuden lumen alue.  Aallot ovat pehmeitä ja hyvin rikottavissa.",
       en: "An area of new snow shaped by the wind. waves are soft and easy to break."
-  },
-
-  sastrug:{
-      fi: "Sastrugi",
-      en: "Sastrug"
   },
 
   sastrugDescription:{
@@ -397,24 +409,9 @@ const translations = {
       en: "Wind-induced wavy snow, which is hard, icy and has sharp ridges."
   },
 
-  blizzardSnow:{
-      fi: "Tuiskulumi",
-      en: "Blizzard snow"
-  },
-
   blizzardSnowDescription:{
       fi: "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.",
       en: "Flat, wind-layered and compressed tile or lens. Blizzard snow can also accumulate without snowfall if wind moves snow from one place to another. Blizzard snow is usually formed on the side of the fell protected from wind."
-  },
-
-  changeTerrainBase:{
-      fi: "Muuta maastopohjaa",
-      en: "Change terrain base"
-  },
-
-  ice:{
-      fi: "Jää",
-      en: "Ice"
   },
 
   iceDescription:{
@@ -422,19 +419,9 @@ const translations = {
       en: "A hard and unbreakable icy layer on the surface of the snow. Ice forms as a result of the snow melts and freezes again."
   },
 
-  brekableIce:{
-      fi: "Rikkoutuva jää",
-      en: "Brekable ice"
-  },
-
   breakableIceDescription:{
       fi: "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.",
       en: "A hard and breakable icy layer on the surface of the snow."
-  },
-
-  slushySnow:{
-      fi: "Sohjo",
-      en: "Slushy snow"
   },
 
   slushySnowDescription:{
@@ -442,19 +429,9 @@ const translations = {
       en: "Wet and partially melted snow in above zero degrees weather."
   },
 
-  wettingSnow:{
-      fi: "Kastuva lumi",
-      en: "Wetting snow"
-  },
-
   wettingSnowDescription:{
       fi: "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.",
       en: "Wet or moist snow resulting from warm weather or rainfall."
-  },
-
-  saturatedSnow:{
-      fi: "Saturoitunut lumi",
-      en: "Saturated snow"
   },
 
   saturatedSnowDescription:{
@@ -462,16 +439,10 @@ const translations = {
       en: "Completely wet , slushing and whipped cream like snow."
   },
 
-  mimimalSnow:{
-      fi: "Vähäinen lumi",
-      en: "Minimal snow"
+  minimalSnowDescription:{
+    fi: "",
+    en: ""
   },
-
-  skiingAreasOnly:{
-      fi: "Vain laskualueet",
-      en: "Skiing areas only"
-  },
-
 
   saveChanges:{
       fi: "Tallenna muutokset",
@@ -498,7 +469,7 @@ const translations = {
       en: "Change terrain base"
   },
 
-  unTouchedSections:{
+  untouchedSections:{
       fi: "Jätä muuttamattomaksi kohdat, joita et aio muokata",
       en: "Leave untouched the sections you are not going to edit"
   },
@@ -518,10 +489,6 @@ const translations = {
       en: "No user reviews"
   },
 
-  deleteSegment:{
-      fi: "Poista segmentti?",
-      en: "Delete segment?"
-  },
   
   checkAvalanceStatus:{
       fi: "Tarkista lumivyörytilanne nettisivuiltamme:",
@@ -553,10 +520,6 @@ const translations = {
       en: "Yes, add an estimation of the snow conditions."
   },
 
-  forestArea:{
-      fi: "Metsäalue",
-      en: "Forest area"
-  },
 
   addAnotherObservation:{
       fi: "Lisää muu havainto.",
@@ -590,7 +553,7 @@ const translations = {
 
   confirmNewPassword:{
       fi: "Vahvista uusi salasana",
-      en: "Save changes"
+      en: "confirm new password"
   },
 
   description:{
@@ -639,7 +602,7 @@ const translations = {
   },
 
   treeCordinatePointsRequired:{
-      fi: "Ainakin kolme koordinaattipistettä vaaditaan.",
+      fi: "Ainakin kolme (3) koordinaattipistettä vaaditaan.",
       en: "At least (3) coordinate points are required."
   },
 
@@ -661,6 +624,393 @@ const translations = {
   login:{
       fi: "Kirjaudu sisään",
       en: "Log in"
+  },
+
+  log:{
+    fi: "Kirjaudu",
+    en: "Log"
+  },
+
+  allTextFieldsAreRequired:{
+    fi: "Kaikki tekstikentät ovat pakollisia",
+    en: "All text fields are required"
+  },
+
+  userReviews:{
+    fi: "käyttäjäarviot",
+    en: "user reviews"
+  },
+
+  noObservationsInTheArea:{
+    fi: "Ei havaintoja alueelta.",
+    en: "No observations in the area."
+  },
+
+  skiability:{
+    fi: "Hiihdettävyys",
+    en: "Skiability"
+  },
+
+  snowWas:{
+    fi: "Kertoisitko, oliko lumi",
+    en: "Would you tell, if snow was"
+  },
+
+  editYourData:{
+    fi: "Muokkaa tietojasi",
+    en: "Edit your data"
+  },
+
+  dataNow:{
+    fi: "Tiedot nyt:",
+    en: "Data now:"
+  },
+
+  temperature:{
+    fi: "Lämpötila",
+    en: "Temperature"
+  },
+
+  depthOfSnow:{
+    fi: "Lumen syvyys",
+    en: "Depth Of snow"
+  },
+
+  wind:{
+    fi: "Tuuli",
+    en: "Wind"
+  },
+
+  airPressure:{
+    fi: "Ilmanpaine",
+    en: "Air pressure"
+  },
+
+  increaseInSnowDepth:{
+    fi: "Lumensyvyyden kasvu",
+    en: "Increase in snow depth"
+  },
+
+  temperatureDuringThreeDays:{
+    fi: "Lämpötila 3 vuorokauden aikana",
+    en: "Temperature during three days"
+  },
+
+  windDuringThreeDays:{
+    fi: "Tuuli 3 vuorokauden aikana",
+    en: "Wind during three days"
+  },
+
+  strongWind:{
+    fi: "Tuuli (yli 10 m/s)",
+    en: "Wind (over 10 m/s)"
+  },
+
+  availabilityOfWintersWeatherObservations:{
+    fi: "Talven säähavainnot ovat saatavilla talviaikana (2.12.-31.5.)",
+    en: "Winter's weather observations are available during wintertime (2.12.-31.5.)"
+  },
+
+  changes:{
+    fi: "Muutokset",
+    en: "Changes"
+  },
+
+  bigDefinitions:{
+    fi: "SELITTEET",
+    en: "DEFINITIONS"
+  },
+
+  avalancheWarning:{
+    fi: "Lumivyöryvaroitus",
+    en: "Avalanche warning"
+  },
+
+  avalancheProneArea:{
+    fi: "Lumivyöryherkkä alue",
+    en: "Avalanche-prone area"
+  },
+
+  firstName:{
+    fi: "Etunimi",
+    en: "First name"
+  },
+
+  lastName:{
+    fi: "Sukunimi",
+    en: "Lastst name"
+  },
+
+  write:{
+    fi: "kirjoita...",
+    en: "write..."
+  },
+
+  subsegmentOf:{
+    fi: "segmentin ",
+    en: "Subsegment Of "
+  },
+
+  subsegmentOfEnd:{
+    fi: " alasegmentti",
+    en: ""
+  },
+
+  secondAgo:{
+    fi: "sekuntti sitten",
+    en: "second ago"
+  },
+
+  secondsAgo:{
+    fi: "sekuntia sitten",
+    en: "seconds ago"
+  },
+
+  minuteAgo:{
+    fi: "minuutti sitten",
+    en: "minute ago"
+  },
+
+  minutesAgo:{
+    fi: "minuuttia sitten",
+    en: "minutes ago"
+  },
+
+  hourAgo:{
+    fi: "tunti sitten",
+    en: "hour ago"
+  },
+
+  hoursAgo:{
+    fi: "tuntia sitten",
+    en: "hours ago"
+  },
+
+  dayAgo:{
+    fi: "päivä sitten",
+    en: "day ago"
+  },
+
+  daysAgo:{
+    fi: "noin päivää sitten",
+    en: "about days ago"
+  },
+
+  monthAgo:{
+    fi: "kuukausi sitten",
+    en: "month ago"
+  },
+
+  monthsAgo:{
+    fi: "noin kuukautta sitten",
+    en: "about months ago"
+  },
+
+  yearAgo:{
+    fi: "vuosi sitten",
+    en: "year ago"
+  },
+
+  yearsAgo:{
+    fi: "noin vuotta sitten",
+    en: "about years ago"
+  },
+
+  visitor:{
+    fi: "Vierailija",
+    en: "Visitor"
+  },
+
+  lastUpdated:{
+    fi: "Viimeksi päivitetty:",
+    en: "Last updated:"
+  },
+
+  highest:{
+    fi: "korkein",
+    en: "Highest"
+  },
+
+  lowest:{
+    fi: "Matalin",
+    en: "Lowest"
+  },
+
+  duringSevenDays:{
+    fi: "7 vuorokauden aikana",
+    en: "During seven days"
+  },
+
+  amountOfPlusDays:{
+    fi: "Suojapäivien määrä",
+    en: "amount of + days"
+  },
+
+  plusDays:{
+    fi: "Suojapäivät",
+    en: "+ Days"
+  },
+
+  AverSpeed:{
+    fi: "kesk. nopeus",
+    en: "Aver. speed"
+  },
+
+  AverDirection:{
+    fi: "kesk. suunta",
+    en: "Aver. direction"
+  },
+
+  strongestWind:{
+    fi: "kovin tuuli",
+    en: "Strongest wind"
+  },
+
+  median:{
+    fi: "Mediaani",
+    en: "Median"
+  },
+
+  amountOfDays:{
+    fi: "päivien lkm",
+    en: "Amount of days"
+  },
+
+  erroneousEmailOrPassword:{
+    fi: "Virheellinen sähköposti tai salasana!",
+    en: "Erroneous email or password!"
+  },
+
+  adminUser:{
+    fi: "Admin-käyttäjä",
+    en: "Admin-user"
+  },
+
+  role:{
+    fi: "Rooli ",
+    en: "Role "
+  },
+
+  noDefinedRole:{
+    fi: "Ei määriteltyä roolia",
+    en: "No defined role"
+  },
+
+  forest:{
+    fi: "Metsä",
+    en: "Forest"
+  },
+
+  borealForest:{
+    fi: "Tuulikangas",
+    en: "Boreal forest"
+  },
+
+  borealForestAndBrush:{
+    fi: "Tuulikangas ja varvikko",
+    en: "Boreal forest and brush"
+  },
+
+  borealForestAndRiver:{
+    fi: "Tuulikangas, keskellä rehevä katajainen joenuoma",
+    en: "Boreal forest and river"
+  },
+
+  torAndJuniper:{
+    fi: "Rakka, puurajassa varvikko",
+    en: "Tor, juniter by the treeline"
+  },
+
+  borealForestAndJuniper:{
+    fi: "Tuulikangas alaosassa puronvarsilla katajikko",
+    en: "Boreal forest, juniper by the creek"
+  },
+
+  rockyGround:{
+    fi: "Raakakivikko",
+    en: "rocky ground"
+  },
+
+  rockyGroundAndBorealForest:{
+    fi: "Raakakivikko ja tuulikangas",
+    en: "Rocky ground and boreal forest"
+  },
+
+  constant:{
+    fi: "Vakio",
+    en: "Constant"
+  },
+
+  torWetland:{
+    fi: "Kivirakka, alhaalla kosteikkoa",
+    en: "tor, wetland at the bottom"
+  },
+
+  updateDateOfReviewOnly:{
+    fi: "Päivitä vain aikaleima",
+    en: "Update date of review only"
+  },
+
+  search:{
+    fi: "Etsi",
+    en: "Search"
+  },
+
+  noResults:{
+    fi: "Ei tuloksia",
+    en: "No results"
+  },
+
+  getToKnowTheSnowSituation:{
+    fi: "TUTUSTU LUMITILANTEESEEN",
+    en: "GET TO KNOW THE SNOW SITUATION"
+  },
+
+  pcs:{
+    fi: "kpl",
+    en: "pcs"
+  },
+
+  north:{
+    fi: "Pohjoinen",
+    en: "North"
+  },
+
+  south:{
+    fi: "Etelä",
+    en: "South"
+  },
+
+  east:{
+    fi: "Itä",
+    en: "East"
+  },
+
+  west:{
+    fi: "Länsi",
+    en: "West"
+  },
+
+  northeast:{
+    fi: "Koillinen",
+    en: "Northeast"
+  },
+
+  southeast:{
+    fi: "Kaakko",
+    en: "Southeast"
+  },
+
+  southwest:{
+    fi: "Lounas",
+    en: "Southwest"
+  },
+
+  northwest:{
+    fi: "Luode",
+    en: "Northwest"
   }
 
-}
+};
+
+export default translations;

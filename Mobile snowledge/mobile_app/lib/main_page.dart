@@ -9,6 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
 import 'notification_handler.dart';
+import '../translations/translations.dart';
 import 'package:logging/logging.dart';
 
 class MainPage extends StatefulWidget {
@@ -57,15 +58,15 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Haluatko poistua sovelluksesta?'),
+                  title: Text(translations['quitApp'][appState.language]),
                   actions: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('En'),
+                      child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Kyllä'),
+                      child: Text(translations['yes'][appState.language]),
                     ),
                   ],
                 );
