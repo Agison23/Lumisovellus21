@@ -47,7 +47,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);
-    var languageToChangeTo = appState.isEnglish ? "en" : "fi";
+    var languageToChangeTo = appState.language;
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
