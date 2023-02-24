@@ -7,6 +7,7 @@ export function GlobalProvider({ children }) {
 
   function changeToLanguage(languageToChangeTo) {
     setLanguage(languageToChangeTo);
+    console.log(`Changed language to ${languageToChangeTo} in global state!`);
   }
 
   return (

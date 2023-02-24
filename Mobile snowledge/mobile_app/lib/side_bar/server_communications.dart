@@ -150,15 +150,11 @@ class ServerComms {
     getAddress(); // save the right server address to "address" variable
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
-      // print("socket: $udpSocket");
       String result;
       udpSocket.listen((event) async {
-        // await NotificationHandler.pushUpNotification("65.010954,25.466237", "5km"); //TODO REMOVE
-        // print("recv e: $event");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
-          // print("result: $result");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
@@ -187,11 +183,8 @@ class ServerComms {
               print(
                   "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
               //HELP_TARGET_UPDATE:ID:GPS
-              // print(
-              //     "\'case \"HELP_TARGET_UPDATE\":\' - GPS: ${resultParts[2]}");
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
-              // print("resultParts[1] ${resultParts[1]}     devId ${devId}");
               if (resultParts[1] == devId) {
                 HelpOfferedState.setToBeHelpedLatLng(
                     LatLng(double.parse(res2[0]), double.parse(res2[1])));
@@ -213,7 +206,6 @@ class ServerComms {
               break;
 
             case "NO_USERS_NEARBY":
-              // print('Working');
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":

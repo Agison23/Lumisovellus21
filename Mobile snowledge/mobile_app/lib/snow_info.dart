@@ -29,6 +29,8 @@ class _SnowInfoState extends State<SnowInfo> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final Completer<WebViewController> _controller =
+        Completer<WebViewController>();
     var appState = Provider.of<AppState>(context);
     return WillPopScope(
       onWillPop: () async {
@@ -65,10 +67,15 @@ class _SnowInfoState extends State<SnowInfo> {
           key: _globalKey,
           body: Stack(
             children: [
-              const WebView(
+              WebView(
                 initialUrl: 'https://lumisovellus.fi/selitteet',
-                // initialUrl: 'http://localhost:3000/selitteet',
+
+                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
+                // initialUrl: 'http://10.0.2.2:3000/selitteet',
                 javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
               ),
               // Stacking the bottom bar on top of the webview
               // Remove comments when changes has made to lumisovellus
@@ -110,7 +117,9 @@ class _SnowInfoState extends State<SnowInfo> {
               ),
             ],
           ),
-          drawer: const MyNavigationDrawer(),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
         ),
       ),
     );

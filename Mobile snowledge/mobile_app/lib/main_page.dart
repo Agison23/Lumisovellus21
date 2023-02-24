@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
-import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -45,10 +44,10 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    ServerComms.startListeningServer(context);
-    var appState = Provider.of<AppState>(context);
-    int num = appState.numOfHelpRequests;
-    print("This is the current number of help requests: $num");
+    final Completer<WebViewController> _controller =
+        Completer<WebViewController>();
+    var appState = Provider.of<AppState>(context, listen: false);
+    var languageToChangeTo = appState.language;
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -84,9 +83,25 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
           key: _globalKey,
           body: Stack(
             children: [
-              const WebView(
-                initialUrl: 'https://lumisovellus.fi/mobiili',
-                // initialUrl: 'http://localhost:3000/mobiili',
+              WebView(
+                // initialUrl: 'https://lumisovellus.fi/mobiili',
+
+                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
+                initialUrl: 'http://10.0.2.2:3000/mobiili',
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
+                // We need this because we can only change the global React state after the page has been loaded
+                onPageFinished: (String url) {
+                  if (url == 'http://10.0.2.2:3000/mobiili') {
+                    // if (url == 'https://lumisovellus.fi/mobiili') {
+                    _controller.future.then((controller) {
+                      controller.runJavascript("""
+          window.changeLanguageTo("$languageToChangeTo");
+        """);
+                    });
+                  }
+                },
                 javascriptMode: JavascriptMode.unrestricted,
               ),
               // Stacking the bottom bar on top of the webview
@@ -128,7 +143,9 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
               ),
             ],
           ),
-          drawer: const MyNavigationDrawer(),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
         ),
       ),
     );

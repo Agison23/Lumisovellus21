@@ -28,6 +28,8 @@ class _AppInfoState extends State<AppInfo> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final Completer<WebViewController> _controller =
+        Completer<WebViewController>();
     var appState = Provider.of<AppState>(context);
     return WillPopScope(
       onWillPop: () async {
@@ -64,10 +66,15 @@ class _AppInfoState extends State<AppInfo> {
           key: _globalKey,
           body: Stack(
             children: [
-              const WebView(
+              WebView(
                 initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
-                // initialUrl: 'http://localhost:3000/tietoasovelluksesta',
+
+                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
+                // initialUrl: 'http://10.0.2.2:3000/tietoasovelluksesta',
                 javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controller.complete(webViewController);
+                },
               ),
               // Stacking the bottom bar on top of the webview
               const Align(
@@ -108,7 +115,9 @@ class _AppInfoState extends State<AppInfo> {
               ),
             ],
           ),
-          drawer: const MyNavigationDrawer(),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
         ),
       ),
     );

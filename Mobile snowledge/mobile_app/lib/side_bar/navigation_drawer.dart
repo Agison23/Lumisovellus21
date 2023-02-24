@@ -10,12 +10,18 @@ import 'package:mobile_app/weather.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:mobile_app/user_info.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../state/appState.dart';
 //import '../user_information_view.dart';
 
 class MyNavigationDrawer extends StatefulWidget {
-  const MyNavigationDrawer({Key? key}) : super(key: key);
+  const MyNavigationDrawer({
+    Key? key,
+    this.webViewController,
+  }) : super(key: key);
+
+  final Future<WebViewController>? webViewController;
 
   @override
   State<MyNavigationDrawer> createState() => _MyNavigationDrawerState();
@@ -47,7 +53,13 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   Widget buildMenuItems(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
-    void setLanguage(String language) {
+    void setLanguage(String language) async {
+      final controller = await widget.webViewController;
+      if (controller != null) {
+        controller.runJavascript("""
+                window.changeLanguageTo("$language");
+              """);
+      }
       appState.setLanguage = language;
     }
 
