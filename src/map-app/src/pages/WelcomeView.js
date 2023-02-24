@@ -76,7 +76,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
     paddingBottom: "10px",
-  },
+  }
 }));
 
 function WelcomeView(props) {
@@ -197,6 +197,7 @@ function WelcomeView(props) {
           </Button>
         </Box>
       </Box>
+             
     );
   } else {
     return (
