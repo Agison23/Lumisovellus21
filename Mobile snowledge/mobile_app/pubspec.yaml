@@ -46,6 +46,8 @@ dependencies:
   logging: any
 
   provider: ^6.0.4
+  dart_ipify: ^1.1.1
+
 
 dev_dependencies:
   integration_test:
