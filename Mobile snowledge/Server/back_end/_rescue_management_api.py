@@ -237,6 +237,6 @@ def rescue_after_request(response):
 
 if __name__ == "__main__":
     print(f"Rescue management started correctly")
-    serve(app, listen='*:3002')
+    serve(app, listen='*:3003')
 
 
