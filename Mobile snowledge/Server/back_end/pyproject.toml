@@ -1,0 +1,9 @@
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+extend-exclude = '''
+(
+    /__pycache__
+    | .*.pyc
+)
+'''
