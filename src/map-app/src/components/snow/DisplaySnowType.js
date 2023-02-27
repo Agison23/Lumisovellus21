@@ -5,7 +5,7 @@ import { CardMedia } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { useMediaQuery } from "react-responsive";
 import GlobalContext from "../../context/GlobalContext";
-import translations from "../../translations";
+import translations from "../../translations/translations";
 
 
 // eslint-disable-next-line no-unused-vars

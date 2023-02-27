@@ -8,8 +8,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations from "../../translations";
-import getTranslationKey from  "../../gettranslationskey";
+import translations from "../../translations/translations";
+import getTranslationKey from  "../../translations/getTranslationsKey";
 
 
 const useStyles = makeStyles(() => ({

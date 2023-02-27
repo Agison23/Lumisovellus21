@@ -7,8 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import {useMediaQuery} from "react-responsive";
 import Divider from "@material-ui/core/Divider";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
-import getTranslationKey from  "../gettranslationskey";
+import translations from "../translations/translations";
+import getTranslationKey from  "../translations/getTranslationsKey";
 
 
 // eslint-disable-next-line no-unused-vars

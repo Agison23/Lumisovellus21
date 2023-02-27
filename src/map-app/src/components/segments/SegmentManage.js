@@ -57,8 +57,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations from "../../translations";
-import getTranslationKey from  "../../gettranslationskey";
+import translations from "../../translations/translations";
+import getTranslationKey from  "../../translations/getTranslationsKey";
 
 const useStyles = makeStyles((theme) => ({
   segmentCard: {

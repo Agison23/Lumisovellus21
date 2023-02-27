@@ -41,8 +41,8 @@ import DisplaySnowType from "./DisplaySnowType";
 import { Box } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import GlobalContext from "../../context/GlobalContext";
-import translations from "../../translations";
-import getTranslationKey from  "../../gettranslationskey";
+import translations from "../../translations/translations";
+import getTranslationKey from  "../../translations/getTranslationsKey";
 
 const useStyles = makeStyles(() => ({
   root: {
