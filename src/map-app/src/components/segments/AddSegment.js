@@ -34,7 +34,7 @@ import IconButton from "@material-ui/core/IconButton";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations from "../../translations";
+import translations from "../../translations/translations";
 
 const useStyles = makeStyles((theme) => ({
   add: {

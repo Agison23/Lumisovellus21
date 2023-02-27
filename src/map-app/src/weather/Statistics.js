@@ -12,6 +12,9 @@ Create user interface for showing weather statistics on mobile and laptop view
 31.10.2021 Oona Laitamaki
 Create initial components for showing weather statistics
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, {useContext} from "react";
@@ -27,8 +30,8 @@ import Paper from "@material-ui/core/Paper";
 import Carousel from "react-material-ui-carousel";
 import {toDegrees, getWindDirection} from "./DataCalculations";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
-import getTranslationKey from "../gettranslationskey";
+import translations from "../translations/translations";
+import getTranslationKey from "../translations/getTranslationsKey";
 
 
 const useStyles = makeStyles(() => ({

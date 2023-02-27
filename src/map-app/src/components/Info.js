@@ -78,8 +78,8 @@ import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
 import GlobalContext from "../context/GlobalContext";
-import translations  from "../translations";
-import getTranslationKey from  "../gettranslationskey";
+import translations  from "../translations/translations";
+import getTranslationKey from  "../translations/getTranslationsKey";
 
 
 // Changes button color palette. Muuttaa nappien väripalettia.
@@ -723,7 +723,7 @@ function Info(props) {
                             getOptionDisabled={(option) =>
                               checkDisabledValues(option)
                             }
-                            getOptionLabel={(option) => option.Nimi}
+                            getOptionLabel={(option) => translations[getTranslationKey(option.Nimi)][language]}
                             renderInput={(params) => (
                               <TextField
                                 {...params}

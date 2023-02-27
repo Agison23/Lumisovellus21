@@ -28,7 +28,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import GlobalContext from "../../context/GlobalContext";
-import translations from "../../translations";
+import translations from "../../translations/translations";
 
 const useStyles = makeStyles((theme) => ({
   add: {

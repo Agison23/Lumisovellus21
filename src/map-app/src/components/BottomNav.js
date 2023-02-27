@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import SettingsIcon from "@material-ui/icons/Settings";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 
 const useStyles = makeStyles(() => ({

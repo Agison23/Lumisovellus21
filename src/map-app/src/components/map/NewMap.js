@@ -64,8 +64,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations  from "../../translations";
-import getTranslationKey from  "../../gettranslationskey";
+import translations  from "../../translations/translations";
+import getTranslationKey from  "../../translations/getTranslationsKey";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
