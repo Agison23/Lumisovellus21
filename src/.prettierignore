@@ -5,6 +5,12 @@ myEnv/
 **/package.json
 **/package-lock.json
 
+# eslint configs
+**/.eslintrc.js
+
+# cypress configs
+**/cypress.config.js
+
 # github stuff
 .github/
 
