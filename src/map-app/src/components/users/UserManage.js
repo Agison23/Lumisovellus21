@@ -328,9 +328,13 @@ function UserManage(props) {
                         open={menuOpen}
                         onClose={handleMenuClose}
                       >
-                        <MenuItem onClick={openEdit}>{translations["edit"][language]}</MenuItem>
+                        <MenuItem onClick={openEdit}>
+                          {translations["edit"][language]}
+                        </MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => openDelete()}>{translations["delete"][language]}</MenuItem>
+                        <MenuItem onClick={() => openDelete()}>
+                          {translations["delete"][language]}
+                        </MenuItem>
                       </Menu>
 
                       <CardContent>
@@ -355,9 +359,11 @@ function UserManage(props) {
 
         {/* Käyttäjän poistodialogi */}
         <Dialog onClose={closeDelete} open={deleteOpen}>
-          <DialogTitle id="delete_user">{translations["deleteUser"][language]}</DialogTitle>
+          <DialogTitle id="delete_user">
+            {translations["deleteUser"][language]}
+          </DialogTitle>
           <Typography>
-          {translations["deleteUserAndDataRelated"][language]}
+            {translations["deleteUserAndDataRelated"][language]}
           </Typography>
           <DialogActions>
             <Divider />
@@ -377,15 +383,19 @@ function UserManage(props) {
 
         {/* Muokkausdialogi (lomake) */}
         <Dialog onClose={closeEdit} open={editOpen}>
-          <DialogTitle id="edit_user">{translations["editUser"][language]}</DialogTitle>
+          <DialogTitle id="edit_user">
+            {translations["editUser"][language]}
+          </DialogTitle>
           <Typography variant="caption">
-          {translations["leaveBlank"][language]}
+            {translations["leaveBlank"][language]}
           </Typography>
           <Typography variant="caption">
-          {translations["tooShortPassword"][language]}
+            {translations["tooShortPassword"][language]}
           </Typography>
           <FormControl>
-            <InputLabel htmlFor="firstname">{translations["changeFirstName"][language]}</InputLabel>
+            <InputLabel htmlFor="firstname">
+              {translations["changeFirstName"][language]}
+            </InputLabel>
             <Input
               id="firstname"
               type="text"
@@ -394,7 +404,9 @@ function UserManage(props) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel htmlFor="lastname">{translations["changeLastName"][language]}</InputLabel>
+            <InputLabel htmlFor="lastname">
+              {translations["changeLastName"][language]}
+            </InputLabel>
             <Input
               id="lastname"
               type="text"
@@ -403,7 +415,9 @@ function UserManage(props) {
             />
           </FormControl>
           <FormControl>
-            <InputLabel htmlFor="email">{translations["changeEmail"][language]}</InputLabel>
+            <InputLabel htmlFor="email">
+              {translations["changeEmail"][language]}
+            </InputLabel>
             <Input
               id="email"
               type="text"
@@ -413,7 +427,7 @@ function UserManage(props) {
           </FormControl>
           <FormControl error={mismatch}>
             <InputLabel htmlFor="standard-adornment-password">
-            {translations["newPassword"][language]}
+              {translations["newPassword"][language]}
             </InputLabel>
             <Input
               id="standard-adornment-password"
@@ -434,13 +448,17 @@ function UserManage(props) {
             />
           </FormControl>
           {mismatch ? (
-            <FormHelperText>{translations["passwordsDoNotMatch"][language]}</FormHelperText>
+            <FormHelperText>
+              {translations["passwordsDoNotMatch"][language]}
+            </FormHelperText>
           ) : (
             <div />
           )}
 
           <FormControl error={mismatch}>
-            <InputLabel htmlFor="confirm">{translations["confirmNewPassword"][language]}</InputLabel>
+            <InputLabel htmlFor="confirm">
+              {translations["confirmNewPassword"][language]}
+            </InputLabel>
             <Input
               id="confirm"
               type="password"
@@ -452,7 +470,7 @@ function UserManage(props) {
           <DialogActions>
             <Divider />
             <Button id={"editClose"} onClick={closeEdit}>
-            {translations["cancel"][language]}
+              {translations["cancel"][language]}
             </Button>
             <Button
               variant="contained"
@@ -471,7 +489,7 @@ function UserManage(props) {
     // Operator-tason käyttäjä ei voi hallita muita käyttäjiä
     return (
       <Typography variant="h6">
-        {translations["userManagementRequiresAdminPermission"][language]} 
+        {translations["userManagementRequiresAdminPermission"][language]}
       </Typography>
     );
   }

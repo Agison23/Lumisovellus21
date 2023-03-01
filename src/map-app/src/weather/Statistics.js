@@ -17,7 +17,7 @@ Added english version
 
 **/
 
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { useMediaQuery } from "react-responsive";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -28,11 +28,10 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import Paper from "@material-ui/core/Paper";
 import Carousel from "react-material-ui-carousel";
-import {toDegrees, getWindDirection} from "./DataCalculations";
+import { toDegrees, getWindDirection } from "./DataCalculations";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations/translations";
 import getTranslationKey from "../translations/getTranslationsKey";
-
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -81,117 +80,216 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-
 // Text element for displaying weather statistics key and value
-function KeyValuePair({keyName, value}) {
+function KeyValuePair({ keyName, value }) {
   const classes = useStyles();
 
   return (
-    <p className={classes.text} style={{textAlign: "left", margin: "3px", paddingLeft: "3%"}}>{keyName}
-      <span className={classes.text} style={{float: "right", paddingRight: "3%", whiteSpace: "pre"}}>{value}</span>
+    <p
+      className={classes.text}
+      style={{ textAlign: "left", margin: "3px", paddingLeft: "3%" }}
+    >
+      {keyName}
+      <span
+        className={classes.text}
+        style={{ float: "right", paddingRight: "3%", whiteSpace: "pre" }}
+      >
+        {value}
+      </span>
     </p>
   );
 }
 
-
 // Paper for displaying 3 to 7 days weather statistics
-function ShortIntervalStatsPaper({weatherState}) {
+function ShortIntervalStatsPaper({ weatherState }) {
   const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
   const { language } = useContext(GlobalContext);
 
   return (
-    <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
-
-      <h2 className={classes.paperHeader}>{translations["weatherLately"][language]}</h2>
+    <Paper
+      className={classes.paper}
+      style={isXS ? { minHeight: "550px" } : { minHeight: "95%" }}
+      align="center"
+    >
+      <h2 className={classes.paperHeader}>
+        {translations["weatherLately"][language]}
+      </h2>
 
       {/* Snow depth growth during last seven days */}
-      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>{translations["increaseInSnowDepth"][language]}</p>
-        <KeyValuePair keyName={translations["duringSevenDays"][language]} value={weatherState.snowdepth.sevenDaysGrowth + " cm"}/>
+      <Card
+        className={classes.card}
+        style={isXS ? { margin: "6%" } : { margin: "3%" }}
+      >
+        <p className={classes.cardHeader}>
+          {translations["increaseInSnowDepth"][language]}
+        </p>
+        <KeyValuePair
+          keyName={translations["duringSevenDays"][language]}
+          value={weatherState.snowdepth.sevenDaysGrowth + " cm"}
+        />
       </Card>
 
       {/* Temperature statistics during last three days */}
-      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>{translations["temperatureDuringThreeDays"][language]}</p>
-        <KeyValuePair keyName={translations["highest"][language]} value={weatherState.temperature.threeDaysHighest + " \xB0C"}/>
-        <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["lowest"][language]} value={weatherState.temperature.threeDaysLowest + " \xB0C"}/>
-        <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["amountOfPlusDays"][language]} value={`${weatherState.temperature.thawDaysOutOfThree} 
-        ${translations["pcs"][language]}`}/>
-        {weatherState.temperature.thawDays.length !== 0 &&
-        <div style={{paddingBottom: "50px"}}>
-          <Divider className={classes.divider}/>
-          <KeyValuePair keyName={translations["plusDays"][language]} value={weatherState.temperature.thawDays.join("\r\n")}/>
-        </div>}
+      <Card
+        className={classes.card}
+        style={isXS ? { margin: "6%" } : { margin: "3%" }}
+      >
+        <p className={classes.cardHeader}>
+          {translations["temperatureDuringThreeDays"][language]}
+        </p>
+        <KeyValuePair
+          keyName={translations["highest"][language]}
+          value={weatherState.temperature.threeDaysHighest + " \xB0C"}
+        />
+        <Divider className={classes.divider} />
+        <KeyValuePair
+          keyName={translations["lowest"][language]}
+          value={weatherState.temperature.threeDaysLowest + " \xB0C"}
+        />
+        <Divider className={classes.divider} />
+        <KeyValuePair
+          keyName={translations["amountOfPlusDays"][language]}
+          value={`${weatherState.temperature.thawDaysOutOfThree} 
+        ${translations["pcs"][language]}`}
+        />
+        {weatherState.temperature.thawDays.length !== 0 && (
+          <div style={{ paddingBottom: "50px" }}>
+            <Divider className={classes.divider} />
+            <KeyValuePair
+              keyName={translations["plusDays"][language]}
+              value={weatherState.temperature.thawDays.join("\r\n")}
+            />
+          </div>
+        )}
       </Card>
 
       {/* Wind speed and direction statistics during last three days */}
-      <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-        <p className={classes.cardHeader}>{translations["windDuringThreeDays"][language]}</p>
-        <KeyValuePair keyName={translations["AverSpeed"][language]} value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}/>
-        <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["AverDirection"][language]} 
-        value={translations[getTranslationKey(getWindDirection(weatherState.winddirection.threeDaysAverage))][language]}/>
-        <Divider className={classes.divider}/>
-        <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.windspeed.threeDaysHighest + " m/s"}/>
+      <Card
+        className={classes.card}
+        style={isXS ? { margin: "6%" } : { margin: "3%" }}
+      >
+        <p className={classes.cardHeader}>
+          {translations["windDuringThreeDays"][language]}
+        </p>
+        <KeyValuePair
+          keyName={translations["AverSpeed"][language]}
+          value={weatherState.windspeed.threeDaysAverage.toFixed(1) + " m/s"}
+        />
+        <Divider className={classes.divider} />
+        <KeyValuePair
+          keyName={translations["AverDirection"][language]}
+          value={
+            translations[
+              getTranslationKey(
+                getWindDirection(weatherState.winddirection.threeDaysAverage)
+              )
+            ][language]
+          }
+        />
+        <Divider className={classes.divider} />
+        <KeyValuePair
+          keyName={translations["strongestWind"][language]}
+          value={weatherState.windspeed.threeDaysHighest + " m/s"}
+        />
       </Card>
-
     </Paper>
   );
 }
 
-
 // Paper for displaying winter weather statistics
-function WinterStatsPaper({weatherState}) {
+function WinterStatsPaper({ weatherState }) {
   const classes = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
   const { language } = useContext(GlobalContext);
 
   return (
-    <Paper className={classes.paper} style={isXS ? {minHeight: "550px"} : {minHeight: "95%"}} align="center">
-
-      {weatherState.winter.season === true ?
+    <Paper
+      className={classes.paper}
+      style={isXS ? { minHeight: "550px" } : { minHeight: "95%" }}
+      align="center"
+    >
+      {weatherState.winter.season === true ? (
         <div>
-
-          <h2 className={classes.paperHeader}>{translations["wintersWeatherObservaions"][language]}</h2>
+          <h2 className={classes.paperHeader}>
+            {translations["wintersWeatherObservaions"][language]}
+          </h2>
 
           {/* Temperature statistics during winter */}
-          <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-            <p className={classes.cardHeader}>{translations["temperature"][language]}</p>
-            <KeyValuePair keyName={translations["plusDays"][language]} value={`${weatherState.winter.thawDays}  ${translations["pcs"][language]}`}/>
-            <Divider className={classes.divider}/>
-            <KeyValuePair keyName={translations["median"][language]} value={weatherState.winter.median + " \xB0C"}/>
-          </Card>
-          
-          {/* Wind direction and speed statistics during winter */}
-          <Card className={classes.card} style={isXS ? {margin: "6%"} : {margin: "3%"}}>
-            <p className={classes.cardHeader}>{translations["strongWind"][language]}</p>
-            <KeyValuePair keyName={translations["strongestWind"][language]} value={weatherState.winter.maxWind + " m/s"}/>
-            <Divider className={classes.divider}/>
-            <KeyValuePair keyName={translations["AverDirection"][language]} 
-            value={translations[getTranslationKey(getWindDirection((toDegrees(Math.atan2(weatherState.winter.strongWindDirectionY, weatherState.winter.strongWindDirectionX)) + 360) % 360))][language]}/>
-            <Divider className={classes.divider}/>
-            <KeyValuePair keyName={translations["amountOfDays"][language]} value={weatherState.winter.strongWindDays}/>
+          <Card
+            className={classes.card}
+            style={isXS ? { margin: "6%" } : { margin: "3%" }}
+          >
+            <p className={classes.cardHeader}>
+              {translations["temperature"][language]}
+            </p>
+            <KeyValuePair
+              keyName={translations["plusDays"][language]}
+              value={`${weatherState.winter.thawDays}  ${translations["pcs"][language]}`}
+            />
+            <Divider className={classes.divider} />
+            <KeyValuePair
+              keyName={translations["median"][language]}
+              value={weatherState.winter.median + " \xB0C"}
+            />
           </Card>
 
-        </div> :
-        <h2 className={classes.cardHeader}>{translations["availabilityOfWintersWeatherObservations"][language]}</h2>
-      }
+          {/* Wind direction and speed statistics during winter */}
+          <Card
+            className={classes.card}
+            style={isXS ? { margin: "6%" } : { margin: "3%" }}
+          >
+            <p className={classes.cardHeader}>
+              {translations["strongWind"][language]}
+            </p>
+            <KeyValuePair
+              keyName={translations["strongestWind"][language]}
+              value={weatherState.winter.maxWind + " m/s"}
+            />
+            <Divider className={classes.divider} />
+            <KeyValuePair
+              keyName={translations["AverDirection"][language]}
+              value={
+                translations[
+                  getTranslationKey(
+                    getWindDirection(
+                      (toDegrees(
+                        Math.atan2(
+                          weatherState.winter.strongWindDirectionY,
+                          weatherState.winter.strongWindDirectionX
+                        )
+                      ) +
+                        360) %
+                        360
+                    )
+                  )
+                ][language]
+              }
+            />
+            <Divider className={classes.divider} />
+            <KeyValuePair
+              keyName={translations["amountOfDays"][language]}
+              value={weatherState.winter.strongWindDays}
+            />
+          </Card>
+        </div>
+      ) : (
+        <h2 className={classes.cardHeader}>
+          {translations["availabilityOfWintersWeatherObservations"][language]}
+        </h2>
+      )}
     </Paper>
   );
 }
 
-
 // Element for displaying short interval and winter weather statistics
-function Statistics({weatherState, handleReturnClick}) {
+function Statistics({ weatherState, handleReturnClick }) {
   const isXS = useMediaQuery({ query: "(max-width: 999px)" });
   const { language } = useContext(GlobalContext);
 
   return (
     <div>
-      {isXS ?
+      {isXS ? (
         <div>
           <Carousel
             autoPlay={false}
@@ -202,19 +300,19 @@ function Statistics({weatherState, handleReturnClick}) {
             indicators={false}
             showThumbs={false}
             showArrows={false}
-            NextIcon={<NavigateNextIcon style={{fontSize: "40px"}}/>}
-            PrevIcon={<NavigateBeforeIcon style={{fontSize: "40px"}}/>}
+            NextIcon={<NavigateNextIcon style={{ fontSize: "40px" }} />}
+            PrevIcon={<NavigateBeforeIcon style={{ fontSize: "40px" }} />}
             navButtonsProps={{
               style: {
                 backgroundColor: "rgba(255,255,255,0.2)",
                 padding: "5px",
                 borderRadius: 50,
                 color: "black",
-              }
+              },
             }}
           >
-            <ShortIntervalStatsPaper weatherState={weatherState}/>
-            <WinterStatsPaper weatherState={weatherState}/>
+            <ShortIntervalStatsPaper weatherState={weatherState} />
+            <WinterStatsPaper weatherState={weatherState} />
           </Carousel>
           <Button
             onClick={handleReturnClick}
@@ -225,19 +323,44 @@ function Statistics({weatherState, handleReturnClick}) {
               right: 5,
               top: 450,
               borderRadius: "100%",
-              padding: "15px"}}
+              padding: "15px",
+            }}
           >
-            <NavigateBeforeIcon style={{fontSize: "5vh"}}/>
+            <NavigateBeforeIcon style={{ fontSize: "5vh" }} />
           </Button>
-        </div> : 
-        <Grid item xs={12} sm={12} container style={{padding: "20px", position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}>
+        </div>
+      ) : (
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          container
+          style={{
+            padding: "20px",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
           <Grid item xs={6} sm={6}>
-            <ShortIntervalStatsPaper weatherState={weatherState}/>
+            <ShortIntervalStatsPaper weatherState={weatherState} />
           </Grid>
           <Grid item xs={6} sm={6}>
-            <WinterStatsPaper weatherState={weatherState}/>
+            <WinterStatsPaper weatherState={weatherState} />
           </Grid>
-          <Grid item xs={12} sm={12} container style={{justifyContent: "end", paddingTop: "2%", paddingBottom: "5%", paddingRight: "8%"}}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            container
+            style={{
+              justifyContent: "end",
+              paddingTop: "2%",
+              paddingBottom: "5%",
+              paddingRight: "8%",
+            }}
+          >
             <Button
               onClick={handleReturnClick}
               variant="contained"
@@ -247,16 +370,17 @@ function Statistics({weatherState, handleReturnClick}) {
                 borderColor: "transparent",
                 fontFamily: "Donau",
                 textTransform: "unset",
-                fontSize: "3vh"}}
-              startIcon={<NavigateBeforeIcon/>}
+                fontSize: "3vh",
+              }}
+              startIcon={<NavigateBeforeIcon />}
             >
               {translations["back"][language]}
             </Button>
           </Grid>
         </Grid>
-      }
+      )}
     </div>
   );
 }
- 
+
 export default Statistics;

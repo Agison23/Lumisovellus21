@@ -15,7 +15,7 @@ Added english version
 
 **/
 
-import React,{useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@material-ui/core/IconButton";
 // eslint-disable-next-line no-unused-vars
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -37,8 +37,8 @@ const useStyles = makeStyles(() => ({
   snowIcon: {
     position: "absolute",
     top: "5px",
-    right: "5px"
-  }
+    right: "5px",
+  },
 }));
 
 function Logout(props) {
@@ -51,7 +51,6 @@ function Logout(props) {
     changeToLanguage(languageToChangeTo);
   };
 
-
   // Event handlers
 
   //Avaa kirjautumisdialogin
@@ -63,22 +62,22 @@ function Logout(props) {
   const closeLogout = () => {
     setLogoutOpen(false);
   };
-   
+
   //  Uloskirjautuminen nollaa tokenin ja kirjautuneen käyttäjän
   const logout = () => {
     props.updateToken(null);
     props.updateUser(null);
     if (props.showManagement) {
       props.updateShown(0);
-    }   
+    }
   };
 
   const styledClasses = useStyles();
 
   return (
     <div className="logout">
-      <div className={styledClasses.snowIcon} >
-      <Select
+      <div className={styledClasses.snowIcon}>
+        <Select
           style={{
             color: props.isMobile ? "#4d4d4d" : "#e6e6e6",
             fontWeight: "bold",
@@ -91,27 +90,27 @@ function Logout(props) {
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="fi">Suomi</MenuItem>
         </Select>
- 
-        <IconButton 
-          onClick={openLogout}
-        >
-          <SnowIcon style={{color: "#4d4d4d"}} />
+
+        <IconButton onClick={openLogout}>
+          <SnowIcon style={{ color: "#4d4d4d" }} />
         </IconButton>
       </div>
-      <Dialog 
-        onClose={closeLogout} 
-        open={logoutOpen}
-      >
-        <DialogTitle id="logout-dialog">{translations["logOut"][language]}</DialogTitle>
+      <Dialog onClose={closeLogout} open={logoutOpen}>
+        <DialogTitle id="logout-dialog">
+          {translations["logOut"][language]}
+        </DialogTitle>
         <DialogActions>
-          <Divider/>
-          <Button id={"dialogClose"} onClick={closeLogout}>{translations["cancel"][language]}</Button>
-          <Button color="primary" id={"dialogOK"} onClick={logout}>OK</Button>
+          <Divider />
+          <Button id={"dialogClose"} onClick={closeLogout}>
+            {translations["cancel"][language]}
+          </Button>
+          <Button color="primary" id={"dialogOK"} onClick={logout}>
+            OK
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-
 }
- 
+
 export default Logout;

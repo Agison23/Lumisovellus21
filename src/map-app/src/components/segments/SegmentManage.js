@@ -31,7 +31,7 @@ Added english version
 
 **/
 
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -58,7 +58,7 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
-import getTranslationKey from  "../../translations/getTranslationsKey";
+import getTranslationKey from "../../translations/getTranslationsKey";
 
 const useStyles = makeStyles((theme) => ({
   segmentCard: {
@@ -81,7 +81,7 @@ function SegmentManage(props) {
   const classes = useStyles();
 
   // Hooks
-  const [anchorElMenu, setAnchorElMenu] =useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [selected, setSelected] = useState(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -349,8 +349,11 @@ function SegmentManage(props) {
                 <Card className={classes.segmentCard}>
                   <CardHeader
                     title={item.Nimi}
-                    subheader={translations["terrainBase"][language] + ": " +
-                      translations[getTranslationKey(item.Maasto)][language]}
+                    subheader={
+                      translations["terrainBase"][language] +
+                      ": " +
+                      translations[getTranslationKey(item.Maasto)][language]
+                    }
                     action={
                       <IconButton
                         id={item.ID}
@@ -377,9 +380,13 @@ function SegmentManage(props) {
                     open={menuOpen}
                     onClose={handleMenuClose}
                   >
-                    <MenuItem onClick={openEdit}>{translations["edit"][language]}</MenuItem>
+                    <MenuItem onClick={openEdit}>
+                      {translations["edit"][language]}
+                    </MenuItem>
                     <Divider />
-                    <MenuItem onClick={() => openDelete()}>{translations["delete"][language]}</MenuItem>
+                    <MenuItem onClick={() => openDelete()}>
+                      {translations["delete"][language]}
+                    </MenuItem>
                   </Menu>
 
                   {/* Segmenttikortti sisältää mahdollisen teidon lumivyöryvaarasta,
@@ -403,7 +410,9 @@ function SegmentManage(props) {
                       component="p"
                     >
                       {item.On_Alasegmentti !== null
-                        ? translations["subsegmentOf"][language] + item.On_Alasegmentti + translations["subsegmentOfEnd"][language]
+                        ? translations["subsegmentOf"][language] +
+                          item.On_Alasegmentti +
+                          translations["subsegmentOfEnd"][language]
                         : ""}
                     </Typography>
 
@@ -430,9 +439,11 @@ function SegmentManage(props) {
 
       {/* Segmentin poistodialogi */}
       <Dialog onClose={closeDelete} open={deleteOpen}>
-        <DialogTitle id="delete_segment">{translations["deleteSegment"][language]}</DialogTitle>
+        <DialogTitle id="delete_segment">
+          {translations["deleteSegment"][language]}
+        </DialogTitle>
         <Typography>
-        {translations["deletingSegmentDeletesSubsegments"][language]}
+          {translations["deletingSegmentDeletesSubsegments"][language]}
         </Typography>
         <DialogActions>
           <Divider />
@@ -452,12 +463,16 @@ function SegmentManage(props) {
 
       {/* Muokkausdialogi (lomake) */}
       <Dialog onClose={closeEdit} open={editOpen}>
-        <DialogTitle id="edit_segment">{translations["editSegment"][language]}</DialogTitle>
+        <DialogTitle id="edit_segment">
+          {translations["editSegment"][language]}
+        </DialogTitle>
         <Typography id="edit_segment_info" variant="caption">
-        {translations["untouchedSections"][language]}
+          {translations["untouchedSections"][language]}
         </Typography>
         <FormControl>
-          <InputLabel htmlFor="name">{translations["changeName"][language]}</InputLabel>
+          <InputLabel htmlFor="name">
+            {translations["changeName"][language]}
+          </InputLabel>
           <Input
             id="name"
             type="text"
@@ -468,7 +483,9 @@ function SegmentManage(props) {
           />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="terrain">{translations["changeTerrainBase"][language]}</InputLabel>
+          <InputLabel htmlFor="terrain">
+            {translations["changeTerrainBase"][language]}
+          </InputLabel>
           <Input
             id="terrain"
             type="text"
@@ -542,7 +559,9 @@ function SegmentManage(props) {
             onClick={addNewRow}
           >
             <AddCircleOutlineIcon />
-            <Typography variant="button">{translations["addPoint"][language]}</Typography>
+            <Typography variant="button">
+              {translations["addPoint"][language]}
+            </Typography>
           </IconButton>
         </Box>
         <DialogActions>

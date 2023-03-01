@@ -6,7 +6,6 @@ function toRadians(angle) {
   return angle * (Math.PI / 180);
 }
 
-
 /*
 Returns latest three day average statistics
 First day: day before yesterday
@@ -14,7 +13,9 @@ Second day: yesterday
 Third day: today
 */
 export function getThreeDayStatistics(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var firstDayCount = 0;
   for (let i = 0; i < 24; i++) {
@@ -35,7 +36,8 @@ export function getThreeDayStatistics(data) {
     firstDayAverage: firstDayCount / 24,
     secondDayAverage: secondDayCount / 24,
     thirdDayAverage: thirdDayCount / (measurements.length - 48),
-    threeDaysAverage: (firstDayCount + secondDayCount + thirdDayCount) / measurements.length
+    threeDaysAverage:
+      (firstDayCount + secondDayCount + thirdDayCount) / measurements.length,
   };
 }
 
@@ -46,7 +48,9 @@ Second day: yesterday
 Third day: today
 */
 export function getThreeDayWindStatistics(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var firstDayCountX = 0;
   var firstDayCountY = 0;
@@ -73,16 +77,29 @@ export function getThreeDayWindStatistics(data) {
   }
 
   return {
-    firstDayAverage: (toDegrees(Math.atan2(firstDayCountY, firstDayCountX)) + 360) % 360,
-    secondDayAverage: (toDegrees(Math.atan2(secondDayCountY, secondDayCountX)) + 360) % 360,
-    thirdDayAverage: (toDegrees(Math.atan2(thirdDayCountY, thirdDayCountX)) + 360) % 360,
-    threeDaysAverage: (toDegrees(Math.atan2(firstDayCountY + secondDayCountY + thirdDayCountY, firstDayCountX + secondDayCountX +  thirdDayCountX)) + 360) % 360
+    firstDayAverage:
+      (toDegrees(Math.atan2(firstDayCountY, firstDayCountX)) + 360) % 360,
+    secondDayAverage:
+      (toDegrees(Math.atan2(secondDayCountY, secondDayCountX)) + 360) % 360,
+    thirdDayAverage:
+      (toDegrees(Math.atan2(thirdDayCountY, thirdDayCountX)) + 360) % 360,
+    threeDaysAverage:
+      (toDegrees(
+        Math.atan2(
+          firstDayCountY + secondDayCountY + thirdDayCountY,
+          firstDayCountX + secondDayCountX + thirdDayCountX
+        )
+      ) +
+        360) %
+      360,
   };
 }
 
 // Returns highest value during last three days
 export function getThreeDaysHighest(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var highest = measurements[0].lastElementChild.innerHTML;
   for (let i = 0; i < measurements.length; i++) {
@@ -96,7 +113,9 @@ export function getThreeDaysHighest(data) {
 
 // Returns lowest value during last three days
 export function getThreeDaysLowest(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var lowest = measurements[0].lastElementChild.innerHTML;
   for (let i = 0; i < measurements.length; i++) {
@@ -117,10 +136,12 @@ function getXMLTimeString(date) {
 
 // Calculate snow depth rise during 7 days
 export function getSnowDepthStatistics(data, currentDate) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var currentEvenHour = new Date(currentDate.getTime());
-  currentEvenHour.setMinutes(0,0,0);
+  currentEvenHour.setMinutes(0, 0, 0);
 
   var day1 = new Date(currentEvenHour.getTime());
   day1.setDate(day1.getDate() - 6);
@@ -143,62 +164,68 @@ export function getSnowDepthStatistics(data, currentDate) {
   var growth = 0;
   for (let measurement of measurements) {
     switch (measurement.getElementsByTagName("wml2:time")[0].innerHTML) {
+      // Get snowdepth 6 days ago
+      case getXMLTimeString(day1):
+        var value1 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        break;
 
-    // Get snowdepth 6 days ago
-    case getXMLTimeString(day1):
-      var value1 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      break;
+      // Get snowdepth 5 days ago
+      case getXMLTimeString(day2):
+        var value2 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value1 < value2) {
+          growth += value2 - value1;
+        }
+        break;
 
-    // Get snowdepth 5 days ago
-    case getXMLTimeString(day2):
-      var value2 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value1 < value2) {
-        growth += value2 - value1;
-      }
-      break;
+      // Get snowdepth 4 days ago
+      case getXMLTimeString(day3):
+        var value3 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value2 < value3) {
+          growth += value3 - value2;
+        }
+        break;
 
-    // Get snowdepth 4 days ago
-    case getXMLTimeString(day3):
-      var value3 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value2 < value3) {
-        growth += value3 - value2;
-      }
-      break;
+      // Get snowdepth 3 days ago
+      case getXMLTimeString(day4):
+        var value4 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value3 < value4) {
+          growth += value4 - value3;
+        }
+        break;
 
-    // Get snowdepth 3 days ago
-    case getXMLTimeString(day4):
-      var value4 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value3 < value4) {
-        growth += value4 - value3;
-      }
-      break;
+      // Get snowdepth 2 days ago
+      case getXMLTimeString(day5):
+        var value5 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value5 < value6) {
+          growth += value6 - value5;
+        }
+        break;
 
-    // Get snowdepth 2 days ago
-    case getXMLTimeString(day5):
-      var value5 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value5 < value6) {
-        growth += value6 - value5;
-      }
-      break;
+      // Get snowdepth 1 day ago
+      case getXMLTimeString(day6):
+        var value6 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value5 < value6) {
+          growth += value6 - value5;
+        }
+        break;
 
-    // Get snowdepth 1 day ago
-    case getXMLTimeString(day6):
-      var value6 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value5 < value6) {
-        growth += value6 - value5;
-      }
-      break;
+      // Get current snowdepth
+      case getXMLTimeString(currentEvenHour):
+        var value7 =
+          measurement.getElementsByTagName("wml2:value")[0].innerHTML;
+        if (value6 < value7) {
+          growth += value7 - value6;
+        }
+        break;
 
-    // Get current snowdepth
-    case getXMLTimeString(currentEvenHour):
-      var value7 = measurement.getElementsByTagName("wml2:value")[0].innerHTML;
-      if (value6 < value7) {
-        growth += value7 - value6;
-      }
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 
@@ -206,13 +233,15 @@ export function getSnowDepthStatistics(data, currentDate) {
     firstDay: value5,
     secondDay: value6,
     thirdDay: value7,
-    sevenDaysGrowth: growth
+    sevenDaysGrowth: growth,
   };
 }
 
 // Calculate recent air pressure change and current value
 export function getCurrentAirPressureInfo(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   /*
   Air pressure direction according to change during three hours
@@ -223,11 +252,17 @@ export function getCurrentAirPressureInfo(data) {
 
   */
 
-  var current = Number(measurements[measurements.length - 1].lastElementChild.innerHTML);
+  var current = Number(
+    measurements[measurements.length - 1].lastElementChild.innerHTML
+  );
 
-  var hourAgo = Number(measurements[measurements.length - 7].lastElementChild.innerHTML);
+  var hourAgo = Number(
+    measurements[measurements.length - 7].lastElementChild.innerHTML
+  );
 
-  var threeHoursAgo = Number(measurements[measurements.length - 19].lastElementChild.innerHTML);
+  var threeHoursAgo = Number(
+    measurements[measurements.length - 19].lastElementChild.innerHTML
+  );
 
   var direction = 90;
   if (Math.abs(current - threeHoursAgo) < 0.1) {
@@ -246,7 +281,9 @@ export function getCurrentAirPressureInfo(data) {
 
 // Calculate daily winter temperatures from December to May
 export function getWinterTemperatures(data) {
-  var measurements = data.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var measurements = data.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var thawDays = 0;
   var array = [];
@@ -264,10 +301,15 @@ export function getWinterTemperatures(data) {
     }
   }
 
-  const sortedArray = array.sort(function(a,b){return a-b;});
+  const sortedArray = array.sort(function (a, b) {
+    return a - b;
+  });
   const len = sortedArray.length;
   const mid = Math.ceil(len / 2);
-  var median = len % 2 === 0 ? (sortedArray[mid] + sortedArray[mid - 1]) / 2 : sortedArray[mid];
+  var median =
+    len % 2 === 0
+      ? (sortedArray[mid] + sortedArray[mid - 1]) / 2
+      : sortedArray[mid];
 
   if (len === 1) {
     median = sortedArray[0];
@@ -278,28 +320,45 @@ export function getWinterTemperatures(data) {
 
 // Calculate hourly winter wind statistics for every month from December to May
 export function getWinterWindStats(speeds, directions) {
-  var speedMeasurements = speeds.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
-  var directionMeasurements = directions.firstElementChild.getElementsByTagName("wml2:MeasurementTVP");
+  var speedMeasurements = speeds.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
+  var directionMeasurements = directions.firstElementChild.getElementsByTagName(
+    "wml2:MeasurementTVP"
+  );
 
   var maxWind = 0;
   var dayCount = 0;
   var directionX = 0;
   var directionY = 0;
-  
+
   var directionIndex = 0;
   var speedIndex = 0;
-  
+
   var previouslySavedDay = null;
 
-  for (let i = 0; i < [speedMeasurements.length < directionMeasurements.length ? speedMeasurements.length : directionMeasurements.length]; i++) {
+  for (
+    let i = 0;
+    i <
+    [
+      speedMeasurements.length < directionMeasurements.length
+        ? speedMeasurements.length
+        : directionMeasurements.length,
+    ];
+    i++
+  ) {
     let speed = Number(speedMeasurements[i].lastElementChild.innerHTML);
 
-    let apiDate = new Date(directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML);
+    let apiDate = new Date(
+      directionMeasurements[i].getElementsByTagName("wml2:time")[0].innerHTML
+    );
     apiDate.setHours(apiDate.getHours() + 2);
     let date = apiDate.toISOString().split("T")[0];
 
     if (speed > 10) {
-      let direction = Number(directionMeasurements[i].lastElementChild.innerHTML);
+      let direction = Number(
+        directionMeasurements[i].lastElementChild.innerHTML
+      );
 
       if (speed > maxWind) {
         maxWind = speed;
@@ -345,11 +404,25 @@ export function getWinterWindStats(speeds, directions) {
     directionY += Math.sin(toRadians(directionIndex));
   }
 
-  return { maxWind: maxWind, strongWindDirectionX: directionX, strongWindDirectionY: directionY, strongWindDays: dayCount };
+  return {
+    maxWind: maxWind,
+    strongWindDirectionX: directionX,
+    strongWindDirectionY: directionY,
+    strongWindDays: dayCount,
+  };
 }
 
 // Return verbal wind direction for degrees
 export function getWindDirection(degrees) {
-  const directions = ["Pohjoinen", "Koillinen", "Itä", "Kaakko", "Etelä", "Lounas", "Länsi", "Luode"];
+  const directions = [
+    "Pohjoinen",
+    "Koillinen",
+    "Itä",
+    "Kaakko",
+    "Etelä",
+    "Lounas",
+    "Länsi",
+    "Luode",
+  ];
   return directions[Math.round(degrees / 45) % 8];
 }

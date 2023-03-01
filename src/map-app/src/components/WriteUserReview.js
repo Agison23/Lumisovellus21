@@ -1,19 +1,17 @@
-import React,{useContext} from "react";
+import React, { useContext } from "react";
 import Button from "@material-ui/core/Button";
-import {Box, CardMedia, IconButton, TextField} from "@material-ui/core";
+import { Box, CardMedia, IconButton, TextField } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import {useMediaQuery} from "react-responsive";
+import { useMediaQuery } from "react-responsive";
 import Divider from "@material-ui/core/Divider";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations/translations";
-import getTranslationKey from  "../translations/getTranslationsKey";
-
+import getTranslationKey from "../translations/getTranslationsKey";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(() => ({
-
   snowInfo: {
     width: "30px",
     height: "30px",
@@ -151,16 +149,14 @@ const useStyles = makeStyles(() => ({
     margin: "5px 15px",
   },
   div: {
-    padding: "5px 15px"
+    padding: "5px 15px",
   },
 }));
 
-
 function WriteUserReview(props) {
-
   const styles = useStyles();
   const isXS = useMediaQuery({ query: "(max-width: 599px)" });
-  
+
   const [view, setView] = React.useState(props.mode);
   const [allSnowTypes, setAllSnowTypes] = React.useState([]);
   const [snowData, setSnowData] = React.useState([]);
@@ -170,34 +166,30 @@ function WriteUserReview(props) {
   const [branches, setBranches] = React.useState(false);
   const [text, setText] = React.useState("");
   const [updateID, setUpdateID] = React.useState(null);
-  const  { language }  = useContext(GlobalContext);
+  const { language } = useContext(GlobalContext);
   //const [onlyFeedback, setOnlyFeedback] = React.useState(false);
 
   React.useMemo(() => {
     getSnowTypes();
   }, []);
 
-
   const postData = async (path, data, id) => {
-    const response = await fetch(path + id,
-      {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    const response = await fetch(path + id, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
     return await response.json();
   };
-
 
   // When a user reviews snow data, POST-method call is sent to api/review.
   // New snow review is added to the database.
   // The call returns ID number to the new row in the database, so that feedback text can be
-  // later added to it. 
+  // later added to it.
   const postSnowType = async () => {
-
     let snowID = null;
     if (selectedType !== null) {
       snowID = selectedType.ID;
@@ -215,10 +207,10 @@ function WriteUserReview(props) {
     let res = postData("api/review/", data, props.segmentdata.ID);
 
     // Parse the ID to our snow review
-    res.then(item => {
+    res.then((item) => {
       let row = JSON.stringify(item[0]);
       JSON.parse(row, (key, value) => {
-        if(Number.isInteger(value)) {
+        if (Number.isInteger(value)) {
           setUpdateID(value);
         }
       });
@@ -227,9 +219,8 @@ function WriteUserReview(props) {
     setView("feedback");
   };
 
-
-  // Post the feedback text to the database. If continuing from the snow type selection, 
-  // we update the existing row with ID. Otherwise, post new row to the database. 
+  // Post the feedback text to the database. If continuing from the snow type selection,
+  // we update the existing row with ID. Otherwise, post new row to the database.
   const postFeedback = async () => {
     const data = {
       Segmentti: props.segmentdata.ID,
@@ -238,10 +229,10 @@ function WriteUserReview(props) {
       Kommentti: text,
     };
 
-    if(updateID === null) {
+    if (updateID === null) {
       let res = postData("api/review/", data, props.segmentdata.ID);
       console.log(res);
-    } else {     
+    } else {
       let res = postData("api/updateReview/", data, updateID);
       console.log(res);
     }
@@ -249,39 +240,45 @@ function WriteUserReview(props) {
     props.close();
   };
 
-  
   async function getSnowTypes() {
     const snow = await fetch("api/lumilaadut");
     const data = await snow.json();
     setAllSnowTypes(data);
   }
-  
-
 
   function fetchSnowTypes(category) {
-
     setView("selection");
 
     if (category === "1") {
-      setSnowData([allSnowTypes[3], allSnowTypes[9], allSnowTypes[8], allSnowTypes[7]]);
+      setSnowData([
+        allSnowTypes[3],
+        allSnowTypes[9],
+        allSnowTypes[8],
+        allSnowTypes[7],
+      ]);
       setSelectedType(allSnowTypes[3]);
-
     } else if (category === "2") {
-      setSnowData([allSnowTypes[4], allSnowTypes[11], allSnowTypes[10], allSnowTypes[12]]);
+      setSnowData([
+        allSnowTypes[4],
+        allSnowTypes[11],
+        allSnowTypes[10],
+        allSnowTypes[12],
+      ]);
       setSelectedType(allSnowTypes[4]);
-
     } else if (category === "3") {
       setSnowData([allSnowTypes[2], allSnowTypes[16]]);
       setSelectedType(allSnowTypes[2]);
-
     } else if (category === "4") {
       setSnowData([allSnowTypes[1], allSnowTypes[17], allSnowTypes[18]]);
       setSelectedType(allSnowTypes[1]);
-      
     } else if (category === "5") {
-      setSnowData([allSnowTypes[0], allSnowTypes[15], allSnowTypes[13], allSnowTypes[14]]);
+      setSnowData([
+        allSnowTypes[0],
+        allSnowTypes[15],
+        allSnowTypes[13],
+        allSnowTypes[14],
+      ]);
       setSelectedType(allSnowTypes[0]);
-
     } else if (category === "6") {
       setSnowData([allSnowTypes[5]]);
       setSelectedType(allSnowTypes[5]);
@@ -299,7 +296,7 @@ function WriteUserReview(props) {
   };
 
   const goBack = () => {
-    if(view === "category") {
+    if (view === "category") {
       clearState();
       props.back();
     } else if (view === "selection") {
@@ -332,155 +329,286 @@ function WriteUserReview(props) {
     return result;
   };
 
-
   return (
     <>
-      { view === "category" && (
+      {view === "category" && (
         <div className={styles.div}>
-    
-          <Typography className={styles.smallHeaders}>{translations["snowWas"][language]} </Typography>
+          <Typography className={styles.smallHeaders}>
+            {translations["snowWas"][language]}{" "}
+          </Typography>
 
           <Divider className={styles.divider} />
-    
+
           <Box className={styles.buttonsCenter}>
-          
-            <Button variant="contained" className={styles.lightBlue} onClick={() => {fetchSnowTypes("1");}}>{translations["freshlyRainedSnow"][language]}</Button>
-            
-            <Button variant="contained" className={styles.purple} onClick={() => {fetchSnowTypes("2");}}>{translations["shapedByTheWind"][language]}</Button>
-            
-            <Button variant="contained" className={styles.lime} onClick={() => {fetchSnowTypes("3");}}>{translations["icy"][language]}</Button>
-            
-            <Button variant="contained" className={styles.grey} onClick={() => {fetchSnowTypes("4");}}>{translations["wet"][language]}</Button>
-            
-            <Button variant="contained" className={styles.blue} onClick={() => {fetchSnowTypes("5");}}>{translations["crust"][language]}</Button>
-            
-            <Button variant="contained" className={styles.brown} onClick={() => {fetchSnowTypes("6");}}>{translations["minor"][language]}</Button>
-          
+            <Button
+              variant="contained"
+              className={styles.lightBlue}
+              onClick={() => {
+                fetchSnowTypes("1");
+              }}
+            >
+              {translations["freshlyRainedSnow"][language]}
+            </Button>
+
+            <Button
+              variant="contained"
+              className={styles.purple}
+              onClick={() => {
+                fetchSnowTypes("2");
+              }}
+            >
+              {translations["shapedByTheWind"][language]}
+            </Button>
+
+            <Button
+              variant="contained"
+              className={styles.lime}
+              onClick={() => {
+                fetchSnowTypes("3");
+              }}
+            >
+              {translations["icy"][language]}
+            </Button>
+
+            <Button
+              variant="contained"
+              className={styles.grey}
+              onClick={() => {
+                fetchSnowTypes("4");
+              }}
+            >
+              {translations["wet"][language]}
+            </Button>
+
+            <Button
+              variant="contained"
+              className={styles.blue}
+              onClick={() => {
+                fetchSnowTypes("5");
+              }}
+            >
+              {translations["crust"][language]}
+            </Button>
+
+            <Button
+              variant="contained"
+              className={styles.brown}
+              onClick={() => {
+                fetchSnowTypes("6");
+              }}
+            >
+              {translations["minor"][language]}
+            </Button>
           </Box>
 
           <Divider className={styles.divider} />
 
           <Box className={styles.buttonsRight}>
-            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>{translations["back"][language]}</Button>
+            <Button
+              variant="contained"
+              className={styles.darkGrey}
+              onClick={goBack}
+            >
+              {translations["back"][language]}
+            </Button>
           </Box>
-        </div>        
+        </div>
       )}
 
-
-
-      { view === "selection" && (
+      {view === "selection" && (
         <div className={styles.div}>
-
-          <Typography className={styles.smallHeaders} style={{justifyContent: "center"}}>{translations["elaborationOfSnowType"][language]} </Typography>
+          <Typography
+            className={styles.smallHeaders}
+            style={{ justifyContent: "center" }}
+          >
+            {translations["elaborationOfSnowType"][language]}{" "}
+          </Typography>
 
           <Grid container className={styles.grid}>
-            {
-              snowData.map((data, index) => {
-                return (
-                  <Grid key={index} item xs={6} sm={6} align="center">
-                    <IconButton
-                      onClick={() => selectButton(index, data)}
-                      className={styles.white}
-                      style={{ 
-                        width: (isXS ? "95%" : "70%"), 
-                        border: (index === selectedButton ? "3px solid #4F81CD" : "1px solid #62A1FF") }}
-                    >
-                      <CardMedia
-                        component={"img"}
-                        src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/" + data.ID + ".svg"}
-                        alt="lumityypin logo"
-                        className={styles.snowInfo}
-                      />
-                      <Typography className={styles.mediumText}>{translations[getTranslationKey(data.Nimi)][language]}</Typography>                 
-                    </IconButton>  
-                  </Grid>                
-                );
-              })
-            }
+            {snowData.map((data, index) => {
+              return (
+                <Grid key={index} item xs={6} sm={6} align="center">
+                  <IconButton
+                    onClick={() => selectButton(index, data)}
+                    className={styles.white}
+                    style={{
+                      width: isXS ? "95%" : "70%",
+                      border:
+                        index === selectedButton
+                          ? "3px solid #4F81CD"
+                          : "1px solid #62A1FF",
+                    }}
+                  >
+                    <CardMedia
+                      component={"img"}
+                      src={
+                        process.env.PUBLIC_URL +
+                        "/icons/snowtypes-and-harms/" +
+                        data.ID +
+                        ".svg"
+                      }
+                      alt="lumityypin logo"
+                      className={styles.snowInfo}
+                    />
+                    <Typography className={styles.mediumText}>
+                      {translations[getTranslationKey(data.Nimi)][language]}
+                    </Typography>
+                  </IconButton>
+                </Grid>
+              );
+            })}
           </Grid>
 
-          
           {/* Lumitiedon kuvausteksti */}
-          { selectedType !== null && (
+          {selectedType !== null && (
             <Box className={styles.description}>
-              <Typography className={styles.smallHeaders} style={{justifyContent: "left", marginBottom: "0px"}}>
-                {translations[getTranslationKey(selectedType.Nimi)][language]}</Typography>
-              <p 
-                className={styles.mediumText}style={{marginRight: "1px"}}
-              >{translations[getTranslationKey(selectedType.Nimi) + "Description"][language]}</p>
+              <Typography
+                className={styles.smallHeaders}
+                style={{ justifyContent: "left", marginBottom: "0px" }}
+              >
+                {translations[getTranslationKey(selectedType.Nimi)][language]}
+              </Typography>
+              <p className={styles.mediumText} style={{ marginRight: "1px" }}>
+                {
+                  translations[
+                    getTranslationKey(selectedType.Nimi) + "Description"
+                  ][language]
+                }
+              </p>
 
-              { selectedType.Hiihdettavyys > 0 && (
-                <img className={styles.skiabilityIcon} src={process.env.PUBLIC_URL + "/icons/skiability/" + selectedType.Hiihdettavyys + ".svg"} alt="skiability" />
+              {selectedType.Hiihdettavyys > 0 && (
+                <img
+                  className={styles.skiabilityIcon}
+                  src={
+                    process.env.PUBLIC_URL +
+                    "/icons/skiability/" +
+                    selectedType.Hiihdettavyys +
+                    ".svg"
+                  }
+                  alt="skiability"
+                />
               )}
-            </Box> 
+            </Box>
           )}
 
           <Divider className={styles.divider} />
 
-
-          <Typography className={styles.smallHeaders}> {translations["additionalMentions"][language]} </Typography>
+          <Typography className={styles.smallHeaders}>
+            {" "}
+            {translations["additionalMentions"][language]}{" "}
+          </Typography>
           <Grid container>
             <Grid item xs={6} sm={6} align="center">
               <IconButton
                 onClick={() => setStones(!stones)}
                 className={styles.white}
-                style={{ 
-                  width: (isXS ? "90%" : "70%"), 
-                  border: (stones ? "3px solid #4F81CD" : "1px solid #62A1FF") }}
+                style={{
+                  width: isXS ? "90%" : "70%",
+                  border: stones ? "3px solid #4F81CD" : "1px solid #62A1FF",
+                }}
               >
                 <CardMedia
                   component={"img"}
-                  src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/" + 21 + ".svg"}
+                  src={
+                    process.env.PUBLIC_URL +
+                    "/icons/snowtypes-and-harms/" +
+                    21 +
+                    ".svg"
+                  }
                   alt="lumityypin logo"
                   className={styles.snowInfo}
                 />
-                <Typography className={styles.mediumText}>{translations["stones"][language]}</Typography>                 
-              </IconButton> 
-            </Grid> 
+                <Typography className={styles.mediumText}>
+                  {translations["stones"][language]}
+                </Typography>
+              </IconButton>
+            </Grid>
             <Grid item xs={6} sm={6} align="center">
               <IconButton
                 onClick={() => setBranches(!branches)}
                 className={styles.white}
-                style={{ 
-                  width: (isXS ? "90%" : "70%"), 
-                  border: (branches ? "3px solid #4F81CD" : "1px solid #62A1FF") }}
+                style={{
+                  width: isXS ? "90%" : "70%",
+                  border: branches ? "3px solid #4F81CD" : "1px solid #62A1FF",
+                }}
               >
                 <CardMedia
                   component={"img"}
-                  src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/" + 22 + ".svg"}
+                  src={
+                    process.env.PUBLIC_URL +
+                    "/icons/snowtypes-and-harms/" +
+                    22 +
+                    ".svg"
+                  }
                   alt="lumityypin logo"
                   className={styles.snowInfo}
                 />
-                <Typography className={styles.mediumText}>{translations["branches"][language]}</Typography>                 
-              </IconButton> 
+                <Typography className={styles.mediumText}>
+                  {translations["branches"][language]}
+                </Typography>
+              </IconButton>
             </Grid>
           </Grid>
 
           <Box className={styles.buttonsRight}>
-            <Button variant="contained" className={styles.darkGrey} onClick={goBack}>{translations["back"][language]}</Button>
-            <Button variant="contained" className={styles.darkGrey} onClick={postSnowType}>{translations["send"][language]}</Button>
+            <Button
+              variant="contained"
+              className={styles.darkGrey}
+              onClick={goBack}
+            >
+              {translations["back"][language]}
+            </Button>
+            <Button
+              variant="contained"
+              className={styles.darkGrey}
+              onClick={postSnowType}
+            >
+              {translations["send"][language]}
+            </Button>
           </Box>
         </div>
       )}
 
-      { view === "feedback" && (
+      {view === "feedback" && (
         <div className={styles.div}>
-
-          {props.mode === "category" &&
-            <Typography className={styles.smallHeaders}>{translations["thanksForTheFeedback"][language]} </Typography>        
-          }
+          {props.mode === "category" && (
+            <Typography className={styles.smallHeaders}>
+              {translations["thanksForTheFeedback"][language]}{" "}
+            </Typography>
+          )}
 
           <Box className={styles.part}>
-            <Typography variant="h5" className={styles.mediumText}>{translations["observationsOrGreetingsToPollot"][language]} </Typography>
-            <TextField className={styles.textFields} value={text} maxRows={6} onChange={updateText} placeholder={translations["thanksForTheFeedback"][language]} multiline variant="outlined" />
-          </Box>    
+            <Typography variant="h5" className={styles.mediumText}>
+              {translations["observationsOrGreetingsToPollot"][language]}{" "}
+            </Typography>
+            <TextField
+              className={styles.textFields}
+              value={text}
+              maxRows={6}
+              onChange={updateText}
+              placeholder={translations["thanksForTheFeedback"][language]}
+              multiline
+              variant="outlined"
+            />
+          </Box>
 
-          <Box className={styles.buttonsRight}>         
-            <Button variant="contained" className={styles.darkGrey} onClick={props.close}>{postSnowType}&gt;{translations["close"][language]} </Button>
-            <Button variant="contained" className={styles.darkGrey}
-              disabled={ text === "" } onClick={postFeedback}>{postSnowType}&gt;{translations["send"][language]}</Button>
-          </Box>    
-  
+          <Box className={styles.buttonsRight}>
+            <Button
+              variant="contained"
+              className={styles.darkGrey}
+              onClick={props.close}
+            >
+              {postSnowType}&gt;{translations["close"][language]}{" "}
+            </Button>
+            <Button
+              variant="contained"
+              className={styles.darkGrey}
+              disabled={text === ""}
+              onClick={postFeedback}
+            >
+              {postSnowType}&gt;{translations["send"][language]}
+            </Button>
+          </Box>
         </div>
       )}
     </>

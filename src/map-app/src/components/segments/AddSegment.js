@@ -16,7 +16,7 @@ Added english version
 
 **/
 
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -47,17 +47,20 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 2px 2px 2px rgba(0, 0, 0, .3)",
   },
   coordinateInputs: {
-    display: "flex"
+    display: "flex",
   },
   addNewLine: {
     // Koordinaattirivin lisäysnapin tyylit
-  }
+  },
 }));
 
 function AddSegment(props) {
-
   // Hooks
-  const [points, setPoints] = React.useState([{lat: null, lng: null}, {lat: null, lng: null}, {lat: null, lng: null}]);
+  const [points, setPoints] = React.useState([
+    { lat: null, lng: null },
+    { lat: null, lng: null },
+    { lat: null, lng: null },
+  ]);
   const [segmentName, setSegmentName] = React.useState("");
   const [terrain, setTerrain] = React.useState("");
   const [addOpen, setAddOpen] = React.useState(false);
@@ -68,14 +71,14 @@ function AddSegment(props) {
   // Tarkistaa, onko segmentillä nimi ja maastopohja
   // TODO: Lisää tarkistuksia koordinaateista?
   const formOK = Boolean(!(segmentName !== "" && terrain !== ""));
-  
+
   // Määrittää, piirretäänkö rivinpoistopainike koordinaattipisterivin perään
   const fourthRow = Boolean(points.length >= 4);
 
   /*
    * Event handlers
    */
-  
+
   // Avaa segmentin lisäysdialogin
   const openAdd = () => {
     setAddOpen(true);
@@ -90,28 +93,26 @@ function AddSegment(props) {
 
   // Segmentin lisääminen (vahvistusdialogin jälkeen)
   const handleAdd = () => {
-    
     // Tiedot  tulevat hookeista
     const data = {
       Nimi: segmentName,
       Maasto: terrain,
       Lumivyöryvaara: danger,
       On_Alasegmentti: props.id !== null ? props.id : null,
-      Points: points
+      Points: points,
     };
 
     // Segmentin lisäämisen api-kutsu
     const fetchAddSegment = async () => {
-      const response = await fetch("api/segment/",
-        {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + props.token
-          },
-          body: JSON.stringify(data),
-        });
+      const response = await fetch("api/segment/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + props.token,
+        },
+        body: JSON.stringify(data),
+      });
       const res = await response.json();
       console.log(res);
     };
@@ -125,10 +126,9 @@ function AddSegment(props) {
       const updateData = await updates.json();
       const response = await fetch("api/segments");
       const data = await response.json();
-      
-      
-      await updateData.forEach(update => {
-        snowdata.forEach(snow => {
+
+      await updateData.forEach((update) => {
+        snowdata.forEach((snow) => {
           if (snow.ID === update.Lumilaatu_ID1) {
             update.Lumi1 = snow;
           }
@@ -146,12 +146,12 @@ function AddSegment(props) {
           }
         });
       });
-      
-      data.forEach(segment => {
+
+      data.forEach((segment) => {
         segment.update = null;
-        updateData.forEach(update => {
+        updateData.forEach((update) => {
           if (update.Segmentti === segment.ID) {
-            segment.update = update;           
+            segment.update = update;
           }
         });
         if (segment.Nimi === "Metsä") {
@@ -160,7 +160,6 @@ function AddSegment(props) {
       });
 
       props.updateSegments(data);
-
     };
     fetchData();
 
@@ -197,7 +196,7 @@ function AddSegment(props) {
 
   // Rivin lisääminen lomakkeelle (lisäpiste koordinaateille)
   const addNewRow = () => {
-    setPoints([...points].concat({lat: null, lng: null}));
+    setPoints([...points].concat({ lat: null, lng: null }));
   };
 
   // Koordinaattipisterivin poistaminen
@@ -212,55 +211,58 @@ function AddSegment(props) {
    */
   return (
     <div className="add">
-      
       {/* Painike, joka avaa segmentin lisäysdialogin 
           ulkoasu muuttuu hieman riippuen siitä onko kyseessä
           ala- vai yläsegmentin lisäys*/}
 
-      {
-        props.addSubSegment
-          ?
+      {props.addSubSegment ? (
+        <Button>
+          <Typography variant="button" onClick={openAdd}>
+            {translations["addSubsegment"][language]}
+          </Typography>
+        </Button>
+      ) : (
+        <Box className={classes.add}>
           <Button>
-            <Typography variant="button" onClick={openAdd}>{translations["addSubsegment"][language]}</Typography>
+            <AddCircleOutlineIcon />
+            <Typography variant="button" onClick={openAdd}>
+              {translations["addParentSegment"][language]}
+            </Typography>
           </Button>
-          :
-          <Box className={classes.add}>
-            <Button>
-              <AddCircleOutlineIcon />
-              <Typography variant="button" onClick={openAdd}>{translations["addParentSegment"][language]}</Typography>
-            </Button>
-          </Box> 
-      }
-            
+        </Box>
+      )}
 
       {/* Segmentin lisäysdialogi */}
-      <Dialog 
-        onClose={closeAdd} 
-        open={addOpen}
-      >
+      <Dialog onClose={closeAdd} open={addOpen}>
         {/* Otsikko muuttuu tilanteen mukaan */}
-        {props.addSubSegment ? <DialogTitle id="add_segment_dialog">{translations["addSubsegment"][language]}</DialogTitle> : <DialogTitle id="add_segment_dialog">Lisää segmentti</DialogTitle>}
-        <Typography variant="caption">{translations["addSegmentInfo"][language]}</Typography>
-        <Typography variant="caption">{translations["treeCordinatePointsRequired"][language]}</Typography>
+        {props.addSubSegment ? (
+          <DialogTitle id="add_segment_dialog">
+            {translations["addSubsegment"][language]}
+          </DialogTitle>
+        ) : (
+          <DialogTitle id="add_segment_dialog">Lisää segmentti</DialogTitle>
+        )}
+        <Typography variant="caption">
+          {translations["addSegmentInfo"][language]}
+        </Typography>
+        <Typography variant="caption">
+          {translations["treeCordinatePointsRequired"][language]}
+        </Typography>
         <FormControl>
-          <InputLabel htmlFor="name" >{translations["nameOfTheSegment"][language]}</InputLabel>
-          <Input
-            id="name"
-            type='text'
-            onChange={updateName}
-          />
+          <InputLabel htmlFor="name">
+            {translations["nameOfTheSegment"][language]}
+          </InputLabel>
+          <Input id="name" type="text" onChange={updateName} />
         </FormControl>
-        <FormControl>  
-          <InputLabel htmlFor="maasto" >{translations["terrainBase"][language]}</InputLabel>
-          <Input
-            id="maasto"
-            type='text'
-            onChange={updateTerrain}
-          />
+        <FormControl>
+          <InputLabel htmlFor="maasto">
+            {translations["terrainBase"][language]}
+          </InputLabel>
+          <Input id="maasto" type="text" onChange={updateTerrain} />
         </FormControl>
         <FormControlLabel
           control={
-            <Checkbox            
+            <Checkbox
               checked={danger}
               onChange={updateDanger}
               name="danger"
@@ -269,62 +271,78 @@ function AddSegment(props) {
           }
           label={translations["avalancheProneArea"][language]}
         />
-        
+
         {/* Luodaan rivejä koordinaattipisteille 
         Neljännestä rivistä eteenpäin on mahdollisuus poistaa rivi */}
         {points.map((item, index) => {
           return (
             <Box key={index} className={classes.coordinateInputs}>
-              <FormControl>  
-                <InputLabel htmlFor={"lat"+index} >Lat:</InputLabel>
+              <FormControl>
+                <InputLabel htmlFor={"lat" + index}>Lat:</InputLabel>
                 <Input
-                  id={"lat"+index}
-                  type='text'
+                  id={"lat" + index}
+                  type="text"
                   onChange={(event) => updatePoints(index, "lat", event)}
                 />
               </FormControl>
-              <FormControl>  
-                <InputLabel htmlFor={"lng"+index} >Lng:</InputLabel>
+              <FormControl>
+                <InputLabel htmlFor={"lng" + index}>Lng:</InputLabel>
                 <Input
-                  id={"lng"+index}
-                  type='text'
+                  id={"lng" + index}
+                  type="text"
                   onChange={(event) => updatePoints(index, "lng", event)}
                 />
               </FormControl>
-              
+
               {/* Neljännestä rivistä alkaen viimeinen rivi on mahdollista poistaa */}
-              {
-                fourthRow && index === points.length - 1 
-                  ? 
-                  <IconButton id="remove_new_points" aria-label="remove_new_points" onClick={removeNewRow}>
-                    <RemoveCircleOutlineIcon />
-                  </IconButton>
-                  : 
-                  <div />
-              }
+              {fourthRow && index === points.length - 1 ? (
+                <IconButton
+                  id="remove_new_points"
+                  aria-label="remove_new_points"
+                  onClick={removeNewRow}
+                >
+                  <RemoveCircleOutlineIcon />
+                </IconButton>
+              ) : (
+                <div />
+              )}
             </Box>
           );
         })}
-        
+
         {/* Koordinaattipisterivin lisääminen */}
         <Box className={classes.addNewLine}>
-          <IconButton id="add_new_points" aria-label="add_new_points" onClick={addNewRow}>
+          <IconButton
+            id="add_new_points"
+            aria-label="add_new_points"
+            onClick={addNewRow}
+          >
             <AddCircleOutlineIcon />
-            <Typography variant="button">{translations["addPoint"][language]}</Typography>
+            <Typography variant="button">
+              {translations["addPoint"][language]}
+            </Typography>
           </IconButton>
         </Box>
-        
+
         {/* Painikkeet lomakkeen lopussa */}
-        <DialogActions>   
+        <DialogActions>
           <Divider />
-          <Button id={"deleteClose"} onClick={closeAdd}>{translations["close"][language]}</Button>
-          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>{translations["add"][language]}</Button>
+          <Button id={"deleteClose"} onClick={closeAdd}>
+            {translations["close"][language]}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            id={"delete"}
+            disabled={formOK}
+            onClick={handleAdd}
+          >
+            {translations["add"][language]}
+          </Button>
         </DialogActions>
-      
       </Dialog>
     </div>
   );
-
 }
- 
+
 export default AddSegment;

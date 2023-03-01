@@ -1,13 +1,13 @@
 {
   "version": 8,
   "name": "NLS Basemap",
-  "metadata": {"maputnik:renderer": "mbgljs"},
+  "metadata": { "maputnik:renderer": "mbgljs" },
   "center": [50, 100],
   "zoom": 11.35,
   "sources": {
     "point": {
       "type": "geojson",
-      "data": {"type": "FeatureCollection", "features": []}
+      "data": { "type": "FeatureCollection", "features": [] }
     },
     "taustakartta": {
       "type": "vector",
@@ -19,8 +19,8 @@
     {
       "id": "background",
       "type": "background",
-      "layout": {"visibility": "visible"},
-      "paint": {"background-color": "rgba(225, 241, 225, 1)"}
+      "layout": { "visibility": "visible" },
+      "paint": { "background-color": "rgba(225, 241, 225, 1)" }
     },
     {
       "id": "maasto_alue",
@@ -33,29 +33,13 @@
         "match",
         ["get", "kohdeluokka"],
         [
-          35300,
-          35411,
-          35412,
-          35421,
-          35422,
-          34300,
-          34100,
-          34700,
-          38300,
-          38700,
-          39110,
-          39120,
-          39130,
-          33000,
-          38400,
-          38600,
-          35401,
-          35402
+          35300, 35411, 35412, 35421, 35422, 34300, 34100, 34700, 38300, 38700,
+          39110, 39120, 39130, 33000, 38400, 38600, 35401, 35402
         ],
         true,
         false
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "fill-color": [
           "match",
@@ -81,25 +65,13 @@
         "match",
         ["get", "kohdeluokka"],
         [
-          32111,
-          32112,
-          32113,
-          32200,
-          32300,
-          32500,
-          32611,
-          32612,
-          32800,
-          32900,
-          33100,
-          34300,
-          38900,
-          40200
+          32111, 32112, 32113, 32200, 32300, 32500, 32611, 32612, 32800, 32900,
+          33100, 34300, 38900, 40200
         ],
         true,
         false
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "fill-color": [
           "match",
@@ -136,16 +108,7 @@
           "match",
           ["get", "kohdeluokka"],
           [
-            32411,
-            32412,
-            32413,
-            32414,
-            32415,
-            32416,
-            32417,
-            32418,
-            32441,
-            32442
+            32411, 32412, 32413, 32414, 32415, 32416, 32417, 32418, 32441, 32442
           ],
           true,
           false
@@ -183,7 +146,7 @@
         ["==", "kohdeluokka", 32431],
         ["==", "kohdeluokka", 32432]
       ],
-      "paint": {"line-width": 7, "line-color": "#c8c4c5"}
+      "paint": { "line-width": 7, "line-color": "#c8c4c5" }
     },
     {
       "id": "lentokentta_viiva2",
@@ -195,7 +158,7 @@
         ["==", "kohdeluokka", 32431],
         ["==", "kohdeluokka", 32432]
       ],
-      "paint": {"line-width": 6, "line-color": "#fde9db"}
+      "paint": { "line-width": 6, "line-color": "#fde9db" }
     },
     {
       "id": "korkeus_viiva",
@@ -204,22 +167,22 @@
       "source-layer": "korkeus",
       "minzoom": 11,
       "maxzoom": 24,
-      "layout": {"line-cap": "butt"},
-      "paint": {"line-color": "rgba(131, 129, 128, 1)", "line-width": 0.5}
+      "layout": { "line-cap": "butt" },
+      "paint": { "line-color": "rgba(131, 129, 128, 1)", "line-width": 0.5 }
     },
     {
       "id": "vesisto_alue_reuna",
       "type": "line",
       "source": "taustakartta",
       "source-layer": "vesisto_alue",
-      "paint": {"line-color": "hsl(200, 80%, 75%)", "line-width": 2.5}
+      "paint": { "line-color": "hsl(200, 80%, 75%)", "line-width": 2.5 }
     },
     {
       "id": "vesisto_alue",
       "type": "fill",
       "source": "taustakartta",
       "source-layer": "vesisto_alue",
-      "paint": {"fill-color": "hsl(200, 80%, 85%)"}
+      "paint": { "fill-color": "hsl(200, 80%, 85%)" }
     },
     {
       "id": "vesisto_viiva",
@@ -263,16 +226,16 @@
         ],
         ["==", "kohdeluokka", 30211]
       ],
-      "layout": {"visibility": "visible"},
-      "paint": {"line-color": "#c8c4c5", "line-width": 0.5}
+      "layout": { "visibility": "visible" },
+      "paint": { "line-color": "#c8c4c5", "line-width": 0.5 }
     },
     {
       "id": "rakennus",
       "type": "fill",
       "source": "taustakartta",
       "source-layer": "rakennus",
-      "layout": {"visibility": "visible"},
-      "paint": {"fill-color": "hsl(0, 0, 65%)"}
+      "layout": { "visibility": "visible" },
+      "paint": { "fill-color": "hsl(0, 0, 65%)" }
     },
     {
       "id": "tiet tunnelissa",
@@ -286,23 +249,14 @@
           "match",
           ["get", "kohdeluokka"],
           [
-            12141,
-            12132,
-            12131,
-            12122,
-            12121,
-            12112,
-            12111,
-            12313,
-            12314,
-            12136
+            12141, 12132, 12131, 12122, 12121, 12112, 12111, 12313, 12314, 12136
           ],
           true,
           false
         ],
         ["match", ["get", "tasosijainti"], [-11], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-dasharray": [32, 16],
@@ -328,7 +282,7 @@
         ["match", ["get", "kohdeluokka"], [12141], true, false],
         ["match", ["get", "tasosijainti"], [-1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-width": [
@@ -406,7 +360,7 @@
         ["match", ["get", "paallyste"], [1], true, false],
         ["match", ["get", "tasosijainti"], [-1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#90ca6f",
         "line-dasharray": [3, 1.5],
@@ -433,7 +387,7 @@
         ["match", ["get", "paallyste"], [2], true, false],
         ["match", ["get", "tasosijainti"], [-1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#90ca6f",
         "line-width": [
@@ -539,7 +493,7 @@
         ],
         ["match", ["get", "tasosijainti"], [-1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-width": [
@@ -671,7 +625,7 @@
         ["match", ["get", "kohdeluokka"], [12141], true, false],
         ["match", ["get", "tasosijainti"], [0], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-width": [
@@ -696,7 +650,7 @@
         ["match", ["get", "kohdeluokka"], [12316], true, false],
         ["match", ["get", "tasosijainti"], [0], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-dasharray": [12, 2],
@@ -722,7 +676,7 @@
         ["match", ["get", "kohdeluokka"], [12313], true, false],
         ["match", ["get", "tasosijainti"], [0], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "rgba(131, 131, 131, 1)",
         "line-dasharray": [2, 1.5],
@@ -882,7 +836,7 @@
         ],
         ["match", ["get", "tasosijainti"], [0], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-width": [
@@ -1065,7 +1019,7 @@
         ["match", ["get", "kohdeluokka"], [12313], true, false],
         ["match", ["get", "tasosijainti"], [1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#ccc",
         "line-dasharray": [2, 1.5],
@@ -1092,7 +1046,7 @@
         ["match", ["get", "paallyste"], [1], true, false],
         ["match", ["get", "tasosijainti"], [1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#90ca6f",
         "line-dasharray": [3, 1.5],
@@ -1119,7 +1073,7 @@
         ["match", ["get", "paallyste"], [2], true, false],
         ["match", ["get", "tasosijainti"], [1], true, false]
       ],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "line-color": "#90ca6f",
         "line-width": [
@@ -2773,7 +2727,7 @@
       "type": "line",
       "source": "taustakartta",
       "source-layer": "hallintoalue",
-      "paint": {"line-color": "hsl(0,0%,65%)", "line-width": 1}
+      "paint": { "line-color": "hsl(0,0%,65%)", "line-width": 1 }
     },
     {
       "id": "tienimet",
@@ -2992,7 +2946,7 @@
       "source": "point",
       "maxzoom": 24,
       "filter": ["==", "$type", "Point"],
-      "layout": {"visibility": "visible"},
+      "layout": { "visibility": "visible" },
       "paint": {
         "circle-radius": 20,
         "circle-color": "white",
@@ -3013,7 +2967,7 @@
         ["==", "kohdeluokka", 45112],
         ["==", "kohdeluokka", 44500]
       ],
-      "paint": {"line-color": "#918a8c", "line-width": 0.5}
+      "paint": { "line-color": "#918a8c", "line-width": 0.5 }
     },
     {
       "id": "korkeus_arvo",

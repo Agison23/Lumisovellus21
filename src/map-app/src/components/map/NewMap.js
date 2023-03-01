@@ -51,7 +51,7 @@ Added english version
 
 **/
 
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import PallasMap from "./PallasMap";
@@ -64,8 +64,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations  from "../../translations/translations";
-import getTranslationKey from  "../../translations/getTranslationsKey";
+import translations from "../../translations/translations";
+import getTranslationKey from "../../translations/getTranslationsKey";
 
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
@@ -197,20 +197,19 @@ function Map(props) {
    */
 
   useEffect(() => {
-    
     let showOnlyString = translations["showOnly"][language];
     let snowName = "";
-    if(highlightedSnowType === -3){
+    if (highlightedSnowType === -3) {
       setButtonText(showOnlyString);
-    }else{
-      if(language === "fi"){
-        snowName = translations[getTranslationKey(buttonText,"en")][language];
-      }else{
+    } else {
+      if (language === "fi") {
+        snowName = translations[getTranslationKey(buttonText, "en")][language];
+      } else {
         snowName = translations[getTranslationKey(buttonText)][language];
       }
       setButtonText(snowName);
     }
-  },language);
+  }, language);
 
   function handleClick() {
     setOpen(!open);
@@ -301,7 +300,11 @@ function Map(props) {
                                 : "white",
                           }}
                         >
-                          {translations[getTranslationKey(snowType.Nimi)][language]}
+                          {
+                            translations[getTranslationKey(snowType.Nimi)][
+                              language
+                            ]
+                          }
                         </Button>
                       </Box>
                     );
@@ -383,7 +386,11 @@ function Map(props) {
                                   : "white",
                             }}
                           >
-                            {translations[getTranslationKey(snowType.Nimi)][language]}
+                            {
+                              translations[getTranslationKey(snowType.Nimi)][
+                                language
+                              ]
+                            }
                           </Button>
                         </Box>
                       );

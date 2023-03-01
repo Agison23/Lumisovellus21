@@ -78,7 +78,9 @@ function SnowTypes(props) {
         className={styledClasses.header}
         style={props.isMobile ? { width: "100vw" } : {}}
       >
-        <Typography variant="h3">{translations["bigDefinitions"][language]}</Typography>
+        <Typography variant="h3">
+          {translations["bigDefinitions"][language]}
+        </Typography>
       </Box>
       <Box className={styledClasses.avalanche}>
         <img
@@ -106,7 +108,7 @@ function SnowTypes(props) {
             ></img>
             <Box>
               <Typography variant="h5">
-              {translations["newSnow"][language]}
+                {translations["newSnow"][language]}
               </Typography>
               <Typography>
                 {translations["newSnowDescription"][language]}
@@ -141,7 +143,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["powderSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["powderSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["powderSnowDescription"][language]}
               </Typography>
@@ -157,7 +161,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["freshSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["freshSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["freshSnowDescription"][language]}
               </Typography>
@@ -175,7 +181,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["crust"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["crust"][language]}
+              </Typography>
               <Typography>
                 {translations["crustDescription"][language]}
               </Typography>
@@ -191,7 +199,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["concrete"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["concrete"][language]}
+              </Typography>
               <Typography>
                 {translations["concreteDescription"][language]}
               </Typography>
@@ -207,7 +217,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["thinCrust"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["thinCrust"][language]}
+              </Typography>
               <Typography>
                 {translations["thinCrustDescription"][language]}
               </Typography>
@@ -223,7 +235,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["collapsingCrust"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["collapsingCrust"][language]}
+              </Typography>
               <Typography>
                 {translations["collapsingCrustDescription"][language]}
               </Typography>
@@ -241,7 +255,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["windPackedSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["windPackedSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["windPackedSnowDescription"][language]}
               </Typography>
@@ -257,7 +273,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["wavySnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["wavySnow"][language]}
+              </Typography>
               <Typography>
                 {translations["wavySnowDescription"][language]}
               </Typography>
@@ -273,7 +291,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["sastrug"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["sastrug"][language]}
+              </Typography>
               <Typography>
                 {translations["sastrugDescription"][language]}{" "}
               </Typography>
@@ -289,7 +309,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["windblownSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["windblownSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["windblownSnowDescription"][language]}
               </Typography>
@@ -307,7 +329,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["ice"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["ice"][language]}
+              </Typography>
               <Typography>
                 {translations["iceDescription"][language]}
               </Typography>
@@ -323,7 +347,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["breakableIce"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["breakableIce"][language]}
+              </Typography>
               <Typography>
                 {translations["breakableIceDescription"][language]}
               </Typography>
@@ -341,7 +367,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["slush"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["slush"][language]}
+              </Typography>
               <Typography>
                 {translations["slushDescription"][language]}
               </Typography>
@@ -357,7 +385,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["wettingSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["wettingSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["wettingSnowDescription"][language]}
               </Typography>
@@ -373,7 +403,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["saturatedSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["saturatedSnow"][language]}
+              </Typography>
               <Typography>
                 {translations["saturatedSnowDescription"][language]}
               </Typography>
@@ -391,7 +423,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["littleSnow"][language]}</Typography>
+              <Typography variant="h5">
+                {translations["littleSnow"][language]}
+              </Typography>
             </Box>
           </Box>
         </Box>

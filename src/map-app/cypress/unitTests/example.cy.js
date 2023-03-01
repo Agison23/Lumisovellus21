@@ -1,10 +1,10 @@
-import React from 'react'
-import BottomNav from '../../src/components/BottomNav'
+import React from "react";
+import BottomNav from "../../src/components/BottomNav";
 
 // This is an example file with no actual tests
-describe('<BottomNav />', () => {
-  it('renders', () => {
+describe("<BottomNav />", () => {
+  it("renders", () => {
     // see: https://on.cypress.io/mounting-react
-    cy.mount(<BottomNav />)
-  })
-})
+    cy.mount(<BottomNav />);
+  });
+});

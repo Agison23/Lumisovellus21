@@ -55,7 +55,7 @@ Ensimmäinen versio segmenttien päivittämisestä
 Added english version
 **/
 
-import React, {useState,useContext} from "react";
+import React, { useState, useContext } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -78,9 +78,8 @@ import SnowRecordView from "./snow/SnowRecordView";
 import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
 import GlobalContext from "../context/GlobalContext";
-import translations  from "../translations/translations";
-import getTranslationKey from  "../translations/getTranslationsKey";
-
+import translations from "../translations/translations";
+import getTranslationKey from "../translations/getTranslationsKey";
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({
@@ -698,10 +697,10 @@ function Info(props) {
                           }}
                         >
                           <MenuItem disabled={selectDisabled[0]} value={false}>
-                          {translations["primary"][language]}
+                            {translations["primary"][language]}
                           </MenuItem>
                           <MenuItem disabled={selectDisabled[1]} value={true}>
-                          {translations["secondary"][language]}
+                            {translations["secondary"][language]}
                           </MenuItem>
                         </Select>
                       )}
@@ -723,7 +722,11 @@ function Info(props) {
                             getOptionDisabled={(option) =>
                               checkDisabledValues(option)
                             }
-                            getOptionLabel={(option) => translations[getTranslationKey(option.Nimi)][language]}
+                            getOptionLabel={(option) =>
+                              translations[getTranslationKey(option.Nimi)][
+                                language
+                              ]
+                            }
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -769,13 +772,19 @@ function Info(props) {
                                 handleSelectClose(e, value, item);
                               }}
                               options={snowTypeList}
-                              noOptionsText={translations["noResults"][language]}
+                              noOptionsText={
+                                translations["noResults"][language]
+                              }
                               size="small"
                               getOptionDisabled={(option) =>
                                 checkDisabledValues(option)
                               }
                               defaultValue={getValue(item.id)}
-                              getOptionLabel={(option) => translations[getTranslationKey(option.Nimi)][language]}
+                              getOptionLabel={(option) =>
+                                translations[getTranslationKey(option.Nimi)][
+                                  language
+                                ]
+                              }
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
