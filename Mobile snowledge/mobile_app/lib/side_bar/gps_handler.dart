@@ -71,8 +71,12 @@ class GpsHandler {
               result = await Dialogs.showGPSDialog(
                   context,
                   false,
-                  translations['gpsRequired'][Provider.of<AppState>(context).language] + translations['gpsPermission'][Provider.of<AppState>(context).language],
-                   translations['continueGps'][Provider.of<AppState>(context).language]);
+                  translations['gpsRequired']
+                          [Provider.of<AppState>(context).language] +
+                      translations['gpsPermission']
+                          [Provider.of<AppState>(context).language],
+                  translations['continueGps']
+                      [Provider.of<AppState>(context).language]);
             }
           } else {
             result = true;

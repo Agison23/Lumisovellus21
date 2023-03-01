@@ -13,7 +13,6 @@ Arttu Lakkala 6.12 Refactoroitiin API:sta
 
 */
 
-
 const express = require("express");
 const router = express.Router();
 const database = require("./database");
@@ -25,14 +24,13 @@ const secret = "Lumihiriv0";
 //alusta tarkistus
 const { body, validationResult } = require("express-validator");
 
-router.post("/:id", function(req, res) {
-
-  if(req.body.Segmentti != req.params.id)
-  {
+router.post("/:id", function (req, res) {
+  if (req.body.Segmentti != req.params.id) {
     res.json("Segmentti numerot eivät täsmää");
     res.status(400);
   }
-  database.query("INSERT INTO Paivitykset(Tekija, Segmentti, Aika, Kuvaus, Lumilaatu_ID1, Lumilaatu_ID2, Toissijainen_ID1, Toissijainen_ID2) VALUES(?, ?, NOW(), ?, ?, ?, ?, ?)",
+  database.query(
+    "INSERT INTO Paivitykset(Tekija, Segmentti, Aika, Kuvaus, Lumilaatu_ID1, Lumilaatu_ID2, Toissijainen_ID1, Toissijainen_ID2) VALUES(?, ?, NOW(), ?, ?, ?, ?, ?)",
     [
       req.decoded.id,
       req.body.Segmentti,
@@ -46,9 +44,8 @@ router.post("/:id", function(req, res) {
       if (err) throw err;
       res.json("Insert was succesfull");
       res.status(204);
-    });
+    }
+  );
 });
-
-
 
 module.exports = router;

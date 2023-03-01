@@ -15,5 +15,6 @@ class LoadingIndicator extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => _getIndicatorPlatform(Theme.of(context).platform);
+  Widget build(BuildContext context) =>
+      _getIndicatorPlatform(Theme.of(context).platform);
 }

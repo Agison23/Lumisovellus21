@@ -28,84 +28,88 @@ const secret = "Lumihiriv0";
 const { body, validationResult } = require("express-validator");
 
 //käyttäjä sisäänkirjautuminen
-router.post("/user/login", function(req, res) {
-  database.query("SELECT * FROM Kayttajat WHERE Sähköposti = ?",[req.body.Sähköposti], function (err, result) {
-    if (err) throw err;
-    if(result.length == 1){
-      let user = result[0];
-      bcrypt.compare(req.body.Salasana, user.Salasana, function(err, login) {
-        if (login) {
-          jwt.sign({ id: user.ID, Sahkoposti: user.Sähköposti }, secret, { algorithm: "HS256" }, function(err, token) {
-            res.json(
-              { 
-                token: token, 
-                user: {
-                  Etunimi: user.Etunimi,
-                  Sukunimi: user.Sukunimi,
-                  ID: user.ID,
-                  Rooli: user.Rooli,
-                  Sähköposti: user.Sähköposti
-                } 
+router.post("/user/login", function (req, res) {
+  database.query(
+    "SELECT * FROM Kayttajat WHERE Sähköposti = ?",
+    [req.body.Sähköposti],
+    function (err, result) {
+      if (err) throw err;
+      if (result.length == 1) {
+        let user = result[0];
+        bcrypt.compare(req.body.Salasana, user.Salasana, function (err, login) {
+          if (login) {
+            jwt.sign(
+              { id: user.ID, Sahkoposti: user.Sähköposti },
+              secret,
+              { algorithm: "HS256" },
+              function (err, token) {
+                res.json({
+                  token: token,
+                  user: {
+                    Etunimi: user.Etunimi,
+                    Sukunimi: user.Sukunimi,
+                    ID: user.ID,
+                    Rooli: user.Rooli,
+                    Sähköposti: user.Sähköposti,
+                  },
+                });
+                res.status(200);
               }
-              
-            ); 
-            res.status(200);
-          });
-        }
-        else{
-          res.json("incorrect password");
-          res.status(401);
-        }
-      });
+            );
+          } else {
+            res.json("incorrect password");
+            res.status(401);
+          }
+        });
+      } else {
+        res.json("No User Found");
+        res.status(401);
+      }
     }
-    else
-    {
-      res.json("No User Found");
-      res.status(401);
-    }
-  });
+  );
 });
 
-
-
 //segmenttien haku
-router.get("/segments", function(req, res) {
+router.get("/segments", function (req, res) {
   //get points from database
-  database.query("SELECT * FROM Koordinaatit ORDER BY Segmentti", function (err, points, fields) {
-    if (err) throw err;
-    //transfere needed data to array
-    const coordsForSegments = points.map((item) => {
-      item.Sijainti.lat = item.Sijainti.x;
-      item.Sijainti.lng = item.Sijainti.y;
-      delete item.Sijainti.x;
-      delete item.Sijainti.y;
-      return [item.Segmentti, item.Sijainti];
-    });
+  database.query(
+    "SELECT * FROM Koordinaatit ORDER BY Segmentti",
+    function (err, points, fields) {
+      if (err) throw err;
+      //transfere needed data to array
+      const coordsForSegments = points.map((item) => {
+        item.Sijainti.lat = item.Sijainti.x;
+        item.Sijainti.lng = item.Sijainti.y;
+        delete item.Sijainti.x;
+        delete item.Sijainti.y;
+        return [item.Segmentti, item.Sijainti];
+      });
       //get segments from database
-      
-    database.query("SELECT * FROM Segmentit", function (err, result) {
-      let pointsDict = [];
-      //create dictionary of arrays
-      result.forEach(obj =>{
-        pointsDict[obj.ID] = [];
+
+      database.query("SELECT * FROM Segmentit", function (err, result) {
+        let pointsDict = [];
+        //create dictionary of arrays
+        result.forEach((obj) => {
+          pointsDict[obj.ID] = [];
+        });
+        //Fill points to it
+        coordsForSegments.forEach((obj) => {
+          pointsDict[obj[0]].push(obj[1]);
+        });
+        //add arrays from dict to result as object properties
+        result.forEach((obj) => {
+          obj.Points = pointsDict[obj.ID];
+        });
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3002");
+        res.json(result);
+        res.status(200);
       });
-      //Fill points to it
-      coordsForSegments.forEach(obj =>{
-        pointsDict[obj[0]].push(obj[1]);
-      });
-      //add arrays from dict to result as object properties
-      result.forEach(obj =>{
-        obj.Points = pointsDict[obj.ID];
-      });
-      res.setHeader("Access-Control-Allow-Origin", "http://localhost:3002");
-      res.json(result);
-      res.status(200);        
-    });
-  });
+    }
+  );
 });
 
 //segmentin tuoreimman päivityksen haku
-router.get("/segments/update/:id", function(req, res) {
+router.get("/segments/update/:id", function (req, res) {
   database.query(
     `SELECT Tekija, Segmentti, Aika, Kuvaus, Lumilaatu_ID1, Lumilaatu_ID2,Toissijainen_ID1 ,Toissijainen_ID2, Arvio_ID1, Arvio_ID2, Arvio_ID3
   FROM Paivitykset
@@ -117,19 +121,17 @@ router.get("/segments/update/:id", function(req, res) {
     GROUP BY(Segmentti)
    )
    ORDER BY(Segmentti)`,
-    [
-      req.params.id
-    ],
+    [req.params.id],
     function (err, result, fields) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
 
-
 //päivitysten haku
-router.get("/segments/update", function(req, res) {
+router.get("/segments/update", function (req, res) {
   database.query(
     `SELECT P.Segmentti, P.Aika, P.Kuvaus, P.Lumilaatu_ID1, P.Lumilaatu_ID2, P.Toissijainen_ID1, P.Toissijainen_ID2, 
       a1.Aika AS A1_Aika, a1.Lumilaatu AS A1_Lumilaatu, a1.Lisätiedot AS A1_Lisätiedot, 
@@ -151,12 +153,12 @@ router.get("/segments/update", function(req, res) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
 
-
 //segmentin uusimman arvion haku
-router.get("/reviews", function(req, res) {
+router.get("/reviews", function (req, res) {
   database.query(
     `SELECT ID, Aika, Segmentti, Lumilaatu, Lisätiedot, Kommentti
   FROM KayttajaArviot
@@ -172,11 +174,12 @@ router.get("/reviews", function(req, res) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
 
 //Kaikkien arvioiden haku
-router.get("/allReviews", function(req, res) {
+router.get("/allReviews", function (req, res) {
   database.query(
     `SELECT KayttajaArviot.Aika, KayttajaArviot.Lisätiedot, KayttajaArviot.Lumilaatu, KayttajaArviot.Kommentti, Lumilaadut.Nimi AS Lumi, Segmentit.Nimi AS Segmentti
     FROM KayttajaArviot
@@ -188,36 +191,32 @@ router.get("/allReviews", function(req, res) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
-
 
 //lumilaatujen haku
-router.get("/lumilaadut", function(req, res) {
-  database.query("Select * FROM Lumilaadut", 
-    function(err, result, fields) {
-      if (err) throw err;
-      res.json(result);
-      res.status(200);
-    });
+router.get("/lumilaadut", function (req, res) {
+  database.query("Select * FROM Lumilaadut", function (err, result, fields) {
+    if (err) throw err;
+    res.json(result);
+    res.status(200);
+  });
 });
 
-
-
 //Arvioinnin lisääminen lumi-informaatioon
-router.post("/review/:id", function(req, res) {
-  
-  if(req.body.Segmentti != req.params.id)
-  {
+router.post("/review/:id", function (req, res) {
+  if (req.body.Segmentti != req.params.id) {
     res.json("Segmentti numerot eivät täsmää");
     res.status(400);
   }
-  database.query("INSERT INTO KayttajaArviot(Aika, Segmentti, Lumilaatu, Lisätiedot, Kommentti) VALUES(NOW(), ?, ?, ?, ?)",
-    [ 
+  database.query(
+    "INSERT INTO KayttajaArviot(Aika, Segmentti, Lumilaatu, Lisätiedot, Kommentti) VALUES(NOW(), ?, ?, ?, ?)",
+    [
       req.body.Segmentti,
       req.body.Lumilaatu,
       req.body.Lisätiedot,
-      req.body.Kommentti
+      req.body.Kommentti,
     ],
     function (err) {
       if (err) throw err;
@@ -228,36 +227,35 @@ router.post("/review/:id", function(req, res) {
         res.json(result);
         res.status(204);
       });
-    });
+    }
+  );
 });
 
-router.post("/updateReview/:id", function(req, res) {
+router.post("/updateReview/:id", function (req, res) {
   database.query(
-  `UPDATE KayttajaArviot 
+    `UPDATE KayttajaArviot 
     SET Kommentti = ?
     WHERE ID = ? `,
-    [
-      req.body.Kommentti,
-      req.params.id
-    ],
+    [req.body.Kommentti, req.params.id],
     function (err, result) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
-
-
-
 
 //Salasanan tarkistus
 
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
   if (req.headers.authorization) {
     if (req.headers.authorization.startsWith("Bearer ")) {
-      var token = req.headers.authorization.slice(7, req.headers.authorization.length);
-      jwt.verify(token, secret, function(err, decoded) {
-        if(err) res.sendStatus(401);
+      var token = req.headers.authorization.slice(
+        7,
+        req.headers.authorization.length
+      );
+      jwt.verify(token, secret, function (err, decoded) {
+        if (err) res.sendStatus(401);
         else {
           //jos kirjautuminen onnistuu kirjataan jääneet tiedot muistiin
           req.decoded = decoded;
@@ -270,7 +268,6 @@ router.use(function(req, res, next) {
   } else {
     res.sendStatus(401);
   }
-
 });
 
 //object routers
@@ -279,5 +276,3 @@ router.use("/segment/", segments);
 router.use("/update/", updates);
 
 module.exports = router;
-
-

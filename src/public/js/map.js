@@ -1,9 +1,7 @@
-
 /*
  * Kannasta saatu data käsitellään taulukoksi, jossa alkioina segmentin id ja koordinaatit sisältävä taulukko
  *
  */
-
 
 /* THIS fucntion is redundatn now
 
@@ -41,14 +39,16 @@ function segmentDataToArray(data) {
 
 // Segmenttien tiedot json-muodossa kannasta
 function getSegments() {
-  return fetch(window.location.href + "db/segments")
-    .then((response) => { 
-      return response.json().then((data) => {
+  return fetch(window.location.href + "db/segments").then((response) => {
+    return response
+      .json()
+      .then((data) => {
         return data;
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
-      }); 
-    });
+      });
+  });
 }
 
 function initMap() {
@@ -81,22 +81,23 @@ function initMap() {
         });
 
         segment.setMap(map);
-    
+
         segment.addListener("mouseover", () => {
-          segment.setOptions({fillOpacity: 0.8});
+          segment.setOptions({ fillOpacity: 0.8 });
         });
-            
+
         segment.addListener("mouseout", () => {
-          segment.setOptions({fillOpacity: 0.15});
+          segment.setOptions({ fillOpacity: 0.15 });
         });
-            
+
         segment.addListener("click", () => {
           let infoDiv = document.getElementById("segment_info");
           // eslint-disable-next-line no-undef
-          infoDiv.innerHTML = "<p>Segmentin " + dataArray[i][0].segment + " tietoja</p>";
+          infoDiv.innerHTML =
+            "<p>Segmentin " + dataArray[i][0].segment + " tietoja</p>";
         });
-      }     
-    });   
+      }
+    });
   }
   drawSegmentsFromData(map);
 }

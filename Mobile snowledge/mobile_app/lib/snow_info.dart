@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import '../state/appState.dart';
 import '../translations/translations.dart';
 
-
 class SnowInfo extends StatefulWidget {
   const SnowInfo({Key? key}) : super(key: key);
 

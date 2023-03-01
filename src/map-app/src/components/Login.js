@@ -193,7 +193,9 @@ function Login(props) {
 
       {/* Kirjautumisdialogi */}
       <Dialog onClose={closeLogin} open={loginOpen}>
-        <DialogTitle id="login-dialog">{translations["login"][language]}</DialogTitle>
+        <DialogTitle id="login-dialog">
+          {translations["login"][language]}
+        </DialogTitle>
         <TextField
           id="email"
           label={translations["email"][language]}
@@ -229,7 +231,7 @@ function Login(props) {
         <DialogActions>
           <Divider />
           <Button id={"dialogClose"} onClick={closeLogin}>
-          {translations["close"][language]}
+            {translations["close"][language]}
           </Button>
           <Button
             variant="contained"

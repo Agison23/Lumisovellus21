@@ -25,9 +25,8 @@ const saltRounds = 15;
 //alusta tarkistus
 const { body, validationResult } = require("express-validator");
 
-
 //kaikkien käyttäjien haku
-router.get("/all", function(req, res) {
+router.get("/all", function (req, res) {
   database.query("SELECT * FROM Kayttajat", function (err, result) {
     if (err) throw err;
     res.json(result);
@@ -36,66 +35,78 @@ router.get("/all", function(req, res) {
 });
 
 //yhden käyttäjän haku
-router.get("/", function(req, res) {
-  database.query("SELECT * FROM Kayttajat WHERE ID = ?",
-    [
-      req.decoded.id
-    ],
+router.get("/", function (req, res) {
+  database.query(
+    "SELECT * FROM Kayttajat WHERE ID = ?",
+    [req.decoded.id],
     function (err, result) {
       if (err) throw err;
       res.json(result);
       res.status(200);
-    });
+    }
+  );
 });
 
 //käyttäjän teko
-router.post("/",
+router.post(
+  "/",
   [
-  // tarkista sähköposti
+    // tarkista sähköposti
     body("Sähköposti").isEmail().withMessage("Ei toimiva shäköposti"),
-  
+
     body("Etunimi").exists().withMessage("Puuttuva etunimi"),
     body("Sukunimi").exists().withMessage("Puuttuva sukunimi"),
- 
+
     // tarkista salasanan pituus
-    body("Salasana").isLength({ min: 7 }).withMessage("Salasanan oltava vähintään 7 merkkiä")
-  ]
-  ,function(req, res) {
+    body("Salasana")
+      .isLength({ min: 7 })
+      .withMessage("Salasanan oltava vähintään 7 merkkiä"),
+  ],
+  function (req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.json({ errors: errors.array() });
       res.status(400);
-    }
-  
-    else{
-    //salataan salasana
-      database.beginTransaction(function(err){
+    } else {
+      //salataan salasana
+      database.beginTransaction(function (err) {
         if (err) throw err;
-        bcrypt.hash(req.body.Salasana, saltRounds, function(err, hash) {
-          database.query("INSERT INTO Kayttajat(Etunimi, Sukunimi, Sähköposti, Salasana, Rooli) VALUES(?, ?, ?, ?, ?)",
+        bcrypt.hash(req.body.Salasana, saltRounds, function (err, hash) {
+          database.query(
+            "INSERT INTO Kayttajat(Etunimi, Sukunimi, Sähköposti, Salasana, Rooli) VALUES(?, ?, ?, ?, ?)",
             [
               req.body.Etunimi,
               req.body.Sukunimi,
               req.body.Sähköposti,
               hash,
-              req.body.Rooli ? req.body.Rooli : "operator"
+              req.body.Rooli ? req.body.Rooli : "operator",
             ],
             function (err) {
-              if (err){database.rollback(function(){throw err;});}
-              database.commit(function(err){
-                if(err){database.rollback(function(){throw err;});}
+              if (err) {
+                database.rollback(function () {
+                  throw err;
+                });
+              }
+              database.commit(function (err) {
+                if (err) {
+                  database.rollback(function () {
+                    throw err;
+                  });
+                }
                 res.json("Insert was succesfull");
                 res.status(204);
               });
-            });
+            }
+          );
         });
       });
     }
-  });
+  }
+);
 
-router.put("/:id", function(req, res) {
+router.put("/:id", function (req, res) {
   if (req.body.Salasana) {
-    bcrypt.hash(req.body.Salasana, saltRounds, function(err, hash) {
+    bcrypt.hash(req.body.Salasana, saltRounds, function (err, hash) {
       database.query(
         `UPDATE Kayttajat
        SET 
@@ -110,13 +121,14 @@ router.put("/:id", function(req, res) {
           req.body.Sukunimi,
           req.body.Sähköposti,
           hash,
-          req.params.id
+          req.params.id,
         ],
         function (err, result) {
           if (err) throw err;
           res.json(result);
           res.status(200);
-        });
+        }
+      );
     });
   } else {
     database.query(
@@ -127,56 +139,46 @@ router.put("/:id", function(req, res) {
       Sähköposti=?
       WHERE ID = ?
     `,
-      [
-        req.body.Etunimi,
-        req.body.Sukunimi,
-        req.body.Sähköposti,
-        req.params.id
-      ],
+      [req.body.Etunimi, req.body.Sukunimi, req.body.Sähköposti, req.params.id],
       function (err, result) {
         if (err) throw err;
         res.json(result);
         res.status(200);
-      });
+      }
+    );
   }
-  
 });
 
-
-router.delete("/:id", function(req, res) {
+router.delete("/:id", function (req, res) {
   database.query(
     `SELECT * FROM Kayttajat
    WHERE ID = ?
   `,
-    [
-      req.params.id
-    ],
+    [req.params.id],
     function (err, result) {
       if (err) throw err;
       console.log(result.length);
-      if(result.length < 1) {
+      if (result.length < 1) {
         res.end("Poistettavaa ei löytynyt");
         res.status(404);
-      }
-      else if(result[0].Rooli =="admin"){
+      } else if (result[0].Rooli == "admin") {
         res.end("adminia ei voi poistaa");
         res.status(401);
-      }
-      else{
+      } else {
         database.query(
           `DELETE FROM Kayttajat
          WHERE ID = ?
         `,
-          [
-            req.params.id
-          ],
+          [req.params.id],
           function (err, result) {
             if (err) throw err;
             res.json(result);
             res.status(200);
-          });
+          }
+        );
       }
-    });
+    }
+  );
 });
 
 module.exports = router;

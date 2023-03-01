@@ -10,19 +10,17 @@ so this function allows showing either of the languages to the user by finding
 the key for that textToTranslate parameter.
 **/
 
+import translations from "./translations";
 
-import translations from "./translations"; 
+export default function getTranslationKey(textToTranslate, lan = "fi") {
+  for (let translationKey in translations) {
+    let translationObject = translations[translationKey];
+    let translationInLan = translationObject[lan];
 
-export default function getTranslationKey(textToTranslate,lan = "fi"){
-    for (let translationKey in translations){
-      let translationObject = translations[translationKey];
-      let translationInLan = translationObject[lan];
-  
-      if(translationInLan == textToTranslate){
-        return translationKey;
-      }
+    if (translationInLan == textToTranslate) {
+      return translationKey;
     }
-      //shouldn't be possible
-    return "error";
+  }
+  //shouldn't be possible
+  return "error";
 }
-

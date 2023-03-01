@@ -179,15 +179,21 @@ function EditOwn(props) {
   return (
     <div>
       {/* Dialogi näyttää nykyiset tiedot ja sisältää muokkauskentät, sekä toimintopainikkeet muokkaamista varten */}
-      <DialogTitle id="edit_user">{translations["editYourData"][language]}</DialogTitle>
+      <DialogTitle id="edit_user">
+        {translations["editYourData"][language]}
+      </DialogTitle>
       <DialogContent>
-        <Typography variant="subtitle2">{translations["dataNow"][language]}</Typography>
+        <Typography variant="subtitle2">
+          {translations["dataNow"][language]}
+        </Typography>
         <Typography>
           {props.user.Etunimi + " " + props.user.Sukunimi}
         </Typography>
         <Typography>{props.user.Sähköposti}</Typography>
         <FormControl>
-          <InputLabel htmlFor="firstname">{translations["changeName"][language]}</InputLabel>
+          <InputLabel htmlFor="firstname">
+            {translations["changeName"][language]}
+          </InputLabel>
           <Input
             id="firstname"
             type="text"
@@ -197,7 +203,9 @@ function EditOwn(props) {
         </FormControl>
         <br />
         <FormControl>
-          <InputLabel htmlFor="lastname">{translations["changeLastName"][language]}</InputLabel>
+          <InputLabel htmlFor="lastname">
+            {translations["changeLastName"][language]}
+          </InputLabel>
           <Input
             id="lastname"
             type="text"
@@ -207,7 +215,9 @@ function EditOwn(props) {
         </FormControl>
         <br />
         <FormControl>
-          <InputLabel htmlFor="email">{translations["changeEmail"][language]}</InputLabel>
+          <InputLabel htmlFor="email">
+            {translations["changeEmail"][language]}
+          </InputLabel>
           <Input
             id="email"
             type="text"
@@ -218,7 +228,7 @@ function EditOwn(props) {
         <br />
         <FormControl error={mismatch}>
           <InputLabel htmlFor="standard-adornment-password">
-          {translations["newPassword"][language]}
+            {translations["newPassword"][language]}
           </InputLabel>
           <Input
             id="standard-adornment-password"
@@ -241,7 +251,9 @@ function EditOwn(props) {
         {mismatch ? <FormHelperText>{message}</FormHelperText> : <div />}
 
         <FormControl error={mismatch}>
-          <InputLabel htmlFor="confirm">{translations["confirmNewPassword"][language]}</InputLabel>
+          <InputLabel htmlFor="confirm">
+            {translations["confirmNewPassword"][language]}
+          </InputLabel>
           <Input
             id="confirm"
             type="password"
@@ -254,7 +266,7 @@ function EditOwn(props) {
       <DialogActions>
         <Divider />
         <Button id={"editClose"} onClick={handleClose}>
-        {translations["close"][language]}
+          {translations["close"][language]}
         </Button>
         <Button
           variant="contained"

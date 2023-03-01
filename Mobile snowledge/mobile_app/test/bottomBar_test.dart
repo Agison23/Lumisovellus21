@@ -27,10 +27,10 @@ void main() {
           ChangeNotifierProvider<AppState>(create: (_) => AppState())
         ],
         child: const MaterialApp(
-      home: Scaffold(
-        bottomNavigationBar: BottomBar(),
-      ),
-    )));
+          home: Scaffold(
+            bottomNavigationBar: BottomBar(),
+          ),
+        )));
     await tester.tap(find.text('Sijainti'));
     await tester.pumpAndSettle();
 

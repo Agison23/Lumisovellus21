@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,8 +9,7 @@ import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
-import getTranslationKey from  "../../translations/getTranslationsKey";
-
+import getTranslationKey from "../../translations/getTranslationsKey";
 
 const useStyles = makeStyles(() => ({
   userCard: {
@@ -22,7 +21,7 @@ const useStyles = makeStyles(() => ({
     marginTop: 10,
   },
   coordinateInputs: {
-    display: "flex"
+    display: "flex",
   },
   smallHeaders: {
     fontFamily: "Donau",
@@ -50,7 +49,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-
 function getRelativeTimestamp(current, previous, language) {
   var msPerMinute = 60 * 1000;
   var msPerHour = msPerMinute * 60;
@@ -64,38 +62,49 @@ function getRelativeTimestamp(current, previous, language) {
     if (Math.round(elapsed / 1000) == 1) {
       return `1  ${translations["secondAgo"][language]}`;
     }
-    return `${Math.round(elapsed / 1000)} ${translations["secondsAgo"][language]}`;
+    return `${Math.round(elapsed / 1000)} ${
+      translations["secondsAgo"][language]
+    }`;
   } else if (elapsed < msPerHour) {
     if (Math.round(elapsed / msPerMinute) == 1) {
       return `1  ${translations["minuteAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerMinute)} ${translations["minutesAgo"][language]}`;
+    return `${Math.round(elapsed / msPerMinute)} ${
+      translations["minutesAgo"][language]
+    }`;
   } else if (elapsed < msPerDay) {
     if (Math.round(elapsed / msPerHour) == 1) {
       return `1  ${translations["hourAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerHour)} ${translations["hoursAgo"][language]}`;
+    return `${Math.round(elapsed / msPerHour)} ${
+      translations["hoursAgo"][language]
+    }`;
   } else if (elapsed < msPerMonth) {
     if (Math.round(elapsed / msPerDay) == 1) {
       return `1  ${translations["dayAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerDay)} ${translations["daysAgo"][language]}`;
+    return `${Math.round(elapsed / msPerDay)} ${
+      translations["daysAgo"][language]
+    }`;
   } else if (elapsed < msPerYear) {
     if (Math.round(elapsed / msPerMonth) == 1) {
       return `1  ${translations["monthAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerMonth)} ${translations["monthsAgo"][language]}`;
+    return `${Math.round(elapsed / msPerMonth)} ${
+      translations["monthsAgo"][language]
+    }`;
   } else {
     if (Math.round(elapsed / msPerYear) == 1) {
       return `1  ${translations["yearAgo"][language]}`;
     }
-    return `${Math.round(elapsed / msPerYear)} ${translations["yearsAgo"][language]}`;
+    return `${Math.round(elapsed / msPerYear)} ${
+      translations["yearsAgo"][language]
+    }`;
   }
 }
 
 // eslint-disable-next-line no-unused-vars
 function ReviewManage(props) {
-
   const classes = useStyles();
 
   // Hooks
@@ -104,7 +113,7 @@ function ReviewManage(props) {
 
   useEffect(() => {
     fetchReviews();
-    
+
     const interval = setInterval(() => {
       fetchReviews();
     }, 10000);
@@ -120,9 +129,7 @@ function ReviewManage(props) {
     const reviews = await fetch("api/allReviews");
     const data = await reviews.json();
 
-    
-
-    await data.forEach(item => {
+    await data.forEach((item) => {
       item.CurrentTime = new Date();
       item.LatestUpdateTime = new Date(item.Aika);
       item.TranslationsKey = getTranslationKey(item.Lumi);
@@ -130,73 +137,83 @@ function ReviewManage(props) {
     setReviewData(data);
   };
 
- 
   // Renderöinti
-  return (  
+  return (
     <div>
-      
       <Box className={classes.cardContainer}>
-        <Grid container spacing={0}> 
-          
+        <Grid container spacing={0}>
           {/* Luodaan jokaiselle arviolle oma kortti */}
-          {
-            reviewData.length === 0
-              ? 
-              <p style={{padding: "10px"}}>{translations["noUserReviews"][language]}</p>
-              :
-              reviewData.map((item, index) => {
-                return (
-                  <Grid key={index} item xs={12} sm={12}>
-                    <Card className={classes.userCard}>
-                      <CardHeader 
-                        title={item.Segmentti === null ? "" : item.Segmentti}
-                        className={classes.normalText}
-                      />
-                  
+          {reviewData.length === 0 ? (
+            <p style={{ padding: "10px" }}>
+              {translations["noUserReviews"][language]}
+            </p>
+          ) : (
+            reviewData.map((item, index) => {
+              return (
+                <Grid key={index} item xs={12} sm={12}>
+                  <Card className={classes.userCard}>
+                    <CardHeader
+                      title={item.Segmentti === null ? "" : item.Segmentti}
+                      className={classes.normalText}
+                    />
 
-                      <CardContent>
+                    <CardContent>
+                      {item.Lumilaatu !== null && (
+                        <Grid item xs={10} sm={10} spacing={2} container>
+                          <Grid item xs={6} sm={1}>
+                            {
+                              <CardMedia
+                                component={"img"}
+                                src={
+                                  process.env.PUBLIC_URL +
+                                  "/icons/snowtypes-and-harms/" +
+                                  item.Lumilaatu +
+                                  ".svg"
+                                }
+                                alt="lumityypin logo"
+                              />
+                            }
+                          </Grid>
 
-                        {item.Lumilaatu !== null &&
-                          <Grid item xs={10} sm={10} spacing={2} container>                 
-                            <Grid item xs={6} sm={1}>
-                              {
-                                <CardMedia
-                                  component={"img"}
-                                  src={process.env.PUBLIC_URL + "/icons/snowtypes-and-harms/" + item.Lumilaatu + ".svg"}
-                                  alt="lumityypin logo"
-                                />
-                              }
-                            </Grid>
-
-                            <Grid item container xs={6} sm={11} className={classes.snowInfo}>
-                              <Grid item xs={12} sm={12}>
-                                <Typography className={classes.smallHeaders} variant="body1" component="p">
+                          <Grid
+                            item
+                            container
+                            xs={6}
+                            sm={11}
+                            className={classes.snowInfo}
+                          >
+                            <Grid item xs={12} sm={12}>
+                              <Typography
+                                className={classes.smallHeaders}
+                                variant="body1"
+                                component="p"
+                              >
                                 {translations[item.TranslationsKey][language]}
-                                </Typography>
-                              </Grid>
+                              </Typography>
                             </Grid>
                           </Grid>
-                        }
+                        </Grid>
+                      )}
 
-                        {item.Kommentti !== null &&
-                          <p>{item.Kommentti}</p>                     
-                        }
+                      {item.Kommentti !== null && <p>{item.Kommentti}</p>}
 
-
-                        <Typography className={classes.timeStamp}>{`${getRelativeTimestamp(item.CurrentTime, item.LatestUpdateTime, language)}`}</Typography>
-
-
-                      </CardContent>
-                    </Card>                 
-                  </Grid>
-                );
-              })
-          }  
-        </Grid>   
+                      <Typography
+                        className={classes.timeStamp}
+                      >{`${getRelativeTimestamp(
+                        item.CurrentTime,
+                        item.LatestUpdateTime,
+                        language
+                      )}`}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })
+          )}
+        </Grid>
       </Box>
     </div>
   );
-  
 }
 
 export default ReviewManage;

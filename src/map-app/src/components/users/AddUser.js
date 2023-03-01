@@ -8,7 +8,7 @@ Added english version
 
 **/
 
-import React, {useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -41,33 +41,38 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 2px 2px 2px rgba(0, 0, 0, .3)",
   },
   coordinateInputs: {
-    display: "flex"
+    display: "flex",
   },
   addNewLine: {
     // Koordinaattirivin lisäysnapin tyylit
-  }
+  },
 }));
 
 function AddUser(props) {
-
   // Hooks
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [admin, setAdmin] = useState(false);
-  const [addOpen, setAddOpen] =useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { language } = useContext(GlobalContext);
 
   // Tarkistuksia lisäyspainikkeen aktivoitumiselle lisäysdialogissa
-  const formOK = Boolean(!(firstName !== "" && lastName !== "" && email !== "" && password.length >= 7));
-  
+  const formOK = Boolean(
+    !(
+      firstName !== "" &&
+      lastName !== "" &&
+      email !== "" &&
+      password.length >= 7
+    )
+  );
 
   /*
    * Event handlers
    */
-  
+
   // Avaa käyttäjänlisäysdialogin
   const openAdd = () => {
     setAddOpen(true);
@@ -85,7 +90,6 @@ function AddUser(props) {
 
   // Käyttäjän lisääminen (vahvistusdialogin jälkeen)
   const handleAdd = () => {
-    
     // Tiedot  tulevat hookeista
     const data = {
       Etunimi: firstName,
@@ -97,16 +101,15 @@ function AddUser(props) {
 
     // Käyttäjän lisäämisen api-kutsu
     const fetchAddUser = async () => {
-      const response = await fetch("api/user",
-        {
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + props.token
-          },
-          body: JSON.stringify(data),
-        });
+      const response = await fetch("api/user", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + props.token,
+        },
+        body: JSON.stringify(data),
+      });
       const res = await response.json();
       console.log(res);
       await props.fetchUsers();
@@ -156,50 +159,49 @@ function AddUser(props) {
    */
   return (
     <div className="add_user">
-      
       {/* Painike, joka avaa käyttäjän lisäysdialogin */}
       <Box className={classes.add}>
         <Button>
           <AddCircleOutlineIcon />
-          <Typography variant="button" onClick={openAdd}>{translations["addUser"][language]}</Typography>
-          
+          <Typography variant="button" onClick={openAdd}>
+            {translations["addUser"][language]}
+          </Typography>
         </Button>
       </Box>
 
       {/* Segmentin lisäysdialogi */}
-      <Dialog 
-        onClose={closeAdd} 
-        open={addOpen}
-      >
-        <DialogTitle id="add_segment">{translations["addUser"][language]}</DialogTitle>
-        <Typography variant="caption">{translations["allTextFieldsAreRequired"][language]}</Typography>
-        <Typography variant="caption">{translations["tooShortPassword"][language]}</Typography>
+      <Dialog onClose={closeAdd} open={addOpen}>
+        <DialogTitle id="add_segment">
+          {translations["addUser"][language]}
+        </DialogTitle>
+        <Typography variant="caption">
+          {translations["allTextFieldsAreRequired"][language]}
+        </Typography>
+        <Typography variant="caption">
+          {translations["tooShortPassword"][language]}
+        </Typography>
         <FormControl>
-          <InputLabel htmlFor="firstname" >{translations["firstName"][language]}</InputLabel>
-          <Input
-            id="firstname"
-            type='text'
-            onChange={updateFirstName}
-          />
+          <InputLabel htmlFor="firstname">
+            {translations["firstName"][language]}
+          </InputLabel>
+          <Input id="firstname" type="text" onChange={updateFirstName} />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="lastname" >{translations["lastName"][language]}</InputLabel>
-          <Input
-            id="lastname"
-            type='text'
-            onChange={updateLastName}
-          />
-        </FormControl>
-        <FormControl>  
-          <InputLabel htmlFor="email" >{translations["email"][language]}</InputLabel>
-          <Input
-            id="email"
-            type='text'
-            onChange={updateEmail}
-          />
+          <InputLabel htmlFor="lastname">
+            {translations["lastName"][language]}
+          </InputLabel>
+          <Input id="lastname" type="text" onChange={updateLastName} />
         </FormControl>
         <FormControl>
-          <InputLabel htmlFor="standard-adornment-password">{translations["password"][language]}</InputLabel>
+          <InputLabel htmlFor="email">
+            {translations["email"][language]}
+          </InputLabel>
+          <Input id="email" type="text" onChange={updateEmail} />
+        </FormControl>
+        <FormControl>
+          <InputLabel htmlFor="standard-adornment-password">
+            {translations["password"][language]}
+          </InputLabel>
           <Input
             id="standard-adornment-password"
             type={showPassword ? "text" : "password"}
@@ -220,7 +222,7 @@ function AddUser(props) {
         </FormControl>
         <FormControlLabel
           control={
-            <Checkbox            
+            <Checkbox
               checked={admin}
               onChange={updateAdmin}
               name="admin"
@@ -229,18 +231,26 @@ function AddUser(props) {
           }
           label={translations["adminUser"][language]}
         />
-        
+
         {/* Painikkeet lomakkeen lopussa */}
-        <DialogActions>   
+        <DialogActions>
           <Divider />
-          <Button id={"deleteClose"} onClick={closeAdd}>{translations["close"][language]}</Button>
-          <Button variant="contained" color="primary" id={"delete"} disabled={formOK} onClick={handleAdd}>{translations["add"][language]}</Button>
+          <Button id={"deleteClose"} onClick={closeAdd}>
+            {translations["close"][language]}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            id={"delete"}
+            disabled={formOK}
+            onClick={handleAdd}
+          >
+            {translations["add"][language]}
+          </Button>
         </DialogActions>
-      
       </Dialog>
     </div>
   );
-
 }
- 
+
 export default AddUser;
