@@ -68,10 +68,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             controller: fNameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return translations['fNameQuery'][appState.language];
+                                return translations['fNameQuery']
+                                    [appState.language];
                               }
                               if (value.length > nameMaxLen) {
-                                return translations['fNameMaxLen1'][appState.language] + '${nameMaxLen}' + translations['fNameMaxLen2'][appState.language];
+                                return translations['fNameMaxLen1']
+                                        [appState.language] +
+                                    '${nameMaxLen}' +
+                                    translations['fNameMaxLen2']
+                                        [appState.language];
                               }
                               return null;
                             },
@@ -83,7 +88,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: translations['fName'][appState.language],
+                              labelText: translations['fName']
+                                  [appState.language],
                             ),
                           ),
                         ),
@@ -96,10 +102,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
                             controller: lNameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return translations['surnameQuery'][appState.language];
+                                return translations['surnameQuery']
+                                    [appState.language];
                               }
                               if (value.length > nameMaxLen) {
-                                return translations['surnameMaxLen1'][appState.language] + '${nameMaxLen}'+ translations['surnameMaxLen2'][appState.language];
+                                return translations['surnameMaxLen1']
+                                        [appState.language] +
+                                    '${nameMaxLen}' +
+                                    translations['surnameMaxLen2']
+                                        [appState.language];
                               }
                               return null;
                             },
@@ -111,7 +122,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: translations['surname'][appState.language],
+                              labelText: translations['surname']
+                                  [appState.language],
                             ),
                           ),
                         ),
@@ -212,5 +224,4 @@ void _updateName(
     pref.setString('pNumber', pNumber);
     _showDialog(context, translations['infoSaved'][appState.language]);
   });
-  
 }
