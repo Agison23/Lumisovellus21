@@ -29,7 +29,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 import { Select, MenuItem } from "@material-ui/core";
 

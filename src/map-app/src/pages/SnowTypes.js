@@ -6,6 +6,9 @@ Recent changes:
 7.12 Emil Calonius
 Created component
 
+23.2 2023 otso tikkkanen
+Added english version
+
 **/
 
 import React, { useContext } from "react";
@@ -13,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -188,9 +191,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["supportingCrust"][language]}</Typography>
+              <Typography variant="h5">{translations["concrete"][language]}</Typography>
               <Typography>
-                {translations["supportingCrustDescription"][language]}
+                {translations["concreteDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -220,9 +223,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["breakableCrust"][language]}</Typography>
+              <Typography variant="h5">{translations["collapsingCrust"][language]}</Typography>
               <Typography>
-                {translations["breakableCrustDescription"][language]}
+                {translations["collapsingCrustDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -238,9 +241,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["windsweptSnow"][language]}</Typography>
+              <Typography variant="h5">{translations["windPackedSnow"][language]}</Typography>
               <Typography>
-                {translations["windsweptSnowDescription"][language]}
+                {translations["windPackedSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/3.svg"
@@ -286,9 +289,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["blizzardSnow"][language]}</Typography>
+              <Typography variant="h5">{translations["windblownSnow"][language]}</Typography>
               <Typography>
-                {translations["blizzardSnowDescription"][language]}
+                {translations["windblownSnowDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/4.svg"
@@ -338,9 +341,9 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["slushySnow"][language]}</Typography>
+              <Typography variant="h5">{translations["slush"][language]}</Typography>
               <Typography>
-                {translations["slushySnowDescription"][language]}
+                {translations["slushDescription"][language]}
               </Typography>
               <img
                 src="/icons/skiability/2.svg"
@@ -388,7 +391,7 @@ function SnowTypes(props) {
               style={{ height: "100px", width: "100px" }}
             ></img>
             <Box>
-              <Typography variant="h5">{translations["minimalSnow"][language]}</Typography>
+              <Typography variant="h5">{translations["littleSnow"][language]}</Typography>
             </Box>
           </Box>
         </Box>

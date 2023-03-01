@@ -39,7 +39,7 @@ import UserManage from "../users/UserManage";
 import ReviewManage from "./reviewManage";
 import SegmentManage from "../segments/SegmentManage";
 import GlobalContext from "../../context/GlobalContext.js";
-import translations from "../../translations";
+import translations from "../../translations/translations";
 
 const useStyles = makeStyles(() => ({
   tabs: {

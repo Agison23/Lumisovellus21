@@ -2,10 +2,15 @@
 Welcome view of the application.
 Has text that contains information about the application and a spot for sponsor logos.
 Recent changes:
+
 7.12 Emil Calonius
 Updated layout for mobile
+
 1.12 Emil Calonius
 Created component
+
+23.2 2023 otso tikkkanen
+Added english version
  **/
 
 import React, { useState, useEffect, useContext } from "react";
@@ -14,9 +19,9 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Select, MenuItem } from "@material-ui/core";
-import welcomeText from "./welcomeText.json";
+import welcomeText from "../translations/welcomeText.json";
 import GlobalContext from "../context/GlobalContext.js";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -71,7 +76,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
     paddingBottom: "10px",
-  },
+  }
 }));
 
 function WelcomeView(props) {
@@ -90,18 +95,15 @@ function WelcomeView(props) {
 
   if (props.isMobile) {
     return (
-
-
-      
- 
-
-
       <Box className={styledClasses.mobileRoot}>
         <Select
         style={{
           color: "#e6e6e6" ,
           fontWeight: "bold",
           padding: "5px",
+          position: "absolute",
+          top: "5px",
+          right: "5px",
         }}
         value={language}
         onChange={handleChange}
@@ -196,6 +198,7 @@ function WelcomeView(props) {
           </Button>
         </Box>
       </Box>
+             
     );
   } else {
     return (

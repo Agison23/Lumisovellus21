@@ -1,6 +1,6 @@
  /**
 This file contains datastructure that 
-allows application to be in manylanguages 
+allows application to be in many languages 
 **/
  
  
@@ -33,9 +33,9 @@ allows application to be in manylanguages
         en: "Crust"
     },
 
-    supportingCrust:{
+    concrete:{
         fi: "Kantava korppu",
-        en: "Supporting crust"
+        en: "Concrete"
     },
 
     thinCrust:{
@@ -43,19 +43,19 @@ allows application to be in manylanguages
         en: "Thin crust"
     },
 
-    breakableCrust:{
+    collapsingCrust:{
         fi: "Rikkoutuva korppu",
-        en: "Breakable crust"
+        en: "Collapsing crust"
     },
 
-    windsweptSnow:{
+    windPackedSnow:{
         fi: "Tuulen pieksemä lumi",
-        en: "Windswept snow"
+        en: "Windpacked snow"
     },
 
     wavySnow:{
         fi: "Aaltoileva lumi",
-        en: "Wavy snow"
+        en: "Drifts and banks of windblown snow"
     },
 
     sastrug:{
@@ -63,9 +63,9 @@ allows application to be in manylanguages
         en: "Sastrug"
     },
 
-    blizzardSnow:{
+    windblownSnow:{
         fi: "Tuiskulumi",
-        en: "Blizzard snow"
+        en: "Windblown snow"
     },
 
 
@@ -81,9 +81,9 @@ allows application to be in manylanguages
     },
 
 
-    slushySnow:{
+    slush:{
         fi: "Sohjo",
-        en: "Slushy snow"
+        en: "Slush"
     }, 
 
     wettingSnow:{
@@ -96,9 +96,9 @@ allows application to be in manylanguages
         en: "Saturated snow"
     }, 
 
-    minimalSnow:{
+    littleSnow:{
         fi: "Vähäinen lumi",
-        en: "Minimal snow"
+        en: "Little snow"
     },
 
     snowLessLand:{
@@ -361,12 +361,12 @@ allows application to be in manylanguages
 
   freshWetSnowDescription:{
       fi: "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
-      en: "Snow, from which you can easily make a snowball. Wet snow forms when it rains close to or above zero degrees."
+      en: "Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point"
   },
 
   powderSnowDescription:{
       fi: "Vastasatanutta, irtonaista ja höyhenenkevyttä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella. ",
-      en: "Fresh, loose ja extreamly light snow. Powder is usually formed in calm and freezing weather."
+      en: "Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather."
   },
 
   freshSnowDescription:{
@@ -379,22 +379,22 @@ allows application to be in manylanguages
       en: "A hard crust on the surface of the snow. The crust can be flat or jagged."
   },
 
-  supportingCrustDescription:{
+  concreteDescription:{
       fi: "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.",
-      en: "Solid and supporting snow crust, which is usually extreamly hard and compact."
+      en: "Solid snow crust, which is usually extremely hard and compact."
   },
 
   thinCrustDescription:{
       fi: "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.",
-      en: "A crust that would break from the weight of a Skier. Under the crust, the snow can be submersive."
+      en: "A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive."
   },
 
-  breakableCrustDescription:{
+  collapsingCrustDescription:{
       fi: "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.",
-      en: "Partly supportive, occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath."
+      en: "Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath."
   },
 
-  windsweptSnowDescription:{
+  windPackedSnowDescription:{
       fi: "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.",
       en: "Snow hardened by the wind and uneven in many places."
   },
@@ -409,14 +409,14 @@ allows application to be in manylanguages
       en: "Wind-induced wavy snow, which is hard, icy and has sharp ridges."
   },
 
-  blizzardSnowDescription:{
+  windblownSnowDescription:{
       fi: "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.",
-      en: "Flat, wind-layered and compressed tile or lens. Blizzard snow can also accumulate without snowfall if wind moves snow from one place to another. Blizzard snow is usually formed on the side of the fell protected from wind."
+      en: "Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from wind."
   },
 
   iceDescription:{
       fi: "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.",
-      en: "A hard and unbreakable icy layer on the surface of the snow. Ice forms as a result of the snow melts and freezes again."
+      en: "A hard and unbreakable icy layer on the surface of the snow. Hard, glazed surface caused by melt-freeze process."
   },
 
   breakableIceDescription:{
@@ -424,7 +424,7 @@ allows application to be in manylanguages
       en: "A hard and breakable icy layer on the surface of the snow."
   },
 
-  slushySnowDescription:{
+  slushDescription:{
       fi: "Vesipitoinen ja osittain sulanut lumi suojasäällä.",
       en: "Wet and partially melted snow in above zero degrees weather."
   },
@@ -439,7 +439,7 @@ allows application to be in manylanguages
       en: "Completely wet , slushing and whipped cream like snow."
   },
 
-  minimalSnowDescription:{
+  littleSnowDescription:{
     fi: "",
     en: ""
   },
@@ -1009,6 +1009,11 @@ allows application to be in manylanguages
   northwest:{
     fi: "Luode",
     en: "Northwest"
+  },
+
+  error:{
+    fi: "Virhe",
+    en: "Error"
   }
 
 };

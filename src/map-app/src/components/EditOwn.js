@@ -38,7 +38,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import GlobalContext from "../context/GlobalContext";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 function EditOwn(props) {
   const [firstName, setFirstName] = React.useState(null);

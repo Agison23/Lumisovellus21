@@ -41,7 +41,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import CloseIcon from "@material-ui/icons/Close";
 import GlobalContext from "../context/GlobalContext";
 import { Select, MenuItem } from "@material-ui/core";
-import translations from "../translations";
+import translations from "../translations/translations";
 
 // Tyylejä sisäänkirjautumislomakkeen osille
 const useStyles = makeStyles((theme) => ({
@@ -250,7 +250,7 @@ function Login(props) {
       >
         <SnackbarContent
           style={{ backgroundColor: "#ed7a72", color: "black" }}
-          message="Virheellinen sähköposti tai salasana!"
+          message={translations["erroneousEmailOrPassword"][language]}
           action={
             <IconButton
               size="small"
