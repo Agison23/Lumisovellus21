@@ -102,7 +102,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           const Divider(color: Colors.black),
           Center(
             child: DropdownButton<String>(
-              key: const ValueKey('dropdown'),
+              key: const ValueKey('languageSideDropdown'),
               value: appState.languageName,
               onChanged: (String? value) {
                 setLanguage(value!);
@@ -111,6 +111,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                   .toList()
                   .map<DropdownMenuItem<String>>((item) {
                 return DropdownMenuItem<String>(
+                  key: ValueKey(item.toString()),
                   value: item,
                   child: Text(item),
                 );

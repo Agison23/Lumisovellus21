@@ -102,21 +102,21 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               ),
                               const SizedBox(height: 15),
                               Center(
-                                child: Expanded(
-                                  child: DropdownButton<String>(
-                                    value: appState.languageName,
-                                    onChanged: (String? value) {
-                                      setLanguage(value!);
-                                    },
-                                    items: appState.allLanguages.keys
-                                        .toList()
-                                        .map<DropdownMenuItem<String>>((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Text(item),
-                                      );
-                                    }).toList(),
-                                  ),
+                                child: DropdownButton<String>(
+                                  key: const ValueKey('languageStartDropdown'),
+                                  value: appState.languageName,
+                                  onChanged: (String? value) {
+                                    setLanguage(value!);
+                                  },
+                                  items: appState.allLanguages.keys
+                                      .toList()
+                                      .map<DropdownMenuItem<String>>((item) {
+                                    return DropdownMenuItem<String>(
+                                      key: ValueKey(item.toString()),
+                                      value: item,
+                                      child: Text(item),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
                             ],
