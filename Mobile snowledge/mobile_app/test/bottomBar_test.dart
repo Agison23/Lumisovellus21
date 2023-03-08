@@ -7,14 +7,13 @@ import 'package:provider/provider.dart';
 void main() {
   testWidgets('Show Rescue dialog onTap', (tester) async {
     await tester.pumpWidget(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AppState>(create: (_) => AppState())
-        ],
-        child: const MaterialApp(
-          home: Scaffold(
-            bottomNavigationBar: BottomBar(),
-          ),
-        )));
+      providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
+      child: const MaterialApp(
+        home: Scaffold(
+          bottomNavigationBar: BottomBar(),
+        ),
+      ),
+    ));
     await tester.tap(find.text('Pyydä\napua'));
     await tester.pumpAndSettle();
 

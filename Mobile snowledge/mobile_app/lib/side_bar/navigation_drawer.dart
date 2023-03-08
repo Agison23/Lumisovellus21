@@ -101,21 +101,20 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           ),
           const Divider(color: Colors.black),
           Center(
-            child: Expanded(
-              child: DropdownButton<String>(
-                value: appState.languageName,
-                onChanged: (String? value) {
-                  setLanguage(value!);
-                },
-                items: appState.allLanguages.keys
-                    .toList()
-                    .map<DropdownMenuItem<String>>((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-              ),
+            child: DropdownButton<String>(
+              key: const ValueKey('dropdown'),
+              value: appState.languageName,
+              onChanged: (String? value) {
+                setLanguage(value!);
+              },
+              items: appState.allLanguages.keys
+                  .toList()
+                  .map<DropdownMenuItem<String>>((item) {
+                return DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList(),
             ),
           ),
         ],
