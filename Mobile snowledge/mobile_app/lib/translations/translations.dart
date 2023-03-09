@@ -16,7 +16,7 @@ Map translations = {
 
   'gpsPermission': {
     'fi': '\n\nSallitko sijaintitiedon keräämisen?',
-    'en': '\n\nDo you allow the collection of your location data?',
+    'en': '\n\nDo you allow the app to store your location data?',
   },
 
   'continueGps': {
@@ -34,12 +34,12 @@ Map translations = {
   'backgroundGps': {
     'fi': '\n\nSallitko sijaintiedon keräämisen sovelluksen ollessa taustalla?',
     'en':
-        '\n\nDo you allow the collection of location data even when the app is running in the background',
+        '\n\nDo you allow the app to store location data even when the app is running in the background',
   },
 
   'allowAlways': {
     'fi': '\n\n->Sijainti: Salli aina',
-    'en': '\n\n->Location: Allow Always ',
+    'en': '\n\n->Location: Always allow ',
   },
 
   'toSettings': {
@@ -69,7 +69,7 @@ Map translations = {
 
   'snowDescription': {
     'fi': 'Lumityyppien selitteet',
-    'en': 'Definitions of Snow types',
+    'en': 'Snow type definitions',
   },
 
   'userInfo': {
@@ -89,7 +89,7 @@ Map translations = {
 
   'privacy': {
     'fi': 'Tietosuojaseloste',
-    'en': 'Privacy statement',
+    'en': 'Privacy policy',
   },
 
   'language': {
@@ -206,7 +206,7 @@ Map translations = {
 
   'eqptProblem': {
     'fi': 'Varusteongelma',
-    'en': 'Equipment problem',
+    'en': 'Equipment issue',
   },
 
   'healthIssue': {
@@ -247,8 +247,7 @@ Map translations = {
   'helpButtonDesc': {
     'fi':
         'Avunpyyntö-painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.',
-    'en':
-        'The request help button alerts and sends your location to nearby users',
+    'en': 'Help button alerts and sends your location to nearby users',
   },
 
   'fullGpsInfo': {
@@ -285,12 +284,12 @@ Map translations = {
 
   'requestOver': {
     'fi': 'Avuntarve ohi\nKiitos avusta!',
-    'en': 'The need for help is over.\nThanks for your help!',
+    'en': 'The need for help is over.\nThank you for your help!',
   },
 
   'helpOver': {
     'fi': 'Auttaja on lopettanut avunannon. Tämänhetkinen auttajien määrä: ',
-    'en': 'A helper has stopped helping. Current number of helpers: ',
+    'en': 'The helper has cancelled the service. Current number of helpers: ',
     // $count ja piste lopussa
   },
 
@@ -333,7 +332,7 @@ Map translations = {
 
   'cancelHelp': {
     'fi': 'Haluatko perua avun tarjoamisen?',
-    'en': 'Do you want to cancel the offer for help?',
+    'en': 'Do you want to stop helping?',
   },
 
   'helpMode': {
@@ -581,7 +580,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
   'wetDesc': {
     'fi':
         'Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.',
-    'en': 'Wet snow forms when it rains close to or above zero degrees.',
+    'en': 'Wet snow forms due to rain and temperatures above freezing point.',
   },
 
   'powder': {
@@ -620,14 +619,13 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'suppCrust': {
     'fi': 'Kantava korppu',
-    'en': 'Supporting crust',
+    'en': 'Concrete',
   },
 
   'suppDesc': {
     'fi':
         'Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.',
-    'en':
-        'Solid and supporting snow crust, which is usually extreamly hard and compact.',
+    'en': 'Solid snow crust, which is usually extreamly hard and compact.',
   },
 
   'thinCrust': {
@@ -644,7 +642,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'breakCrust': {
     'fi': 'Rikkoutuva korppu',
-    'en': 'Breakable crust',
+    'en': 'Collapsing crust',
   },
 
   'breakDesc': {
@@ -656,7 +654,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'windSnow': {
     'fi': 'Tuulen pieksemä lumi',
-    'en': 'Windswept snow',
+    'en': 'Windpacked snow',
   },
 
   'windDesc': {
@@ -666,7 +664,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'wavySnow': {
     'fi': 'Aaltoileva lumi',
-    'en': 'Wavy snow',
+    'en': 'Drifts and banks of windblown snow',
   },
 
   'wavyDesc': {
@@ -689,14 +687,14 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'blizSnow': {
     'fi': 'Tuiskulumi',
-    'en': 'Blizzard snow',
+    'en': 'Windblown snow',
   },
 
   'blizDesc': {
     'fi':
         'Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.',
     'en':
-        'Flat, wind-layered and compressed tile or lens. Blizzard snow can also accumulate without snowfall if wind moves snow from one place to another. Blizzard snow is usually formed on the side of the fell protected from wind.',
+        'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the lee side of the fell.',
   },
 
   'ice': {
@@ -723,7 +721,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'slush': {
     'fi': 'Sohjo',
-    'en': 'Slushy snow',
+    'en': 'Slush',
   },
 
   'slushDesc': {
@@ -754,7 +752,7 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
 
   'minSnow': {
     'fi': 'Vähäinen lumi',
-    'en': 'Minimal snow',
+    'en': 'Little snow',
   },
 
   'skiAreasOnly': {
