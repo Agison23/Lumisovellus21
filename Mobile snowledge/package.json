@@ -1,0 +1,14 @@
+{
+  "name": "mobile-snowledge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test-udp && npm run test-frontend",
+    "test-udp": "cd Server/back_end && python test.udpServer.py",
+    "test-frontend": "cd mobile_app && flutter test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
