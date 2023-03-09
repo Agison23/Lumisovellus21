@@ -282,9 +282,14 @@ Map translations = {
     'en': 'Other users are yet to accept your help request',
   },
 
-  'requestOver': {
-    'fi': 'Avuntarve ohi\nKiitos avusta!',
-    'en': 'The need for help is over.\nThank you for your help!',
+  'requestOver1': {
+    'fi': 'Avuntarve ohi!',
+    'en': 'The need for help is over!',
+  },
+
+  'requestOver2': {
+    'fi': 'Kiitos avusta!',
+    'en': 'Thank you for your help!',
   },
 
   'helpOver': {
@@ -388,7 +393,7 @@ Map translations = {
   },
 
   'helperEnded': {
-    'fi': 'Auttaja on lopettanut avunannon.',
+    'fi': 'Auttaja on lopettanut avunannon',
     'en': 'Helper has stopped providing help',
   },
 
@@ -406,7 +411,7 @@ Map translations = {
 
   'seeRequest': {
     'fi': 'Siirry katsomaan avuntarve',
-    'en': 'Go to see the need for help',
+    'en': 'Click to see the help request',
   },
 
   'snowAppInfo': {
