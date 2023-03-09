@@ -177,7 +177,8 @@ class ServerComms {
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
               NotificationHandler.cancelPushUpNotification();
-              NotificationHandler.helperCancelledAcceptanceNotification();
+              NotificationHandler.helperCancelledAcceptanceNotification(
+                  appState);
               break;
             case "HELP_TARGET_UPDATE":
               print(
@@ -198,7 +199,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3]);
+                    resultParts[2], resultParts[3], appState);
                 String payload = resultParts[2] + ':' + resultParts[3];
                 await Dialogs.showHelpRequestedDialog(
                     MyApp.navigatorKey.currentState?.context, payload);
@@ -215,7 +216,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification();
+                NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
                   if (HelpOfferedState.pageOpen) {
                     await MyApp.navigatorKey.currentState?.push(

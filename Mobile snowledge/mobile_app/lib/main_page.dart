@@ -45,7 +45,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    ServerComms.startListeningServer(context);
+    // This now causes a StateError: Stream has already been listened to in tests
+    ServerComms.startListeningServer(context); // NEEDS ATTENTION
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);
