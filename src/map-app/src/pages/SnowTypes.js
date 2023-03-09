@@ -70,11 +70,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 function SnowTypes(props) {
-  const { language, changeToLanguage } = useContext(GlobalContext);
+  const { language } = useContext(GlobalContext);
   const styledClasses = useStyles();
-  window.changeLanguageTo = function (language) {
-    changeToLanguage(language);
-  };
   return (
     <div className="snow_tab_inner">
       <Box

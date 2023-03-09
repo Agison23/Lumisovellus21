@@ -21,7 +21,7 @@ Arttu Lakkala 15.11 Lisätty päivityksen lisäys segmenttiin.
 **/
 
 import * as React from "react";
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import "../styles/App.css";
 import "../styles/style.css";
 import Map from "../components/map/NewMap";
@@ -32,7 +32,6 @@ import { useMediaQuery } from "react-responsive";
 import BottomNav from "../components/BottomNav";
 import WelcomeView from "./WelcomeView";
 import Login from "../components/Login";
-import GlobalContext from "../context/GlobalContext";
 // eslint-disable-next-line no-unused-vars
 import SnowIcon from "@material-ui/icons/AcUnit";
 // eslint-disable-next-line no-unused-vars
@@ -261,10 +260,6 @@ function App() {
         break;
     }
   }
-  const { changeToLanguage } = useContext(GlobalContext);
-  window.changeLanguageTo = function (language) {
-    changeToLanguage(language);
-  };
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
     <div className="root">

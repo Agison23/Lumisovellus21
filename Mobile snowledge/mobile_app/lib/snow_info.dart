@@ -77,14 +77,11 @@ class _SnowInfoState extends State<SnowInfo> {
                   _controller.complete(webViewController);
                 },
                 onPageFinished: (String url) {
-                  if (url == 'http://10.0.2.2:3000/selitteet') {
-                    // if (url == 'https://lumisovellus.fi/mobiili') {
-                    _controller.future.then((controller) {
-                      controller.runJavascript("""
-          window.changeLanguageTo("$languageToChangeTo");
-        """);
-                    });
-                  }
+                  _controller.future.then((controller) {
+                    controller.runJavascript("""
+                      window.changeLanguageTo("$languageToChangeTo");
+                    """);
+                  });
                 },
               ),
               // Stacking the bottom bar on top of the webview

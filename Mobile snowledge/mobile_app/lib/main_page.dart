@@ -93,16 +93,13 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
                 },
-                // We need this because we can only change the global React state after the page has been loaded
+                // Change the global React state after the page has been loaded
                 onPageFinished: (String url) {
-                  if (url == 'http://10.0.2.2:3000/mobiili') {
-                    // if (url == 'https://lumisovellus.fi/mobiili') {
-                    _controller.future.then((controller) {
-                      controller.runJavascript("""
-          window.changeLanguageTo("$languageToChangeTo");
-        """);
-                    });
-                  }
+                  _controller.future.then((controller) {
+                    controller.runJavascript("""
+                      window.changeLanguageTo("$languageToChangeTo");
+                    """);
+                  });
                 },
                 javascriptMode: JavascriptMode.unrestricted,
               ),
