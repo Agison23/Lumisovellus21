@@ -55,9 +55,10 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
     void setLanguage(String language) async {
       final controller = await widget.webViewController;
+      String languageToChange = appState.allLanguages[language];
       if (controller != null) {
         controller.runJavascript("""
-                window.changeLanguageTo("$language");
+                window.changeLanguageTo("$languageToChange");
               """);
       }
       appState.setLanguage = language;

@@ -13,7 +13,6 @@ String? fName;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  // ServerComms.startListeningServer();
 
   prefs.then((pref) {
     fName = pref.getString('fName');
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // This will get called in main_page.dart, in order to pass the BuildContext into server_communication
     // ServerComms.startListeningServer(context);
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
