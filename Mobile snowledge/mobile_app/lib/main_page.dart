@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -44,6 +45,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    ServerComms.startListeningServer(context);
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);
