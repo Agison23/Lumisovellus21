@@ -167,7 +167,6 @@ function App() {
   function updateWoods(data) {
     setWoodsSegment(data);
   }
-
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
     <div className="root">

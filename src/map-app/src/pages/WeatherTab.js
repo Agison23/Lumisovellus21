@@ -782,7 +782,6 @@ function WeatherTab() {
   const handleMoreInformationClick = () => {
     setDisplayWeatherStatistics(true);
   };
-
   return (
     <div className="weather_tab_inner">
       {!displayWeatherStatistics ? (

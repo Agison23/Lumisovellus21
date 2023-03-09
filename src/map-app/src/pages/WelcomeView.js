@@ -92,7 +92,6 @@ function WelcomeView(props) {
   }, language);
 
   const styledClasses = useStyles();
-
   if (props.isMobile) {
     return (
       <Box className={styledClasses.mobileRoot}>

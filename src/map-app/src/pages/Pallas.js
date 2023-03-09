@@ -260,7 +260,6 @@ function App() {
         break;
     }
   }
-
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
     <div className="root">
