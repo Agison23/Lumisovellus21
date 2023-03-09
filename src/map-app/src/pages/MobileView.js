@@ -4,12 +4,13 @@ Kopio Pallas.js filusta BottomNavia ja WelcomeViewiä Flutter mobiiliappia varte
 **/
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import "../styles/App.css";
 import "../styles/style.css";
 import Map from "../components/map/NewMap";
 import Info from "../components/Info";
 import { useMediaQuery } from "react-responsive";
+import GlobalContext from "../context/GlobalContext";
 // eslint-disable-next-line no-unused-vars
 import SnowIcon from "@material-ui/icons/AcUnit";
 // eslint-disable-next-line no-unused-vars
@@ -167,7 +168,10 @@ function App() {
   function updateWoods(data) {
     setWoodsSegment(data);
   }
-
+  const { changeToLanguage } = useContext(GlobalContext);
+  window.changeLanguageTo = function (language) {
+    changeToLanguage(language);
+  };
   // TODO: Komponenttien tyylejä ja asetteluja voi vielä parannella
   return (
     <div className="root">

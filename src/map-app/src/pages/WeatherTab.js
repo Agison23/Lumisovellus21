@@ -19,6 +19,8 @@ Fetched weather data from Ilmatieteenlaitos and create initial components for sh
 import * as React from "react";
 import WeatherInfo from "../weather/WeatherInfo";
 import Statistics from "../weather/Statistics";
+import { useContext } from "react";
+import GlobalContext from "../context/GlobalContext";
 import {
   getThreeDayStatistics,
   getThreeDayWindStatistics,
@@ -782,7 +784,10 @@ function WeatherTab() {
   const handleMoreInformationClick = () => {
     setDisplayWeatherStatistics(true);
   };
-
+  const { changeToLanguage } = useContext(GlobalContext);
+  window.changeLanguageTo = function (language) {
+    changeToLanguage(language);
+  };
   return (
     <div className="weather_tab_inner">
       {!displayWeatherStatistics ? (

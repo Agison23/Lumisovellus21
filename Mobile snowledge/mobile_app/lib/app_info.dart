@@ -31,6 +31,7 @@ class _AppInfoState extends State<AppInfo> {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context);
+    String languageToChangeTo = appState.language;
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
@@ -67,13 +68,23 @@ class _AppInfoState extends State<AppInfo> {
           body: Stack(
             children: [
               WebView(
-                initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
+                // initialUrl: 'https://lumisovellus.fi/tietoasovelluksesta',
 
                 // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
-                // initialUrl: 'http://10.0.2.2:3000/tietoasovelluksesta',
+                initialUrl: 'http://10.0.2.2:3000/tietoasovelluksesta',
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
                   _controller.complete(webViewController);
+                },
+                onPageFinished: (String url) {
+                  if (url == 'http://10.0.2.2:3000/tietoasovelluksesta') {
+                    // if (url == 'https://lumisovellus.fi/mobiili') {
+                    _controller.future.then((controller) {
+                      controller.runJavascript("""
+          window.changeLanguageTo("$languageToChangeTo");
+        """);
+                    });
+                  }
                 },
               ),
               // Stacking the bottom bar on top of the webview
