@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/helper/utility.dart';
+import 'package:mobile_app/widgets/rescue_chat.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
@@ -567,29 +569,96 @@ class Dialogs {
 
   Future showRescueChatDialog(context) async {
     var appState = Provider.of<AppState>(context, listen: false);
+    final Stream<QuerySnapshot> _usersStream =
+        FirebaseFirestore.instance.collection('Users').snapshots();
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            color: Colors.transparent,
-            child: Dialog(
-              child: SizedBox(
-                height: 200,
-                width: 300,
-                child: Column(
-                  children: const <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('This is going to be the rescue chat'),
-                    ),
-                  ],
+        // Calculate the width and height of the dialog based on the screen size
+        final screenWidth = MediaQuery.of(context).size.width;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final dialogWidth = screenWidth * 0.8;
+        final dialogHeight = screenHeight * 0.8;
+
+        return Center(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: _usersStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              // Some loading/error states
+              if (snapshot.hasError) {
+                return const Text('Something went wrong');
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Text("Loading");
+              }
+
+              // Data list
+              List<Map<String, dynamic>> data = !snapshot.hasData
+                  ? []
+                  : snapshot.data!.docs.map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data()! as Map<String, dynamic>;
+                      return data;
+                    }).toList();
+
+              return Container(
+                width: dialogWidth,
+                height: dialogHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-            ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Material(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: data
+                                  .map((Map<String, dynamic> data) =>
+                                      RescueChatWidgets.circleProfile(
+                                        onTap: () {
+                                          String name = data['name'];
+                                          print(
+                                              'Tapped on circle profile of $name!');
+                                        },
+                                        name: data['name'],
+                                      ))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: SizedBox(
+                              width: dialogWidth,
+                              height: dialogHeight * 0.7,
+                              child: const Text('And this is the chat box')),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Close'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         );
       },

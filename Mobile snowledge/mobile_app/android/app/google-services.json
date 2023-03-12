@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "990707462138",
+    "project_id": "snowledge-rescue-chat",
+    "storage_bucket": "snowledge-rescue-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990707462138:android:0c80c9116fbc69a9f87e43",
+        "android_client_info": {
+          "package_name": "com.Snowledge.pallaksen.pollot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990707462138-geahs1a6clrggilsdhv9d9hlmthonis7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBQfY1Pk0yfpCFDVd3p1FV2nWzAGzTOPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990707462138-geahs1a6clrggilsdhv9d9hlmthonis7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "990707462138-krict8sp007g9ng04bent35gdsc01u54.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.snowledgeChat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990707462138:android:521de85370c9ef5bf87e43",
+        "android_client_info": {
+          "package_name": "com.example.snowledge_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990707462138-geahs1a6clrggilsdhv9d9hlmthonis7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBQfY1Pk0yfpCFDVd3p1FV2nWzAGzTOPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990707462138-geahs1a6clrggilsdhv9d9hlmthonis7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "990707462138-krict8sp007g9ng04bent35gdsc01u54.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.snowledgeChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
