@@ -56,10 +56,10 @@ void main() {
       expect(find.text('Snow conditions in Pallas'), findsOneWidget);
       expect(find.text('Map view'), findsOneWidget);
       expect(find.text('Weather in Pallas'), findsOneWidget);
-      expect(find.text('Definitions of Snow types'), findsOneWidget);
+      expect(find.text('Snow type definitions'), findsOneWidget);
       expect(find.text('User Information'), findsOneWidget);
       expect(find.text('About the service'), findsOneWidget);
-      expect(find.text('Privacy statement'), findsOneWidget);
+      expect(find.text('Privacy policy'), findsOneWidget);
     });
 
     testWidgets(
