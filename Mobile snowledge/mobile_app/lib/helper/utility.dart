@@ -1,7 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../state/appState.dart';
 
 class Utility {
   /// Returns the time between the date passed in arguments and the current date
@@ -75,15 +79,17 @@ class Utility {
 
   // Basically calls firestore, and try to set a new entry at user ID under "Users" collection
   // that holds name, date, time, and email of the login user at this instance
-  static void updateAvailability() {
+  static void updateAvailability(BuildContext context) {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     String? firstName, lastName, fullName, phoneNum;
+    var appState = Provider.of<AppState>(context, listen: false);
 
     prefs.then((pref) {
       firstName = pref.getString('fName');
       lastName = pref.getString('lName');
       phoneNum = pref.getString('pNumber');
       fullName = firstName! + " " + lastName!;
+      appState.setPhoneNum = phoneNum;
 
       final _firestore = FirebaseFirestore.instance;
       final data = {

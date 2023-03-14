@@ -568,99 +568,12 @@ class Dialogs {
   }
 
   Future showRescueChatDialog(context) async {
-    var appState = Provider.of<AppState>(context, listen: false);
-    final Stream<QuerySnapshot> _usersStream =
-        FirebaseFirestore.instance.collection('Users').snapshots();
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
       barrierDismissible: true,
       builder: (BuildContext context) {
-        // Calculate the width and height of the dialog based on the screen size
-        final screenWidth = MediaQuery.of(context).size.width;
-        final screenHeight = MediaQuery.of(context).size.height;
-        final dialogWidth = screenWidth * 0.8;
-        final dialogHeight = screenHeight * 0.8;
-
-        return Center(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: _usersStream,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              // Some loading/error states
-              if (snapshot.hasError) {
-                return const Text('Something went wrong');
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text("Loading");
-              }
-
-              // Data list
-              List<Map<String, dynamic>> data = !snapshot.hasData
-                  ? []
-                  : snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map<String, dynamic> data =
-                          document.data()! as Map<String, dynamic>;
-                      return data;
-                    }).toList();
-
-              return Container(
-                width: dialogWidth,
-                height: dialogHeight,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Material(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: data
-                                  .map((Map<String, dynamic> data) =>
-                                      RescueChatWidgets.circleProfile(
-                                        onTap: () {
-                                          String name = data['name'];
-                                          print(
-                                              'Tapped on circle profile of $name!');
-                                        },
-                                        name: data['name'],
-                                      ))
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: SizedBox(
-                              width: dialogWidth,
-                              height: dialogHeight * 0.7,
-                              child: const Text('And this is the chat box')),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('Close'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        );
+        return RescueChat();
       },
     );
   }

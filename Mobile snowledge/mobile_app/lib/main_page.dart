@@ -35,7 +35,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
     super.initState();
 
     // Trying to write the info of the user of this session into Firestore
-    Utility.updateAvailability();
+    Utility.updateAvailability(context);
 
     NotificationHandler().init(context);
 

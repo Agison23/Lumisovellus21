@@ -5,6 +5,7 @@ class AppState extends ChangeNotifier {
 
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
+  String? _myPhoneNum;
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -13,6 +14,13 @@ class AppState extends ChangeNotifier {
   String get language => _language;
 
   String get languageName => _languageName;
+
+  String? get myPhoneNum => _myPhoneNum;
+
+  set setPhoneNum(String? phoneNum) {
+    _myPhoneNum = phoneNum;
+    notifyListeners();
+  }
 
   set setLanguage(String language) {
     _language = _allLanguages[language];
