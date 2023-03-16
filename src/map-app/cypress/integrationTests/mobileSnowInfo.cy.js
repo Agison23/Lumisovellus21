@@ -39,7 +39,11 @@ describe("Snow information", () => {
         cy.findByRole('button', {  name: /tutustu lumitilanteeseen/i}).click();
         cy.wait(5000);
         cy.findByRole("region", {name: /Map/i}).click(150, 300);
+<<<<<<< HEAD
         cy.findByText(/kyllä, lisää/i).click();
+=======
+        cy.get('[data-testid="addUserReviewButton2"]').click();
+>>>>>>> fe3c496 (217: add tests for language fetures and fix old tests in web)
         cy.wait(3000);
         cy.findByRole('button', {name: /märkää/i} ).click();
         cy.findByText( /lähetä/i ).click();
