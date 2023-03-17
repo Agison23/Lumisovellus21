@@ -23,21 +23,52 @@ import 'gps_handler.dart';
 
 class ServerComms {
   static late Timer _timer;
-  static Future<RawDatagramSocket> rDgS =
-      RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
-
+// RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943)
   static bool _isOfferingHelp = false;
-  static String address = getAddress();
+  // static late Future<RawDatagramSocket> rDgS;
+  // static late String address;
 
-  static getAddress() async {
-    //Get user ip address type
-    final address_type = InternetAddress(await Ipify.ipv64()).type;
+  static Future<RawDatagramSocket> initRDgS() {
+    Future<RawDatagramSocket> rDgS =
+        RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+    supportsIPv6().then((supportIPv6) {
+      if (supportIPv6) {
+        rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
+      }
+    });
+    return rDgS;
+  }
 
-    var response =
-        await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
-
-    address = response[0].address;
+  static Future<String> initAddress() async {
+    var response = await InternetAddress.lookup('dev.lumisovellus.fi',
+        type: InternetAddressType.IPv4);
+    var address = response[0].address;
+    supportsIPv6().then((supportIPv6) async {
+      if (supportIPv6) {
+        response = await InternetAddress.lookup('dev.lumisovellus.fi',
+            type: InternetAddressType.IPv6);
+        address = response[0].address;
+      }
+    });
     return address;
+  }
+
+  static Future<String> initAddressLocal() async {
+    String address = "10.0.2.2";
+    return address;
+  }
+
+  static Future<bool> supportsIPv6() {
+    return NetworkInterface.list().then((interfaces) {
+      for (var interface in interfaces) {
+        for (var address in interface.addresses) {
+          if (address.type == InternetAddressType.IPv6) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
   }
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
@@ -74,6 +105,10 @@ class ServerComms {
     listenServer(context);
   }
 
+  static void receiveRequestsOnStart() {
+    messageToServer('REQUEST_INIT');
+  }
+
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     if (await Permission.location.isGranted) {
@@ -82,6 +117,13 @@ class ServerComms {
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
+        case 'REQUEST_INIT':
+          await GpsHandler.startUpdatingGpsVariable();
+          List<String> list = await getTimeFNameLNameGps();
+          message =
+              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
+          await GpsHandler.stopUpdatingGpsVariable();
+          break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSharedPreference();
@@ -117,12 +159,15 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      // print(message);
-      rDgS.then(
-        (RawDatagramSocket udpSocket) {
+      print(message);
+
+      initRDgS().then(
+        (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(data, InternetAddress(address), 50943);
+          // udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+          udpSocket.send(
+              data, InternetAddress(await initAddressLocal()), 50943);
         },
       );
     } else {
@@ -145,13 +190,15 @@ class ServerComms {
     return devId;
   }
 
-  static listenServer(BuildContext context) {
+  static listenServer(BuildContext context) async {
     var appState = Provider.of<AppState>(context);
-    getAddress(); // save the right server address to "address" variable
-    rDgS.then((RawDatagramSocket udpSocket) {
+    initRDgS().then((RawDatagramSocket udpSocket) async {
       udpSocket.readEventsEnabled = true;
+      // String address = await initAddress();
+      String address = await initAddressLocal();
       String result;
       udpSocket.listen((event) async {
+        print("phone listening: ${event}");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
@@ -255,7 +302,7 @@ class ServerComms {
   }
 
   // Save the last location and time to the app's shared preference
-  static saveLastLocationTimeToSharedPreference() async {
+  static saveLastLocationTimeToSharedPreference() {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());

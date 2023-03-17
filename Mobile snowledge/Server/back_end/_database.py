@@ -414,3 +414,11 @@ def rescue_users_from_db(connection):
     cur = connection.cursor()
     cur.execute("SELECT * FROM rescue")
     print(cur.fetchall())
+
+def get_all_help_requests(connection):
+    sql = """SELECT * FROM help;"""
+
+    cur = connection.cursor()
+    cur.execute(sql)
+    entry = cur.fetchall()
+    return entry
