@@ -99,10 +99,17 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) {
+  static void startListeningServer(BuildContext context) async {
     // static void startListeningServer() {
     // listenServer();
-    listenServer(context);
+    final prefs = await SharedPreferences.getInstance();
+    print('Checking if started listening to server...');
+    final bool? isServerComms = prefs.getBool("_isServerComms");
+    if (isServerComms == false) {
+      prefs.setBool("_isServerComms", true);
+      print('$isServerComms started! Starting now...');
+      listenServer(context);
+    }
   }
 
   static void receiveRequestsOnStart() {
