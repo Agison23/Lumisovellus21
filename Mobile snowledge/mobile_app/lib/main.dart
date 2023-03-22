@@ -12,12 +12,11 @@ String? fName;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
 
-  prefs.then((pref) {
-    fName = pref.getString('fName');
-    runApp(MyApp());
-  });
+  fName = prefs.getString('fName');
+  prefs.setBool("_isServerComms", false);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
