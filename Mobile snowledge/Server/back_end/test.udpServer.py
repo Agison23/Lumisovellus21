@@ -25,6 +25,7 @@ class TestUdpServer(unittest.TestCase):
         print("Tear down")
         self.server.status = False
         self.server_thread.join()
+        self.server.udp.close()
 
     def test_server_receive_LOCATION_message(self):
         messagetype = "LOCATION"

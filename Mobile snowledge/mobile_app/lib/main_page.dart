@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
+import 'helper/utility.dart';
 import 'notification_handler.dart';
 import '../translations/translations.dart';
 import 'package:logging/logging.dart';
@@ -21,6 +22,10 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends WidgetsBindingObserverState<MainPage> {
+  Map<String, String>? env;
+  String appEnv = 'production';
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +45,18 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
 
     // this is force opening the drawer
     /*Timer.run(() => _globalKey.currentState?.openDrawer()); */
+    loadEnv();
+  }
+
+  Future<void> loadEnv() async {
+    final _env = await Utility.parseStringToMap(assetsFileName: '.env');
+    setState(() {
+      env = _env;
+      // Set default value of app environment to production
+      appEnv = env?['APP_ENVIRONMENT'] ?? 'production';
+      isLoading = false;
+      print('App Env is: $appEnv');
+    });
   }
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
@@ -51,103 +68,109 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);
     var languageToChangeTo = appState.language;
-    return WillPopScope(
-      onWillPop: () async {
-        if (_globalKey.currentState?.isDrawerOpen == true) {
-          Navigator.of(context).pop();
-          return false;
-        } else {
-          final value = await showDialog<bool>(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(translations['quitApp'][appState.language]),
-                  actions: [
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(translations['no'][appState.language]),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text(translations['yes'][appState.language]),
-                    ),
-                  ],
-                );
-              });
-          if (value != null) {
-            return Future.value(value);
-          } else {
-            return Future.value(false);
-          }
-        }
-      },
-      child: SafeArea(
-        child: Scaffold(
-          key: _globalKey,
-          body: Stack(
-            children: [
-              WebView(
-                // initialUrl: 'https://lumisovellus.fi/mobiili',
+    String? appURL;
 
-                // ONLY USE THIS URL FOR LOCAL TESTING (this is "localhost:3000" for Flutter)
-                initialUrl: 'http://10.0.2.2:3000/mobiili',
-                onWebViewCreated: (WebViewController webViewController) {
-                  _controller.complete(webViewController);
-                },
-                // Change the global React state after the page has been loaded
-                onPageFinished: (String url) {
-                  _controller.future.then((controller) {
-                    controller.runJavascript("""
+    if (!isLoading) {
+      appURL = appEnv == 'production'
+          ? 'https://lumisovellus.fi/mobiili'
+          : 'http://10.0.2.2:3000/mobiili';
+      return WillPopScope(
+        onWillPop: () async {
+          if (_globalKey.currentState?.isDrawerOpen == true) {
+            Navigator.of(context).pop();
+            return false;
+          } else {
+            final value = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(translations['quitApp'][appState.language]),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(translations['no'][appState.language]),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text(translations['yes'][appState.language]),
+                      ),
+                    ],
+                  );
+                });
+            if (value != null) {
+              return Future.value(value);
+            } else {
+              return Future.value(false);
+            }
+          }
+        },
+        child: SafeArea(
+          child: Scaffold(
+            key: _globalKey,
+            body: Stack(
+              children: [
+                WebView(
+                  initialUrl: appURL,
+                  onWebViewCreated: (WebViewController webViewController) {
+                    _controller.complete(webViewController);
+                  },
+                  // Change the global React state after the page has been loaded
+                  onPageFinished: (String url) {
+                    _controller.future.then((controller) {
+                      controller.runJavascript("""
                       window.changeLanguageTo("$languageToChangeTo");
                     """);
-                  });
-                },
-                javascriptMode: JavascriptMode.unrestricted,
-              ),
-              // Stacking the bottom bar on top of the webview
-              const Align(
-                  alignment: Alignment.bottomCenter, child: BottomBar()),
-              IconButton(
-                iconSize: 30,
-                icon: Stack(
-                  children: [
-                    const Icon(Icons.menu),
-                    if (appState.numOfHelpRequests > 0)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Center(
-                            child: Text(
-                              '!',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
+                    });
+                  },
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+                // Stacking the bottom bar on top of the webview
+                const Align(
+                    alignment: Alignment.bottomCenter, child: BottomBar()),
+                IconButton(
+                  iconSize: 30,
+                  icon: Stack(
+                    children: [
+                      const Icon(Icons.menu),
+                      if (appState.numOfHelpRequests > 0)
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: const Center(
+                              child: Text(
+                                '!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
+                  onPressed: () {
+                    _globalKey.currentState?.openDrawer();
+                  },
+                  color: Colors.black,
                 ),
-                onPressed: () {
-                  _globalKey.currentState?.openDrawer();
-                },
-                color: Colors.black,
-              ),
-            ],
-          ),
-          drawer: MyNavigationDrawer(
-            webViewController: _controller.future,
+              ],
+            ),
+            drawer: MyNavigationDrawer(
+              webViewController: _controller.future,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 }
