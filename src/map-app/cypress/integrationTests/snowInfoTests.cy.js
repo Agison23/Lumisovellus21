@@ -16,7 +16,7 @@ describe("Snow information", () => {
     cy.findByRole("button", { name: /hallitse/i }, { timeout: 15000 }).should(
       "be.visible"
     );
-    cy.wait(500);
+    cy.wait(5000);
     cy.findByRole("region", {name: /Map/i}).click(200, 300);
     cy.findByRole("button", {  name: /päivitä/i}).click();
     cy.findByRole("button", {  name: /lisää/i}).click();
