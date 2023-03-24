@@ -165,8 +165,8 @@ const translations = {
   },
 
   now: {
-    fi: "Now",
-    en: "Nyt",
+    fi: "Nyt",
+    en: "Now",
   },
 
   email: {

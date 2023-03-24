@@ -354,6 +354,7 @@ class UserInfoFormState extends State<UserInfoForm> {
       child: Column(
         children: [
           TextFormField(
+            key: const ValueKey('fName'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: fNameController,
@@ -382,6 +383,7 @@ class UserInfoFormState extends State<UserInfoForm> {
           ),
           const SizedBox(height: 5.0),
           TextFormField(
+            key: const ValueKey('sName'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: lNameController,
@@ -410,6 +412,7 @@ class UserInfoFormState extends State<UserInfoForm> {
           ),
           const SizedBox(height: 5.0),
           TextFormField(
+            key: const ValueKey('phone'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             inputFormatters: [

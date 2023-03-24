@@ -31,7 +31,7 @@ class ServerComms {
 
   static getAddress() async {
     //Get user ip address type
-    final address_type = InternetAddress(await Ipify.ipv64()).type;
+    final address_type = await InternetAddress(await Ipify.ipv64()).type;
 
     var response =
         await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
@@ -72,11 +72,9 @@ class ServerComms {
     // static void startListeningServer() {
     // listenServer();
     final prefs = await SharedPreferences.getInstance();
-    print('Checking if started listening to server...');
     final bool? isServerComms = prefs.getBool("_isServerComms");
     if (isServerComms == false) {
       prefs.setBool("_isServerComms", true);
-      print('$isServerComms started! Starting now...');
       listenServer(context);
     }
   }

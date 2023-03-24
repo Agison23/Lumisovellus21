@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 
 void main() {
-  group('Language dropdown menu tests - ', () {
+  group('Language dropdown menu widget tests - ', () {
     testWidgets(
         'GIVEN the language is Finnish, '
         'WHEN changing the language from the side bar, '
