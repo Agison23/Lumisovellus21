@@ -101,6 +101,7 @@ class Buttons {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         } else if (type == 'offer_help') {
+          ServerComms.messageToServer('HELP_RESPONSE:0');
           Navigator.pop(context);
         }
       },
