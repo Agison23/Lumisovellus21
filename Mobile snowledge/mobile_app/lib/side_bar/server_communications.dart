@@ -113,6 +113,7 @@ class ServerComms {
           break;
         case "HELP_RESPONSE:1":
           _isOfferingHelp = true;
+          NotificationHandler.cancelPushUpNotification();
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;

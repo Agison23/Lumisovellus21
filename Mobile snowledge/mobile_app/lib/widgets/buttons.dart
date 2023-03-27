@@ -101,7 +101,11 @@ class Buttons {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         } else if (type == 'offer_help') {
+<<<<<<< HEAD
           Dialogs.helpRequestedDialogOpen = false;
+=======
+          ServerComms.messageToServer('HELP_RESPONSE:0');
+>>>>>>> cd61f7f8a01e816a0f021cce87d42741acd15f94
           Navigator.pop(context);
         }
       },
