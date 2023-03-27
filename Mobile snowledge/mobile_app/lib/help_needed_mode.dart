@@ -27,7 +27,7 @@ class HelpNeededState extends State<HelpNeeded> {
   Timer? _timer;
   static late List<Marker> _markers = [];
   static final List<Marker> _helpers = [];
-  static final List _users = ['1'];
+  static final List _users = [];
 
   int _start = 1;
 
@@ -37,6 +37,7 @@ class HelpNeededState extends State<HelpNeeded> {
       // GpsHandler.setGpsSetting(context, false);
       _markers.clear();
       _helpers.clear();
+      _users.clear();
     }
     Dialogs.resetRadioSelection();
     ServerComms.messageToServer('HELP_DELETE');
@@ -48,6 +49,7 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   initState() {
     super.initState();
+    _users.add('1');
     // Add this line to add a user and verify that the dialog stays close if a user is nearby
     // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
 
@@ -171,6 +173,7 @@ class HelpNeededState extends State<HelpNeeded> {
                       onPressed: () {
                         _markers.clear();
                         _helpers.clear();
+                        _users.clear();
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
