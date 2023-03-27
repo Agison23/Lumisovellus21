@@ -209,6 +209,7 @@ class HelpOfferedState extends State<HelpOffered> {
         onPressed: () {
           ServerComms.messageToServer('HELP_RESPONSE:0');
           Navigator.pop(context);
+          Navigator.pop(context);
         },
         child: Text(
           translations['decline'][appState.language],

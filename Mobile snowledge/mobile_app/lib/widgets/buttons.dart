@@ -5,6 +5,7 @@ import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
 import '../main_page.dart';
+import '../notification_handler.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
@@ -101,11 +102,9 @@ class Buttons {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         } else if (type == 'offer_help') {
-<<<<<<< HEAD
           Dialogs.helpRequestedDialogOpen = false;
-=======
           ServerComms.messageToServer('HELP_RESPONSE:0');
->>>>>>> cd61f7f8a01e816a0f021cce87d42741acd15f94
+          NotificationHandler.cancelPushUpNotification();
           Navigator.pop(context);
         }
       },
