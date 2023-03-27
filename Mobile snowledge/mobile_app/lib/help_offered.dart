@@ -208,10 +208,7 @@ class HelpOfferedState extends State<HelpOffered> {
       ElevatedButton(
         onPressed: () {
           ServerComms.messageToServer('HELP_RESPONSE:0');
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MainPage()),
-              (route) => false);
+          Navigator.pop(context);
         },
         child: Text(
           translations['decline'][appState.language],

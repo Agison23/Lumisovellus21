@@ -101,6 +101,7 @@ class Buttons {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         } else if (type == 'offer_help') {
+          Dialogs.helpRequestedDialogOpen = false;
           Navigator.pop(context);
         }
       },
@@ -123,9 +124,11 @@ class Buttons {
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
     var appState = Provider.of<AppState>(context);
     return ElevatedButton(
-        onPressed: () async => await MyApp.navigatorKey.currentState?.push(
-            MaterialPageRoute(
-                builder: (context) => HelpOffered(payload, false))),
+        onPressed: () async => {
+              await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+                  builder: (context) => HelpOffered(payload, false))),
+              Dialogs.helpRequestedDialogOpen = false
+            },
         child: Text(
           translations['help'][appState.language],
           style: const TextStyle(

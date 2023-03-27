@@ -12,6 +12,7 @@ import '../translations/translations.dart';
 
 class Dialogs {
   static Object? _selectedRadio = 0;
+  static bool helpRequestedDialogOpen = false;
   // Minor helps:
   // 1: equipment  problems
   // 2: health problems
@@ -498,53 +499,62 @@ class Dialogs {
 
   static showHelpRequestedDialog(context, payload) async {
     var appState = Provider.of<AppState>(context, listen: false);
+    helpRequestedDialogOpen = true;
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Text(
-                  translations['nearbyReq'][appState.language],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  child: Text(
-                    translations['actionOptions'][appState.language],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Buttons.cancelButton(
-                        context,
-                        translations['cancel'][appState.language],
-                        'offer_help'),
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return Buttons.giveHelpButton(context, payload);
-                        })
-                  ],
-                ),
-              ]);
-            },
+        return WillPopScope(
+          onWillPop: () {
+            helpRequestedDialogOpen = false;
+            return Future.value(true);
+          },
+          child: AlertDialog(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        translations['nearbyReq'][appState.language],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        child: Text(
+                          translations['actionOptions'][appState.language],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Buttons.cancelButton(
+                              context,
+                              translations['cancel'][appState.language],
+                              'offer_help'),
+                          FutureBuilder<bool?>(
+                              future: GpsHandler.loadGpsSetting(),
+                              builder: (context, _snapshot) {
+                                return Buttons.giveHelpButton(context, payload);
+                              })
+                        ],
+                      ),
+                    ]);
+              },
+            ),
           ),
         );
       },

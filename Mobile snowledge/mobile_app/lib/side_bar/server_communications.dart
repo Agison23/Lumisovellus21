@@ -27,6 +27,7 @@ class ServerComms {
       RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
 
   static bool _isOfferingHelp = false;
+  static bool isRequestingHelp = false;
   static String address = getAddress();
 
   static getAddress() async {
@@ -96,12 +97,14 @@ class ServerComms {
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          isRequestingHelp = true;
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
+          isRequestingHelp = false;
           message = '$messagetype:$devId';
           break;
         case "HELP_RESPONSE:0":
@@ -207,12 +210,15 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(
-                    MyApp.navigatorKey.currentState?.context, payload);
+                if (isRequestingHelp == false) {
+                  Dialogs.showHelpRequestedDialog(
+                      MyApp.navigatorKey.currentState?.context, payload);
+                }
               }
               break;
 
             case "NO_USERS_NEARBY":
+              isRequestingHelp = false;
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
@@ -224,7 +230,8 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification();
                 try {
-                  if (HelpOfferedState.pageOpen) {
+                  if (HelpOfferedState.pageOpen ||
+                      Dialogs.helpRequestedDialogOpen) {
                     await MyApp.navigatorKey.currentState?.push(
                         MaterialPageRoute(
                             builder: (context) => const MapTracking()));
