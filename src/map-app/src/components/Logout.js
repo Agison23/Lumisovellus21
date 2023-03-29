@@ -85,10 +85,10 @@ function Logout(props) {
           }}
           value={language}
           onChange={handleChange}
-          className={"select"}
+          data-testid={"languageDropDown2"}
         >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="fi">Suomi</MenuItem>
+          <MenuItem data-testid="enButton2" value="en">English</MenuItem>
+          <MenuItem data-testid="fiButton2" value="fi">Suomi</MenuItem>
         </Select>
 
         <IconButton onClick={openLogout}>

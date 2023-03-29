@@ -17,7 +17,7 @@ describe("Test bottom navigation options", () => {
 
   it("User opens selitteet tab", () => {
     cy.visit("/");
-    cy.findByRole("button", { name: /selitteet/i }).click();
+    cy.findByText( /selitteet/i ).click();
     cy.get(".snow_tab").scrollTo("bottom");
     cy.findByRole("heading", { name: /sohjo/i }).should("be.visible");
   });
