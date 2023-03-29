@@ -247,7 +247,8 @@ class ServerComms {
               break;
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
-              //NOTIFY:ID:GPS:DISTANCE:
+              // This is when the new helper come and battery state if low then need to process according to ticket 226 image
+              //NOTIFY:ID:GPS:DISTANCE:BatteryState
               print("Notify!");
               appState.setNumOfHelpRequest = 1;
               String devId = await _getDeviceID();
@@ -255,11 +256,16 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
+                String helpRequesterBatteryState = resultParts[4]; // string "high" or "low"
                 await Dialogs.showHelpRequestedDialog(
                     MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
-
+            case "LOW_BATTERY_HELP": 
+              // this is for user that have accepted the help request, then the help requester battery run low
+              // Need to set helpRequesterBatteryState to low.
+              String helpRequesterBatteryState = resultParts[1];
+              break;
             case "NO_USERS_NEARBY":
               HelpNeededState().noUserNearby();
               break;

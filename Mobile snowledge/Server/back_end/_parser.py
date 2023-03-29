@@ -47,7 +47,9 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, port = ip_address.split(",")
         print(f"Message: NO_NERBY_USER with address:{ip_address} with port:{port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-
+    _, low_battery = db.check_if_entry_exists(
+        connection, "users", "low_battery", "low_battery", 1, False
+    )
     for user in users:
         print(f"user check id: {user}")
         if user[0] == dev_id:
@@ -57,8 +59,12 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
+        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:high".format(
             user[0], gpscoord, user[1], helptype
+        )
+        if low_battery:
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:low".format(
+                user[0], gpscoord, user[1], helptype
         )
         ip_address, port = ip_address.split(",")
         print(f"Message send to helper: {message} with address: {ip_address} and port: {port}")
@@ -356,4 +362,15 @@ def parse_low_battery(connection, message, addr, s):
     db.set_user_low_battery(connection, dev_id)
     ip_address, port = addr.split(",")
     s.sendto(bytes("LOW_BATTERY_SET", "UTF-8"), (ip_address, int(port)))
+    send_low_battery_current_requests(connection, dev_id, s)
     return
+
+def send_low_battery_current_requests(connection, dev_id, s):
+    helpers = db.get_helpers(connection, dev_id)
+    message = "LOW_BATTERY_HELP"
+    for helper in helpers:
+        helper_ip = db.get_user_ip_by_dev_id(connection, helper)
+        ip_address, port = helper_ip.split(",")
+        s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+    return
+

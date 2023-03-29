@@ -435,9 +435,19 @@ def get_helpers(connection, requester):
     sql = """SELECT help_giver
              FROM requests 
              WHERE help_requester = ? 
-             AND state = 1"""
+             AND state = 1;"""
 
     cur = connection.cursor()
     cur.execute(sql, (requester,))
     help_givers = cur.fetchall()
     return help_givers
+
+def get_user_ip_by_dev_id(connection, dev_id):
+    sql = """SELECT ip_address
+            FROM users
+            WHERE dev_id = ?"""
+    cur = connection.cursor()
+    cur.execute(sql, (dev_id))
+    user_ip = cur.fetchone()
+    return user_ip
+    
