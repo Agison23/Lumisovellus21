@@ -270,7 +270,8 @@ def init_tables(connection):
                             first_name text NOT NULL,
                             last_name text NOT NULL,
                             ip_address text NOT NULL,
-                            phone_number text
+                            phone_number text,
+                            low_battery INTEGER DEFAULT '0'
                          ); """
 
     sql_table_data = """CREATE TABLE IF NOT EXISTS data (
@@ -422,3 +423,10 @@ def get_all_help_requests(connection):
     cur.execute(sql)
     entry = cur.fetchall()
     return entry
+
+def set_user_low_battery(connection, dev_id):
+    sql = "UPDATE users SET low_battery=? WHERE dev_id=?"
+    cur = connection.cursor()
+    cur.execute(sql, (1,dev_id))
+    connection.commit()
+    return
