@@ -342,11 +342,18 @@ def parse_receive_request(connection, message, addr, s):
             if (check_user_in_range(gpscoord, req_gpscoord, max_distance)):
                 print("5")
                 test = db.create_request_entry(connection, req_dev_id, dev_id)
-                message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
+                message_return = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
                 dev_id, gpscoord, timestamp, helptype
                 )
-                print(message)
+                print(message_return)
                 ip_address, port = addr.split(",")
                 print("7")
-                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-        
+                s.sendto(bytes(message_return, "UTF-8"), (ip_address, int(port)))
+    return
+
+def parse_low_battery(connection, message, addr, s):
+    dev_id = message[0]
+    db.set_user_low_battery(connection, dev_id)
+    ip_address, port = addr.split(",")
+    s.sendto(bytes("LOW_BATTERY_SET", "UTF-8"), (ip_address, int(port)))
+    return
