@@ -96,21 +96,21 @@ function WelcomeView(props) {
     return (
       <Box className={styledClasses.mobileRoot}>
         <Select
-          style={{
-            color: "#e6e6e6",
-            fontWeight: "bold",
-            padding: "5px",
-            position: "absolute",
-            top: "5px",
-            right: "5px",
-          }}
-          value={language}
-          onChange={handleChange}
-          className={"select"}
-        >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="fi">Suomi</MenuItem>
-        </Select>
+        style={{
+          color: "#e6e6e6" ,
+          fontWeight: "bold",
+          padding: "5px",
+          position: "absolute",
+          top: "5px",
+          right: "5px",
+        }}
+        value={language}
+        onChange={handleChange}
+        data-testid={"languageDropDown3"}
+      >
+          <MenuItem data-testid="enButton3" value="en">English</MenuItem>
+          <MenuItem data-testid="fiButton3" value="fi">Suomi</MenuItem>
+      </Select>
         <Box className={styledClasses.iconContainer} style={{ flex: 2 }}>
           <img
             src="pallaksen_pollot_logo_white.png"
@@ -193,10 +193,11 @@ function WelcomeView(props) {
               fontWeight: "bold",
             }}
           >
-            {translations["getToKnowTheSnowSituation"][language]}
+            {translations["getToKnowSnowConditions"][language]}
           </Button>
         </Box>
       </Box>
+             
     );
   } else {
     return (

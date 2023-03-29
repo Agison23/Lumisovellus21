@@ -171,12 +171,13 @@ function Login(props) {
             fontWeight: "bold",
             padding: "5px",
           }}
+          data-testid={"languageDropDown"}
           value={language}
           onChange={handleChange}
-          className={"select"}
+
         >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="fi">Suomi</MenuItem>
+          <MenuItem data-testid="enButton" value="en">English</MenuItem>
+          <MenuItem data-testid="fiButton" value="fi">Suomi</MenuItem>
         </Select>
         {loading ? (
           <CircularProgress color="secondary" size={20} />
@@ -207,6 +208,8 @@ function Login(props) {
           <InputLabel
             htmlFor="standard-adornment-password"
             className={styledClasses.password}
+            arial-label={"password"}
+            role={"password"}
           >
             {translations["password"][language]}
           </InputLabel>

@@ -109,11 +109,6 @@ const translations = {
     en: "Stones",
   },
 
-  snowTypeError: {
-    fi: "Lumityyppivirhe",
-    en: "Snowtype error",
-  },
-
   showOnly: {
     fi: "Näytä ainoastaan...",
     en: "Show only...",
@@ -165,8 +160,8 @@ const translations = {
   },
 
   now: {
-    fi: "Now",
-    en: "Nyt",
+    fi: "Nyt",
+    en: "Now",
   },
 
   email: {
@@ -187,11 +182,6 @@ const translations = {
   addUser: {
     fi: "Lisää käyttäjä",
     en: "Add an user",
-  },
-
-  userManagementRequiresAdminPermission: {
-    fi: "Kayttäjänhallinta vaatii admin oikeudet",
-    en: "User management requires admin permission",
   },
 
   freshlyRainedSnow: {
@@ -950,11 +940,6 @@ const translations = {
   noResults: {
     fi: "Ei tuloksia",
     en: "No results",
-  },
-
-  getToKnowTheSnowSituation: {
-    fi: "TUTUSTU LUMITILANTEESEEN",
-    en: "GET TO KNOW THE SNOW SITUATION",
   },
 
   pcs: {
