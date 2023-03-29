@@ -430,3 +430,14 @@ def set_user_low_battery(connection, dev_id):
     cur.execute(sql, (1,dev_id))
     connection.commit()
     return
+
+def get_helpers(connection, requester):
+    sql = """SELECT help_giver
+             FROM requests 
+             WHERE help_requester = ? 
+             AND state = 1"""
+
+    cur = connection.cursor()
+    cur.execute(sql, (requester,))
+    help_givers = cur.fetchall()
+    return help_givers
