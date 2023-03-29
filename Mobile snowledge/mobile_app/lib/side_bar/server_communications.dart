@@ -109,11 +109,8 @@ class ServerComms {
       prefs.setBool("_isServerComms", true);
       print('$isServerComms started! Starting now...');
       listenServer(context);
+      messageToServer('REQUEST_INIT')
     }
-  }
-
-  static void receiveRequestsOnStart() {
-    messageToServer('REQUEST_INIT');
   }
 
   // Constructing different messages to server
