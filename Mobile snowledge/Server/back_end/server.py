@@ -56,6 +56,12 @@ class UdpServer:
                         addr,
                         self.udp
                     )
+                elif msg_type == "LOW_BATTERY":
+                    prs.parse_low_battery(
+                        self.connection,
+                        message,
+                        self.udp
+                    )
                 elif msg_type == "LOCATION":
                     prs.parse_database_entry(
                         self.connection, message, addr, self.max_entry_age
