@@ -121,6 +121,10 @@ class ServerComms {
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
+        case 'LOW_BATTERY':
+            List<String> list = await getTimeFNameLNameGps();
+            message = '$messagetype:$devId';
+            break;
         case 'REQUEST_INIT':
           await GpsHandler.startUpdatingGpsVariable();
           List<String> list = await getTimeFNameLNameGps();
