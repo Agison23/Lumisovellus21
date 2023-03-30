@@ -11,10 +11,12 @@ class UdpServer:
         self.connection = db.connect_to_database()
         self.status = True
 
-        self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
+        # self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
+        self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        self.udp.bind(("", 50943))
+        # self.udp.bind(("", 50943))
+        self.udp.bind(("127.0.0.1", 50943))
 
         db.init_tables(self.connection)
         self.max_time_from_closest_users = 7200
@@ -38,7 +40,7 @@ class UdpServer:
                 continue
             msg, addr = readable[0].recvfrom(4096)
             message, msg_type = prs.parse_message(msg)
-
+            print(f"{msg_type} message: {message} - address: {addr}")
             try:
                 if msg_type == "HELP":
                     prs.parse_help_request(
@@ -46,6 +48,13 @@ class UdpServer:
                         message,
                         self.max_time_from_closest_users,
                         self.udp,
+                    )
+                elif msg_type == "REQUEST_INIT":
+                    prs.parse_receive_request(
+                        self.connection,
+                        message, 
+                        addr,
+                        self.udp
                     )
                 elif msg_type == "LOCATION":
                     prs.parse_database_entry(
@@ -65,7 +74,7 @@ class UdpServer:
                 elif msg_type == "KEEP_ALIVE":
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
             except:
-                print("Message parse error.")
+                print(f"Message parse error : {message}")
 
 
 if __name__ == "__main__":

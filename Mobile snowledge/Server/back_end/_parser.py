@@ -4,7 +4,7 @@ import time
 
 PORT = 50943
 COUNT = 5
-
+DISTANCE_HELP_RESOLVED = 0.4 #the distance to indicate if the requester move more than this within 2 location update, help resolved -> delete
 
 def parse_message(msg):
     message = msg.decode()
@@ -37,6 +37,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(
         connection, gpscoord, max_distance, int(timestamp) - max_time_from_closest_users
     )
+    print(f"Users available for help: {users}")
 
     if len(users) == 1:
         ip_address, _ = db.check_if_entry_exists(
@@ -44,9 +45,11 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NO_USERS_NEARBY"
         ip_address, port = ip_address.split(",")
+        print(f"Message: NO_NERBY_USER with address:{ip_address} with port:{port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     for user in users:
+        print(f"user check id: {user}")
         if user[0] == dev_id:
             continue
         if not db.create_request_entry(connection, dev_id, user[0]):
@@ -58,6 +61,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             user[0], gpscoord, user[1], helptype
         )
         ip_address, port = ip_address.split(",")
+        print(f"Message send to helper: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     pallaksenpollot = db.get_all_pallaksen_pollot(connection)
@@ -70,6 +74,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype)
         ip_address, port = ip_address.split(",")
+        print(f"Message send to pallaksen_pollot: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
 
@@ -94,8 +99,8 @@ def parse_database_entry(connection, message, addr, max_entry_age):
 
     data = (user_id, timestamp, gpscoord)
     try:
-        db.create_data_entry(connection, data)
         db.update_ip_address(connection, dev_id, addr_str)
+        db.create_data_entry(connection, data)
     except:
         print("INFO:Entry already exists")
 
@@ -156,6 +161,19 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
 
     return users_in_range
 
+def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
+    gps1 = gpscoord_giver.split(",")
+    gps2 = gpscoord_receiver.split(",")
+    lat1 = float(gps1[0])
+    lon1 = float(gps1[1])
+    lat2 = float(gps2[0])
+    lon2 = float(gps2[1])
+    distance = calculate_distance(lat1, lon1, lat2, lon2)
+    if distance <= max_distance:
+        return True
+    return False
+
+
 
 def parse_help_response(connection, message, max_time_from_closest_users, s):
     timestamp = int(time.time() / 1000) - max_time_from_closest_users
@@ -202,6 +220,7 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
             )
             message = "HELP_OVER:{}".format(_helper[0])
             addr = address.split(",")
+            # print(f"working addr: {addr[0]} with port: {addr[1]}")
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
             db.delete_request_entry(connection, _helper[0], "help_giver")
 
@@ -261,11 +280,34 @@ def do_work(giver, requester, coordinates):
 def send_location_updates(connection, timestamp, s):
     requests = db.get_all_requests(connection)
     coordinates = db.get_latest_locations(connection, timestamp)
-
+    
     messages = []
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
-        messages.append(message)
+        two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
+        if (check_user_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
+            messages.append(message)
+        else:
+            dev_id = request[1]
+            users = db.select_request_entry(connection, dev_id, "help_requester")
+
+            for user in users:
+                ip_address, _ = db.check_if_entry_exists(
+                    connection, "users", "ip_address", "dev_id", user[0], False
+                )
+                message = "HELP_OVER:{}:GPS_HELPED".format(user[0])
+                ip_address, port = ip_address.split(",")
+                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+                db.delete_request_entry(connection, user[0], "help_giver")
+
+            db.delete_help_entry(connection, dev_id)
+            requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
+            requester_ip, _ = db.check_if_entry_exists(
+                    connection, "users", "ip_address", "dev_id", dev_id, False
+                )
+            requester_ip_addr, requester_p = requester_ip.split(",")
+            s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
+            db.delete_request_entry(connection, dev_id, "help_requester")
 
     for message in messages:
         requester_message, requester_addr = message[0][0], message[0][1]
@@ -279,3 +321,55 @@ def send_location_updates(connection, timestamp, s):
         s.sendto(bytes(giver_message, "UTF-8"), (giver_addr, int(giver_port)))
 
     return
+
+def parse_receive_request(connection, message, addr, s):
+    # create user entry but not get auto location
+    timestamp = message[0]
+    dev_id = message[1]
+    etunimi = message[2]
+    sukunimi = message[3]
+    gpscoord = message[4]
+    phone_number = message[5]
+    print("0")
+    addr_str = "{},{}".format(addr[0], addr[1])
+    user = (dev_id, etunimi, sukunimi, addr_str, phone_number)
+    user_entry_id, exists = db.check_if_entry_exists(
+        connection, "users", "dev_id", "dev_id", dev_id, False
+    )
+    print("1")
+    if not exists:
+        user_id = db.create_user_entry(connection, user)
+    else:
+        user_id = user_entry_id
+
+    data = (user_id, timestamp, gpscoord)
+    try:
+        db.create_data_entry(connection, data)
+    except:
+        print("INFO:Entry already exists")
+    print("2")
+
+    helps = db.get_all_help_requests(connection)
+    print("3")
+    for help in helps:
+        req_dev_id = help[0]
+        if (req_dev_id != dev_id): 
+            req_timestamp = help[1]
+            req_gpscoord = help[2]
+            helptype = help[3]
+            print("4")
+            if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
+                max_distance = 1
+            else:
+                max_distance = 3
+            if (check_user_in_range(gpscoord, req_gpscoord, max_distance)):
+                print("5")
+                test = db.create_request_entry(connection, req_dev_id, dev_id)
+                message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
+                dev_id, gpscoord, timestamp, helptype
+                )
+                print(message)
+                ip_address, port = addr.split(",")
+                print("7")
+                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+        
