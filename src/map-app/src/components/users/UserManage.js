@@ -489,7 +489,7 @@ function UserManage(props) {
     // Operator-tason käyttäjä ei voi hallita muita käyttäjiä
     return (
       <Typography variant="h6">
-        {translations["userManagementRequiresAdminPermission"][language]}
+        {translations["userManagementRequiresAdminRights"][language]}
       </Typography>
     );
   }

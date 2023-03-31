@@ -27,19 +27,19 @@ import translations from "../translations/translations";
 const useStyles = makeStyles(() => ({
   navbar: {
     backgroundColor: "rgba(0, 0, 0, 0.8)",
-    width: "75vw",
-  },
+    width: "75vw"
+  }
 }));
 
 const navBarTheme = createTheme({
   palette: {
     primary: {
-      main: "#ed7a72",
+      main: "#ed7a72"
     },
     text: {
-      secondary: "#a1a1a1",
-    },
-  },
+      secondary: "#a1a1a1"
+    }
+  }
 });
 
 function BottomNav(props) {
