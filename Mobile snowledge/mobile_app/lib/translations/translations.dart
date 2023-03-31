@@ -211,7 +211,7 @@ Map translations = {
 
   'healthIssue': {
     'fi': 'Terveysongelma',
-    'en': 'Health issues',
+    'en': 'Health issue',
   },
 
   'lost': {
