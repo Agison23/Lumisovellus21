@@ -225,8 +225,8 @@ Map translations = {
   },
 
   'helpQuery': {
-    'fi': 'Millaista apua tarvitset?',
-    'en': 'What kind of help do you need?',
+    'fi': 'Mihin ongelmaan tarvitset apua?',
+    'en': 'What kind of problem do you have?',
   },
 
   'cancel': {
