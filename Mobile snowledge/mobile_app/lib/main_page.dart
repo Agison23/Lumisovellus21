@@ -34,9 +34,6 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   void initState() {
     super.initState();
 
-    // Trying to write the info of the user of this session into Firestore
-    Utility.updateAvailability(context);
-
     NotificationHandler().init(context);
 
     // since this is the mainpage, we need to initialize gps here so that users

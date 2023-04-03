@@ -77,28 +77,27 @@ class Utility {
     return environment;
   }
 
-  // Basically calls firestore, and try to set a new entry at user ID under "Users" collection
-  // that holds name, date, time, and email of the login user at this instance
-  static void updateAvailability(BuildContext context) {
+  // Creates a new chat room, with ID being the phone number of this user
+  static void createChatRoom() {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-    String? firstName, lastName, fullName, phoneNum;
-    var appState = Provider.of<AppState>(context, listen: false);
+    String? phoneNum;
 
     prefs.then((pref) {
-      firstName = pref.getString('fName');
-      lastName = pref.getString('lName');
       phoneNum = pref.getString('pNumber');
-      fullName = firstName! + " " + lastName!;
-      appState.setPhoneNum = phoneNum;
 
       final _firestore = FirebaseFirestore.instance;
       final data = {
-        'name': fullName,
-        'date_time': DateTime.now(),
-        'phone': phoneNum,
+        'requester': phoneNum,
+        'rescuers': [],
       };
       try {
-        _firestore.collection('Users').doc(phoneNum).set(data);
+        _firestore.collection('Rooms').doc(phoneNum).set(data);
+        _firestore
+            .collection('Rooms')
+            .doc(phoneNum)
+            .collection('Messages') // create Messages sub-collection
+            .doc() // add a unique document ID for each message
+            .set({'text': 'Hello world!'}); // set an initial message
       } catch (e) {
         print(e);
       }

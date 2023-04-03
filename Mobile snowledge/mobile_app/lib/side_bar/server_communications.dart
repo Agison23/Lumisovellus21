@@ -104,8 +104,6 @@ class ServerComms {
   }
 
   static void startListeningServer(BuildContext context) async {
-    // static void startListeningServer() {
-    // listenServer();
     final prefs = await SharedPreferences.getInstance();
     final bool? isServerComms = prefs.getBool("_isServerComms");
     if (isServerComms == false) {
