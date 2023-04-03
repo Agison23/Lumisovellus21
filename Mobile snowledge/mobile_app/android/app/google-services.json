@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:965776997509:android:71c27395479ae2eca03dec",
+        "mobilesdk_app_id": "1:965776997509:android:fe0c2e97e2eae033a03dec",
         "android_client_info": {
-          "package_name": "com.example.mobile_app"
+          "package_name": "com.Snowledge.pallaksen.pollot"
         }
       },
       "oauth_client": [
