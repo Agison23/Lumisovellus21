@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/user_information_view.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../state/appState.dart';
 
 class RescueChat extends StatefulWidget {
@@ -10,14 +12,26 @@ class RescueChat extends StatefulWidget {
 }
 
 class _RescueChatState extends State<RescueChat> {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('Users').snapshots();
+  late String myPhoneNum;
+  final Stream<QuerySnapshot> _roomsStream =
+      FirebaseFirestore.instance.collection('Rooms').snapshots();
   Map<String, dynamic>? selectedUser;
 
   @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        myPhoneNum = prefs.getString('pNumber') ?? '';
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Accessomg the global state to get our phone number
-    var appState = Provider.of<AppState>(context, listen: false);
+    // TODO: get the phone number of the rescue request to use as the room ID
+    final roomId = '0123456789';
+
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -25,7 +39,7 @@ class _RescueChatState extends State<RescueChat> {
     final dialogHeight = screenHeight * 0.8;
     return Center(
       child: StreamBuilder<QuerySnapshot>(
-        stream: _usersStream,
+        stream: _roomsStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           // Some loading/error states
           if (snapshot.hasError) {
@@ -34,15 +48,18 @@ class _RescueChatState extends State<RescueChat> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text("Loading");
           }
+          // Access the room with the corresponding phone number of the request
+          List<QueryDocumentSnapshot?> chatRoom = snapshot.data!.docs
+              .where((element) => element.id == roomId)
+              .toList();
+          QueryDocumentSnapshot? chatRoomData =
+              chatRoom.isNotEmpty ? chatRoom.first : null;
+
+          print('Chat room data is: $chatRoomData');
 
           // Data list of all users, will be used to display all users to chat with
-          List<Map<String, dynamic>> userData = !snapshot.hasData
-              ? []
-              : snapshot.data!.docs.map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                      document.data()! as Map<String, dynamic>;
-                  return data;
-                }).toList();
+          List<Map<String, dynamic>> users =
+              List<Map<String, dynamic>>.from(chatRoomData?['users'] ?? []);
 
           return Container(
             width: dialogWidth,
@@ -65,45 +82,25 @@ class _RescueChatState extends State<RescueChat> {
                         padding: const EdgeInsets.all(10),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: userData.map((Map<String, dynamic> data) {
-                            if (data['phone'] == appState.myPhoneNum) {
-                              return Container();
-                            }
+                          children: users.map((Map<String, dynamic> user) {
+                            String phoneNum = user.keys.first;
+                            String color = user.values.first;
+                            print(
+                                '=========================================== user phone num: $phoneNum');
                             return RescueChatWidgets.circleProfile(
-                              onTap: () {
-                                setState(() {
-                                  selectedUser = data;
-                                });
-                              },
-                              name: data['name'],
+                              roomId: roomId,
+                              phoneNum: phoneNum,
+                              backgroundColor: color,
                             );
                           }).toList(),
                         ),
                       ),
                     ),
-                    // Attempt to display the chat room with the selected user if selected one, or prompt to select a user to start talking
-                    selectedUser != null
-                        ? RescueChatWidgets.chatRoom(
-                            phoneNumToChatWith: selectedUser?['phone'],
-                            myPhoneNum: appState.myPhoneNum,
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: SizedBox(
-                              width: dialogWidth,
-                              height: dialogHeight * 0.7,
-                              child: Center(
-                                child: Text(
-                                  'Select a user to start talking',
-                                  style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white)
-                                      .copyWith(color: Colors.indigo.shade400),
-                                ),
-                              ),
-                            ),
-                          ),
+
+                    RescueChatWidgets.chatRoom(
+                        roomId: '0123456789',
+                        myPhoneNum: myPhoneNum,
+                        users: users),
                     // Button to close the chat dialog
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -128,18 +125,36 @@ class _RescueChatState extends State<RescueChat> {
 }
 
 class RescueChatWidgets {
-  static Widget circleProfile({onTap, name}) {
+  static Widget circleProfile({roomId, phoneNum, backgroundColor}) {
+    print('Background color is: $backgroundColor');
+    Color color;
+    switch (backgroundColor) {
+      case 'red':
+        color = Colors.red.shade700;
+        break;
+      case 'green':
+        color = Colors.green.shade700;
+        break;
+      case 'blue':
+        color = Colors.blue.shade700;
+        break;
+      case 'brown':
+        color = Colors.brown.shade700;
+        break;
+      // add more cases for other colors if needed
+      default:
+        color = Colors.grey; // default color if string doesn't match any cases
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(
-        onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 25,
-              backgroundColor: Colors.grey,
-              child: Icon(
+              backgroundColor: color,
+              child: const Icon(
                 Icons.person,
                 size: 40,
                 color: Colors.white,
@@ -149,7 +164,7 @@ class RescueChatWidgets {
                 width: 50,
                 child: Center(
                     child: Text(
-                  name,
+                  roomId == phoneNum ? 'Rescuee' : 'Helper',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     height: 1.5,
@@ -165,13 +180,9 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget chatRoom({
-    phoneNumToChatWith,
-    myPhoneNum,
-  }) {
+  static Widget chatRoom({roomId, myPhoneNum, users}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
-    var roomId;
 
     return SingleChildScrollView(
       child: Column(
@@ -192,22 +203,19 @@ class RescueChatWidgets {
                 stream: _roomStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                    // All rooms that contains my phone number and the phone number of the person to chat with
+                    // Access the room with the corresponding phone number of the request
                     List<QueryDocumentSnapshot?> allRoomsData = snapshot
                         .data!.docs
-                        .where((element) =>
-                            element['users'].contains(myPhoneNum) &&
-                            element['users'].contains(phoneNumToChatWith))
+                        .where((element) => element.id == roomId)
                         .toList();
-                    print('Rooms data is: $allRoomsData');
+
                     QueryDocumentSnapshot? roomData =
                         allRoomsData.isNotEmpty ? allRoomsData.first : null;
-                    if (roomData != null) {
-                      roomId = roomData.id;
-                      print('Room ID is: $roomId');
-                    }
+
                     return roomData == null
-                        ? Center(
+                        ?
+                        // If a room doesn't have any data, start the conversation
+                        Center(
                             child: Text(
                               'Start a new conversation',
                               style: const TextStyle(
@@ -219,7 +227,7 @@ class RescueChatWidgets {
                           )
                         : StreamBuilder(
                             stream: roomData.reference
-                                .collection('messages')
+                                .collection('Messages')
                                 .orderBy('datetime', descending: true)
                                 .snapshots(),
                             builder:
@@ -236,7 +244,9 @@ class RescueChatWidgets {
                                             snap.data!.docs[i]['message'],
                                             DateFormat('hh:mm a').format(snap
                                                 .data!.docs[i]['datetime']
-                                                .toDate()));
+                                                .toDate()),
+                                            users,
+                                            snap.data!.docs[i]['sent_by']);
                                       },
                                     );
                             },
@@ -270,24 +280,8 @@ class RescueChatWidgets {
                   firestore
                       .collection('Rooms')
                       .doc(roomId)
-                      .collection('messages')
+                      .collection('Messages')
                       .add(data);
-                } else {
-                  Map<String, dynamic> data = {
-                    'message': controller.text.trim(),
-                    'sent_by': myPhoneNum,
-                    'datetime': DateTime.now(),
-                  };
-                  firestore.collection('Rooms').add({
-                    'users': [
-                      phoneNumToChatWith,
-                      myPhoneNum,
-                    ],
-                    'last_message': controller.text,
-                    'last_message_time': DateTime.now(),
-                  }).then((value) async {
-                    value.collection('messages').add(data);
-                  });
                 }
               }
               controller.clear();
@@ -298,7 +292,32 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget messagesCard(bool check, message, time) {
+  static Widget messagesCard(bool check, message, time, users, senderPhoneNum) {
+    String colorString = 'grey';
+    for (final user in users) {
+      // print(user);
+      if (user.containsKey(senderPhoneNum)) {
+        colorString = user[senderPhoneNum]!;
+      }
+    }
+    Color color;
+    switch (colorString) {
+      case 'red':
+        color = Colors.red.shade700;
+        break;
+      case 'green':
+        color = Colors.green.shade700;
+        break;
+      case 'blue':
+        color = Colors.blue.shade700;
+        break;
+      case 'brown':
+        color = Colors.brown.shade700;
+        break;
+      // add more cases for other colors if needed
+      default:
+        color = Colors.grey; // default color if string doesn't match any cases
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -306,13 +325,13 @@ class RescueChatWidgets {
         children: [
           if (check) const Spacer(),
           if (!check)
-            const CircleAvatar(
-              child: Icon(
+            CircleAvatar(
+              child: const Icon(
                 Icons.person,
                 size: 13,
                 color: Colors.white,
               ),
-              backgroundColor: Colors.grey,
+              backgroundColor: color,
               radius: 10,
             ),
           ConstrainedBox(
@@ -322,22 +341,22 @@ class RescueChatWidgets {
               padding: const EdgeInsets.all(10),
               child: Text(
                 '$message\n\n$time',
-                style: TextStyle(color: check ? Colors.white : Colors.black),
+                style: const TextStyle(color: Colors.white),
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: check ? Colors.indigo.shade300 : Colors.grey.shade300,
+                color: color,
               ),
             ),
           ),
           if (check)
-            const CircleAvatar(
+            CircleAvatar(
               child: Icon(
                 Icons.person,
                 size: 13,
                 color: Colors.white,
               ),
-              backgroundColor: Colors.grey,
+              backgroundColor: color,
               radius: 10,
             ),
           if (!check) const Spacer(),

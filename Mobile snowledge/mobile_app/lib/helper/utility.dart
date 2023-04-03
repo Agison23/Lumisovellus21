@@ -87,17 +87,17 @@ class Utility {
 
       final _firestore = FirebaseFirestore.instance;
       final data = {
-        'requester': phoneNum,
-        'rescuers': [],
+        'users': [
+          {'0123456789': 'red'},
+          {'0321456789': 'green'},
+          {'0123456987': 'blue'},
+          {'0123654789': 'brown'},
+        ]
       };
       try {
-        _firestore.collection('Rooms').doc(phoneNum).set(data);
-        _firestore
-            .collection('Rooms')
-            .doc(phoneNum)
-            .collection('Messages') // create Messages sub-collection
-            .doc() // add a unique document ID for each message
-            .set({'text': 'Hello world!'}); // set an initial message
+        final createdRoom = _firestore.collection('Rooms').doc(phoneNum);
+        createdRoom.set(data);
+        createdRoom.collection('Messages'); // create Messages sub-collection
       } catch (e) {
         print(e);
       }
