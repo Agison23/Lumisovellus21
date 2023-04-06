@@ -109,7 +109,6 @@ class ServerComms {
     //   prefs.setBool("_isServerComms", true);
     //   print('$isServerComms started! Starting now...');
     //   listenServer(context);
-    //   messageToServer('REQUEST_INIT')
     // }
   }
 
@@ -121,13 +120,6 @@ class ServerComms {
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
-        case 'REQUEST_INIT':
-          await GpsHandler.startUpdatingGpsVariable();
-          List<String> list = await getTimeFNameLNameGps();
-          message =
-              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
-          await GpsHandler.stopUpdatingGpsVariable();
-          break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSharedPreference();
