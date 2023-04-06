@@ -260,6 +260,9 @@ class ServerComms {
               // Need to set helpRequesterBatteryState to low.
               String helpRequesterBatteryState = resultParts[1];
               break;
+            case "LOW_BATTERY_SET":
+            // the server will send this when the battery status is set in the database, right after the "LOW_BATTERY" message is sent,
+            // This is only for checking if the battery set in the database or not. Maybe not needed?
             case "NO_USERS_NEARBY":
               HelpNeededState().noUserNearby();
               break;
