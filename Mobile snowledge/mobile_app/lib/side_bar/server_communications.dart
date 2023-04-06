@@ -101,16 +101,16 @@ class ServerComms {
 
   static void startListeningServer(BuildContext context) async {
     // static void startListeningServer() {
-    // listenServer();
-    final prefs = await SharedPreferences.getInstance();
-    print('Checking if started listening to server...');
-    final bool? isServerComms = prefs.getBool("_isServerComms");
-    if (isServerComms == false) {
-      prefs.setBool("_isServerComms", true);
-      print('$isServerComms started! Starting now...');
-      listenServer(context);
-      messageToServer('REQUEST_INIT')
-    }
+    listenServer(context);
+    // final prefs = await SharedPreferences.getInstance();
+    // print('Checking if started listening to server...');
+    // final bool? isServerComms = prefs.getBool("_isServerComms");
+    // if (isServerComms == false) {
+    //   prefs.setBool("_isServerComms", true);
+    //   print('$isServerComms started! Starting now...');
+    //   listenServer(context);
+    //   messageToServer('REQUEST_INIT')
+    // }
   }
 
   // Constructing different messages to server

@@ -429,6 +429,7 @@ def get_2_latest_location_dev_id(connection, dev_id):
             WHERE dev_id = ? 
             ORDER BY timestamp DESC"""
     cur = connection.cursor()
-    cur.execute(sql,(dev_id))
+    print(f"dev id get_2_latest_location_dev_id: {dev_id}")
+    cur.execute(sql,(dev_id,))
     user_coord = cur.fetchall()
     return [user_coord[0], user_coord[1]]

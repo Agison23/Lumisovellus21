@@ -162,6 +162,8 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
     return users_in_range
 
 def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
+    print(f"gpscoord_giver-{gpscoord_giver}")
+    print(f"gpscoord_reciver-{gpscoord_receiver}")
     gps1 = gpscoord_giver.split(",")
     gps2 = gpscoord_receiver.split(",")
     lat1 = float(gps1[0])
@@ -285,7 +287,7 @@ def send_location_updates(connection, timestamp, s):
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
         two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
-        if (check_user_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
+        if (check_user_in_range(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
             messages.append(message)
         else:
             dev_id = request[1]
@@ -297,6 +299,7 @@ def send_location_updates(connection, timestamp, s):
                 )
                 message = "HELP_OVER:{}:GPS_HELPED".format(user[0])
                 ip_address, port = ip_address.split(",")
+                print(f"message gps giver-ip-port:{message}-{ip_address}-{port}")
                 s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
                 db.delete_request_entry(connection, user[0], "help_giver")
 
@@ -306,13 +309,13 @@ def send_location_updates(connection, timestamp, s):
                     connection, "users", "ip_address", "dev_id", dev_id, False
                 )
             requester_ip_addr, requester_p = requester_ip.split(",")
+            print(f"message gps giver-ip-port:{requester_message_distance_cancel}-{requester_ip_addr}-{requester_p}")
             s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
             db.delete_request_entry(connection, dev_id, "help_requester")
 
-    for message in messages:
+    for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]
         giver_message, giver_addr = message[1][0], message[1][1]
-
         requester_addr, requester_port = requester_addr.split(",")
         giver_addr, giver_port = giver_addr.split(",")
         s.sendto(
