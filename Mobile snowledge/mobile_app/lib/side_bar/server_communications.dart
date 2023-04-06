@@ -25,7 +25,7 @@ class ServerComms {
   static late Timer _timer;
   static Future<RawDatagramSocket> rDgS =
       RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
-
+  static bool serverListen = false;
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
   static String address = getAddress();
@@ -69,15 +69,11 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) async {
+  static startListeningServer(BuildContext context) {
     // static void startListeningServer() {
     // listenServer();
-    final prefs = await SharedPreferences.getInstance();
-    print('Checking if started listening to server...');
-    final bool? isServerComms = prefs.getBool("_isServerComms");
-    if (isServerComms == false) {
-      prefs.setBool("_isServerComms", true);
-      print('$isServerComms started! Starting now...');
+
+    if (!serverListen) {
       listenServer(context);
     }
   }
@@ -128,7 +124,7 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      // print(message);
+      print(message);
       rDgS.then(
         (RawDatagramSocket udpSocket) {
           udpSocket.writeEventsEnabled = true;
@@ -157,6 +153,7 @@ class ServerComms {
   }
 
   static listenServer(BuildContext context) {
+    serverListen = true;
     var appState = Provider.of<AppState>(context);
     getAddress(); // save the right server address to "address" variable
     rDgS.then((RawDatagramSocket udpSocket) {
@@ -205,15 +202,17 @@ class ServerComms {
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
-              appState.setNumOfHelpRequest = 1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
                 if (isRequestingHelp == false) {
-                  Dialogs.showHelpRequestedDialog(
+                  appState.setNumOfHelpRequest = 1;
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3]);
+                  await Dialogs.showHelpRequestedDialog(
                       MyApp.navigatorKey.currentState?.context, payload);
+                } else {
+                  messageToServer("HELP_RESPONSE:0");
                 }
               }
               break;
@@ -231,16 +230,13 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification();
                 try {
-                  if (HelpOfferedState.pageOpen ||
-                      Dialogs.helpRequestedDialogOpen) {
-                    await MyApp.navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                            builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(
-                        MyApp.navigatorKey.currentState?.context);
-                  }
+                  await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+                      builder: (context) => const MapTracking()));
+
+                  await Dialogs.showHelpNeedOverDialog(
+                      MyApp.navigatorKey.currentState?.context);
                 } catch (e) {
-                  // print(e.toString());
+                  print(e.toString());
                 }
               }
               break;
