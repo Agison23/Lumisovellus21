@@ -305,58 +305,6 @@ def send_location_updates(connection, timestamp, s):
 
     return
 
-def parse_receive_request(connection, message, addr, s):
-    # create user entry but not get auto location
-    timestamp = message[0]
-    dev_id = message[1]
-    etunimi = message[2]
-    sukunimi = message[3]
-    gpscoord = message[4]
-    phone_number = message[5]
-    print("0")
-    addr_str = "{},{}".format(addr[0], addr[1])
-    user = (dev_id, etunimi, sukunimi, addr_str, phone_number)
-    user_entry_id, exists = db.check_if_entry_exists(
-        connection, "users", "dev_id", "dev_id", dev_id, False
-    )
-    print("1")
-    if not exists:
-        user_id = db.create_user_entry(connection, user)
-    else:
-        user_id = user_entry_id
-
-    data = (user_id, timestamp, gpscoord)
-    try:
-        db.create_data_entry(connection, data)
-    except:
-        print("INFO:Entry already exists")
-    print("2")
-
-    helps = db.get_all_help_requests(connection)
-    print("3")
-    for help in helps:
-        req_dev_id = help[0]
-        if (req_dev_id != dev_id): 
-            req_timestamp = help[1]
-            req_gpscoord = help[2]
-            helptype = help[3]
-            print("4")
-            if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
-                max_distance = 1
-            else:
-                max_distance = 3
-            if (check_user_in_range(gpscoord, req_gpscoord, max_distance)):
-                print("5")
-                test = db.create_request_entry(connection, req_dev_id, dev_id)
-                message_return = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
-                dev_id, gpscoord, timestamp, helptype
-                )
-                print(message_return)
-                ip_address, port = addr.split(",")
-                print("7")
-                s.sendto(bytes(message_return, "UTF-8"), (ip_address, int(port)))
-    return
-
 def parse_low_battery(connection, message, addr, s):
     dev_id = message[0]
     db.set_user_low_battery(connection, dev_id)

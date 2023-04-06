@@ -49,13 +49,6 @@ class UdpServer:
                         self.max_time_from_closest_users,
                         self.udp,
                     )
-                elif msg_type == "REQUEST_INIT":
-                    prs.parse_receive_request(
-                        self.connection,
-                        message, 
-                        addr,
-                        self.udp
-                    )
                 elif msg_type == "LOW_BATTERY":
                     prs.parse_low_battery(
                         self.connection,

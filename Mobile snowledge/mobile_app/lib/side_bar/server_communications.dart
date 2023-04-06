@@ -109,7 +109,7 @@ class ServerComms {
       prefs.setBool("_isServerComms", true);
       print('$isServerComms started! Starting now...');
       listenServer(context);
-      messageToServer('REQUEST_INIT')
+      messageToServer('REQUEST_INIT');
     }
   }
 
@@ -122,15 +122,8 @@ class ServerComms {
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'LOW_BATTERY':
-            List<String> list = await getTimeFNameLNameGps();
-            message = '$messagetype:$devId';
-            break;
-        case 'REQUEST_INIT':
-          await GpsHandler.startUpdatingGpsVariable();
           List<String> list = await getTimeFNameLNameGps();
-          message =
-              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
-          await GpsHandler.stopUpdatingGpsVariable();
+          message = '$messagetype:$devId';
           break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -256,12 +249,13 @@ class ServerComms {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3]);
                 String payload = resultParts[2] + ':' + resultParts[3];
-                String helpRequesterBatteryState = resultParts[4]; // string "high" or "low"
+                String helpRequesterBatteryState =
+                    resultParts[4]; // string "high" or "low"
                 await Dialogs.showHelpRequestedDialog(
                     MyApp.navigatorKey.currentState?.context, payload);
               }
               break;
-            case "LOW_BATTERY_HELP": 
+            case "LOW_BATTERY_HELP":
               // this is for user that have accepted the help request, then the help requester battery run low
               // Need to set helpRequesterBatteryState to low.
               String helpRequesterBatteryState = resultParts[1];
