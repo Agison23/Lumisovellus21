@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mobile_app/state/appState.dart';
 import 'onboarding.dart';
-
 import 'help_offered.dart';
 import 'main.dart';
+import 'package:mobile_app/translations/translations.dart';
 
 class NotificationHandler {
   static final NotificationHandler _notificationService =
@@ -80,48 +80,51 @@ class NotificationHandler {
     flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  static Future<void> helpRequestCancelledNotification({int id = 12345}) async {
-    String? payload = "";
+  static Future<void> helpRequestCancelledNotification(AppState state,
+      {int id = 12345}) async {
     flutterLocalNotificationsPlugin.show(
-        id,
-        "Avuntarve ohi",
-        "Kiitos avusta!",
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker'),
-            iOS: _iosNotificationDetails),
-        payload: payload);
+      id,
+      translations['requestOver1'][state.language],
+      translations['requestOver2'][state.language],
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
   }
 
-  static Future<void> helperCancelledAcceptanceNotification(
+  static Future<void> helperCancelledAcceptanceNotification(AppState state,
       {int id = 12345}) async {
     String? payload = "";
     flutterLocalNotificationsPlugin.show(
-        id,
-        "Auttaja on lopettanut avunannon.",
-        "",
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker'),
-            iOS: _iosNotificationDetails),
-        payload: payload);
+      id,
+      translations['helperEnded'][state.language],
+      "",
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
   }
 
-  static Future<void> pushUpNotification(String coords, String distance,
+  static Future<void> pushUpNotification(
+      String coords, String distance, AppState state,
       {int id = 12345}) async {
     String payload = coords + ':' + distance;
     flutterLocalNotificationsPlugin.show(
         id,
-        "Avunpyyntö $distance päässä!",
-        "Siirry katsomaan avuntarve ",
+        translations['reqDist1'][state.language] +
+            '$distance' +
+            translations['reqDist2'][state.language],
+        translations['seeRequest'][state.language],
         const NotificationDetails(
             android: AndroidNotificationDetails(
                 'your channel id', 'your channel name',

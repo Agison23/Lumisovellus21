@@ -32,7 +32,7 @@ class ServerComms {
 
   static getAddress() async {
     //Get user ip address type
-    final address_type = InternetAddress(await Ipify.ipv64()).type;
+    final address_type = await InternetAddress(await Ipify.ipv64()).type;
 
     var response =
         await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
@@ -187,7 +187,8 @@ class ServerComms {
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
               NotificationHandler.cancelPushUpNotification();
-              NotificationHandler.helperCancelledAcceptanceNotification();
+              NotificationHandler.helperCancelledAcceptanceNotification(
+                  appState);
               break;
             case "HELP_TARGET_UPDATE":
               print(
@@ -206,11 +207,13 @@ class ServerComms {
               print("Notify!");
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
+                await NotificationHandler.pushUpNotification(
+                    resultParts[2], resultParts[3], appState);
                 String payload = resultParts[2] + ':' + resultParts[3];
                 if (isRequestingHelp == false) {
                   appState.setNumOfHelpRequest = 1;
                   await NotificationHandler.pushUpNotification(
-                      resultParts[2], resultParts[3]);
+                      resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
                       MyApp.navigatorKey.currentState?.context, payload);
                 } else {
@@ -230,7 +233,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification();
+                NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
                   if (MyApp.navigatorKey.currentState != null) {
                     if (Dialogs.helpRequestedDialogOpen) {
