@@ -104,6 +104,7 @@ class ServerComms {
           message = '$messagetype:$devId';
           break;
         case "HELP_RESPONSE:0":
+          Dialogs.helpRequestedDialogOpen = false;
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
@@ -115,6 +116,7 @@ class ServerComms {
           break;
         case "DECLINE":
           _isOfferingHelp = false;
+          Dialogs.helpRequestedDialogOpen = false;
           message = '$messagetype:$devId';
           break;
         case "KEEP_ALIVE":
@@ -230,11 +232,19 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification();
                 try {
-                  await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
-                      builder: (context) => const MapTracking()));
+                  if (MyApp.navigatorKey.currentState != null) {
+                    if (Dialogs.helpRequestedDialogOpen) {
+                      Dialogs.helpRequestedDialogOpen = false;
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                    }
 
-                  await Dialogs.showHelpNeedOverDialog(
-                      MyApp.navigatorKey.currentState?.context);
+                    if (HelpOfferedState.pageOpen) {
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+                      await Dialogs.showHelpNeedOverDialog(
+                          MyApp.navigatorKey.currentState?.context);
+                    }
+                  }
                 } catch (e) {
                   print(e.toString());
                 }
