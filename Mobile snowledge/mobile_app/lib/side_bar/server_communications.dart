@@ -205,12 +205,13 @@ class ServerComms {
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
-              String devId = await _getDeviceID();
-              if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3], appState);
-                String payload = resultParts[2] + ':' + resultParts[3];
-                if (isRequestingHelp == false) {
+              if (isRequestingHelp == false) {
+                String devId = await _getDeviceID();
+                if (resultParts[1] == devId) {
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  String payload = resultParts[2] + ':' + resultParts[3];
+
                   appState.setNumOfHelpRequest = 1;
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
