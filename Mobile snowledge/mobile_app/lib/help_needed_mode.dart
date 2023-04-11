@@ -68,6 +68,15 @@ class HelpNeededState extends State<HelpNeeded> {
             });
             // if users has accepted the request
             if (_helpers.isNotEmpty) {
+              if (_start == 0) {
+                _start = 1;
+
+                if (_timer != null) {
+                  if (_timer!.isActive) {
+                    _timer!.cancel();
+                  }
+                }
+              }
               setState(() {
                 _markers = getMarkers(_helpers, usersLatLng);
               });
@@ -99,7 +108,10 @@ class HelpNeededState extends State<HelpNeeded> {
     _timer = Timer.periodic(
       duration,
       (Timer timer) {
-        Dialogs.showNoUserHasAcceptedRequestDialog(context);
+        if (_helpers.isEmpty) {
+          Dialogs.showNoUserHasAcceptedRequestDialog(context);
+        }
+
         // print('no user has accepted');
         timer.cancel();
       },
