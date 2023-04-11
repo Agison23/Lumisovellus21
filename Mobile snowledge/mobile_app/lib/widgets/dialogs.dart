@@ -433,7 +433,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  translations['requestOver'][appState.language],
+                  translations['requestOver1'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
