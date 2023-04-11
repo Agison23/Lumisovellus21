@@ -298,6 +298,13 @@ Map translations = {
     // $count ja piste lopussa
   },
 
+  'reqOverAutomatically': {
+    'fi':
+        'Tulkitsimme sijaintitiedoistanne saaneesi apua. Jos olet edelleen hädässä, tee uusi avunpyyntö!',
+    'en':
+        'Your location data indicates that you already received help. If you still need help, make a new request please!',
+  },
+
   'nearbyReq': {
     'fi': 'Lähellä oleva käyttäjä tarvitsee apua.',
     'en': 'A nearby user needs help',
