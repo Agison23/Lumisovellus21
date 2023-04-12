@@ -331,8 +331,8 @@ Map translations = {
   },
 
   'helper': {
-    'fi': 'Avunpyytäjä',
-    'en': 'help requester',
+    'fi': 'Avunantaja',
+    'en': 'help provider',
   },
 
   'cancelHelp': {
