@@ -496,9 +496,16 @@ class Dialogs {
     );
   }
 
-  // Open dialog when help requester's request is automatically removed
-  static showRequestEndedAutomaticallyDialog(context) async {
+  // Open dialog when help requester's request is automatically cancelled
+  // Different prompts for help requester and helpers
+  static showRequestEndedAutomaticallyDialog(context, String user) async {
     var appState = Provider.of<AppState>(context, listen: false);
+    String text = '';
+    if (user == 'help_requester') {
+      translations['requesterReqOverAutomatically'][appState.language];
+    } else if (user == 'helper') {
+      translations['helperReqOverAutomatically'][appState.language];
+    }
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
@@ -511,7 +518,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  translations['reqOverAutomatically'][appState.language],
+                  text,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
