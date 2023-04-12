@@ -321,7 +321,7 @@ class HelpOfferedState extends State<HelpOffered> {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              translations['helper']
+              translations['whoRequest']
                   [Provider.of<AppState>(ctx, listen: false).language],
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
