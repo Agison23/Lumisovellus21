@@ -7,6 +7,8 @@ import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 import '../state/appState.dart';
+import '../side_bar/server_communications.dart';
+import '../notification_handler.dart';
 
 import '../translations/translations.dart';
 
@@ -508,6 +510,8 @@ class Dialogs {
         return WillPopScope(
           onWillPop: () {
             helpRequestedDialogOpen = false;
+            NotificationHandler.cancelPushUpNotification();
+            ServerComms.messageToServer('HELP_RESPONSE:0');
             return Future.value(true);
           },
           child: AlertDialog(
