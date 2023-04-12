@@ -88,10 +88,8 @@ class Utility {
       final _firestore = FirebaseFirestore.instance;
       final data = {
         'users': [
-          {'0123456789': 'red'},
-          {'0321456789': 'green'},
-          {'0123456987': 'blue'},
-          {'0123654789': 'brown'},
+          // Only add the phone number of this request as the "requester", with a red color
+          {'$phoneNum': 'red'},
         ]
       };
       try {

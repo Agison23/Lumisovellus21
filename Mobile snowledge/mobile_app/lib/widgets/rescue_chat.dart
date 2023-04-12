@@ -13,6 +13,7 @@ class RescueChat extends StatefulWidget {
 
 class _RescueChatState extends State<RescueChat> {
   late String myPhoneNum;
+  final _firestore = FirebaseFirestore.instance;
   final Stream<QuerySnapshot> _roomsStream =
       FirebaseFirestore.instance.collection('Rooms').snapshots();
   Map<String, dynamic>? selectedUser;
@@ -30,7 +31,7 @@ class _RescueChatState extends State<RescueChat> {
   @override
   Widget build(BuildContext context) {
     // TODO: get the phone number of the rescue request to use as the room ID
-    final roomId = '0123456789';
+    const roomId = '0123456789';
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
@@ -55,11 +56,52 @@ class _RescueChatState extends State<RescueChat> {
           QueryDocumentSnapshot? chatRoomData =
               chatRoom.isNotEmpty ? chatRoom.first : null;
 
-          print('Chat room data is: $chatRoomData');
-
           // Data list of all users, will be used to display all users to chat with
           List<Map<String, dynamic>> users =
               List<Map<String, dynamic>>.from(chatRoomData?['users'] ?? []);
+
+          print('Users array before update is: $users');
+
+          bool phoneNumberFound = false;
+          String color = 'grey';
+
+          for (Map<String, dynamic> user in users) {
+            if (user.containsKey(myPhoneNum)) {
+              phoneNumberFound = true;
+              break;
+            }
+          }
+
+          if (!phoneNumberFound) {
+            // If phone number of this helper is not already in the array, add them in with their color
+            if (users.length == 1) {
+              print('No helpers yet');
+              users.add({myPhoneNum: 'green'});
+              color = 'green';
+            } else if (users.length == 2) {
+              print('1 helpers. Adding new.');
+              users.add({myPhoneNum: 'blue'});
+              color = 'blue';
+            } else if (users.length == 3) {
+              print('2 helpers. Adding new.');
+              users.add({myPhoneNum: 'brown'});
+              color = 'brown';
+            } else if (users.length == 4) {
+              print('3 helpers already. No more!');
+            }
+
+            print('Users after update: $users');
+
+            try {
+              _firestore.collection('Rooms').doc(roomId).update({
+                'users': FieldValue.arrayUnion([
+                  {myPhoneNum: color}
+                ]),
+              });
+            } catch (e) {
+              print(e);
+            }
+          }
 
           return Container(
             width: dialogWidth,
