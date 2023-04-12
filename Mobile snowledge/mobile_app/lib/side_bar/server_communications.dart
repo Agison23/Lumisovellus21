@@ -217,10 +217,11 @@ class ServerComms {
                       resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
                       MyApp.navigatorKey.currentState?.context, payload);
-                } else {
-                  messageToServer("HELP_RESPONSE:0");
                 }
+              } else {
+                messageToServer("HELP_RESPONSE:0");
               }
+
               break;
 
             case "NO_USERS_NEARBY":
