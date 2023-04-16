@@ -79,7 +79,7 @@ import WriteUserReview from "./WriteUserReview";
 import { useMediaQuery } from "react-responsive";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations/translations";
-import getTranslationKey from "../translations/getTranslationsKey";
+import getTranslationKey from "../translations/getTranslationKey";
 
 // Changes button color palette. Muuttaa nappien väripalettia.
 const theme = createTheme({

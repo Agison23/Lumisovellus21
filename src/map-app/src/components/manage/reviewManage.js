@@ -9,7 +9,7 @@ import { Typography } from "@material-ui/core";
 import { CardMedia } from "@material-ui/core";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
-import getTranslationKey from "../../translations/getTranslationsKey";
+import getTranslationKey from "../../translations/getTranslationKey";
 
 const useStyles = makeStyles(() => ({
   userCard: {
