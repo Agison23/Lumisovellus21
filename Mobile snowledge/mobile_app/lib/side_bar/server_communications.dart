@@ -25,7 +25,6 @@ class ServerComms {
   static late Timer _timer;
   static Future<RawDatagramSocket> rDgS =
       RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
-  static bool serverListen = false;
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
   static String address = getAddress();
@@ -37,6 +36,7 @@ class ServerComms {
     var response =
         await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
 
+    //address = response[0].address;
     address = response[0].address;
     return address;
   }
@@ -69,14 +69,19 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static startListeningServer(BuildContext context) {
+  static void startListeningServer(BuildContext context) async {
     // static void startListeningServer() {
     // listenServer();
-
-    if (!serverListen) {
+    final prefs = await SharedPreferences.getInstance();
+    print('Checking if started listening to server...');
+    final bool? isServerComms = prefs.getBool("_isServerComms");
+    if (isServerComms == false) {
+      prefs.setBool("_isServerComms", true);
+      print('$isServerComms started! Starting now...');
       listenServer(context);
     }
   }
+
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
@@ -155,7 +160,6 @@ class ServerComms {
   }
 
   static listenServer(BuildContext context) {
-    serverListen = true;
     var appState = Provider.of<AppState>(context);
     getAddress(); // save the right server address to "address" variable
     rDgS.then((RawDatagramSocket udpSocket) {
