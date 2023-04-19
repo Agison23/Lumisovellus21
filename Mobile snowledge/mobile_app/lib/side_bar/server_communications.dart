@@ -86,7 +86,8 @@ class ServerComms {
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
-          message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
+          message =
+              '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed:${list[4]}';
           break;
         case 'HELP_DELETE':
           message = '$messagetype:$devId';
@@ -241,12 +242,12 @@ class ServerComms {
     var prefs = await SharedPreferences.getInstance();
     String fName = prefs.getString('fName')!;
     String lName = prefs.getString('lName')!;
-    String pNumber = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
+    String chatRoomId = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
     // time, first name, last name, gps, phone number
-    return [time.toString(), fName, lName, _gps, pNumber];
+    return [time.toString(), fName, lName, _gps, chatRoomId];
   }
 
   // Save the last location and time to the app's shared preference
