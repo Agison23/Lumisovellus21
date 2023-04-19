@@ -102,21 +102,21 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               ),
                               const SizedBox(height: 15),
                               Center(
-                                child: Expanded(
-                                  child: DropdownButton<String>(
-                                    value: appState.languageName,
-                                    onChanged: (String? value) {
-                                      setLanguage(value!);
-                                    },
-                                    items: appState.allLanguages.keys
-                                        .toList()
-                                        .map<DropdownMenuItem<String>>((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Text(item),
-                                      );
-                                    }).toList(),
-                                  ),
+                                child: DropdownButton<String>(
+                                  key: const ValueKey('languageStartDropdown'),
+                                  value: appState.languageName,
+                                  onChanged: (String? value) {
+                                    setLanguage(value!);
+                                  },
+                                  items: appState.allLanguages.keys
+                                      .toList()
+                                      .map<DropdownMenuItem<String>>((item) {
+                                    return DropdownMenuItem<String>(
+                                      key: ValueKey(item.toString()),
+                                      value: item,
+                                      child: Text(item),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
                             ],
@@ -354,6 +354,7 @@ class UserInfoFormState extends State<UserInfoForm> {
       child: Column(
         children: [
           TextFormField(
+            key: const ValueKey('fName'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: fNameController,
@@ -382,6 +383,7 @@ class UserInfoFormState extends State<UserInfoForm> {
           ),
           const SizedBox(height: 5.0),
           TextFormField(
+            key: const ValueKey('sName'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             controller: lNameController,
@@ -410,6 +412,7 @@ class UserInfoFormState extends State<UserInfoForm> {
           ),
           const SizedBox(height: 5.0),
           TextFormField(
+            key: const ValueKey('phone'),
             style: const TextStyle(color: Colors.white, fontSize: 20),
             textAlign: TextAlign.center,
             inputFormatters: [

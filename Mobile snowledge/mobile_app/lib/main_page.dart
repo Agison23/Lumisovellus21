@@ -62,8 +62,6 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    ServerComms.startListeningServer(context);
-    // ServerComms.receiveRequestsOnStart();
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);

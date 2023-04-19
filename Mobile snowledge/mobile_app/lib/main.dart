@@ -15,7 +15,6 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   fName = prefs.getString('fName');
-  prefs.setBool("_isServerComms", false);
   runApp(MyApp());
 }
 
@@ -24,16 +23,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This will get called in main_page.dart, in order to pass the BuildContext into server_communication
-    // ServerComms.startListeningServer(context);
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        title: 'Snowledge',
-        home: (fName == null) ? const OnBoardingPage() : const MainPage(),
-      ),
+      builder: (context, child) {
+        ServerComms.listenServer(context);
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
+          title: 'Snowledge',
+          home: (fName == null) ? const OnBoardingPage() : const MainPage(),
+        );
+      },
     );
   }
 }

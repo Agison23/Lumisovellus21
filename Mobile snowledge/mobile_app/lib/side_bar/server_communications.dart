@@ -99,19 +99,6 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) {
-    // static void startListeningServer() {
-    listenServer(context);
-    // final prefs = await SharedPreferences.getInstance();
-    // print('Checking if started listening to server...');
-    // final bool? isServerComms = prefs.getBool("_isServerComms");
-    // if (isServerComms == false) {
-    //   prefs.setBool("_isServerComms", true);
-    //   print('$isServerComms started! Starting now...');
-    //   listenServer(context);
-    // }
-  }
-
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     if (await Permission.location.isGranted) {
@@ -220,7 +207,8 @@ class ServerComms {
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
               NotificationHandler.cancelPushUpNotification();
-              NotificationHandler.helperCancelledAcceptanceNotification();
+              NotificationHandler.helperCancelledAcceptanceNotification(
+                  appState);
               break;
             case "HELP_TARGET_UPDATE":
               print(
@@ -241,7 +229,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3]);
+                    resultParts[2], resultParts[3], appState);
                 String payload = resultParts[2] + ':' + resultParts[3];
                 await Dialogs.showHelpRequestedDialog(
                     MyApp.navigatorKey.currentState?.context, payload);
@@ -258,7 +246,7 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification();
+                NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
                   if (HelpOfferedState.pageOpen) {
                     await MyApp.navigatorKey.currentState?.push(

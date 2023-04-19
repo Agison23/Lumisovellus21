@@ -4,7 +4,7 @@ import time
 
 PORT = 50943
 COUNT = 5
-DISTANCE_HELP_RESOLVED = 0.4 #the distance to indicate if the requester move more than this within 2 location update, help resolved -> delete
+DISTANCE_HELP_RESOLVED = 0.5 #the distance to indicate if the requester move more than this within 2 location update, help resolved -> delete
 
 def parse_message(msg):
     message = msg.decode()
@@ -161,7 +161,7 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
 
     return users_in_range
 
-def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
+def should_request_end(gpscoord_giver, gpscoord_receiver, max_distance):
     print(f"gpscoord_giver-{gpscoord_giver}")
     print(f"gpscoord_reciver-{gpscoord_receiver}")
     gps1 = gpscoord_giver.split(",")
@@ -171,7 +171,7 @@ def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
     lat2 = float(gps2[0])
     lon2 = float(gps2[1])
     distance = calculate_distance(lat1, lon1, lat2, lon2)
-    if distance <= max_distance:
+    if distance > max_distance:
         return True
     return False
 
@@ -287,7 +287,7 @@ def send_location_updates(connection, timestamp, s):
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
         two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
-        if (check_user_in_range(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
+        if (should_request_end(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
             messages.append(message)
         else:
             dev_id = request[1]
@@ -297,7 +297,7 @@ def send_location_updates(connection, timestamp, s):
                 ip_address, _ = db.check_if_entry_exists(
                     connection, "users", "ip_address", "dev_id", user[0], False
                 )
-                message = "HELP_OVER:{}:GPS_HELPED".format(user[0])
+                message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
                 ip_address, port = ip_address.split(",")
                 print(f"message gps giver-ip-port:{message}-{ip_address}-{port}")
                 s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))

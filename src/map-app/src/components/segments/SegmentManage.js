@@ -58,7 +58,7 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
-import getTranslationKey from "../../translations/getTranslationsKey";
+import getTranslationKey from "../../translations/getTranslationKey";
 
 const useStyles = makeStyles((theme) => ({
   segmentCard: {
