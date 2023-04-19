@@ -297,7 +297,7 @@ def send_location_updates(connection, timestamp, s):
                 ip_address, _ = db.check_if_entry_exists(
                     connection, "users", "ip_address", "dev_id", user[0], False
                 )
-                message = "HELP_OVER:{}:GPS_AUTOMATIC_END".format(user[0])
+                message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
                 ip_address, port = ip_address.split(",")
                 print(f"message gps giver-ip-port:{message}-{ip_address}-{port}")
                 s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
