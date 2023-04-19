@@ -25,8 +25,8 @@ class ServerComms {
   static late Timer _timer;
   static Future<RawDatagramSocket> rDgS =
       RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
-
   static bool _isOfferingHelp = false;
+  static bool isRequestingHelp = false;
   static String address = getAddress();
 
   static getAddress() async {
@@ -36,6 +36,7 @@ class ServerComms {
     var response =
         await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
 
+    //address = response[0].address;
     address = response[0].address;
     return address;
   }
@@ -83,25 +84,30 @@ class ServerComms {
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          isRequestingHelp = true;
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
+          isRequestingHelp = false;
           message = '$messagetype:$devId';
           break;
         case "HELP_RESPONSE:0":
+          Dialogs.helpRequestedDialogOpen = false;
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "HELP_RESPONSE:1":
           _isOfferingHelp = true;
+          NotificationHandler.cancelPushUpNotification();
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "DECLINE":
           _isOfferingHelp = false;
+          Dialogs.helpRequestedDialogOpen = false;
           message = '$messagetype:$devId';
           break;
         case "KEEP_ALIVE":
@@ -111,7 +117,7 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      // print(message);
+      print(message);
       rDgS.then(
         (RawDatagramSocket udpSocket) {
           udpSocket.writeEventsEnabled = true;
@@ -189,18 +195,27 @@ class ServerComms {
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
-              appState.setNumOfHelpRequest = 1;
-              String devId = await _getDeviceID();
-              if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3], appState);
-                String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(
-                    MyApp.navigatorKey.currentState?.context, payload);
+              if (isRequestingHelp == false) {
+                String devId = await _getDeviceID();
+                if (resultParts[1] == devId) {
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  String payload = resultParts[2] + ':' + resultParts[3];
+
+                  appState.setNumOfHelpRequest = 1;
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  await Dialogs.showHelpRequestedDialog(
+                      MyApp.navigatorKey.currentState?.context, payload);
+                }
+              } else {
+                messageToServer("HELP_RESPONSE:0");
               }
+
               break;
 
             case "NO_USERS_NEARBY":
+              isRequestingHelp = false;
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
@@ -212,15 +227,21 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
-                  if (HelpOfferedState.pageOpen) {
-                    await MyApp.navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                            builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(
-                        MyApp.navigatorKey.currentState?.context);
+                  if (MyApp.navigatorKey.currentState != null) {
+                    if (Dialogs.helpRequestedDialogOpen) {
+                      Dialogs.helpRequestedDialogOpen = false;
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                    }
+
+                    if (HelpOfferedState.pageOpen) {
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+                      await Dialogs.showHelpNeedOverDialog(
+                          MyApp.navigatorKey.currentState?.context);
+                    }
                   }
                 } catch (e) {
-                  // print(e.toString());
+                  print(e.toString());
                 }
               }
               break;
