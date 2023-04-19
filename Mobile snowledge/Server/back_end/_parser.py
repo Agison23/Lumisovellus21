@@ -287,7 +287,7 @@ def send_location_updates(connection, timestamp, s):
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
         two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
-        if (check_user_in_range(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
+        if (should_request_end(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
             messages.append(message)
         else:
             dev_id = request[1]
