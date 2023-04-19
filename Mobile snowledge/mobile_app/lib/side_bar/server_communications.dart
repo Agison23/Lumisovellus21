@@ -116,7 +116,6 @@ class ServerComms {
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
       String message;
-      // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -199,7 +198,6 @@ class ServerComms {
       udpSocket.readEventsEnabled = true;
       String address;
       if (_env['APP_ENVIRONMENT'] == 'development') {
-        print("currently locally listen server");
         address = await initAddressLocal();
       } else {
         address = await initAddress();
@@ -301,7 +299,7 @@ class ServerComms {
               }
               break;
             case "HELP_ENDED_BY_GPS":
-              // Because this requester location changed more than 400m from the last gps taken, the help request is cancelled
+              // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
               // Something should happen on the front end base on ticket #173
               break;
             default:

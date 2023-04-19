@@ -15,7 +15,7 @@ class UdpServer:
         self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        # self.udp.bind(("", 50943))
+        # self.udp.bind(("::1", 50943))
         self.udp.bind(("127.0.0.1", 50943))
 
         db.init_tables(self.connection)
