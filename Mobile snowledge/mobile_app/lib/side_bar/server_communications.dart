@@ -25,7 +25,7 @@ class ServerComms {
   static late Timer _timer;
 // RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943)
   static bool _isOfferingHelp = false;
-  // static late Future<RawDatagramSocket> rDgS;
+  static Future<RawDatagramSocket> rDgS = initRDgS();
   // static late String address;
 
   static Future<RawDatagramSocket> initRDgS() {
@@ -99,7 +99,7 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) async {
+  static void startListeningServer(BuildContext context) {
     // static void startListeningServer() {
     listenServer(context);
     // final prefs = await SharedPreferences.getInstance();
@@ -157,7 +157,7 @@ class ServerComms {
       }
       print(message);
 
-      initRDgS().then(
+      rDgS.then(
         (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
@@ -188,7 +188,7 @@ class ServerComms {
 
   static listenServer(BuildContext context) async {
     var appState = Provider.of<AppState>(context);
-    initRDgS().then((RawDatagramSocket udpSocket) async {
+    rDgS.then((RawDatagramSocket udpSocket) async {
       udpSocket.readEventsEnabled = true;
       // String address = await initAddress();
       String address = await initAddressLocal();
