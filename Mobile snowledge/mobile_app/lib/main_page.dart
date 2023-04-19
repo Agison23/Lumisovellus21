@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
+import 'bottom_bar/state/setSharingLocation.dart';
 import 'helper/utility.dart';
 import 'notification_handler.dart';
 import '../translations/translations.dart';
@@ -40,6 +41,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         .then((gpsOn) async {
       if (gpsOn) {
         await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+        SetSharingLocationState.setGpsSwitchState(true);
       }
     });
 
@@ -62,8 +64,6 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    ServerComms.startListeningServer(context);
-    // ServerComms.receiveRequestsOnStart();
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
     var appState = Provider.of<AppState>(context, listen: false);

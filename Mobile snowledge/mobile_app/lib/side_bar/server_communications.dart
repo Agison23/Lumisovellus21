@@ -20,14 +20,15 @@ import '../main.dart';
 import '../notification_handler.dart';
 import '../state/appState.dart';
 import 'gps_handler.dart';
+import '../helper/utility.dart';
 
 class ServerComms {
+  static Future<RawDatagramSocket> rDgS = initRDgS();
   static late Timer _timer;
-// RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943)
   static bool _isOfferingHelp = false;
-  // static late Future<RawDatagramSocket> rDgS;
-  // static late String address;
+  static bool isRequestingHelp = false;
 
+  // Take local network ipv4/ipv6 base on available networks, prioritize ipv6
   static Future<RawDatagramSocket> initRDgS() {
     Future<RawDatagramSocket> rDgS =
         RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
@@ -39,6 +40,7 @@ class ServerComms {
     return rDgS;
   }
 
+  // Take web host ipv4/ipv6 base on available networks, prioritize ipv6
   static Future<String> initAddress() async {
     var response = await InternetAddress.lookup('dev.lumisovellus.fi',
         type: InternetAddressType.IPv4);
@@ -53,11 +55,13 @@ class ServerComms {
     return address;
   }
 
+  // This function get the address of the server locally which is on localhost ipv4
   static Future<String> initAddressLocal() async {
     String address = "10.0.2.2";
     return address;
   }
 
+  // This function check all available network on the phone and return true if any support ipv6
   static Future<bool> supportsIPv6() {
     return NetworkInterface.list().then((interfaces) {
       for (var interface in interfaces) {
@@ -99,25 +103,18 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) async {
-    // static void startListeningServer() {
-    // listenServer();
-    final prefs = await SharedPreferences.getInstance();
-    print('Checking if started listening to server...');
-    final bool? isServerComms = prefs.getBool("_isServerComms");
-    if (isServerComms == false) {
-      prefs.setBool("_isServerComms", true);
-      print('$isServerComms started! Starting now...');
-      listenServer(context);
-      messageToServer('REQUEST_INIT')
-    }
-  }
-
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    Map<String, String> _env =
+        await Utility.parseStringToMap(assetsFileName: '.env');
+    bool con = true;
+    con = await checkConnection(messagetype);
+    if (!con) {
+      return;
+    }
+
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
-
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
@@ -135,25 +132,30 @@ class ServerComms {
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          isRequestingHelp = true;
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
+          isRequestingHelp = false;
           message = '$messagetype:$devId';
           break;
         case "HELP_RESPONSE:0":
+          Dialogs.helpRequestedDialogOpen = false;
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "HELP_RESPONSE:1":
           _isOfferingHelp = true;
+          NotificationHandler.cancelPushUpNotification();
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "DECLINE":
           _isOfferingHelp = false;
+          Dialogs.helpRequestedDialogOpen = false;
           message = '$messagetype:$devId';
           break;
         case "KEEP_ALIVE":
@@ -164,14 +166,16 @@ class ServerComms {
           break;
       }
       print(message);
-
-      initRDgS().then(
+      rDgS.then(
         (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          // udpSocket.send(data, InternetAddress(await initAddress()), 50943);
-          udpSocket.send(
-              data, InternetAddress(await initAddressLocal()), 50943);
+          if (_env['APP_ENVIRONMENT'] == 'development') {
+            udpSocket.send(
+                data, InternetAddress(await initAddressLocal()), 50943);
+          } else {
+            udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+          }
         },
       );
     } else {
@@ -194,12 +198,18 @@ class ServerComms {
     return devId;
   }
 
-  static listenServer(BuildContext context) async {
+  static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
-    initRDgS().then((RawDatagramSocket udpSocket) async {
+    rDgS.then((RawDatagramSocket udpSocket) async {
+      Map<String, String> _env =
+          await Utility.parseStringToMap(assetsFileName: '.env');
       udpSocket.readEventsEnabled = true;
-      // String address = await initAddress();
-      String address = await initAddressLocal();
+      String address;
+      if (_env['APP_ENVIRONMENT'] == 'development') {
+        address = await initAddressLocal();
+      } else {
+        address = await initAddress();
+      }
       String result;
       udpSocket.listen((event) async {
         print("phone listening: ${event}");
@@ -228,7 +238,8 @@ class ServerComms {
               HelpNeededState.helperAmountUpdate(
                   -1, resultParts[1], LatLng(0, 0));
               NotificationHandler.cancelPushUpNotification();
-              NotificationHandler.helperCancelledAcceptanceNotification();
+              NotificationHandler.helperCancelledAcceptanceNotification(
+                  appState);
               break;
             case "HELP_TARGET_UPDATE":
               print(
@@ -245,18 +256,27 @@ class ServerComms {
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
-              appState.setNumOfHelpRequest = 1;
-              String devId = await _getDeviceID();
-              if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3]);
-                String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(
-                    MyApp.navigatorKey.currentState?.context, payload);
+              if (isRequestingHelp == false) {
+                String devId = await _getDeviceID();
+                if (resultParts[1] == devId) {
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  String payload = resultParts[2] + ':' + resultParts[3];
+
+                  appState.setNumOfHelpRequest = 1;
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  await Dialogs.showHelpRequestedDialog(
+                      MyApp.navigatorKey.currentState?.context, payload);
+                }
+              } else {
+                messageToServer("HELP_RESPONSE:0");
               }
+
               break;
 
             case "NO_USERS_NEARBY":
+              isRequestingHelp = false;
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
@@ -266,17 +286,23 @@ class ServerComms {
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification();
+                NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
-                  if (HelpOfferedState.pageOpen) {
-                    await MyApp.navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                            builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(
-                        MyApp.navigatorKey.currentState?.context);
+                  if (MyApp.navigatorKey.currentState != null) {
+                    if (Dialogs.helpRequestedDialogOpen) {
+                      Dialogs.helpRequestedDialogOpen = false;
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                    }
+
+                    if (HelpOfferedState.pageOpen) {
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+                      await Dialogs.showHelpNeedOverDialog(
+                          MyApp.navigatorKey.currentState?.context);
+                    }
                   }
                 } catch (e) {
-                  // print(e.toString());
+                  print(e.toString());
                 }
               }
               break;
@@ -286,7 +312,7 @@ class ServerComms {
           }
         }
       }, onError: (error) {
-        // print("server listening error: $error");
+        print("server listening error: $error");
       }, onDone: () {
         // print("server listening done!");
       }, cancelOnError: true);
@@ -311,5 +337,33 @@ class ServerComms {
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
     });
+  }
+
+  static Future<bool> checkConnection(String message) async {
+    bool connection = true;
+    do {
+      try {
+        final result = await InternetAddress.lookup('dev.lumisovellus.fi');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          print('connected');
+          if (!connection) {
+            print('recoved');
+            if (message == 'HELPDELETE') {
+              await Future.delayed(const Duration(seconds: 10));
+            }
+          }
+
+          connection = true;
+        }
+      } on SocketException catch (_) {
+        if (message == 'LOCATION') {
+          return false;
+        }
+        await Future.delayed(const Duration(seconds: 10));
+        print('no internet connection');
+        connection = false;
+      }
+    } while (!connection);
+    return connection;
   }
 }

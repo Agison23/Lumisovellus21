@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mobile_app/state/appState.dart';
 import 'onboarding.dart';
-
 import 'help_offered.dart';
 import 'main.dart';
+import 'package:mobile_app/translations/translations.dart';
 
 class NotificationHandler {
   static final NotificationHandler _notificationService =
@@ -43,8 +43,11 @@ class NotificationHandler {
 
   Future onSelectNotification(String? payload) async {
     try {
-      await MyApp.navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
+      //if notification = new help request alert notification
+      if (payload != "") {
+        await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+            builder: (context) => HelpOffered(payload, true)));
+      }
     } catch (e) {
       // print(e.toString());
     }
@@ -77,11 +80,12 @@ class NotificationHandler {
     flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  static Future<void> helpRequestCancelledNotification({int id = 12345}) async {
+  static Future<void> helpRequestCancelledNotification(AppState state,
+      {int id = 12345}) async {
     flutterLocalNotificationsPlugin.show(
       id,
-      "Avuntarve ohi",
-      "Kiitos avusta!",
+      translations['requestOver1'][state.language],
+      translations['requestOver2'][state.language],
       const NotificationDetails(
           android: AndroidNotificationDetails(
               'your channel id', 'your channel name',
@@ -93,11 +97,12 @@ class NotificationHandler {
     );
   }
 
-  static Future<void> helperCancelledAcceptanceNotification(
+  static Future<void> helperCancelledAcceptanceNotification(AppState state,
       {int id = 12345}) async {
+    String? payload = "";
     flutterLocalNotificationsPlugin.show(
       id,
-      "Auttaja on lopettanut avunannon.",
+      translations['helperEnded'][state.language],
       "",
       const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -110,13 +115,16 @@ class NotificationHandler {
     );
   }
 
-  static Future<void> pushUpNotification(String coords, String distance,
+  static Future<void> pushUpNotification(
+      String coords, String distance, AppState state,
       {int id = 12345}) async {
     String payload = coords + ':' + distance;
     flutterLocalNotificationsPlugin.show(
         id,
-        "Avunpyyntö $distance päässä!",
-        "Siirry katsomaan avuntarve ",
+        translations['reqDist1'][state.language] +
+            '$distance' +
+            translations['reqDist2'][state.language],
+        translations['seeRequest'][state.language],
         const NotificationDetails(
             android: AndroidNotificationDetails(
                 'your channel id', 'your channel name',

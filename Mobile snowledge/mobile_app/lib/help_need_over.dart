@@ -23,7 +23,7 @@ class HelpOver extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(translations['requestOver'][appState.language],
+              Text(translations['requestOver1'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,

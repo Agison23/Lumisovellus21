@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
 import Divider from "@material-ui/core/Divider";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations/translations";
-import getTranslationKey from "../translations/getTranslationsKey";
+import getTranslationKey from "../translations/getTranslationKey";
 
 // eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(() => ({

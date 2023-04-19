@@ -35,7 +35,7 @@ import Carousel from "react-material-ui-carousel";
 import { getWindDirection } from "./DataCalculations";
 import GlobalContext from "../context/GlobalContext";
 import translations from "../translations/translations";
-import getTranslationKey from "../translations/getTranslationsKey";
+import getTranslationKey from "../translations/getTranslationKey";
 
 const useStyles = makeStyles(() => ({
   tabsRoot: {
