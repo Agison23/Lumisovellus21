@@ -191,14 +191,15 @@ class ServerComms {
     return devId;
   }
 
-  static listenServer(BuildContext context) async {
-    Map<String, String> _env =
-        await Utility.parseStringToMap(assetsFileName: '.env');
+  static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
     rDgS.then((RawDatagramSocket udpSocket) async {
+      Map<String, String> _env =
+          await Utility.parseStringToMap(assetsFileName: '.env');
       udpSocket.readEventsEnabled = true;
       String address;
       if (_env['APP_ENVIRONMENT'] == 'development') {
+        print("currently locally listen server");
         address = await initAddressLocal();
       } else {
         address = await initAddress();
@@ -208,6 +209,7 @@ class ServerComms {
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
+          print("Server listen result: ${result}");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
