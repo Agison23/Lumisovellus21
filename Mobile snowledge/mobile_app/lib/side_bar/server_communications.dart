@@ -20,6 +20,7 @@ import '../main.dart';
 import '../notification_handler.dart';
 import '../state/appState.dart';
 import 'gps_handler.dart';
+import '../helper/utility.dart';
 
 class ServerComms {
   static late Timer _timer;
@@ -101,6 +102,8 @@ class ServerComms {
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    Map<String, String> _env =
+        await Utility.parseStringToMap(assetsFileName: '.env');
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
 
@@ -142,15 +145,17 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      print(message);
 
       rDgS.then(
         (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          // udpSocket.send(data, InternetAddress(await initAddress()), 50943);
-          udpSocket.send(
-              data, InternetAddress(await initAddressLocal()), 50943);
+          if (_env['APP_ENVIRONMENT'] == 'development') {
+            udpSocket.send(
+                data, InternetAddress(await initAddressLocal()), 50943);
+          } else {
+            udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+          }
         },
       );
     } else {
@@ -174,14 +179,19 @@ class ServerComms {
   }
 
   static listenServer(BuildContext context) async {
+    Map<String, String> _env =
+        await Utility.parseStringToMap(assetsFileName: '.env');
     var appState = Provider.of<AppState>(context);
     rDgS.then((RawDatagramSocket udpSocket) async {
       udpSocket.readEventsEnabled = true;
-      // String address = await initAddress();
-      String address = await initAddressLocal();
+      String address;
+      if (_env['APP_ENVIRONMENT'] == 'development') {
+        address = await initAddressLocal();
+      } else {
+        address = await initAddress();
+      }
       String result;
       udpSocket.listen((event) async {
-        print("phone listening: ${event}");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
@@ -211,8 +221,8 @@ class ServerComms {
                   appState);
               break;
             case "HELP_TARGET_UPDATE":
-              print(
-                  "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
+              // print(
+              //     "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
               //HELP_TARGET_UPDATE:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
@@ -224,7 +234,7 @@ class ServerComms {
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
-              print("Notify!");
+              // print("Notify!");
               appState.setNumOfHelpRequest = 1;
               String devId = await _getDeviceID();
               if (resultParts[1] == devId) {
@@ -240,7 +250,7 @@ class ServerComms {
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
-              print("help over!");
+              // print("help over!");
               // HELP_OVER:ID
               appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();

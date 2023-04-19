@@ -37,7 +37,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(
         connection, gpscoord, max_distance, int(timestamp) - max_time_from_closest_users
     )
-    print(f"Users available for help: {users}")
 
     if len(users) == 1:
         ip_address, _ = db.check_if_entry_exists(
@@ -45,11 +44,9 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NO_USERS_NEARBY"
         ip_address, port = ip_address.split(",")
-        print(f"Message: NO_NERBY_USER with address:{ip_address} with port:{port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     for user in users:
-        print(f"user check id: {user}")
         if user[0] == dev_id:
             continue
         if not db.create_request_entry(connection, dev_id, user[0]):
@@ -61,7 +58,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             user[0], gpscoord, user[1], helptype
         )
         ip_address, port = ip_address.split(",")
-        print(f"Message send to helper: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     pallaksenpollot = db.get_all_pallaksen_pollot(connection)
@@ -74,7 +70,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype)
         ip_address, port = ip_address.split(",")
-        print(f"Message send to pallaksen_pollot: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
 
@@ -162,8 +157,6 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
     return users_in_range
 
 def should_request_end(gpscoord_giver, gpscoord_receiver, max_distance):
-    print(f"gpscoord_giver-{gpscoord_giver}")
-    print(f"gpscoord_reciver-{gpscoord_receiver}")
     gps1 = gpscoord_giver.split(",")
     gps2 = gpscoord_receiver.split(",")
     lat1 = float(gps1[0])
@@ -222,7 +215,6 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
             )
             message = "HELP_OVER:{}".format(_helper[0])
             addr = address.split(",")
-            # print(f"working addr: {addr[0]} with port: {addr[1]}")
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
             db.delete_request_entry(connection, _helper[0], "help_giver")
 
@@ -299,7 +291,6 @@ def send_location_updates(connection, timestamp, s):
                 )
                 message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
                 ip_address, port = ip_address.split(",")
-                print(f"message gps giver-ip-port:{message}-{ip_address}-{port}")
                 s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
                 db.delete_request_entry(connection, user[0], "help_giver")
 
@@ -309,7 +300,6 @@ def send_location_updates(connection, timestamp, s):
                     connection, "users", "ip_address", "dev_id", dev_id, False
                 )
             requester_ip_addr, requester_p = requester_ip.split(",")
-            print(f"message gps giver-ip-port:{requester_message_distance_cancel}-{requester_ip_addr}-{requester_p}")
             s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
             db.delete_request_entry(connection, dev_id, "help_requester")
 
