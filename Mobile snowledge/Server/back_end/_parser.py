@@ -305,11 +305,9 @@ def send_location_updates(connection, timestamp, s):
 
     return
 
-def parse_low_battery(connection, message, addr, s):
+def parse_low_battery(connection, message, s):
     dev_id = message[0]
     db.set_user_low_battery(connection, dev_id)
-    ip_address, port = addr.split(",")
-    s.sendto(bytes("LOW_BATTERY_SET", "UTF-8"), (ip_address, int(port)))
     send_low_battery_current_requests(connection, dev_id, s)
     return
 

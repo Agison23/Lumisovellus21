@@ -20,6 +20,7 @@ import '../main.dart';
 import '../notification_handler.dart';
 import '../state/appState.dart';
 import 'gps_handler.dart';
+import '../helper/utility.dart';
 
 class ServerComms {
   static Future<RawDatagramSocket> rDgS = initRDgS();
@@ -104,6 +105,8 @@ class ServerComms {
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    Map<String, String> _env =
+        await Utility.parseStringToMap(assetsFileName: '.env');
     bool con = true;
     con = await checkConnection(messagetype);
     if (!con) {
@@ -164,8 +167,12 @@ class ServerComms {
         (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(
-              data, InternetAddress(await initAddressLocal()), 50943);
+          if (_env['APP_ENVIRONMENT'] == 'development') {
+            udpSocket.send(
+                data, InternetAddress(await initAddressLocal()), 50943);
+          } else {
+            udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+          }
         },
       );
     } else {
@@ -191,9 +198,15 @@ class ServerComms {
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
     rDgS.then((RawDatagramSocket udpSocket) async {
+      Map<String, String> _env =
+          await Utility.parseStringToMap(assetsFileName: '.env');
       udpSocket.readEventsEnabled = true;
-      // String address = await initAddress();
-      String address = await initAddressLocal();
+      String address;
+      if (_env['APP_ENVIRONMENT'] == 'development') {
+        address = await initAddressLocal();
+      } else {
+        address = await initAddress();
+      }
       String result;
       udpSocket.listen((event) async {
         print("phone listening: ${event}");
@@ -264,9 +277,6 @@ class ServerComms {
               // Need to set helpRequesterBatteryState to low.
               String helpRequesterBatteryState = resultParts[1];
               break;
-            case "LOW_BATTERY_SET":
-            // the server will send this when the battery status is set in the database, right after the "LOW_BATTERY" message is sent,
-            // This is only for checking if the battery set in the database or not. Maybe not needed?
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
               HelpNeededState().noUserNearby();
