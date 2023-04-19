@@ -22,23 +22,56 @@ import '../state/appState.dart';
 import 'gps_handler.dart';
 
 class ServerComms {
+  static Future<RawDatagramSocket> rDgS = initRDgS();
   static late Timer _timer;
-  static Future<RawDatagramSocket> rDgS =
-      RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
-  static String address = getAddress();
 
-  static getAddress() async {
-    //Get user ip address type
-    final address_type = await InternetAddress(await Ipify.ipv64()).type;
+  // Take local network ipv4/ipv6 base on available networks, prioritize ipv6
+  static Future<RawDatagramSocket> initRDgS() {
+    Future<RawDatagramSocket> rDgS =
+        RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+    supportsIPv6().then((supportIPv6) {
+      if (supportIPv6) {
+        rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
+      }
+    });
+    return rDgS;
+  }
 
-    var response =
-        await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
-
-    //address = response[0].address;
-    address = response[0].address;
+  // Take web host ipv4/ipv6 base on available networks, prioritize ipv6
+  static Future<String> initAddress() async {
+    var response = await InternetAddress.lookup('dev.lumisovellus.fi',
+        type: InternetAddressType.IPv4);
+    var address = response[0].address;
+    supportsIPv6().then((supportIPv6) async {
+      if (supportIPv6) {
+        response = await InternetAddress.lookup('dev.lumisovellus.fi',
+            type: InternetAddressType.IPv6);
+        address = response[0].address;
+      }
+    });
     return address;
+  }
+
+  // This function get the address of the server locally which is on localhost ipv4
+  static Future<String> initAddressLocal() async {
+    String address = "10.0.2.2";
+    return address;
+  }
+
+  // This function check all available network on the phone and return true if any support ipv6
+  static Future<bool> supportsIPv6() {
+    return NetworkInterface.list().then((interfaces) {
+      for (var interface in interfaces) {
+        for (var address in interface.addresses) {
+          if (address.type == InternetAddressType.IPv6) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
   }
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
@@ -71,9 +104,14 @@ class ServerComms {
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    bool con = true;
+    con = await checkConnection(messagetype);
+    if (!con) {
+      return;
+    }
+
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
-
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
@@ -119,10 +157,11 @@ class ServerComms {
       }
       print(message);
       rDgS.then(
-        (RawDatagramSocket udpSocket) {
+        (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(data, InternetAddress(address), 50943);
+          udpSocket.send(
+              data, InternetAddress(await initAddressLocal()), 50943);
         },
       );
     } else {
@@ -147,7 +186,8 @@ class ServerComms {
 
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
-    getAddress(); // save the right server address to "address" variable
+    rDgS = initRDgS();
+
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
       String result;
@@ -251,7 +291,7 @@ class ServerComms {
           }
         }
       }, onError: (error) {
-        // print("server listening error: $error");
+        print("server listening error: $error");
       }, onDone: () {
         // print("server listening done!");
       }, cancelOnError: true);
@@ -276,5 +316,33 @@ class ServerComms {
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
     });
+  }
+
+  static Future<bool> checkConnection(String message) async {
+    bool connection = true;
+    do {
+      try {
+        final result = await InternetAddress.lookup('dev.lumisovellus.fi');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          print('connected');
+          if (!connection) {
+            print('recoved');
+            if (message == 'HELPDELETE') {
+              await Future.delayed(const Duration(seconds: 10));
+            }
+          }
+
+          connection = true;
+        }
+      } on SocketException catch (_) {
+        if (message == 'LOCATION') {
+          return false;
+        }
+        await Future.delayed(const Duration(seconds: 10));
+        print('no internet connection');
+        connection = false;
+      }
+    } while (!connection);
+    return connection;
   }
 }
