@@ -20,6 +20,7 @@ import '../main.dart';
 import '../notification_handler.dart';
 import '../state/appState.dart';
 import 'gps_handler.dart';
+import '../helper/utility.dart';
 
 class ServerComms {
   static Future<RawDatagramSocket> rDgS = initRDgS();
@@ -104,6 +105,8 @@ class ServerComms {
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    Map<String, String> _env =
+        await Utility.parseStringToMap(assetsFileName: '.env');
     bool con = true;
     con = await checkConnection(messagetype);
     if (!con) {
@@ -113,7 +116,6 @@ class ServerComms {
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
       String message;
-      // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -160,8 +162,12 @@ class ServerComms {
         (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(
-              data, InternetAddress(await initAddressLocal()), 50943);
+          if (_env['APP_ENVIRONMENT'] == 'development') {
+            udpSocket.send(
+                data, InternetAddress(await initAddressLocal()), 50943);
+          } else {
+            udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+          }
         },
       );
     } else {
@@ -186,15 +192,22 @@ class ServerComms {
 
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
-    rDgS = initRDgS();
-
-    rDgS.then((RawDatagramSocket udpSocket) {
+    rDgS.then((RawDatagramSocket udpSocket) async {
+      Map<String, String> _env =
+          await Utility.parseStringToMap(assetsFileName: '.env');
       udpSocket.readEventsEnabled = true;
+      String address;
+      if (_env['APP_ENVIRONMENT'] == 'development') {
+        address = await initAddressLocal();
+      } else {
+        address = await initAddress();
+      }
       String result;
       udpSocket.listen((event) async {
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
+          print("Server listen result: ${result}");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
@@ -221,8 +234,8 @@ class ServerComms {
                   appState);
               break;
             case "HELP_TARGET_UPDATE":
-              print(
-                  "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
+              // print(
+              //     "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
               //HELP_TARGET_UPDATE:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
@@ -259,7 +272,7 @@ class ServerComms {
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
-              print("help over!");
+              // print("help over!");
               // HELP_OVER:ID
               appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
@@ -284,6 +297,10 @@ class ServerComms {
                   print(e.toString());
                 }
               }
+              break;
+            case "HELP_ENDED_BY_GPS":
+              // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
+              // Something should happen on the front end base on ticket #173
               break;
             default:
               // print("invalid message: $result");
@@ -311,7 +328,7 @@ class ServerComms {
   }
 
   // Save the last location and time to the app's shared preference
-  static saveLastLocationTimeToSharedPreference() async {
+  static saveLastLocationTimeToSharedPreference() {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
