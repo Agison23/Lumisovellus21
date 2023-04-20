@@ -43,8 +43,11 @@ class NotificationHandler {
 
   Future onSelectNotification(String? payload) async {
     try {
-      await MyApp.navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (context) => HelpOffered(payload, true)));
+      //if notification = new help request alert notification
+      if (payload != "") {
+        await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+            builder: (context) => HelpOffered(payload, true)));
+      }
     } catch (e) {
       // print(e.toString());
     }
@@ -96,6 +99,7 @@ class NotificationHandler {
 
   static Future<void> helperCancelledAcceptanceNotification(AppState state,
       {int id = 12345}) async {
+    String? payload = "";
     flutterLocalNotificationsPlugin.show(
       id,
       translations['helperEnded'][state.language],

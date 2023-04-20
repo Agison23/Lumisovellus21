@@ -22,22 +22,56 @@ import '../state/appState.dart';
 import 'gps_handler.dart';
 
 class ServerComms {
+  static Future<RawDatagramSocket> rDgS = initRDgS();
   static late Timer _timer;
-  static Future<RawDatagramSocket> rDgS =
-      RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
-
   static bool _isOfferingHelp = false;
-  static String address = getAddress();
+  static bool isRequestingHelp = false;
 
-  static getAddress() async {
-    //Get user ip address type
-    final address_type = await InternetAddress(await Ipify.ipv64()).type;
+  // Take local network ipv4/ipv6 base on available networks, prioritize ipv6
+  static Future<RawDatagramSocket> initRDgS() {
+    Future<RawDatagramSocket> rDgS =
+        RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+    supportsIPv6().then((supportIPv6) {
+      if (supportIPv6) {
+        rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
+      }
+    });
+    return rDgS;
+  }
 
-    var response =
-        await InternetAddress.lookup('dev.lumisovellus.fi', type: address_type);
-
-    address = response[0].address;
+  // Take web host ipv4/ipv6 base on available networks, prioritize ipv6
+  static Future<String> initAddress() async {
+    var response = await InternetAddress.lookup('dev.lumisovellus.fi',
+        type: InternetAddressType.IPv4);
+    var address = response[0].address;
+    supportsIPv6().then((supportIPv6) async {
+      if (supportIPv6) {
+        response = await InternetAddress.lookup('dev.lumisovellus.fi',
+            type: InternetAddressType.IPv6);
+        address = response[0].address;
+      }
+    });
     return address;
+  }
+
+  // This function get the address of the server locally which is on localhost ipv4
+  static Future<String> initAddressLocal() async {
+    String address = "10.0.2.2";
+    return address;
+  }
+
+  // This function check all available network on the phone and return true if any support ipv6
+  static Future<bool> supportsIPv6() {
+    return NetworkInterface.list().then((interfaces) {
+      for (var interface in interfaces) {
+        for (var address in interface.addresses) {
+          if (address.type == InternetAddressType.IPv6) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
   }
 
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
@@ -70,9 +104,14 @@ class ServerComms {
 
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
+    bool con = true;
+    con = await checkConnection(messagetype);
+    if (!con) {
+      return;
+    }
+
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
-
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
@@ -83,25 +122,30 @@ class ServerComms {
               '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
           break;
         case 'HELP':
+          isRequestingHelp = true;
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
           message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
           break;
         case 'HELP_DELETE':
+          isRequestingHelp = false;
           message = '$messagetype:$devId';
           break;
         case "HELP_RESPONSE:0":
+          Dialogs.helpRequestedDialogOpen = false;
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "HELP_RESPONSE:1":
           _isOfferingHelp = true;
+          NotificationHandler.cancelPushUpNotification();
           var messageParts = messagetype.split(':');
           message = '${messageParts[0]}:$devId:${messageParts[1]}';
           break;
         case "DECLINE":
           _isOfferingHelp = false;
+          Dialogs.helpRequestedDialogOpen = false;
           message = '$messagetype:$devId';
           break;
         case "KEEP_ALIVE":
@@ -111,12 +155,13 @@ class ServerComms {
           message = "invalid messagetype";
           break;
       }
-      // print(message);
+      print(message);
       rDgS.then(
-        (RawDatagramSocket udpSocket) {
+        (RawDatagramSocket udpSocket) async {
           udpSocket.writeEventsEnabled = true;
           List<int> data = utf8.encode(message);
-          udpSocket.send(data, InternetAddress(address), 50943);
+          udpSocket.send(
+              data, InternetAddress(await initAddressLocal()), 50943);
         },
       );
     } else {
@@ -141,7 +186,8 @@ class ServerComms {
 
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
-    getAddress(); // save the right server address to "address" variable
+    rDgS = initRDgS();
+
     rDgS.then((RawDatagramSocket udpSocket) {
       udpSocket.readEventsEnabled = true;
       String result;
@@ -189,18 +235,27 @@ class ServerComms {
               // Notify the device when there is a helper accepted the help request
               //NOTIFY:ID:GPS:DISTANCE:
               print("Notify!");
-              appState.setNumOfHelpRequest = 1;
-              String devId = await _getDeviceID();
-              if (resultParts[1] == devId) {
-                await NotificationHandler.pushUpNotification(
-                    resultParts[2], resultParts[3], appState);
-                String payload = resultParts[2] + ':' + resultParts[3];
-                await Dialogs.showHelpRequestedDialog(
-                    MyApp.navigatorKey.currentState?.context, payload);
+              if (isRequestingHelp == false) {
+                String devId = await _getDeviceID();
+                if (resultParts[1] == devId) {
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  String payload = resultParts[2] + ':' + resultParts[3];
+
+                  appState.setNumOfHelpRequest = 1;
+                  await NotificationHandler.pushUpNotification(
+                      resultParts[2], resultParts[3], appState);
+                  await Dialogs.showHelpRequestedDialog(
+                      MyApp.navigatorKey.currentState?.context, payload);
+                }
+              } else {
+                messageToServer("HELP_RESPONSE:0");
               }
+
               break;
 
             case "NO_USERS_NEARBY":
+              isRequestingHelp = false;
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
@@ -212,15 +267,21 @@ class ServerComms {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification(appState);
                 try {
-                  if (HelpOfferedState.pageOpen) {
-                    await MyApp.navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                            builder: (context) => const MapTracking()));
-                    await Dialogs.showHelpNeedOverDialog(
-                        MyApp.navigatorKey.currentState?.context);
+                  if (MyApp.navigatorKey.currentState != null) {
+                    if (Dialogs.helpRequestedDialogOpen) {
+                      Dialogs.helpRequestedDialogOpen = false;
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                    }
+
+                    if (HelpOfferedState.pageOpen) {
+                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+                      await Dialogs.showHelpNeedOverDialog(
+                          MyApp.navigatorKey.currentState?.context);
+                    }
                   }
                 } catch (e) {
-                  // print(e.toString());
+                  print(e.toString());
                 }
               }
               break;
@@ -230,7 +291,7 @@ class ServerComms {
           }
         }
       }, onError: (error) {
-        // print("server listening error: $error");
+        print("server listening error: $error");
       }, onDone: () {
         // print("server listening done!");
       }, cancelOnError: true);
@@ -255,5 +316,33 @@ class ServerComms {
     prefs.then((pref) {
       pref.setString('lastLocationTime', DateTime.now().toString());
     });
+  }
+
+  static Future<bool> checkConnection(String message) async {
+    bool connection = true;
+    do {
+      try {
+        final result = await InternetAddress.lookup('dev.lumisovellus.fi');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          print('connected');
+          if (!connection) {
+            print('recoved');
+            if (message == 'HELPDELETE') {
+              await Future.delayed(const Duration(seconds: 10));
+            }
+          }
+
+          connection = true;
+        }
+      } on SocketException catch (_) {
+        if (message == 'LOCATION') {
+          return false;
+        }
+        await Future.delayed(const Duration(seconds: 10));
+        print('no internet connection');
+        connection = false;
+      }
+    } while (!connection);
+    return connection;
   }
 }
