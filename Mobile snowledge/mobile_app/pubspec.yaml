@@ -37,7 +37,7 @@ dependencies:
   shared_preferences: ^2.0.13
   cron: ^0.4.0
   location: ^4.4.0
-  url_launcher: ^6.1.0
+  url_launcher: ^6.0.0
   external_app_launcher: ^2.0.2
   device_info_plus: ^3.2.3
   flutter_map: ^3.0.0
@@ -46,6 +46,7 @@ dependencies:
   logging: any
   provider: ^6.0.4
   dart_ipify: ^1.1.1
+  connectivity: ^3.0.6
 
 dev_dependencies:
   integration_test:

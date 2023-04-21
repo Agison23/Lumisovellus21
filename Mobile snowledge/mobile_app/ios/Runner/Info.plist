@@ -26,7 +26,7 @@
 	<array>
 		<string>https</string>
 		<string>http</string>
-		<string>"fi.digia.suomi112"</string>
+		<string>"app112suomi"</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

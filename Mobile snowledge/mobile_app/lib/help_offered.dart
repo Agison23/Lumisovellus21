@@ -208,10 +208,8 @@ class HelpOfferedState extends State<HelpOffered> {
       ElevatedButton(
         onPressed: () {
           ServerComms.messageToServer('HELP_RESPONSE:0');
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MainPage()),
-              (route) => false);
+          Navigator.pop(context);
+          Navigator.pop(context);
         },
         child: Text(
           translations['decline'][appState.language],
@@ -323,7 +321,7 @@ class HelpOfferedState extends State<HelpOffered> {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              translations['helper']
+              translations['whoRequest']
                   [Provider.of<AppState>(ctx, listen: false).language],
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
