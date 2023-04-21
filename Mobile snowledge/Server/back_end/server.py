@@ -49,12 +49,11 @@ class UdpServer:
                         self.max_time_from_closest_users,
                         self.udp,
                     )
-                elif msg_type == "LOW_BATTERY":
-                    prs.parse_low_battery(
+                elif msg_type == "BATTERY":
+                    prs.parse_battery(
                         self.connection,
                         message,
-                        self.udp
-                    )
+                        self.udp)
                 elif msg_type == "LOCATION":
                     prs.parse_database_entry(
                         self.connection, message, addr, self.max_entry_age
@@ -73,7 +72,7 @@ class UdpServer:
                 elif msg_type == "KEEP_ALIVE":
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
             except:
-                print(f"Message parse error : {message}")
+                print(f"Message parse error : {msg_type} {message}")
 
 
 if __name__ == "__main__":

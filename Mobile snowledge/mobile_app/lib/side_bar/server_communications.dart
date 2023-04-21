@@ -118,9 +118,14 @@ class ServerComms {
       String message;
       // print('Printing from server comms: $messagetype');
       switch (messagetype) {
-        case 'LOW_BATTERY':
-          List<String> list = await getTimeFNameLNameGps();
-          message = '$messagetype:$devId';
+        case 'BATTERY':
+          // Front end need to change this low_battery value
+          bool low_battery = true;
+          if (low_battery) {
+            message = '$messagetype:$devId:low';
+          } else {
+            message = '$messagetype:$devId:high';
+          }
           break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -213,6 +218,7 @@ class ServerComms {
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
+          print("Server listen result $result");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
@@ -272,10 +278,19 @@ class ServerComms {
               }
 
               break;
-            case "LOW_BATTERY_HELP":
+            case "LOW_BATTERY_HELPEE":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
               // this is for user that have accepted the help request, then the help requester battery run low
               // Need to set helpRequesterBatteryState to low.
-              String helpRequesterBatteryState = resultParts[1];
+              String helpRequesterBatteryState;
+              break;
+            case "LOW_BATTERY_HELPER":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
+              // This is for help requester to know that a specific helper has low battery
+              //LOW_BATTERY_HELPER:ID
+              String helper_dev_id = resultParts[1];
               break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
