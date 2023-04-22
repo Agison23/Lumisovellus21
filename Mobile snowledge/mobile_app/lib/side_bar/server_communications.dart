@@ -195,6 +195,7 @@ class ServerComms {
               if (resultParts[1] == devId) {
                 await NotificationHandler.pushUpNotification(
                     resultParts[2], resultParts[3], appState);
+                appState.setChatRoomId = resultParts[4];
                 String payload = resultParts[2] + ':' + resultParts[3];
                 await Dialogs.showHelpRequestedDialog(
                     MyApp.navigatorKey.currentState?.context, payload);
@@ -242,7 +243,7 @@ class ServerComms {
     var prefs = await SharedPreferences.getInstance();
     String fName = prefs.getString('fName')!;
     String lName = prefs.getString('lName')!;
-    String chatRoomId = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
+    String chatRoomId = prefs.getString('pNumber')!;
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
