@@ -305,10 +305,9 @@ class ServerComms {
               break;
             case "HELP_ENDED_BY_GPS":
               // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
-              print(
-                  "=====================HELP_ENDED_BY_GPS====================");
-
               appState.setNumOfHelpRequest = -1;
+
+              // Navigate out of the help request page
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
