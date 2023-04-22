@@ -18,6 +18,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     dev_id = message[1]
     gpscoord = message[2]
     helptype = message[3]
+    chatRoomId = message[4]
 
     user_id, exists = db.check_if_entry_exists(
         connection, "users", "dev_id", "dev_id", dev_id, False
@@ -26,7 +27,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     if not exists:
         return
 
-    help = (user_id, timestamp, gpscoord, helptype)
+    help = (user_id, timestamp, gpscoord, helptype, chatRoomId)
     db.create_help_entry(connection, help)
 
     if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
@@ -55,7 +56,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             connection, "users", "ip_address", "dev_id", user[0], False
         )
         message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
-            user[0], gpscoord, user[1], helptype
+            user[0], gpscoord, user[1], helptype, chatRoomId
         )
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
@@ -68,7 +69,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype)
+        message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype, chatRoomId)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
@@ -205,7 +206,19 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
     message = "HELPER_ACCEPTED:{}:{}".format(helper, gpscoord)
     ip_address, port = ip_address.split(",")
     s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+    # check low battery for both helper and help requester
+    low_battery_helper, _ = db.check_if_entry_exists(
+        connection, "users", "low_battery", "dev_id", helper, False
+    )
+    if low_battery_helper == 1:
+        print("SHOULD SEND LOW BATTERY HELPER")
+        send_low_battery_current_requests(connection, helper, s)     
 
+    low_battery_helpee, _ = db.check_if_entry_exists(
+        connection, "users", "low_battery", "dev_id", requester, False
+    )
+    if low_battery_helpee == 1:
+        send_low_battery_current_requests(connection, requester, s)       
     if count >= COUNT:
         pending_helpers = db.get_all_pending_requests(connection, requester)
 
@@ -311,5 +324,35 @@ def send_location_updates(connection, timestamp, s):
             bytes(requester_message, "UTF-8"), (requester_addr, int(requester_port))
         )
         s.sendto(bytes(giver_message, "UTF-8"), (giver_addr, int(giver_port)))
+
+    return
+
+def parse_battery(connection, message, s):
+    dev_id = message[0]
+    battery_status = message[1]
+    db.set_user_battery(connection, dev_id, battery_status)
+    if (battery_status == 'low'):
+        send_low_battery_current_requests(connection, dev_id, s)
+
+def send_low_battery_current_requests(connection, dev_id, s):
+    # Send when help requester have low battery to helper
+    _, isHelpee = db.check_if_entry_exists(connection, "help", "dev_id", "dev_id", dev_id, False)
+
+    if (isHelpee):
+        helpers = db.get_helpers(connection, dev_id)
+        message = "LOW_BATTERY_HELPEE"
+        for helper in helpers:
+            helper_ip = db.get_user_ip_by_dev_id(connection, helper)
+            ip_address, port = helper_ip.split(",")
+            s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+
+    # Send to help requester when helper have low battery
+    else:
+        helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "requests", "help_requester", "help_giver", dev_id, False)
+        if (helper_exists):
+            helpee_ip = db.get_user_ip_by_dev_id(connection, helpee_dev_id)
+            message = f"LOW_BATTERY_HELPER:{dev_id}"
+            ip_address, port = helpee_ip.split(",")
+            s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     return

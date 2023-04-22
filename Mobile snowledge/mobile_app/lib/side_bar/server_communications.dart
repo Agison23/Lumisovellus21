@@ -103,6 +103,15 @@ class ServerComms {
     _timer.cancel();
   }
 
+  static void startListeningServer(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool? isServerComms = prefs.getBool("_isServerComms");
+    if (isServerComms == false) {
+      prefs.setBool("_isServerComms", true);
+      listenServer(context);
+    }
+  }
+
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     Map<String, String> _env =
@@ -117,6 +126,15 @@ class ServerComms {
       String devId = await _getDeviceID();
       String message;
       switch (messagetype) {
+        case 'BATTERY':
+          // Front end need to change this low_battery value
+          bool low_battery = true;
+          if (low_battery) {
+            message = '$messagetype:$devId:low';
+          } else {
+            message = '$messagetype:$devId:high';
+          }
+          break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSharedPreference();
@@ -128,7 +146,8 @@ class ServerComms {
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
-          message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
+          message =
+              '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed:${list[4]}';
           break;
         case 'HELP_DELETE':
           isRequestingHelp = false;
@@ -204,6 +223,7 @@ class ServerComms {
       }
       String result;
       udpSocket.listen((event) async {
+        print("phone listening: ${event}");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
@@ -246,13 +266,15 @@ class ServerComms {
               break;
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
-              //NOTIFY:ID:GPS:DISTANCE:
+              // This is when the new helper come and battery state if low then need to process according to ticket 226 image
+              //NOTIFY:ID:GPS:DISTANCE:BatteryState
               print("Notify!");
               if (isRequestingHelp == false) {
                 String devId = await _getDeviceID();
                 if (resultParts[1] == devId) {
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
+                  appState.setChatRoomId = resultParts[4];
                   String payload = resultParts[2] + ':' + resultParts[3];
 
                   appState.setNumOfHelpRequest = 1;
@@ -266,7 +288,20 @@ class ServerComms {
               }
 
               break;
-
+            case "LOW_BATTERY_HELPEE":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
+              // this is for user that have accepted the help request, then the help requester battery run low
+              // Need to set helpRequesterBatteryState to low.
+              String helpRequesterBatteryState;
+              break;
+            case "LOW_BATTERY_HELPER":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
+              // This is for help requester to know that a specific helper has low battery
+              //LOW_BATTERY_HELPER:ID
+              String helper_dev_id = resultParts[1];
+              break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
               HelpNeededState().noUserNearby();
@@ -333,12 +368,12 @@ class ServerComms {
     var prefs = await SharedPreferences.getInstance();
     String fName = prefs.getString('fName')!;
     String lName = prefs.getString('lName')!;
-    String pNumber = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
+    String chatRoomId = prefs.getString('pNumber')!;
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
     // time, first name, last name, gps, phone number
-    return [time.toString(), fName, lName, _gps, pNumber];
+    return [time.toString(), fName, lName, _gps, chatRoomId];
   }
 
   // Save the last location and time to the app's shared preference

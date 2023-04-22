@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'helper/utility.dart';
@@ -137,6 +138,8 @@ class HelpOfferedState extends State<HelpOffered> {
             backgroundColor: Colors.red[200],
             centerTitle: true,
           ),
+          floatingActionButton: Buttons.showRescueChatButton(context),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           body: Stack(
             children: [
               FlutterMap(

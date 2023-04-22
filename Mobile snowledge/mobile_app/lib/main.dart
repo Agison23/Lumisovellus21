@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,23 +13,29 @@ String? fName;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-
-  fName = prefs.getString('fName');
-  runApp(MyApp());
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  await Firebase.initializeApp();
+  prefs.then((pref) {
+    fName = pref.getString('fName');
+    // This bool to see if rescue chat has unread message or not
+    // prefs.setBool("_hasUnreadMsg", false);
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
   static final navigatorKey = GlobalKey<NavigatorState>();
-  bool initServer = false;
+  bool isInitialized = false;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        if (!initServer) {
-          initServer = true;
+        if (!isInitialized) {
+          isInitialized = true;
           ServerComms.listenServer(context);
+          // set the battery status when the app begins
+          ServerComms.messageToServer("BATTERY");
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
