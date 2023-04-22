@@ -1,17 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/helper/utility.dart';
+import 'package:mobile_app/widgets/rescue_chat.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 import '../state/appState.dart';
+import '../side_bar/server_communications.dart';
+import '../notification_handler.dart';
 
 import '../translations/translations.dart';
 
 class Dialogs {
   static Object? _selectedRadio = 0;
+  static bool helpRequestedDialogOpen = false;
   // Minor helps:
   // 1: equipment  problems
   // 2: health problems
@@ -432,7 +437,7 @@ class Dialogs {
             builder: (BuildContext context, StateSetter setState) {
               return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                 Text(
-                  translations['requestOver'][appState.language],
+                  translations['requestOver1'][appState.language],
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
@@ -498,53 +503,64 @@ class Dialogs {
 
   static showHelpRequestedDialog(context, payload) async {
     var appState = Provider.of<AppState>(context, listen: false);
+    helpRequestedDialogOpen = true;
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                Text(
-                  translations['nearbyReq'][appState.language],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                  child: Text(
-                    translations['actionOptions'][appState.language],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Buttons.cancelButton(
-                        context,
-                        translations['cancel'][appState.language],
-                        'offer_help'),
-                    FutureBuilder<bool?>(
-                        future: GpsHandler.loadGpsSetting(),
-                        builder: (context, _snapshot) {
-                          return Buttons.giveHelpButton(context, payload);
-                        })
-                  ],
-                ),
-              ]);
-            },
+        return WillPopScope(
+          onWillPop: () {
+            helpRequestedDialogOpen = false;
+            NotificationHandler.cancelPushUpNotification();
+            ServerComms.messageToServer('HELP_RESPONSE:0');
+            return Future.value(true);
+          },
+          child: AlertDialog(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        translations['nearbyReq'][appState.language],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        child: Text(
+                          translations['actionOptions'][appState.language],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Buttons.cancelButton(
+                              context,
+                              translations['cancel'][appState.language],
+                              'offer_help'),
+                          FutureBuilder<bool?>(
+                              future: GpsHandler.loadGpsSetting(),
+                              builder: (context, _snapshot) {
+                                return Buttons.giveHelpButton(context, payload);
+                              })
+                        ],
+                      ),
+                    ]);
+              },
+            ),
           ),
         );
       },
@@ -552,32 +568,12 @@ class Dialogs {
   }
 
   Future showRescueChatDialog(context) async {
-    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            color: Colors.transparent,
-            child: Dialog(
-              child: SizedBox(
-                height: 200,
-                width: 300,
-                child: Column(
-                  children: const <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('This is going to be the rescue chat'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+        return RescueChat(context);
       },
     );
   }

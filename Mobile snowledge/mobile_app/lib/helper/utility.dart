@@ -1,5 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../state/appState.dart';
 
 class Utility {
   /// Returns the time between the date passed in arguments and the current date
@@ -69,5 +75,30 @@ class Utility {
       }
     }
     return environment;
+  }
+
+  // Creates a new chat room, with ID being the phone number of this user
+  static void createChatRoom() {
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    String? phoneNum;
+
+    prefs.then((pref) {
+      phoneNum = pref.getString('pNumber');
+
+      final _firestore = FirebaseFirestore.instance;
+      final data = {
+        'users': [
+          // Only add the phone number of this request as the "requester", with a red color
+          {'$phoneNum': 'red'},
+        ]
+      };
+      try {
+        final createdRoom = _firestore.collection('Rooms').doc(phoneNum);
+        createdRoom.set(data);
+        createdRoom.collection('Messages'); // create Messages sub-collection
+      } catch (e) {
+        print(e);
+      }
+    });
   }
 }

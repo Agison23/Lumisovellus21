@@ -13,6 +13,7 @@ import _parser as prs
 
 
 class TestUdpServer(unittest.TestCase):
+    
     def setUp(self):
         print("Set up")
         self.server = UdpServer()
@@ -38,7 +39,7 @@ class TestUdpServer(unittest.TestCase):
         secondsSinceEpoch = round(datetime.datetime.now().timestamp())
         message = f"{messagetype}:{secondsSinceEpoch}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
         # message = f"{datetime.datetime.now()}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
-        self.server.udp.sendto(bytes(message, "utf-8"), ("::1", 50943))
+        self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
 
         self.assertGreater(self.connection.total_changes, 0)
@@ -49,7 +50,7 @@ class TestUdpServer(unittest.TestCase):
         self.assertEqual(resultUser[0], devId)
         self.assertEqual(resultUser[1], firstName)
         self.assertEqual(resultUser[2], lastName)
-        self.assertEqual(resultUser[3], "::1,50943")
+        self.assertEqual(resultUser[3], "127.0.0.1,50943")
         self.assertEqual(resultUser[4], phoneNum)
 
         self.cur.execute(
@@ -71,7 +72,7 @@ class TestUdpServer(unittest.TestCase):
         phoneNum = f"+358{random.randint(100, 999)}{random.randint(100, 999)}{random.randint(100, 999)}"
         secondsSinceEpoch = round(datetime.datetime.now().timestamp())
         message = f"{messagetype}:{secondsSinceEpoch}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
-        self.server.udp.sendto(bytes(message, "utf-8"), ("::1", 50943))
+        self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
 
         # send help request
@@ -79,7 +80,7 @@ class TestUdpServer(unittest.TestCase):
         message = (
             f"{messagetype}:{secondsSinceEpoch}:{devId}:{gpsCoord}:'Varusteongelma'"
         )
-        self.server.udp.sendto(bytes(message, "utf-8"), ("::1", 50943))
+        self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
 
         print(devId)
@@ -98,7 +99,7 @@ class TestUdpServer(unittest.TestCase):
         # delete help request
         messagetype = "HELP_DELETE"
         message = f"{messagetype}:{devId}"
-        self.server.udp.sendto(bytes(message, "utf-8"), ("::1", 50943))
+        self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
 
         self.cur.execute(f"SELECT * FROM help WHERE dev_id='{devId}'")

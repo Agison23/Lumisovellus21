@@ -5,6 +5,7 @@ import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
 import '../main_page.dart';
+import '../notification_handler.dart';
 import '../open_112app.dart';
 import '../side_bar/gps_handler.dart';
 import '../side_bar/server_communications.dart';
@@ -101,6 +102,9 @@ class Buttons {
               MaterialPageRoute(builder: (context) => const MainPage()),
               (route) => false);
         } else if (type == 'offer_help') {
+          Dialogs.helpRequestedDialogOpen = false;
+          ServerComms.messageToServer('HELP_RESPONSE:0');
+          NotificationHandler.cancelPushUpNotification();
           Navigator.pop(context);
         }
       },
@@ -123,9 +127,11 @@ class Buttons {
   static ElevatedButton giveHelpButton(BuildContext context, String? payload) {
     var appState = Provider.of<AppState>(context);
     return ElevatedButton(
-        onPressed: () async => await MyApp.navigatorKey.currentState?.push(
-            MaterialPageRoute(
-                builder: (context) => HelpOffered(payload, false))),
+        onPressed: () async => {
+              await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+                  builder: (context) => HelpOffered(payload, false))),
+              Dialogs.helpRequestedDialogOpen = false
+            },
         child: Text(
           translations['help'][appState.language],
           style: const TextStyle(

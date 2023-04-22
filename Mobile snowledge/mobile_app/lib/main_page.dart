@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets/buttons.dart';
+import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
+import 'bottom_bar/state/setSharingLocation.dart';
 import 'helper/utility.dart';
 import 'notification_handler.dart';
 import '../translations/translations.dart';
@@ -40,6 +44,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         .then((gpsOn) async {
       if (gpsOn) {
         await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+        SetSharingLocationState.setGpsSwitchState(true);
       }
     });
 
@@ -104,6 +109,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         },
         child: SafeArea(
           child: Scaffold(
+            floatingActionButton: Buttons.showRescueChatButton(context),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
             key: _globalKey,
             body: Stack(
               children: [
