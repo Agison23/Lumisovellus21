@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import 'package:battery_plus/battery_plus.dart';
 
 import 'package:dart_ipify/dart_ipify.dart';
 import '../help_needed_mode.dart';
@@ -27,6 +28,7 @@ class ServerComms {
   static late Timer _timer;
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
+  static bool wasBatteryLow = false;
 
   // Take local network ipv4/ipv6 base on available networks, prioritize ipv6
   static Future<RawDatagramSocket> initRDgS() {
@@ -75,6 +77,19 @@ class ServerComms {
     });
   }
 
+  //Checks user's battery level
+  static Future<bool> checkBattery() async {
+    bool lowBattery;
+    var battery = Battery();
+    int batteryLevel = await battery.batteryLevel;
+    if (batteryLevel <= 20) {
+      lowBattery = true;
+    } else {
+      lowBattery = false;
+    }
+    return lowBattery;
+  }
+
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
   static void startSendingLocationMessages() {
     if (SetSharingLocationState.gpsSwitchState) {
@@ -86,15 +101,32 @@ class ServerComms {
     );
   }
 
-  static void _listenServerTimerInsides(int minutesBetweenLocationMessages) {
+  static void _listenServerTimerInsides(
+      int minutesBetweenLocationMessages) async {
+    bool isLocationSent = false;
     // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
               _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
         messageToServer("LOCATION");
+        isLocationSent = true;
       } else {
         messageToServer("KEEP_ALIVE");
+      }
+    }
+
+    const batteryCheckInterval = 1; //1 minute
+    if ((_timer.tick % (4 * batteryCheckInterval) == 0) ||
+        _isOfferingHelp && _timer.tick % (1 * batteryCheckInterval) == 0) {
+      //check battery here
+      bool isBatteryLow = await checkBattery();
+      if (isBatteryLow != wasBatteryLow) {
+        wasBatteryLow = isBatteryLow;
+        messageToServer("BATTERY");
+        if (isBatteryLow && !isLocationSent) {
+          messageToServer("LOCATION");
+        }
       }
     }
   }
@@ -127,9 +159,8 @@ class ServerComms {
       String message;
       switch (messagetype) {
         case 'BATTERY':
-          // Front end need to change this low_battery value
-          bool low_battery = true;
-          if (low_battery) {
+          // Last measured battery, true if low
+          if (wasBatteryLow) {
             message = '$messagetype:$devId:low';
           } else {
             message = '$messagetype:$devId:high';

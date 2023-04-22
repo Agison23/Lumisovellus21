@@ -49,6 +49,7 @@ dependencies:
   connectivity: ^3.0.6
   cloud_firestore: ^4.4.3
   intl: ^0.18.0
+  battery_plus: ^3.0.4
 
 dev_dependencies:
   integration_test:
