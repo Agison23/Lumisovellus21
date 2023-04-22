@@ -126,6 +126,15 @@ class ServerComms {
       String devId = await _getDeviceID();
       String message;
       switch (messagetype) {
+        case 'BATTERY':
+          // Front end need to change this low_battery value
+          bool low_battery = true;
+          if (low_battery) {
+            message = '$messagetype:$devId:low';
+          } else {
+            message = '$messagetype:$devId:high';
+          }
+          break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
           saveLastLocationTimeToSharedPreference();
@@ -214,6 +223,7 @@ class ServerComms {
       }
       String result;
       udpSocket.listen((event) async {
+        print("phone listening: ${event}");
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
@@ -256,7 +266,8 @@ class ServerComms {
               break;
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
-              //NOTIFY:ID:GPS:DISTANCE:
+              // This is when the new helper come and battery state if low then need to process according to ticket 226 image
+              //NOTIFY:ID:GPS:DISTANCE:BatteryState
               print("Notify!");
               if (isRequestingHelp == false) {
                 String devId = await _getDeviceID();
@@ -277,7 +288,20 @@ class ServerComms {
               }
 
               break;
-
+            case "LOW_BATTERY_HELPEE":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
+              // this is for user that have accepted the help request, then the help requester battery run low
+              // Need to set helpRequesterBatteryState to low.
+              String helpRequesterBatteryState;
+              break;
+            case "LOW_BATTERY_HELPER":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
+              // This is for help requester to know that a specific helper has low battery
+              //LOW_BATTERY_HELPER:ID
+              String helper_dev_id = resultParts[1];
+              break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
               HelpNeededState().noUserNearby();

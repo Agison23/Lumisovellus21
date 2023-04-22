@@ -25,13 +25,18 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final navigatorKey = GlobalKey<NavigatorState>();
-
+  bool isInitialized = false;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        ServerComms.listenServer(context);
+        if (!isInitialized) {
+          isInitialized = true;
+          ServerComms.listenServer(context);
+          // set the battery status when the app begins
+          ServerComms.messageToServer("BATTERY");
+        }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
