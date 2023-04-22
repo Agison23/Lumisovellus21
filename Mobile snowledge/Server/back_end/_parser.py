@@ -37,7 +37,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(
         connection, gpscoord, max_distance, int(timestamp) - max_time_from_closest_users
     )
-    print(f"Users available for help: {users}")
 
     if len(users) == 1:
         ip_address, _ = db.check_if_entry_exists(
@@ -45,11 +44,9 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NO_USERS_NEARBY"
         ip_address, port = ip_address.split(",")
-        print(f"Message: NO_NERBY_USER with address:{ip_address} with port:{port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     for user in users:
-        print(f"user check id: {user}")
         if user[0] == dev_id:
             continue
         if not db.create_request_entry(connection, dev_id, user[0]):
@@ -61,7 +58,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             user[0], gpscoord, user[1], helptype
         )
         ip_address, port = ip_address.split(",")
-        print(f"Message send to helper: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
     pallaksenpollot = db.get_all_pallaksen_pollot(connection)
@@ -74,7 +70,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         )
         message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype)
         ip_address, port = ip_address.split(",")
-        print(f"Message send to pallaksen_pollot: {message} with address: {ip_address} and port: {port}")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
 
@@ -221,7 +216,6 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
     low_battery_helpee, _ = db.check_if_entry_exists(
         connection, "users", "low_battery", "dev_id", requester, False
     )
-    print(f"Battery helpee status {low_battery_helpee}")
     if low_battery_helpee == 1:
         send_low_battery_current_requests(connection, requester, s)       
     if count >= COUNT:
@@ -233,7 +227,6 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
             )
             message = "HELP_OVER:{}".format(_helper[0])
             addr = address.split(",")
-            # print(f"working addr: {addr[0]} with port: {addr[1]}")
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
             db.delete_request_entry(connection, _helper[0], "help_giver")
 
@@ -323,14 +316,11 @@ def send_low_battery_current_requests(connection, dev_id, s):
     # Send when help requester have low battery to helper
     _, isHelpee = db.check_if_entry_exists(connection, "help", "dev_id", "dev_id", dev_id, False)
 
-    print(f"SENDING LOW BATTERY CHECKING DEV_ID {dev_id}")
     if (isHelpee):
         helpers = db.get_helpers(connection, dev_id)
         message = "LOW_BATTERY_HELPEE"
-        print(f"helperssss: {helpers}")
         for helper in helpers:
             helper_ip = db.get_user_ip_by_dev_id(connection, helper)
-            print(f"Low battery helpee sending to helper {helper} with ip {helper_ip}")
             ip_address, port = helper_ip.split(",")
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
@@ -339,7 +329,6 @@ def send_low_battery_current_requests(connection, dev_id, s):
         helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "requests", "help_requester", "help_giver", dev_id, False)
         if (helper_exists):
             helpee_ip = db.get_user_ip_by_dev_id(connection, helpee_dev_id)
-            print(f"low battery helper send to helpee {helpee_dev_id} with ip {helpee_ip}")
             message = f"LOW_BATTERY_HELPER:{dev_id}"
             ip_address, port = helpee_ip.split(",")
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
