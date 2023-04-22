@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/helper/utility.dart';
+import 'package:mobile_app/widgets/rescue_chat.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
@@ -566,32 +568,12 @@ class Dialogs {
   }
 
   Future showRescueChatDialog(context) async {
-    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            color: Colors.transparent,
-            child: Dialog(
-              child: SizedBox(
-                height: 200,
-                width: 300,
-                child: Column(
-                  children: const <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('This is going to be the rescue chat'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+        return RescueChat(context);
       },
     );
   }

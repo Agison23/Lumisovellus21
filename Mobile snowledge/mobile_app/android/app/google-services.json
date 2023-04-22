@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "965776997509",
+    "project_id": "lumisovellus",
+    "storage_bucket": "lumisovellus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965776997509:android:fe0c2e97e2eae033a03dec",
+        "android_client_info": {
+          "package_name": "com.Snowledge.pallaksen.pollot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965776997509-32pku0pfbgd0nl7ea358tstr1cfs48u2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx4DcXMDAsmQPrQ04CPWoEoB49OByRBO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965776997509-32pku0pfbgd0nl7ea358tstr1cfs48u2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

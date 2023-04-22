@@ -103,6 +103,15 @@ class ServerComms {
     _timer.cancel();
   }
 
+  static void startListeningServer(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool? isServerComms = prefs.getBool("_isServerComms");
+    if (isServerComms == false) {
+      prefs.setBool("_isServerComms", true);
+      listenServer(context);
+    }
+  }
+
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     Map<String, String> _env =
@@ -116,7 +125,6 @@ class ServerComms {
     if (await Permission.location.isGranted) {
       String devId = await _getDeviceID();
       String message;
-      // print('Printing from server comms: $messagetype');
       switch (messagetype) {
         case 'BATTERY':
           // Front end need to change this low_battery value
@@ -218,7 +226,7 @@ class ServerComms {
         if (event == RawSocketEvent.read) {
           Datagram? dg = udpSocket.receive();
           result = utf8.decode(dg!.data);
-          print("Server listen result $result");
+          print("Server listen result: ${result}");
           List<String> resultParts = result.split(':');
           switch (resultParts[0]) {
             case "HELPER_ACCEPTED":
@@ -245,8 +253,8 @@ class ServerComms {
                   appState);
               break;
             case "HELP_TARGET_UPDATE":
-              print(
-                  "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
+              // print(
+              //     "=================== PRINT FROM HELP_TARGET_UPDATE =========================");
               //HELP_TARGET_UPDATE:ID:GPS
               List<String> res2 = resultParts[2].split(',');
               String devId = await _getDeviceID();
@@ -297,7 +305,7 @@ class ServerComms {
               HelpNeededState().noUserNearby();
               break;
             case "HELP_OVER":
-              print("help over!");
+              // print("help over!");
               // HELP_OVER:ID
               appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
@@ -322,6 +330,10 @@ class ServerComms {
                   print(e.toString());
                 }
               }
+              break;
+            case "HELP_ENDED_BY_GPS":
+              // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
+              // Something should happen on the front end base on ticket #173
               break;
             default:
               // print("invalid message: $result");
