@@ -103,12 +103,14 @@ class ServerComms {
 
   static void _listenServerTimerInsides(
       int minutesBetweenLocationMessages) async {
+    bool isLocationSent = false;
     // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
               _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
         messageToServer("LOCATION");
+        isLocationSent = true;
       } else {
         messageToServer("KEEP_ALIVE");
       }
@@ -122,6 +124,9 @@ class ServerComms {
       if (isBatteryLow != wasBatteryLow) {
         wasBatteryLow = isBatteryLow;
         messageToServer("BATTERY");
+        if (isBatteryLow && !isLocationSent) {
+          messageToServer("LOCATION");
+        }
       }
     }
   }
