@@ -298,6 +298,20 @@ Map translations = {
     // $count ja piste lopussa
   },
 
+  'requesterReqOverAutomatically': {
+    'fi':
+        'Tulkitsimme sijaintitiedoistanne saaneesi apua. Jos olet edelleen hädässä, tee uusi avunpyyntö!',
+    'en':
+        'Your location data indicates that you already received help. If you still need help, make a new request please!',
+  },
+
+  'helperReqOverAutomatically': {
+    'fi':
+        'Avunpyytäjä sai oletettavasti apua ja avunpyyntö poistettiin automaattisesti. Tämä saattoi olla virhearvio, joten tarkkaile hetki tilannetta uuden pyynnön varalta.',
+    'en':
+        'The help requester seems to have received help and the help session was ended automatically. Another help request might pop up shortly if help is still needed.',
+  },
+
   'nearbyReq': {
     'fi': 'Lähellä oleva käyttäjä tarvitsee apua.',
     'en': 'A nearby user needs help',

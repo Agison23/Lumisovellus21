@@ -294,7 +294,6 @@ def send_location_updates(connection, timestamp, s):
                 message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
                 ip_address, port = ip_address.split(",")
                 s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-                db.delete_request_entry(connection, user[0], "help_giver")
 
             db.delete_help_entry(connection, dev_id)
             requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
