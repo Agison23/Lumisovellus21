@@ -20,14 +20,14 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final navigatorKey = GlobalKey<NavigatorState>();
-  bool initMessage = false;
+  bool isInitialized = false;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        if (!initMessage) {
-          initMessage = true;
+        if (!isInitialized) {
+          isInitialized = true;
           ServerComms.listenServer(context);
           ServerComms.messageToServer("REQUEST_INIT");
         }
