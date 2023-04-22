@@ -6,6 +6,7 @@ class AppState extends ChangeNotifier {
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
   String _chatRoomId = '';
+  bool _hasUnreadMessages = false; // For unread message notifications
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -16,6 +17,8 @@ class AppState extends ChangeNotifier {
   String get languageName => _languageName;
 
   String get chatRoomId => _chatRoomId;
+
+  bool get hasUnreadMessages => _hasUnreadMessages;
 
   set setLanguage(String language) {
     _language = _allLanguages[language];
@@ -44,6 +47,11 @@ class AppState extends ChangeNotifier {
 
   set setChatRoomId(String value) {
     _chatRoomId = value;
+    notifyListeners();
+  }
+
+  set setHasUnreadMessages(bool value) {
+    _hasUnreadMessages = value;
     notifyListeners();
   }
 
