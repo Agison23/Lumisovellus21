@@ -19,17 +19,14 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     gpscoord = message[2]
     helptype = message[3]
     chatRoomId = message[4]
-
     user_id, exists = db.check_if_entry_exists(
         connection, "users", "dev_id", "dev_id", dev_id, False
     )
-
     if not exists:
         return
 
     help = (user_id, timestamp, gpscoord, helptype, chatRoomId)
     db.create_help_entry(connection, help)
-
     if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
         max_distance = 1
     else:
@@ -38,7 +35,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     users = get_closest_users(
         connection, gpscoord, max_distance, int(timestamp) - max_time_from_closest_users
     )
-
     if len(users) == 1:
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", dev_id, False
@@ -46,7 +42,6 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         message = "NO_USERS_NEARBY"
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-
     for user in users:
         if user[0] == dev_id:
             continue
@@ -55,12 +50,11 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
+        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}".format(
             user[0], gpscoord, user[1], helptype, chatRoomId
         )
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-
     pallaksenpollot = db.get_all_pallaksen_pollot(connection)
 
     for user in pallaksenpollot:
@@ -69,7 +63,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype, chatRoomId)
+        message = "NOTIFY:{}:{}:Syy {}:{}".format(user[0], gpscoord, helptype, chatRoomId)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
@@ -103,16 +97,13 @@ def parse_database_entry(connection, message, addr, max_entry_age):
 
 def parse_database_help_delete(connection, message, s):
     dev_id = message[0]
-
     _, exists = db.check_if_entry_exists(
         connection, "help", "dev_id", "dev_id", dev_id, False
     )
-
     if not exists:
         return
 
     users = db.select_request_entry(connection, dev_id, "help_requester")
-
     for user in users:
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
@@ -121,7 +112,6 @@ def parse_database_help_delete(connection, message, s):
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
         db.delete_request_entry(connection, user[0], "help_giver")
-
     db.delete_help_entry(connection, dev_id)
     db.delete_request_entry(connection, dev_id, "help_requester")
 
@@ -211,7 +201,6 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
         connection, "users", "low_battery", "dev_id", helper, False
     )
     if low_battery_helper == 1:
-        print("SHOULD SEND LOW BATTERY HELPER")
         send_low_battery_current_requests(connection, helper, s)     
 
     low_battery_helpee, _ = db.check_if_entry_exists(

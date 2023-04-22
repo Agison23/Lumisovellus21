@@ -267,7 +267,7 @@ class ServerComms {
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
               // This is when the new helper come and battery state if low then need to process according to ticket 226 image
-              //NOTIFY:ID:GPS:DISTANCE:BatteryState
+              //NOTIFY:ID:GPS:DISTANCE:BatteryState:ChatRoomID
               print("Notify!");
               if (isRequestingHelp == false) {
                 String devId = await _getDeviceID();

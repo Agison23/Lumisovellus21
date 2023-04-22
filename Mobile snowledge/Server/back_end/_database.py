@@ -114,12 +114,12 @@ def create_help_entry(connection, help):
     cur = connection.cursor()
 
     if not exists:
-        sql = """INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
-              VALUES (?,?,?,?)"""
+        sql = """INSERT INTO help(dev_id,timestamp,gpscoord, help_type, room_id)
+              VALUES (?,?,?,?,?)"""
         cur.execute(sql, help)
     else:
-        sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=? WHERE dev_id=?"
-        cur.execute(sql, (help[1], help[2], help[3], help[0]))
+        sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=?, room_id=? WHERE dev_id=?"
+        cur.execute(sql, (help[1], help[2], help[3], help[4], help[0]))
 
     connection.commit()
     return
@@ -285,7 +285,8 @@ def init_tables(connection):
                             dev_id text PRIMARY KEY,
                             timestamp integer,
                             gpscoord text,
-                            help_type text
+                            help_type text,
+                            room_id text
                         );"""
 
     sql_table_accounts = """CREATE TABLE IF NOT EXISTS accounts (
