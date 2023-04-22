@@ -4,7 +4,7 @@ import time
 
 PORT = 50943
 COUNT = 5
-
+DISTANCE_HELP_RESOLVED = 0.5 #the distance to indicate if the requester move more than this within 2 location update, help resolved -> delete
 
 def parse_message(msg):
     message = msg.decode()
@@ -161,7 +161,7 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
 
     return users_in_range
 
-def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
+def should_request_end(gpscoord_giver, gpscoord_receiver, max_distance):
     gps1 = gpscoord_giver.split(",")
     gps2 = gpscoord_receiver.split(",")
     lat1 = float(gps1[0])
@@ -169,7 +169,7 @@ def check_user_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
     lat2 = float(gps2[0])
     lon2 = float(gps2[1])
     distance = calculate_distance(lat1, lon1, lat2, lon2)
-    if distance <= max_distance:
+    if distance > max_distance:
         return True
     return False
 
@@ -280,16 +280,38 @@ def do_work(giver, requester, coordinates):
 def send_location_updates(connection, timestamp, s):
     requests = db.get_all_requests(connection)
     coordinates = db.get_latest_locations(connection, timestamp)
-
+    
     messages = []
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
-        messages.append(message)
+        two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
+        if (should_request_end(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
+            messages.append(message)
+        else:
+            dev_id = request[1]
+            users = db.select_request_entry(connection, dev_id, "help_requester")
 
-    for message in messages:
+            for user in users:
+                ip_address, _ = db.check_if_entry_exists(
+                    connection, "users", "ip_address", "dev_id", user[0], False
+                )
+                message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
+                ip_address, port = ip_address.split(",")
+                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+                db.delete_request_entry(connection, user[0], "help_giver")
+
+            db.delete_help_entry(connection, dev_id)
+            requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
+            requester_ip, _ = db.check_if_entry_exists(
+                    connection, "users", "ip_address", "dev_id", dev_id, False
+                )
+            requester_ip_addr, requester_p = requester_ip.split(",")
+            s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
+            db.delete_request_entry(connection, dev_id, "help_requester")
+
+    for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]
         giver_message, giver_addr = message[1][0], message[1][1]
-
         requester_addr, requester_port = requester_addr.split(",")
         giver_addr, giver_port = giver_addr.split(",")
         s.sendto(
@@ -330,23 +352,28 @@ def parse_receive_request(connection, message, addr, s):
     print("3")
     for help in helps:
         req_dev_id = help[0]
-        if (req_dev_id != dev_id): 
-            req_timestamp = help[1]
-            req_gpscoord = help[2]
-            helptype = help[3]
-            print("4")
-            if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
-                max_distance = 1
-            else:
-                max_distance = 3
-            if (check_user_in_range(gpscoord, req_gpscoord, max_distance)):
-                print("5")
-                test = db.create_request_entry(connection, req_dev_id, dev_id)
-                message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
-                dev_id, gpscoord, timestamp, helptype
-                )
-                print(message)
-                ip_address, port = addr.split(",")
-                print("7")
-                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-        
+        if (req_dev_id == dev_id):
+            db.delete_request_entry(connection, "help_giver", dev_id)
+        req_gpscoord = help[2]
+        helptype = help[3]
+        print("4")
+        if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
+            max_distance = 1
+        else:
+            max_distance = 3
+        print(f"4.5: giverCoord:{gpscoord} requesterCoord:{req_gpscoord}")
+        if not should_request_end(gpscoord, req_gpscoord, max_distance):
+            print(f"5")
+            db.create_request_entry(connection, req_dev_id, dev_id)
+            print(f"6")
+            gps1 = gpscoord.split(",")
+            gps2 = req_gpscoord.split(",")
+            dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
+            dev_id, gpscoord, dist, helptype
+            )
+            print(message)
+            print("7")
+            s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
+            print("8")
+    return
