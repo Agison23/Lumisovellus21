@@ -573,7 +573,7 @@ class Dialogs {
       barrierColor: Colors.black.withOpacity(0.9),
       barrierDismissible: true,
       builder: (BuildContext context) {
-        return RescueChat();
+        return RescueChat(context);
       },
     );
   }

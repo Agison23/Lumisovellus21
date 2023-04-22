@@ -17,6 +17,8 @@ void main() async {
   await Firebase.initializeApp();
   prefs.then((pref) {
     fName = pref.getString('fName');
+    // This bool to see if rescue chat has unread message or not
+    // prefs.setBool("_hasUnreadMsg", false);
     runApp(MyApp());
   });
 }

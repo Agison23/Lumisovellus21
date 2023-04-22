@@ -7,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../state/appState.dart';
 
 class RescueChat extends StatefulWidget {
+  final BuildContext context;
+
+  const RescueChat(this.context, {Key? key}) : super(key: key);
   @override
   _RescueChatState createState() => _RescueChatState();
 }
@@ -31,7 +34,7 @@ class _RescueChatState extends State<RescueChat> {
   @override
   Widget build(BuildContext context) {
     // TODO: get the phone number of the rescue request to use as the room ID
-    const roomId = '0123456789';
+    const roomId = '0123456789'; // getNumber()
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
@@ -60,8 +63,6 @@ class _RescueChatState extends State<RescueChat> {
           List<Map<String, dynamic>> users =
               List<Map<String, dynamic>>.from(chatRoomData?['users'] ?? []);
 
-          print('Users array before update is: $users');
-
           bool phoneNumberFound = false;
           String color = 'grey';
 
@@ -75,22 +76,16 @@ class _RescueChatState extends State<RescueChat> {
           if (!phoneNumberFound) {
             // If phone number of this helper is not already in the array, add them in with their color
             if (users.length == 1) {
-              print('No helpers yet');
               users.add({myPhoneNum: 'green'});
               color = 'green';
             } else if (users.length == 2) {
-              print('1 helpers. Adding new.');
               users.add({myPhoneNum: 'blue'});
               color = 'blue';
             } else if (users.length == 3) {
-              print('2 helpers. Adding new.');
               users.add({myPhoneNum: 'brown'});
               color = 'brown';
-            } else if (users.length == 4) {
-              print('3 helpers already. No more!');
-            }
+            } 
 
-            print('Users after update: $users');
 
             try {
               _firestore.collection('Rooms').doc(roomId).update({
@@ -127,8 +122,6 @@ class _RescueChatState extends State<RescueChat> {
                           children: users.map((Map<String, dynamic> user) {
                             String phoneNum = user.keys.first;
                             String color = user.values.first;
-                            print(
-                                '=========================================== user phone num: $phoneNum');
                             return RescueChatWidgets.circleProfile(
                               roomId: roomId,
                               phoneNum: phoneNum,
@@ -168,7 +161,6 @@ class _RescueChatState extends State<RescueChat> {
 
 class RescueChatWidgets {
   static Widget circleProfile({roomId, phoneNum, backgroundColor}) {
-    print('Background color is: $backgroundColor');
     Color color;
     switch (backgroundColor) {
       case 'red':
@@ -225,6 +217,23 @@ class RescueChatWidgets {
   static Widget chatRoom({roomId, myPhoneNum, users}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
+    firestore
+    .collection('Rooms')
+    .doc(roomId)
+    .collection('Messages')
+    .orderBy('datetime', descending: true)
+    .snapshots()
+    .listen((event) async {
+      // Notify the user of the new message if it's not from the sender
+      if (event.docs.isNotEmpty &&
+        event.docs.first['sent_by'] != myPhoneNum) {
+        print('You have a new message from chat room ${roomId}!');
+
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool("_hasUnreadMsg", true);
+    }
+    });
+
 
     return SingleChildScrollView(
       child: Column(
@@ -337,7 +346,6 @@ class RescueChatWidgets {
   static Widget messagesCard(bool check, message, time, users, senderPhoneNum) {
     String colorString = 'grey';
     for (final user in users) {
-      // print(user);
       if (user.containsKey(senderPhoneNum)) {
         colorString = user[senderPhoneNum]!;
       }
