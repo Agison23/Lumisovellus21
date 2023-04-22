@@ -103,6 +103,15 @@ class ServerComms {
     _timer.cancel();
   }
 
+  static void startListeningServer(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool? isServerComms = prefs.getBool("_isServerComms");
+    if (isServerComms == false) {
+      prefs.setBool("_isServerComms", true);
+      listenServer(context);
+    }
+  }
+
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     Map<String, String> _env =
