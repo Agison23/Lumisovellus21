@@ -114,12 +114,12 @@ def create_help_entry(connection, help):
     cur = connection.cursor()
 
     if not exists:
-        sql = """INSERT INTO help(dev_id,timestamp,gpscoord, help_type)
-              VALUES (?,?,?,?)"""
+        sql = """INSERT INTO help(dev_id,timestamp,gpscoord, help_type, room_id)
+              VALUES (?,?,?,?,?)"""
         cur.execute(sql, help)
     else:
-        sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=? WHERE dev_id=?"
-        cur.execute(sql, (help[1], help[2], help[3], help[0]))
+        sql = "UPDATE help SET timestamp=?, gpscoord=?, help_type=?, room_id=? WHERE dev_id=?"
+        cur.execute(sql, (help[1], help[2], help[3], help[4], help[0]))
 
     connection.commit()
     return
@@ -270,7 +270,8 @@ def init_tables(connection):
                             first_name text NOT NULL,
                             last_name text NOT NULL,
                             ip_address text NOT NULL,
-                            phone_number text
+                            phone_number text,
+                            low_battery INTEGER DEFAULT '0'
                          ); """
 
     sql_table_data = """CREATE TABLE IF NOT EXISTS data (
@@ -284,7 +285,8 @@ def init_tables(connection):
                             dev_id text PRIMARY KEY,
                             timestamp integer,
                             gpscoord text,
-                            help_type text
+                            help_type text,
+                            room_id text
                         );"""
 
     sql_table_accounts = """CREATE TABLE IF NOT EXISTS accounts (
@@ -422,6 +424,36 @@ def get_all_help_requests(connection):
     cur.execute(sql)
     entry = cur.fetchall()
     return entry
+def set_user_battery(connection, dev_id, battery_status):
+    sql = "UPDATE users SET low_battery=? WHERE dev_id=?"
+    cur = connection.cursor()
+    if (battery_status == "low") :
+        cur.execute(sql, (1,dev_id))     
+    else:
+        cur.execute(sql, (0,dev_id))
+    connection.commit()
+    return
+
+def get_helpers(connection, requester):
+    sql = """SELECT help_giver
+             FROM requests 
+             WHERE help_requester = ? 
+             AND state = 1;"""
+
+    cur = connection.cursor()
+    cur.execute(sql, (requester,))
+    help_givers = cur.fetchall()
+    return help_givers[0]
+
+def get_user_ip_by_dev_id(connection, dev_id):
+    sql = """SELECT ip_address
+            FROM users
+            WHERE dev_id = ?"""
+    cur = connection.cursor()
+    cur.execute(sql, (dev_id,))
+    user_ip = cur.fetchone()
+    return user_ip[0]
+    
 def get_2_latest_location_dev_id(connection, dev_id):
     sql = """SELECT gpscoord
             FROM data

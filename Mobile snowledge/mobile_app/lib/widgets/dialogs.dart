@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/helper/utility.dart';
+import 'package:mobile_app/widgets/rescue_chat.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../side_bar/gps_handler.dart';
@@ -499,6 +501,53 @@ class Dialogs {
     );
   }
 
+  // Open dialog when help requester's request is automatically cancelled
+  // Different prompts for help requester and helpers
+  static showRequestEndedAutomaticallyDialog(context, String user) async {
+    var appState = Provider.of<AppState>(context, listen: false);
+    String text = '';
+    if (user == 'help_requester') {
+      text = translations['requesterReqOverAutomatically'][appState.language];
+    } else if (user == 'helper') {
+      text = translations['helperReqOverAutomatically'][appState.language];
+    }
+    return await showDialog<void>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: SizedBox(
+                      width: 300,
+                      child:
+                          Buttons.confirmButton(context, 'OK', onPressed: () {
+                        Navigator.pop(context);
+                      })),
+                )
+              ]);
+            },
+          ),
+        );
+      },
+    );
+  }
+
   static showHelpRequestedDialog(context, payload) async {
     var appState = Provider.of<AppState>(context, listen: false);
     helpRequestedDialogOpen = true;
@@ -566,32 +615,12 @@ class Dialogs {
   }
 
   Future showRescueChatDialog(context) async {
-    var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            color: Colors.transparent,
-            child: Dialog(
-              child: SizedBox(
-                height: 200,
-                width: 300,
-                child: Column(
-                  children: const <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('This is going to be the rescue chat'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+        return RescueChat(context);
       },
     );
   }

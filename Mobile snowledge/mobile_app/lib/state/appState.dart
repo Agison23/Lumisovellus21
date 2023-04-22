@@ -5,6 +5,7 @@ class AppState extends ChangeNotifier {
 
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
+  String _chatRoomId = '';
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -13,6 +14,8 @@ class AppState extends ChangeNotifier {
   String get language => _language;
 
   String get languageName => _languageName;
+
+  String get chatRoomId => _chatRoomId;
 
   set setLanguage(String language) {
     _language = _allLanguages[language];
@@ -36,6 +39,11 @@ class AppState extends ChangeNotifier {
 
   set setUserInAppSettings(bool value) {
     _userInAppSettings = value;
+    notifyListeners();
+  }
+
+  set setChatRoomId(String value) {
+    _chatRoomId = value;
     notifyListeners();
   }
 

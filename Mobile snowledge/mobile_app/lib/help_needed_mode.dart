@@ -100,6 +100,9 @@ class HelpNeededState extends State<HelpNeeded> {
     );
 
     ServerComms.messageToServer("HELP");
+
+    // Create a new chat room when a user start a new request (here, go into help needed mode)
+    Utility.createChatRoom();
   }
 
   /// start a timer of 5 minutes and opens dialog if no users has accepted the request

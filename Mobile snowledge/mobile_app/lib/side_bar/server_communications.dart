@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import 'package:battery_plus/battery_plus.dart';
 
 import 'package:dart_ipify/dart_ipify.dart';
 import '../help_needed_mode.dart';
@@ -27,6 +28,7 @@ class ServerComms {
   static late Timer _timer;
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
+  static bool wasBatteryLow = false;
 
   // Take local network ipv4/ipv6 base on available networks, prioritize ipv6
   static Future<RawDatagramSocket> initRDgS() {
@@ -75,6 +77,19 @@ class ServerComms {
     });
   }
 
+  //Checks user's battery level
+  static Future<bool> checkBattery() async {
+    bool lowBattery;
+    var battery = Battery();
+    int batteryLevel = await battery.batteryLevel;
+    if (batteryLevel <= 20) {
+      lowBattery = true;
+    } else {
+      lowBattery = false;
+    }
+    return lowBattery;
+  }
+
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
   static void startSendingLocationMessages() {
     if (SetSharingLocationState.gpsSwitchState) {
@@ -86,15 +101,32 @@ class ServerComms {
     );
   }
 
-  static void _listenServerTimerInsides(int minutesBetweenLocationMessages) {
+  static void _listenServerTimerInsides(
+      int minutesBetweenLocationMessages) async {
+    bool isLocationSent = false;
     // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
       if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
               _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
         messageToServer("LOCATION");
+        isLocationSent = true;
       } else {
         messageToServer("KEEP_ALIVE");
+      }
+    }
+
+    const batteryCheckInterval = 1; //1 minute
+    if ((_timer.tick % (4 * batteryCheckInterval) == 0) ||
+        _isOfferingHelp && _timer.tick % (1 * batteryCheckInterval) == 0) {
+      //check battery here
+      bool isBatteryLow = await checkBattery();
+      if (isBatteryLow != wasBatteryLow) {
+        wasBatteryLow = isBatteryLow;
+        messageToServer("BATTERY");
+        if (isBatteryLow && !isLocationSent) {
+          messageToServer("LOCATION");
+        }
       }
     }
   }
@@ -117,12 +149,13 @@ class ServerComms {
       String devId = await _getDeviceID();
       String message;
       switch (messagetype) {
-        case 'REQUEST_INIT':
-          await GpsHandler.startUpdatingGpsVariable();
-          List<String> list = await getTimeFNameLNameGps();
-          message =
-              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
-          await GpsHandler.stopUpdatingGpsVariable();
+        case 'BATTERY':
+          // Last measured battery, true if low
+          if (wasBatteryLow) {
+            message = '$messagetype:$devId:low';
+          } else {
+            message = '$messagetype:$devId:high';
+          }
           break;
         case 'LOCATION':
           List<String> list = await getTimeFNameLNameGps();
@@ -135,7 +168,8 @@ class ServerComms {
           // Get the type of help needed (equipment, health, lost)
           List<String> list = await getTimeFNameLNameGps();
           String helpNeed = Dialogs().getMinorHelpCondition();
-          message = '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed';
+          message =
+              '$messagetype:${list[0]}:$devId:${list[3]}:$helpNeed:${list[4]}';
           break;
         case 'HELP_DELETE':
           isRequestingHelp = false;
@@ -254,13 +288,15 @@ class ServerComms {
               break;
             case "NOTIFY":
               // Notify the device when there is a helper accepted the help request
-              //NOTIFY:ID:GPS:DISTANCE:
+              // This is when the new helper come and battery state if low then need to process according to ticket 226 image
+              //NOTIFY:ID:GPS:DISTANCE:BatteryState:ChatRoomID
               print("Notify!");
               if (isRequestingHelp == false) {
                 String devId = await _getDeviceID();
                 if (resultParts[1] == devId) {
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
+                  appState.setChatRoomId = resultParts[4];
                   String payload = resultParts[2] + ':' + resultParts[3];
 
                   appState.setNumOfHelpRequest = 1;
@@ -274,7 +310,20 @@ class ServerComms {
               }
 
               break;
-
+            case "LOW_BATTERY_HELPEE":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
+              // this is for user that have accepted the help request, then the help requester battery run low
+              // Need to set helpRequesterBatteryState to low.
+              String helpRequesterBatteryState;
+              break;
+            case "LOW_BATTERY_HELPER":
+              print(
+                  "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
+              // This is for help requester to know that a specific helper has low battery
+              //LOW_BATTERY_HELPER:ID
+              String helper_dev_id = resultParts[1];
+              break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
               HelpNeededState().noUserNearby();
@@ -297,8 +346,13 @@ class ServerComms {
                     if (HelpOfferedState.pageOpen) {
                       Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
-                      await Dialogs.showHelpNeedOverDialog(
-                          MyApp.navigatorKey.currentState?.context);
+                      if (resultParts[2] == "AUTOMATIC_END") {
+                        await Dialogs.showRequestEndedAutomaticallyDialog(
+                            MyApp.navigatorKey.currentState?.context, 'helper');
+                      } else {
+                        await Dialogs.showHelpNeedOverDialog(
+                            MyApp.navigatorKey.currentState?.context);
+                      }
                     }
                   }
                 } catch (e) {
@@ -308,7 +362,16 @@ class ServerComms {
               break;
             case "HELP_ENDED_BY_GPS":
               // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
-              // Something should happen on the front end base on ticket #173
+              appState.setNumOfHelpRequest = -1;
+
+              // Navigate out of the help request page
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+              await Dialogs.showRequestEndedAutomaticallyDialog(
+                  MyApp.navigatorKey.currentState?.context, 'help_requester');
+
               break;
             default:
               // print("invalid message: $result");
@@ -327,12 +390,12 @@ class ServerComms {
     var prefs = await SharedPreferences.getInstance();
     String fName = prefs.getString('fName')!;
     String lName = prefs.getString('lName')!;
-    String pNumber = prefs.getString('pNumber') ?? 'ei puhelinnumeroa';
+    String chatRoomId = prefs.getString('pNumber')!;
     int time = (DateTime.now().millisecondsSinceEpoch / 1000).round();
     var gps = GpsHandler.gps;
     String _gps = '${gps.latitude},${gps.longitude}';
     // time, first name, last name, gps, phone number
-    return [time.toString(), fName, lName, _gps, pNumber];
+    return [time.toString(), fName, lName, _gps, chatRoomId];
   }
 
   // Save the last location and time to the app's shared preference
