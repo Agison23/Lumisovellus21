@@ -20,13 +20,16 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final navigatorKey = GlobalKey<NavigatorState>();
-
+  bool initServer = false;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        ServerComms.listenServer(context);
+        if (!initServer) {
+          initServer = true;
+          ServerComms.listenServer(context);
+        }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,

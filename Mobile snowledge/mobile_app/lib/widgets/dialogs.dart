@@ -505,9 +505,9 @@ class Dialogs {
     var appState = Provider.of<AppState>(context, listen: false);
     String text = '';
     if (user == 'help_requester') {
-      translations['requesterReqOverAutomatically'][appState.language];
+      text = translations['requesterReqOverAutomatically'][appState.language];
     } else if (user == 'helper') {
-      translations['helperReqOverAutomatically'][appState.language];
+      text = translations['helperReqOverAutomatically'][appState.language];
     }
     return await showDialog<void>(
       context: context,

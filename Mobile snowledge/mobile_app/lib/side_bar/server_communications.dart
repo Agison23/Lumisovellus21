@@ -289,8 +289,13 @@ class ServerComms {
                     if (HelpOfferedState.pageOpen) {
                       Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
-                      await Dialogs.showHelpNeedOverDialog(
-                          MyApp.navigatorKey.currentState?.context);
+                      if (resultParts[2] == "AUTOMATIC_END") {
+                        await Dialogs.showRequestEndedAutomaticallyDialog(
+                            MyApp.navigatorKey.currentState?.context, 'helper');
+                      } else {
+                        await Dialogs.showHelpNeedOverDialog(
+                            MyApp.navigatorKey.currentState?.context);
+                      }
                     }
                   }
                 } catch (e) {
@@ -300,7 +305,17 @@ class ServerComms {
               break;
             case "HELP_ENDED_BY_GPS":
               // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
-              // Something should happen on the front end base on ticket #173
+              print(
+                  "=====================HELP_ENDED_BY_GPS====================");
+
+              appState.setNumOfHelpRequest = -1;
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+              Navigator.pop(MyApp.navigatorKey.currentState!.context);
+
+              await Dialogs.showRequestEndedAutomaticallyDialog(
+                  MyApp.navigatorKey.currentState?.context, 'help_requester');
+
               break;
             default:
               // print("invalid message: $result");
