@@ -18,6 +18,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     dev_id = message[1]
     gpscoord = message[2]
     helptype = message[3]
+    chatRoomId = message[4]
 
     user_id, exists = db.check_if_entry_exists(
         connection, "users", "dev_id", "dev_id", dev_id, False
@@ -26,7 +27,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     if not exists:
         return
 
-    help = (user_id, timestamp, gpscoord, helptype)
+    help = (user_id, timestamp, gpscoord, helptype, chatRoomId)
     db.create_help_entry(connection, help)
 
     if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
@@ -55,7 +56,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             connection, "users", "ip_address", "dev_id", user[0], False
         )
         message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
-            user[0], gpscoord, user[1], helptype
+            user[0], gpscoord, user[1], helptype, chatRoomId
         )
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
@@ -68,7 +69,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype)
+        message = "NOTIFY:{}:{}:Syy {}".format(user[0], gpscoord, helptype, chatRoomId)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
