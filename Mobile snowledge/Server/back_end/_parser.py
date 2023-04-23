@@ -354,13 +354,12 @@ def parse_receive_request(connection, message, addr, s):
     sukunimi = message[3]
     gpscoord = message[4]
     phone_number = message[5]
-    print("0")
     addr_str = "{},{}".format(addr[0], addr[1])
     user = (dev_id, etunimi, sukunimi, addr_str, phone_number)
     user_entry_id, exists = db.check_if_entry_exists(
         connection, "users", "dev_id", "dev_id", dev_id, False
     )
-    print("1")
+
     if not exists:
         user_id = db.create_user_entry(connection, user)
     else:
@@ -371,34 +370,26 @@ def parse_receive_request(connection, message, addr, s):
         db.create_data_entry(connection, data)
     except:
         print("INFO:Entry already exists")
-    print("2")
 
     helps = db.get_all_help_requests(connection)
-    print("3")
     for help in helps:
         req_dev_id = help[0]
         if (req_dev_id == dev_id):
             db.delete_request_entry(connection, "help_giver", dev_id)
         req_gpscoord = help[2]
         helptype = help[3]
-        print("4")
+        chatRoomId = help[4]
         if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
             max_distance = 1
         else:
             max_distance = 3
-        print(f"4.5: giverCoord:{gpscoord} requesterCoord:{req_gpscoord}")
         if not should_request_end(gpscoord, req_gpscoord, max_distance):
-            print(f"5")
             db.create_request_entry(connection, req_dev_id, dev_id)
-            print(f"6")
             gps1 = gpscoord.split(",")
             gps2 = req_gpscoord.split(",")
             dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
-            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}".format(
-            dev_id, gpscoord, dist, helptype
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}".format(
+            dev_id, gpscoord, dist, helptype, chatRoomId
             )
-            print(message)
-            print("7")
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
-            print("8")
     return

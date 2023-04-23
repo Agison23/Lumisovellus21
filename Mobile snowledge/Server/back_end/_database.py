@@ -418,7 +418,7 @@ def rescue_users_from_db(connection):
     print(cur.fetchall())
 
 def get_all_help_requests(connection):
-    sql = """SELECT * FROM requests;"""
+    sql = """SELECT * FROM help;"""
 
     cur = connection.cursor()
     cur.execute(sql)
