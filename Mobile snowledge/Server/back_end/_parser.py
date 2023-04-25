@@ -282,8 +282,6 @@ def send_location_updates(connection, timestamp, s):
         message = do_work(request[0], request[1], coordinates)
         two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
         if (should_request_end(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
-            messages.append(message)
-        else:
             dev_id = request[1]
             users = db.select_request_entry(connection, dev_id, "help_requester")
 
@@ -303,6 +301,8 @@ def send_location_updates(connection, timestamp, s):
             requester_ip_addr, requester_p = requester_ip.split(",")
             s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
             db.delete_request_entry(connection, dev_id, "help_requester")
+        else:
+            messages.append(message)
 
     for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]

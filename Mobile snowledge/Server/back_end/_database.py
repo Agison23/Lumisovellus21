@@ -398,7 +398,7 @@ def check_if_entry_exists(connection, table, key1, key2, entry, full_return):
     except Error as e:
         print(e)
 
-    _query = "SELECT {} FROM {} WHERE {}=?".format(key1, table, key2)
+    _query = "SELECT {} FROM {} WHERE {}=?;".format(key1, table, key2)
     cur.execute(_query, (entry,))
 
     exists = cur.fetchall()
@@ -441,7 +441,7 @@ def get_helpers(connection, requester):
 def get_user_ip_by_dev_id(connection, dev_id):
     sql = """SELECT ip_address
             FROM users
-            WHERE dev_id = ?"""
+            WHERE dev_id = ?;"""
     cur = connection.cursor()
     cur.execute(sql, (dev_id,))
     user_ip = cur.fetchone()
@@ -450,10 +450,9 @@ def get_user_ip_by_dev_id(connection, dev_id):
 def get_2_latest_location_dev_id(connection, dev_id):
     sql = """SELECT gpscoord
             FROM data
-            WHERE dev_id = ? 
-            ORDER BY timestamp DESC"""
+            WHERE dev_id = ?
+            ORDER BY timestamp DESC;"""
     cur = connection.cursor()
-    print(f"dev id get_2_latest_location_dev_id: {dev_id}")
     cur.execute(sql,(dev_id,))
     user_coord = cur.fetchall()
     return [user_coord[0], user_coord[1]]
