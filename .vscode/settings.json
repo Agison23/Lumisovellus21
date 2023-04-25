@@ -18,5 +18,6 @@
   "[dart]": {
     "editor.defaultFormatter": "Dart-Code.dart-code",
     "editor.formatOnSave": true
-  }
+  },
+  "cmake.sourceDirectory": "${workspaceFolder}/Mobile snowledge/mobile_app/build/windows/_deps/nuget-subbuild"
 }
