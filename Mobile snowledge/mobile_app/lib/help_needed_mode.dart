@@ -92,8 +92,8 @@ class HelpNeededState extends State<HelpNeeded> {
             }
           } else {
             // if no users nearby
-            // _stateUpdateTimer?.cancel();
-            // Dialogs.showNoUserCloseDialog(context);
+            _stateUpdateTimer?.cancel();
+            Dialogs.showNoUserCloseDialog(context);
           }
         })
       },

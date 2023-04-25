@@ -147,7 +147,7 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
 
     return users_in_range
 
-def should_request_end(gpscoord_giver, gpscoord_receiver, max_distance):
+def points_not_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
     gps1 = gpscoord_giver.split(",")
     gps2 = gpscoord_receiver.split(",")
     lat1 = float(gps1[0])
@@ -281,7 +281,7 @@ def send_location_updates(connection, timestamp, s):
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
         two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
-        if (should_request_end(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
+        if (points_not_in_range(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
             messages.append(message)
         else:
             dev_id = request[1]
@@ -383,7 +383,7 @@ def parse_receive_request(connection, message, addr, s):
             max_distance = 1
         else:
             max_distance = 3
-        if not should_request_end(gpscoord, req_gpscoord, max_distance):
+        if not points_not_in_range(gpscoord, req_gpscoord, max_distance):
             db.create_request_entry(connection, req_dev_id, dev_id)
             gps1 = gpscoord.split(",")
             gps2 = req_gpscoord.split(",")
