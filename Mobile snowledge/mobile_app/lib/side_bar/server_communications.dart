@@ -342,6 +342,9 @@ class ServerComms {
               // HELP_OVER:ID
               appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
+              Navigator.popUntil(MyApp.navigatorKey.currentState!.context,
+                  (route) => route.isFirst);
+
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification(appState);
@@ -349,11 +352,11 @@ class ServerComms {
                   if (MyApp.navigatorKey.currentState != null) {
                     if (Dialogs.helpRequestedDialogOpen) {
                       Dialogs.helpRequestedDialogOpen = false;
-                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                      //Navigator.pop(MyApp.navigatorKey.currentState!.context);
                     }
 
                     if (HelpOfferedState.pageOpen) {
-                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                      //Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
                       if (resultParts[2] == "AUTOMATIC_END") {
                         await Dialogs.showRequestEndedAutomaticallyDialog(

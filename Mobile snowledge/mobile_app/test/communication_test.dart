@@ -7,7 +7,7 @@ void main() {
     var expectedIp = await InternetAddress.lookup('dev.lumisovellus.fi',
         type: InternetAddressType.any);
     String expected = expectedIp[0].address;
-    String address = await ServerComms.getAddress();
+    String address = await ServerComms.initAddress();
     expect(address, expected);
   });
 }
