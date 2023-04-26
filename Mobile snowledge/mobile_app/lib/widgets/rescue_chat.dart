@@ -29,14 +29,41 @@ class _RescueChatState extends State<RescueChat> {
         myPhoneNum = prefs.getString('pNumber') ?? '';
       });
     });
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    final stream = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc('0123456789')
+        .collection('Messages')
+        .orderBy('datetime', descending: true)
+        .snapshots(includeMetadataChanges: false)
+        .listen((event) async {
+      for (var change in event.docChanges) {
+        switch (change.type) {
+          case DocumentChangeType.added:
+            // Notify the user of the new message if it's not from the sender
+            if (change.doc.data()?['sent_by'] != myPhoneNum) {
+              print("New message: ${change.doc.data()}");
+              print('You have a new message from chat room ${'0123456789'}!');
+              appState.setHasUnreadMessages = true;
+            }
+            break;
+          case DocumentChangeType.modified:
+            print("Modified message: ${change.doc.data()}");
+            break;
+          case DocumentChangeType.removed:
+            print("Removed message: ${change.doc.data()}");
+            break;
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-
     // TODO: get the phone number of the rescue request to use as the room ID
     // String roomId = appState.chatRoomId;
+    var appState = Provider.of<AppState>(context, listen: false);
     String roomId = '0123456789';
 
     print('App state room ID is: ${appState.chatRoomId}');
@@ -225,32 +252,6 @@ class RescueChatWidgets {
   static Widget chatRoom({roomId, myPhoneNum, users, appState}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
-    firestore
-        .collection('Rooms')
-        .doc(roomId)
-        .collection('Messages')
-        .orderBy('datetime', descending: true)
-        .snapshots()
-        .listen((event) async {
-      for (var change in event.docChanges) {
-        switch (change.type) {
-          case DocumentChangeType.added:
-            // Notify the user of the new message if it's not from the sender
-            if (change.doc.data()?['sent_by'] != myPhoneNum) {
-              appState.setHasUnreadMessages = true;
-              print("New message: ${change.doc.data()}");
-              print('You have a new message from chat room ${roomId}!');
-            }
-            break;
-          case DocumentChangeType.modified:
-            print("Modified message: ${change.doc.data()}");
-            break;
-          case DocumentChangeType.removed:
-            print("Removed message: ${change.doc.data()}");
-            break;
-        }
-      }
-    });
 
     return SingleChildScrollView(
       child: Column(
