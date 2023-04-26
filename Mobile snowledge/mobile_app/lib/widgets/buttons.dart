@@ -128,6 +128,7 @@ class Buttons {
     var appState = Provider.of<AppState>(context);
     return ElevatedButton(
         onPressed: () async => {
+              Navigator.pop(context),
               await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
                   builder: (context) => HelpOffered(payload, false))),
               Dialogs.helpRequestedDialogOpen = false

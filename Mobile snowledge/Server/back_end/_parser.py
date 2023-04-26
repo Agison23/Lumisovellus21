@@ -280,29 +280,33 @@ def send_location_updates(connection, timestamp, s):
     messages = []
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
-        two_latest_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
-        if (points_not_in_range(two_latest_requester_gps[0][0],two_latest_requester_gps[1][0], DISTANCE_HELP_RESOLVED)):
+        past_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
+        if len(past_requester_gps) < 2:
             messages.append(message)
         else:
-            dev_id = request[1]
-            users = db.select_request_entry(connection, dev_id, "help_requester")
+            two_latest_requester_gps = [past_requester_gps[0][0], past_requester_gps[1][0]]
+            if (points_not_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
+                dev_id = request[1]
+                users = db.select_request_entry(connection, dev_id, "help_requester")
 
-            for user in users:
-                ip_address, _ = db.check_if_entry_exists(
-                    connection, "users", "ip_address", "dev_id", user[0], False
-                )
-                message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
-                ip_address, port = ip_address.split(",")
-                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+                for user in users:
+                    ip_address, _ = db.check_if_entry_exists(
+                        connection, "users", "ip_address", "dev_id", user[0], False
+                    )
+                    message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
+                    ip_address, port = ip_address.split(",")
+                    s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
-            db.delete_help_entry(connection, dev_id)
-            requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
-            requester_ip, _ = db.check_if_entry_exists(
-                    connection, "users", "ip_address", "dev_id", dev_id, False
-                )
-            requester_ip_addr, requester_p = requester_ip.split(",")
-            s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
-            db.delete_request_entry(connection, dev_id, "help_requester")
+                db.delete_help_entry(connection, dev_id)
+                requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
+                requester_ip, _ = db.check_if_entry_exists(
+                        connection, "users", "ip_address", "dev_id", dev_id, False
+                    )
+                requester_ip_addr, requester_p = requester_ip.split(",")
+                s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
+                db.delete_request_entry(connection, dev_id, "help_requester")
+            else:
+                messages.append(message)
 
     for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]
@@ -341,7 +345,8 @@ def send_low_battery_current_requests(connection, dev_id, s):
         helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "requests", "help_requester", "help_giver", dev_id, False)
         if (helper_exists):
             helpee_ip = db.get_user_ip_by_dev_id(connection, helpee_dev_id)
-            message = f"LOW_BATTERY_HELPER:{dev_id}"
+            helper_phone_num, _ = db.check_if_entry_exists(connection,"users","phone_num","dev_id", dev_id, False)
+            message = f"LOW_BATTERY_HELPER:{helper_phone_num}"
             ip_address, port = helpee_ip.split(",")
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
     return

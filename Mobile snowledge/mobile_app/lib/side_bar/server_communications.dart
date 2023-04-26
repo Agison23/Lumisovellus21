@@ -328,7 +328,7 @@ class ServerComms {
               print(
                   "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
               // This is for help requester to know that a specific helper has low battery
-              //LOW_BATTERY_HELPER:ID
+              //LOW_BATTERY_HELPER:phone_num
               String helper_dev_id = resultParts[1];
               break;
             case "NO_USERS_NEARBY":
@@ -340,6 +340,9 @@ class ServerComms {
               // HELP_OVER:ID
               appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
+              Navigator.popUntil(MyApp.navigatorKey.currentState!.context,
+                  (route) => route.isFirst);
+
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
                 NotificationHandler.helpRequestCancelledNotification(appState);
@@ -347,11 +350,11 @@ class ServerComms {
                   if (MyApp.navigatorKey.currentState != null) {
                     if (Dialogs.helpRequestedDialogOpen) {
                       Dialogs.helpRequestedDialogOpen = false;
-                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                      //Navigator.pop(MyApp.navigatorKey.currentState!.context);
                     }
 
                     if (HelpOfferedState.pageOpen) {
-                      Navigator.pop(MyApp.navigatorKey.currentState!.context);
+                      //Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
                       if (resultParts[2] == "AUTOMATIC_END") {
                         await Dialogs.showRequestEndedAutomaticallyDialog(

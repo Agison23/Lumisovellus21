@@ -14,6 +14,7 @@ import 'notification_handler.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import '../../widgets_binding_observer_state.dart';
+import '../translations/translations.dart';
 
 class MapTracking extends StatefulWidget {
   const MapTracking({Key? key}) : super(key: key);
@@ -58,120 +59,153 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     var appState = Provider.of<AppState>(context);
     var lat;
     var lng;
-    return SafeArea(
-      child: Scaffold(
-        key: _globalKey,
-        body: Stack(
-          children: [
-            StreamBuilder(
-                stream: GpsHandler.getCoordinates(),
-                builder: ((context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: LoadingIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  String locationData =
-                      snapshot.data.toString().replaceAll(RegExp('[,>]'), '');
-                  List<String> dataList = locationData.toString().split(' ');
-                  lat = double.parse(dataList[1]);
-                  lng = double.parse(dataList[3]);
-                  return FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      minZoom: 6,
-                      maxZoom: 18,
-                      center: LatLng(lat, lng),
-                      zoom: 11.0,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_globalKey.currentState?.isDrawerOpen == true) {
+          Navigator.of(context).pop();
+          return false;
+        } else {
+          final value = await showDialog<bool>(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(translations['quitApp'][appState.language]),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(translations['no'][appState.language]),
                     ),
-                    children: [
-                      TileLayer(urlTemplate: getSummerOrWinterMap()
-                          // Pöllöille oma API avain!
-                          ),
-                      MarkerLayer(
-                        markers: getMarker(LatLng(lat, lng)),
-                        rotate: true,
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text(translations['yes'][appState.language]),
+                    ),
+                  ],
+                );
+              });
+          if (value != null) {
+            return Future.value(value);
+          } else {
+            return Future.value(false);
+          }
+        }
+      },
+      child: SafeArea(
+        child: Scaffold(
+          key: _globalKey,
+          body: Stack(
+            children: [
+              StreamBuilder(
+                  stream: GpsHandler.getCoordinates(),
+                  builder: ((context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: LoadingIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    String locationData =
+                        snapshot.data.toString().replaceAll(RegExp('[,>]'), '');
+                    List<String> dataList = locationData.toString().split(' ');
+                    lat = double.parse(dataList[1]);
+                    lng = double.parse(dataList[3]);
+                    return FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        minZoom: 6,
+                        maxZoom: 18,
+                        center: LatLng(lat, lng),
+                        zoom: 11.0,
                       ),
-                    ],
-                  );
-                })),
-            const Align(alignment: Alignment.bottomCenter, child: BottomBar()),
-            IconButton(
-              iconSize: 30,
-              icon: Stack(
-                children: [
-                  const Icon(Icons.menu),
-                  if (appState.numOfHelpRequests > 0)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Center(
-                          child: Text(
-                            '!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
+                      children: [
+                        TileLayer(urlTemplate: getSummerOrWinterMap()
+                            // Pöllöille oma API avain!
+                            ),
+                        MarkerLayer(
+                          markers: getMarker(LatLng(lat, lng)),
+                          rotate: true,
+                        ),
+                      ],
+                    );
+                  })),
+              const Align(
+                  alignment: Alignment.bottomCenter, child: BottomBar()),
+              IconButton(
+                iconSize: 30,
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.menu),
+                    if (appState.numOfHelpRequests > 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
+                onPressed: () {
+                  _globalKey.currentState?.openDrawer();
+                },
+                color: Colors.black,
               ),
-              onPressed: () {
-                _globalKey.currentState?.openDrawer();
-              },
-              color: Colors.black,
-            ),
-            // maptiler logo button
-            Align(
-              alignment: const Alignment(-0.95, 0.82),
-              child: Tooltip(
-                message:
-                    "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
-                child: IconButton(
-                  onPressed: () async {
-                    const url = "https://maptiler.com/";
-                    if (await canLaunchUrlString(url)) {
-                      await launchUrlString(url);
-                    } else {
-                      // print('ERROR');
-                    }
-                  },
-                  icon: Image.asset('assets/images/MapTiler.png'),
-                  iconSize: 20,
+              // maptiler logo button
+              Align(
+                alignment: const Alignment(-0.95, 0.82),
+                child: Tooltip(
+                  message:
+                      "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
+                  child: IconButton(
+                    onPressed: () async {
+                      const url = "https://maptiler.com/";
+                      if (await canLaunchUrlString(url)) {
+                        await launchUrlString(url);
+                      } else {
+                        // print('ERROR');
+                      }
+                    },
+                    icon: Image.asset('assets/images/MapTiler.png'),
+                    iconSize: 20,
+                  ),
                 ),
               ),
-            ),
-            // location centering button
-            Align(
-                alignment: const Alignment(0.95, 0.82),
-                child: IconButton(
-                  icon: const Icon(Icons.my_location),
-                  onPressed: () {
-                    _mapController.moveAndRotate(
-                        LatLng(lat, lng), _mapController.zoom, 0);
-                  },
-                )),
-            const Align(
-                alignment: Alignment.topCenter,
-                child: Image(
-                  image: AssetImage('assets/images/logo_transparent_black.png'),
-                  width: 80,
-                  height: 80,
-                ))
-          ],
+              // location centering button
+              Align(
+                  alignment: const Alignment(0.95, 0.82),
+                  child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      _mapController.moveAndRotate(
+                          LatLng(lat, lng), _mapController.zoom, 0);
+                    },
+                  )),
+              const Align(
+                  alignment: Alignment.topCenter,
+                  child: Image(
+                    image:
+                        AssetImage('assets/images/logo_transparent_black.png'),
+                    width: 80,
+                    height: 80,
+                  ))
+            ],
+          ),
+          drawer: const MyNavigationDrawer(),
         ),
-        drawer: const MyNavigationDrawer(),
       ),
     );
   }
