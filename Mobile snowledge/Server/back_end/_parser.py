@@ -344,7 +344,7 @@ def send_low_battery_current_requests(connection, dev_id, s):
         helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "requests", "help_requester", "help_giver", dev_id, False)
         if (helper_exists):
             helpee_ip = db.get_user_ip_by_dev_id(connection, helpee_dev_id)
-            helper_phone_num, _ = db.check_if_entry_exists(connection,"users","phone_num","dev_id", dev_id, False)
+            helper_phone_num, _ = db.check_if_entry_exists(connection,"users","phone_number","dev_id", dev_id, False)
             message = f"LOW_BATTERY_HELPER:{helper_phone_num}"
             ip_address, port = helpee_ip.split(",")
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
