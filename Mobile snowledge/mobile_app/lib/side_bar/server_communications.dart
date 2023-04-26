@@ -331,7 +331,7 @@ class ServerComms {
                   "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
               // This is for help requester to know that a specific helper has low battery
               //LOW_BATTERY_HELPER:phone_num
-              String helper_dev_id = resultParts[1];
+              String helper_phone_num = resultParts[1];
               break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
