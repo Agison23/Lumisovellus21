@@ -351,7 +351,7 @@ def send_low_battery_current_requests(connection, dev_id, s):
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
     return
 
-def parse_receive_request(connection, message, addr, s):
+def send_existing_requests(connection, message, addr, s):
     # create user entry but not get auto location
     timestamp = message[0]
     dev_id = message[1]

@@ -50,7 +50,7 @@ class UdpServer:
                         self.udp,
                     )
                 elif msg_type == "REQUEST_INIT":
-                    prs.parse_receive_request(
+                    prs.send_existing_requests(
                         self.connection,
                         message, 
                         addr,
