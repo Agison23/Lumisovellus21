@@ -147,7 +147,7 @@ def get_closest_users(connection, gpscoord, max_distance, timestamp):
 
     return users_in_range
 
-def should_request_end(gpscoord_giver, gpscoord_receiver, max_distance):
+def points_not_in_range(gpscoord_giver, gpscoord_receiver, max_distance):
     gps1 = gpscoord_giver.split(",")
     gps2 = gpscoord_receiver.split(",")
     lat1 = float(gps1[0])
@@ -285,7 +285,7 @@ def send_location_updates(connection, timestamp, s):
             messages.append(message)
         else:
             two_latest_requester_gps = [past_requester_gps[0][0], past_requester_gps[1][0]]
-            if (should_request_end(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
+            if (points_not_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
                 dev_id = request[1]
                 users = db.select_request_entry(connection, dev_id, "help_requester")
 
@@ -326,6 +326,7 @@ def parse_battery(connection, message, s):
     db.set_user_battery(connection, dev_id, battery_status)
     if (battery_status == 'low'):
         send_low_battery_current_requests(connection, dev_id, s)
+    return
 
 def send_low_battery_current_requests(connection, dev_id, s):
     # Send when help requester have low battery to helper
@@ -348,5 +349,52 @@ def send_low_battery_current_requests(connection, dev_id, s):
             message = f"LOW_BATTERY_HELPER:{helper_phone_num}"
             ip_address, port = helpee_ip.split(",")
             s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+    return
 
+def send_existing_requests(connection, message, addr, s):
+    # create user entry but not get auto location
+    timestamp = message[0]
+    dev_id = message[1]
+    etunimi = message[2]
+    sukunimi = message[3]
+    gpscoord = message[4]
+    phone_number = message[5]
+    addr_str = "{},{}".format(addr[0], addr[1])
+    user = (dev_id, etunimi, sukunimi, addr_str, phone_number)
+    user_entry_id, exists = db.check_if_entry_exists(
+        connection, "users", "dev_id", "dev_id", dev_id, False
+    )
+
+    if not exists:
+        user_id = db.create_user_entry(connection, user)
+    else:
+        user_id = user_entry_id
+
+    data = (user_id, timestamp, gpscoord)
+    try:
+        db.create_data_entry(connection, data)
+    except:
+        print("INFO:Entry already exists")
+
+    helps = db.get_all_help_requests(connection)
+    for help in helps:
+        req_dev_id = help[0]
+        if (req_dev_id == dev_id):
+            db.delete_request_entry(connection, "help_giver", dev_id)
+        req_gpscoord = help[2]
+        helptype = help[3]
+        chatRoomId = help[4]
+        if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
+            max_distance = 1
+        else:
+            max_distance = 3
+        if not points_not_in_range(gpscoord, req_gpscoord, max_distance):
+            db.create_request_entry(connection, req_dev_id, dev_id)
+            gps1 = gpscoord.split(",")
+            gps2 = req_gpscoord.split(",")
+            dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}".format(
+            dev_id, gpscoord, dist, helptype, chatRoomId
+            )
+            s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
     return

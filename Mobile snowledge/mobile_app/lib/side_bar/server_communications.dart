@@ -135,15 +135,6 @@ class ServerComms {
     _timer.cancel();
   }
 
-  static void startListeningServer(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool? isServerComms = prefs.getBool("_isServerComms");
-    if (isServerComms == false) {
-      prefs.setBool("_isServerComms", true);
-      listenServer(context);
-    }
-  }
-
   // Constructing different messages to server
   static messageToServer(String messagetype) async {
     Map<String, String> _env =
@@ -158,6 +149,13 @@ class ServerComms {
       String devId = await _getDeviceID();
       String message;
       switch (messagetype) {
+        case 'REQUEST_INIT':
+          await GpsHandler.startUpdatingGpsVariable();
+          List<String> list = await getTimeFNameLNameGps();
+          message =
+              '$messagetype:${list[0]}:$devId:${list[1]}:${list[2]}:${list[3]}:${list[4]}';
+          await GpsHandler.stopUpdatingGpsVariable();
+          break;
         case 'BATTERY':
           // Last measured battery, true if low
           if (wasBatteryLow) {

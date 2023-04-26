@@ -417,6 +417,13 @@ def rescue_users_from_db(connection):
     cur.execute("SELECT * FROM rescue")
     print(cur.fetchall())
 
+def get_all_help_requests(connection):
+    sql = """SELECT * FROM help;"""
+
+    cur = connection.cursor()
+    cur.execute(sql)
+    entry = cur.fetchall()
+    return entry
 def set_user_battery(connection, dev_id, battery_status):
     sql = "UPDATE users SET low_battery=? WHERE dev_id=?"
     cur = connection.cursor()

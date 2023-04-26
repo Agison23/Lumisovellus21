@@ -255,7 +255,7 @@ class Dialogs {
     );
   }
 
-  /// Open dialog when no user close
+  // Open dialog when no user close
   static showNoUserCloseDialog(context) async {
     var appState = Provider.of<AppState>(context, listen: false);
     return await showDialog<void>(

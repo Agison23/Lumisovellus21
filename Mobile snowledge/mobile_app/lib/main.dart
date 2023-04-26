@@ -34,6 +34,8 @@ class MyApp extends StatelessWidget {
         if (!isInitialized) {
           isInitialized = true;
           ServerComms.listenServer(context);
+          // pull all pending help requests
+          ServerComms.messageToServer("REQUEST_INIT");
           // set the battery status when the app begins
           ServerComms.messageToServer("BATTERY");
         }
