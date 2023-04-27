@@ -78,8 +78,9 @@ class Utility {
   }
 
   // Creates a new chat room, with ID being the phone number of this user
-  static void createChatRoom() {
+  static void createChatRoom(BuildContext context) {
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    var appState = Provider.of<AppState>(context, listen: false);
     String? phoneNum;
 
     prefs.then((pref) {
@@ -96,6 +97,7 @@ class Utility {
         final createdRoom = _firestore.collection('Rooms').doc(phoneNum);
         createdRoom.set(data);
         createdRoom.collection('Messages'); // create Messages sub-collection
+        appState.setChatRoomId = phoneNum!;
       } catch (e) {
         print(e);
       }
