@@ -43,16 +43,14 @@ class _RescueChatState extends State<RescueChat> {
           case DocumentChangeType.added:
             // Notify the user of the new message if it's not from the sender
             if (change.doc.data()?['sent_by'] != myPhoneNum) {
-              print("New message: ${change.doc.data()}");
-              print('You have a new message from chat room ${'0123456789'}!');
               appState.setHasUnreadMessages = true;
             }
             break;
           case DocumentChangeType.modified:
-            print("Modified message: ${change.doc.data()}");
+            debugPrint("Modified message: ${change.doc.data()}");
             break;
           case DocumentChangeType.removed:
-            print("Removed message: ${change.doc.data()}");
+            debugPrint("Removed message: ${change.doc.data()}");
             break;
         }
       }
@@ -61,12 +59,8 @@ class _RescueChatState extends State<RescueChat> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: get the phone number of the rescue request to use as the room ID
-    // String roomId = appState.chatRoomId;
     var appState = Provider.of<AppState>(context, listen: false);
-    String roomId = '0123456789';
-
-    print('App state room ID is: ${appState.chatRoomId}');
+    String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
