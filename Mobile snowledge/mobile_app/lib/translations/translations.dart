@@ -809,4 +809,23 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Kyllä',
     'en': 'Yes',
   },
+
+  'lowBatteryTitle': {
+    'fi': 'HUOMIO!',
+    'en': 'ATTENTION!',
+  },
+
+  'lowBatteryWarningHelper': {
+    'fi':
+        'Auttajan akku on vähissä ja sijaintimerkki ei välttämättä ole ajan tasalla!',
+    'en':
+        'Helper is running out of battery and their location marker may not be up-to-date!',
+  },
+
+  'lowBatteryWarningRequester': {
+    'fi':
+        'Avun tarpeessa olevan akku on vähissä ja sijaintimerkki ei välttämättä ole ajan tasalla!',
+    'en':
+        'Help requester is running out of battery and their location marker may not be up-to-date!',
+  },
 };
