@@ -345,7 +345,7 @@ class ServerComms {
 
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification(appState);
+
                 try {
                   if (MyApp.navigatorKey.currentState != null) {
                     if (Dialogs.helpRequestedDialogOpen) {
@@ -357,9 +357,14 @@ class ServerComms {
                       //Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
                       if (resultParts[2] == "AUTOMATIC_END") {
+                        NotificationHandler
+                            .locationCancelledRequestNotification(
+                                appState, 'helper');
                         await Dialogs.showRequestEndedAutomaticallyDialog(
                             MyApp.navigatorKey.currentState?.context, 'helper');
                       } else {
+                        NotificationHandler.helpRequestCancelledNotification(
+                            appState);
                         await Dialogs.showHelpNeedOverDialog(
                             MyApp.navigatorKey.currentState?.context);
                       }
@@ -379,6 +384,8 @@ class ServerComms {
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
+              NotificationHandler.locationCancelledRequestNotification(
+                  appState, 'help_requester');
               await Dialogs.showRequestEndedAutomaticallyDialog(
                   MyApp.navigatorKey.currentState?.context, 'help_requester');
 
