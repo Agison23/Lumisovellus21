@@ -29,12 +29,38 @@ class _RescueChatState extends State<RescueChat> {
         myPhoneNum = prefs.getString('pNumber') ?? '';
       });
     });
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    final stream = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc('0123456789')
+        .collection('Messages')
+        .orderBy('datetime', descending: true)
+        .snapshots(includeMetadataChanges: false)
+        .listen((event) async {
+      for (var change in event.docChanges) {
+        switch (change.type) {
+          case DocumentChangeType.added:
+            // Notify the user of the new message if it's not from the sender
+            if (change.doc.data()?['sent_by'] != myPhoneNum) {
+              appState.setHasUnreadMessages = true;
+            }
+            break;
+          case DocumentChangeType.modified:
+            debugPrint("Modified message: ${change.doc.data()}");
+            break;
+          case DocumentChangeType.removed:
+            debugPrint("Removed message: ${change.doc.data()}");
+            break;
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: get the phone number of the rescue request to use as the room ID
-    const roomId = '0123456789'; // getNumber()
+    var appState = Provider.of<AppState>(context, listen: false);
+    String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
@@ -84,8 +110,7 @@ class _RescueChatState extends State<RescueChat> {
             } else if (users.length == 3) {
               users.add({myPhoneNum: 'brown'});
               color = 'brown';
-            } 
-
+            }
 
             try {
               _firestore.collection('Rooms').doc(roomId).update({
@@ -135,7 +160,8 @@ class _RescueChatState extends State<RescueChat> {
                     RescueChatWidgets.chatRoom(
                         roomId: '0123456789',
                         myPhoneNum: myPhoneNum,
-                        users: users),
+                        users: users,
+                        appState: appState),
                     // Button to close the chat dialog
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -143,7 +169,10 @@ class _RescueChatState extends State<RescueChat> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            appState.setHasUnreadMessages = false;
+                          },
                           child: const Text('Close'),
                         ),
                       ),
@@ -214,26 +243,9 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget chatRoom({roomId, myPhoneNum, users}) {
+  static Widget chatRoom({roomId, myPhoneNum, users, appState}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
-    firestore
-    .collection('Rooms')
-    .doc(roomId)
-    .collection('Messages')
-    .orderBy('datetime', descending: true)
-    .snapshots()
-    .listen((event) async {
-      // Notify the user of the new message if it's not from the sender
-      if (event.docs.isNotEmpty &&
-        event.docs.first['sent_by'] != myPhoneNum) {
-        print('You have a new message from chat room ${roomId}!');
-
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("_hasUnreadMsg", true);
-    }
-    });
-
 
     return SingleChildScrollView(
       child: Column(

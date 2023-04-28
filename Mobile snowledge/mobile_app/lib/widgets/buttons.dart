@@ -267,11 +267,31 @@ class Buttons {
   }
 
   static FloatingActionButton showRescueChatButton(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+    bool hasUnreadMsg = appState.hasUnreadMessages;
     return FloatingActionButton(
       onPressed: () async {
         Dialogs().showRescueChatDialog(context);
+        appState.setHasUnreadMessages = false;
       },
-      child: Icon(Icons.chat),
+      child: Stack(
+        children: [
+          Icon(Icons.chat),
+          if (hasUnreadMsg)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
