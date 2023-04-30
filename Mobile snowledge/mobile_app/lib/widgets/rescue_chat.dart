@@ -60,7 +60,8 @@ class _RescueChatState extends State<RescueChat> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
-    String roomId = appState.chatRoomId;
+    // String roomId = appState.chatRoomId;
+    String roomId = '0123456789';
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
@@ -132,14 +133,14 @@ class _RescueChatState extends State<RescueChat> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Material(
-                color: Colors.white,
-                child: Column(
+              child: Scaffold(
+                body: Column(
                   children: [
                     // Display available users to chat with
-                    SizedBox(
+                    Container(
                       width: dialogWidth,
-                      height: dialogHeight * 0.17,
+                      height: dialogHeight * 0.15,
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: ListView(
@@ -247,13 +248,12 @@ class RescueChatWidgets {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
 
-    return SingleChildScrollView(
+    return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // The chat window
-          SizedBox(
-            height: 200,
+          Flexible(
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
