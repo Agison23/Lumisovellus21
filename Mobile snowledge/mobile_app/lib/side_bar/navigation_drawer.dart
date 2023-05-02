@@ -201,27 +201,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
             }
           },
         ),
-        if (appState.numOfHelpRequests > 0 && title == "Karttanäkymä")
-          Positioned(
-            top: 15,
-            right: 0,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
-              child: const Center(
-                child: Text(
-                  '!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

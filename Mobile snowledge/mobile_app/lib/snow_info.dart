@@ -113,28 +113,6 @@ class _SnowInfoState extends State<SnowInfo> {
                   icon: Stack(
                     children: [
                       const Icon(Icons.menu),
-                      if (appState.numOfHelpRequests > 0)
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Center(
-                              child: Text(
-                                '!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   onPressed: () {

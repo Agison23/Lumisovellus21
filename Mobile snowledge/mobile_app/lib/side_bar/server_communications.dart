@@ -307,7 +307,6 @@ class ServerComms {
                   appState.setChatRoomId = resultParts[5];
                   String payload = resultParts[2] + ':' + resultParts[3];
 
-                  appState.setNumOfHelpRequest = 1;
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
@@ -341,7 +340,6 @@ class ServerComms {
             case "HELP_OVER":
               // print("help over!");
               // HELP_OVER:ID
-              appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
               Navigator.popUntil(MyApp.navigatorKey.currentState!.context,
                   (route) => route.isFirst);
@@ -375,7 +373,6 @@ class ServerComms {
               break;
             case "HELP_ENDED_BY_GPS":
               // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
-              appState.setNumOfHelpRequest = -1;
 
               // Navigate out of the help request page
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
