@@ -30,10 +30,11 @@ class _RescueChatState extends State<RescueChat> {
       });
     });
     var appState = Provider.of<AppState>(context, listen: false);
+    String roomId = appState.chatRoomId;
 
     final stream = FirebaseFirestore.instance
         .collection('Rooms')
-        .doc('0123456789')
+        .doc(roomId)
         .collection('Messages')
         .orderBy('datetime', descending: true)
         .snapshots(includeMetadataChanges: false)
@@ -59,7 +60,7 @@ class _RescueChatState extends State<RescueChat> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
+    var appState = Provider.of<AppState>(context);
     String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
@@ -132,14 +133,14 @@ class _RescueChatState extends State<RescueChat> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Material(
-                color: Colors.white,
-                child: Column(
+              child: Scaffold(
+                body: Column(
                   children: [
                     // Display available users to chat with
-                    SizedBox(
+                    Container(
                       width: dialogWidth,
-                      height: dialogHeight * 0.17,
+                      height: dialogHeight * 0.15,
+                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: ListView(
@@ -151,6 +152,7 @@ class _RescueChatState extends State<RescueChat> {
                               roomId: roomId,
                               phoneNum: phoneNum,
                               backgroundColor: color,
+                              appState: appState,
                             );
                           }).toList(),
                         ),
@@ -158,7 +160,7 @@ class _RescueChatState extends State<RescueChat> {
                     ),
 
                     RescueChatWidgets.chatRoom(
-                        roomId: '0123456789',
+                        roomId: roomId,
                         myPhoneNum: myPhoneNum,
                         users: users,
                         appState: appState),
@@ -189,7 +191,12 @@ class _RescueChatState extends State<RescueChat> {
 }
 
 class RescueChatWidgets {
-  static Widget circleProfile({roomId, phoneNum, backgroundColor}) {
+  static Widget circleProfile({
+    roomId,
+    phoneNum,
+    backgroundColor,
+    appState,
+  }) {
     Color color;
     switch (backgroundColor) {
       case 'red':
@@ -208,35 +215,69 @@ class RescueChatWidgets {
       default:
         color = Colors.grey; // default color if string doesn't match any cases
     }
+
+    Map chatRoomUsersBattery = appState.chatRoomUsersBattery;
+
+    bool isLowBattery = false;
+    if (chatRoomUsersBattery.containsKey(roomId) &&
+        chatRoomUsersBattery[roomId] == 'low') {
+      isLowBattery = true;
+    } else if (chatRoomUsersBattery.containsKey(phoneNum) &&
+        chatRoomUsersBattery[phoneNum] == 'low') {
+      isLowBattery = true;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: color,
-              child: const Icon(
-                Icons.person,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(
-                width: 50,
-                child: Center(
-                    child: Text(
-                  roomId == phoneNum ? 'Rescuee' : 'Helper',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    height: 1.5,
-                    fontSize: 11,
-                    color: Colors.black,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: color,
+                  child: const Icon(
+                    Icons.person,
+                    size: 40,
+                    color: Colors.white,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )))
+                ),
+                SizedBox(
+                  width: 50,
+                  child: Center(
+                    child: Text(
+                      roomId == phoneNum ? 'Rescuee' : 'Helper',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        height: 1.5,
+                        fontSize: 11,
+                        color: Colors.black,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (isLowBattery)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                  ),
+                  child: Icon(
+                    Icons.battery_alert,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -247,13 +288,12 @@ class RescueChatWidgets {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
 
-    return SingleChildScrollView(
+    return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // The chat window
-          SizedBox(
-            height: 200,
+          Flexible(
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,

@@ -303,10 +303,10 @@ class ServerComms {
                 if (resultParts[1] == devId) {
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
-                  appState.setChatRoomId = resultParts[4];
+                  debugPrint('========== RESULT PARTS: $resultParts =========');
+                  appState.setChatRoomId = resultParts[5];
                   String payload = resultParts[2] + ':' + resultParts[3];
 
-                  appState.setNumOfHelpRequest = 1;
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
@@ -325,6 +325,8 @@ class ServerComms {
               NotificationHandler.helpModeBatteryLowNotification(
                   appState, 'helper');
               String helpRequesterBatteryState;
+              String requesterNumber = appState.chatRoomId;
+              appState.setChatRoomUsersBattery(requesterNumber, 'low');
               break;
             case "LOW_BATTERY_HELPER":
               print(
@@ -335,6 +337,7 @@ class ServerComms {
                   appState, 'help_requester');
               String helper_phone_num = resultParts[1];
               String helperPhoneNum = resultParts[1];
+              appState.setChatRoomUsersBattery(helperPhoneNum, 'low');
               break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
@@ -343,7 +346,6 @@ class ServerComms {
             case "HELP_OVER":
               // print("help over!");
               // HELP_OVER:ID
-              appState.setNumOfHelpRequest = -1;
               String devId = await _getDeviceID();
               Navigator.popUntil(MyApp.navigatorKey.currentState!.context,
                   (route) => route.isFirst);
@@ -382,7 +384,6 @@ class ServerComms {
               break;
             case "HELP_ENDED_BY_GPS":
               // Because this requester location changed more than 500m from the last gps taken, the help request is cancelled
-              appState.setNumOfHelpRequest = -1;
 
               // Navigate out of the help request page
               Navigator.pop(MyApp.navigatorKey.currentState!.context);

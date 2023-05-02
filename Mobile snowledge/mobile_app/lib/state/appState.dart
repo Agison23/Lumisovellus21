@@ -20,6 +20,17 @@ class AppState extends ChangeNotifier {
 
   bool get hasUnreadMessages => _hasUnreadMessages;
 
+  final Map _chatRoomUsersBattery = {};
+
+  Map get chatRoomUsersBattery => _chatRoomUsersBattery;
+
+  void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
+    _chatRoomUsersBattery[phoneNum] = batteryStatus;
+    debugPrint(
+        '======== SET $phoneNum TO BATTERY STATUS $batteryStatus ========');
+    notifyListeners(); // Notify any listeners that the state has changed
+  }
+
   set setLanguage(String language) {
     _language = _allLanguages[language];
     _languageName = language;
@@ -52,20 +63,6 @@ class AppState extends ChangeNotifier {
 
   set setHasUnreadMessages(bool value) {
     _hasUnreadMessages = value;
-    notifyListeners();
-  }
-
-  int _numOfHelpRequests = 0;
-  int get numOfHelpRequests => _numOfHelpRequests;
-
-  set setNumOfHelpRequest(int value) {
-    print(value > 0
-        ? "Hey, another help request was sent!"
-        : "One less help request, good job!");
-    _numOfHelpRequests += value;
-    if (_numOfHelpRequests < 0) {
-      _numOfHelpRequests = 0;
-    }
     notifyListeners();
   }
 }
