@@ -54,18 +54,4 @@ class AppState extends ChangeNotifier {
     _hasUnreadMessages = value;
     notifyListeners();
   }
-
-  int _numOfHelpRequests = 0;
-  int get numOfHelpRequests => _numOfHelpRequests;
-
-  set setNumOfHelpRequest(int value) {
-    print(value > 0
-        ? "Hey, another help request was sent!"
-        : "One less help request, good job!");
-    _numOfHelpRequests += value;
-    if (_numOfHelpRequests < 0) {
-      _numOfHelpRequests = 0;
-    }
-    notifyListeners();
-  }
 }
