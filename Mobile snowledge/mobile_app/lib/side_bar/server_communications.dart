@@ -334,6 +334,7 @@ class ServerComms {
               NotificationHandler.helpModeBatteryLowNotification(
                   appState, 'help_requester');
               String helper_phone_num = resultParts[1];
+              String helperPhoneNum = resultParts[1];
               break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
