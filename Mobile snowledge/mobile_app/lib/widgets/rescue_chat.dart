@@ -191,62 +191,6 @@ class _RescueChatState extends State<RescueChat> {
 }
 
 class RescueChatWidgets {
-  // static Widget circleProfile({roomId, phoneNum, backgroundColor, appState}) {
-  //   Color color;
-  //   switch (backgroundColor) {
-  //     case 'red':
-  //       color = Colors.red.shade700;
-  //       break;
-  //     case 'green':
-  //       color = Colors.green.shade700;
-  //       break;
-  //     case 'blue':
-  //       color = Colors.blue.shade700;
-  //       break;
-  //     case 'brown':
-  //       color = Colors.brown.shade700;
-  //       break;
-  //     // add more cases for other colors if needed
-  //     default:
-  //       color = Colors.grey; // default color if string doesn't match any cases
-  //   }
-
-  //   Map chatRoomUsersBattery = appState.chatRoomUsersBattery;
-
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-  //     child: InkWell(
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           CircleAvatar(
-  //             radius: 25,
-  //             backgroundColor: color,
-  //             child: const Icon(
-  //               Icons.person,
-  //               size: 40,
-  //               color: Colors.white,
-  //             ),
-  //           ),
-  //           SizedBox(
-  //               width: 50,
-  //               child: Center(
-  //                   child: Text(
-  //                 roomId == phoneNum ? 'Rescuee' : 'Helper',
-  //                 textAlign: TextAlign.center,
-  //                 style: TextStyle(
-  //                   height: 1.5,
-  //                   fontSize: 11,
-  //                   color: Colors.black,
-  //                 ),
-  //                 maxLines: 2,
-  //                 overflow: TextOverflow.ellipsis,
-  //               )))
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
   static Widget circleProfile({
     roomId,
     phoneNum,
