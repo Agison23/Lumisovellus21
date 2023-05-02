@@ -30,10 +30,11 @@ class _RescueChatState extends State<RescueChat> {
       });
     });
     var appState = Provider.of<AppState>(context, listen: false);
+    String roomId = appState.chatRoomId;
 
     final stream = FirebaseFirestore.instance
         .collection('Rooms')
-        .doc('0123456789')
+        .doc(roomId)
         .collection('Messages')
         .orderBy('datetime', descending: true)
         .snapshots(includeMetadataChanges: false)
@@ -60,8 +61,7 @@ class _RescueChatState extends State<RescueChat> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
-    // String roomId = appState.chatRoomId;
-    String roomId = '0123456789';
+    String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
     final screenWidth = MediaQuery.of(context).size.width;
@@ -159,7 +159,7 @@ class _RescueChatState extends State<RescueChat> {
                     ),
 
                     RescueChatWidgets.chatRoom(
-                        roomId: '0123456789',
+                        roomId: roomId,
                         myPhoneNum: myPhoneNum,
                         users: users,
                         appState: appState),
