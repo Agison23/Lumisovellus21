@@ -50,8 +50,9 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}".format(
-            user[0], gpscoord, user[1], helptype, chatRoomId
+        battery_status = db.get_battery_by_dev_id(connection, user[0])
+        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}:{}".format(
+            user[0], gpscoord, user[1], helptype, chatRoomId, battery_status
         )
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
@@ -63,7 +64,8 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
         )
-        message = "NOTIFY:{}:{}:Syy {}:{}".format(user[0], gpscoord, helptype, chatRoomId)
+        battery_status = db.get_battery_by_dev_id(connection, user[0])
+        message = "NOTIFY:{}:{}:Syy {}:{}:{}".format(user[0], gpscoord, helptype, chatRoomId, battery_status)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
@@ -393,8 +395,9 @@ def send_existing_requests(connection, message, addr, s):
             gps1 = gpscoord.split(",")
             gps2 = req_gpscoord.split(",")
             dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
-            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}".format(
-            dev_id, gpscoord, dist, helptype, chatRoomId
+            battery_status = db.get_battery_by_dev_id(connection, user[0])
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{},{}".format(
+            dev_id, gpscoord, dist, helptype, chatRoomId,battery_status
             )
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
     return

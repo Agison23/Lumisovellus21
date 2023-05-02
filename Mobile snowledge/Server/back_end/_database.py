@@ -464,3 +464,14 @@ def get_2_latest_location_dev_id(connection, dev_id):
     user_coord = cur.fetchall()
     #return [user_coord[0], user_coord[1]]
     return user_coord
+
+def get_battery_by_dev_id(connection, dev_id):
+    sql = """SELECT low_battery
+             FROM users
+             WHERE dev_id = ?;"""
+    cur = connection.cursor()
+    cur.execute(sql,(dev_id,))
+    low_battery = cur.fetchone()
+    if (low_battery[0] == 1):
+        return "low"
+    return "high"
