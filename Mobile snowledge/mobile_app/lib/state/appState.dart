@@ -6,6 +6,7 @@ class AppState extends ChangeNotifier {
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
   String _chatRoomId = '';
+  bool _hasUnreadMessages = false; // For unread message notifications
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -16,6 +17,19 @@ class AppState extends ChangeNotifier {
   String get languageName => _languageName;
 
   String get chatRoomId => _chatRoomId;
+
+  bool get hasUnreadMessages => _hasUnreadMessages;
+
+  final Map _chatRoomUsersBattery = {};
+
+  Map get chatRoomUsersBattery => _chatRoomUsersBattery;
+
+  void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
+    _chatRoomUsersBattery[phoneNum] = batteryStatus;
+    debugPrint(
+        '======== SET $phoneNum TO BATTERY STATUS $batteryStatus ========');
+    notifyListeners(); // Notify any listeners that the state has changed
+  }
 
   set setLanguage(String language) {
     _language = _allLanguages[language];
@@ -47,17 +61,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _numOfHelpRequests = 0;
-  int get numOfHelpRequests => _numOfHelpRequests;
-
-  set setNumOfHelpRequest(int value) {
-    print(value > 0
-        ? "Hey, another help request was sent!"
-        : "One less help request, good job!");
-    _numOfHelpRequests += value;
-    if (_numOfHelpRequests < 0) {
-      _numOfHelpRequests = 0;
-    }
+  set setHasUnreadMessages(bool value) {
+    _hasUnreadMessages = value;
     notifyListeners();
   }
 }

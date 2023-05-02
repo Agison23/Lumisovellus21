@@ -102,7 +102,7 @@ class HelpNeededState extends State<HelpNeeded> {
     ServerComms.messageToServer("HELP");
 
     // Create a new chat room when a user start a new request (here, go into help needed mode)
-    Utility.createChatRoom();
+    Utility.createChatRoom(context);
   }
 
   /// start a timer of 5 minutes and opens dialog if no users has accepted the request
@@ -325,8 +325,11 @@ class HelpNeededState extends State<HelpNeeded> {
               ),
             ],
           ),
-          floatingActionButton: Buttons.showRescueChatButton(context),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 30.0),
+            child: Buttons.showRescueChatButton(context),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         ),
       ),
     );
