@@ -325,8 +325,11 @@ class HelpNeededState extends State<HelpNeeded> {
               ),
             ],
           ),
-          floatingActionButton: Buttons.showRescueChatButton(context),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 30.0),
+            child: Buttons.showRescueChatButton(context),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         ),
       ),
     );
