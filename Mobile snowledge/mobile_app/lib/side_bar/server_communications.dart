@@ -303,7 +303,8 @@ class ServerComms {
                 if (resultParts[1] == devId) {
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
-                  appState.setChatRoomId = resultParts[4];
+                  debugPrint('========== RESULT PARTS: $resultParts =========');
+                  appState.setChatRoomId = resultParts[5];
                   String payload = resultParts[2] + ':' + resultParts[3];
 
                   appState.setNumOfHelpRequest = 1;
@@ -322,7 +323,8 @@ class ServerComms {
                   "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
               // this is for user that have accepted the help request, then the help requester battery run low
               // Need to set helpRequesterBatteryState to low.
-              String helpRequesterBatteryState;
+              String requesterNumber = appState.chatRoomId;
+              appState.setChatRoomUsersBattery(requesterNumber, 'low');
               break;
             case "LOW_BATTERY_HELPER":
               print(
@@ -330,6 +332,7 @@ class ServerComms {
               // This is for help requester to know that a specific helper has low battery
               //LOW_BATTERY_HELPER:phone_num
               String helperPhoneNum = resultParts[1];
+              appState.setChatRoomUsersBattery(helperPhoneNum, 'low');
               break;
             case "NO_USERS_NEARBY":
               isRequestingHelp = false;
