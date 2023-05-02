@@ -35,7 +35,7 @@ class TestUdpServer(unittest.TestCase):
         firstName = fake.first_name()
         lastName = fake.last_name()
         gpsCoord = "68.0826,24.0381"
-        phoneNum = f"+358{random.randint(100, 999)}{random.randint(100, 999)}{random.randint(100, 999)}"
+        phoneNum = f"358{random.randint(100, 999)}{random.randint(100, 999)}{random.randint(100, 999)}"
         secondsSinceEpoch = round(datetime.datetime.now().timestamp())
         message = f"{messagetype}:{secondsSinceEpoch}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
         # message = f"{datetime.datetime.now()}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
@@ -52,6 +52,7 @@ class TestUdpServer(unittest.TestCase):
         self.assertEqual(resultUser[2], lastName)
         self.assertEqual(resultUser[3], "127.0.0.1,50943")
         self.assertEqual(resultUser[4], phoneNum)
+        self.assertEqual(resultUser[5], 0)
 
         self.cur.execute(
             f"SELECT * FROM data WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
@@ -69,7 +70,7 @@ class TestUdpServer(unittest.TestCase):
         firstName = fake.first_name()
         lastName = fake.last_name()
         gpsCoord = "68.0826,24.0381"
-        phoneNum = f"+358{random.randint(100, 999)}{random.randint(100, 999)}{random.randint(100, 999)}"
+        phoneNum = f"358{random.randint(100, 999)}{random.randint(100, 999)}{random.randint(100, 999)}"
         secondsSinceEpoch = round(datetime.datetime.now().timestamp())
         message = f"{messagetype}:{secondsSinceEpoch}:{devId}:{firstName}:{lastName}:{gpsCoord}:{phoneNum}"
         self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
@@ -78,7 +79,7 @@ class TestUdpServer(unittest.TestCase):
         # send help request
         messagetype = "HELP"
         message = (
-            f"{messagetype}:{secondsSinceEpoch}:{devId}:{gpsCoord}:'Varusteongelma'"
+            f"{messagetype}:{secondsSinceEpoch}:{devId}:{gpsCoord}:Varusteongelma:testUDP"
         )
         self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
@@ -89,12 +90,13 @@ class TestUdpServer(unittest.TestCase):
         self.cur.execute(
             f"SELECT * FROM help WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
         )
+    
 
         resultHelp = self.cur.fetchone()
         self.assertEqual(resultHelp[0], devId)
         self.assertEqual(resultHelp[1], secondsSinceEpoch)
         self.assertEqual(resultHelp[2], gpsCoord)
-        self.assertEqual(resultHelp[3], "'Varusteongelma'")
+        self.assertEqual(resultHelp[3], "Varusteongelma")
 
         # delete help request
         messagetype = "HELP_DELETE"

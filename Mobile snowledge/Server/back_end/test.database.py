@@ -5,9 +5,9 @@ def insert_data(connection):
     """This function insert data for testing"""
     print("Inserting test data")
     sql_table_users = """ INSERT INTO users(dev_id, first_name, last_name, ip_address, phone_number)
-                            VALUES  ('test','test','0','12.123.12.12','+358000'),
-                                    ('test1','test1','1','13.132.13.13','+358111'),
-                                    ('test2','test2','2','22.222.22.22','+358222'); 
+                            VALUES  ('test','test','0','127.0.0.1,54503','358000'),
+                                    ('test1','test1','1','127.0.0.1,54505','358111'),
+                                    ('test2','test2','2','127.0.0.1,54504','358222'); 
                        """
     """Following gps coord is taken from file Koordinaatit.sql, timestamp is Epoch time"""
     sql_table_data = """ INSERT INTO data(dev_id, timestamp, gpscoord)
@@ -17,8 +17,8 @@ def insert_data(connection):
     
     
                         """
-    sql_table_help = """ INSERT INTO help(dev_id, timestamp, gpscoord, help_type)
-                            VALUES  ('test',1676102100,'68.0826,24.038','emergency');
+    sql_table_help = """ INSERT INTO help(dev_id, timestamp, gpscoord, help_type, room_id)
+                            VALUES  ('test',1676102100,'68.0826,24.038','emergency', 'test');
                         """
     """Password of admin is admin; of operator is operator, below are the hased value of them when store in the database"""
     sql_table_accounts = """INSERT INTO accounts(username, password, role)
@@ -27,7 +27,7 @@ def insert_data(connection):
                         """
 
     sql_table_requests = """INSERT INTO requests(help_giver, help_requester, state)
-                            VALUES ('test','test1',1);"""
+                            VALUES ('test','test1',0);"""
 
     sql_table_rescue = """INSERT INTO rescue(user_id, username, password, is_admin)
                             VALUES  (3,'admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',1),
