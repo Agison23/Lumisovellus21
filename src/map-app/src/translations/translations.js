@@ -499,7 +499,7 @@ const translations = {
 
   addEstimationOfSnowConditions: {
     fi: "Kyllä, lisää arvio lumitilanteesta.",
-    en: "Yes, add an estimation of the snow conditions.",
+    en: "Yes, add an estimation of the snow.",
   },
 
   addAnotherObservation: {
