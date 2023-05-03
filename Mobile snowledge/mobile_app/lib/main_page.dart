@@ -109,8 +109,6 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         },
         child: SafeArea(
           child: Scaffold(
-            floatingActionButton: Buttons.showRescueChatButton(context),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
             key: _globalKey,
             body: Stack(
               children: [

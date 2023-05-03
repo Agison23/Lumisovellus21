@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -166,6 +167,7 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    String roomId = appState.chatRoomId;
     String usersLocation =
         GpsHandler.gps.toString().replaceAll(RegExp('[,>]'), '');
     List<String> dataList = usersLocation.toString().split(' ');
@@ -185,7 +187,32 @@ class HelpNeededState extends State<HelpNeeded> {
                     child: Text(translations['no'][appState.language]),
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        try {
+                          // Delete the 'Messages' subcollection
+                          final messagesSnapshot = await FirebaseFirestore
+                              .instance
+                              .collection('Rooms')
+                              .doc(roomId)
+                              .collection('Messages')
+                              .get();
+                          for (var doc in messagesSnapshot.docs) {
+                            await doc.reference.delete();
+                          }
+                          print(
+                              'Subcollection \'Messages\' of document with ID $roomId successfully deleted.');
+
+                          // Delete the 'Rooms' document
+                          await FirebaseFirestore.instance
+                              .collection('Rooms')
+                              .doc(roomId)
+                              .delete();
+                          print(
+                              '=========== Document with ID $roomId successfully deleted. ===============');
+                        } catch (e) {
+                          print(
+                              '=========== Error deleting document with ID $roomId: $e =============');
+                        }
                         _markers.clear();
                         _helpers.clear();
                         _users.clear();
@@ -263,9 +290,20 @@ class HelpNeededState extends State<HelpNeeded> {
                                     Text(translations['no'][appState.language]),
                               ),
                               ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     _markers.clear();
                                     _helpers.clear();
+                                    try {
+                                      await FirebaseFirestore.instance
+                                          .collection('Rooms')
+                                          .doc(roomId)
+                                          .delete();
+                                      print(
+                                          'Document with ID $roomId successfully deleted.');
+                                    } catch (e) {
+                                      print(
+                                          'Error deleting document with ID $roomId: $e');
+                                    }
                                     /* Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (context) => const MapTracking()), (route) => false);*/
                                     Navigator.pop(context);
