@@ -138,8 +138,11 @@ class HelpOfferedState extends State<HelpOffered> {
             backgroundColor: Colors.red[200],
             centerTitle: true,
           ),
-          floatingActionButton: Buttons.showRescueChatButton(context),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 30.0),
+            child: Buttons.showRescueChatButton(context),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           body: Stack(
             children: [
               FlutterMap(

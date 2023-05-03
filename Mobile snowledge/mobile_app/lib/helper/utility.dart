@@ -83,7 +83,7 @@ class Utility {
     var appState = Provider.of<AppState>(context, listen: false);
     String? phoneNum;
 
-    prefs.then((pref) {
+    prefs.then((pref) async {
       phoneNum = pref.getString('pNumber');
 
       final _firestore = FirebaseFirestore.instance;
@@ -96,8 +96,13 @@ class Utility {
       try {
         final createdRoom = _firestore.collection('Rooms').doc(phoneNum);
         createdRoom.set(data);
-        createdRoom.collection('Messages'); // create Messages sub-collection
         appState.setChatRoomId = phoneNum!;
+        // Delete the 'Messages' subcollection if it already exists
+        await createdRoom.collection('Messages').get().then((querySnapshot) {
+          querySnapshot.docs.forEach((doc) {
+            doc.reference.delete();
+          });
+        });
       } catch (e) {
         print(e);
       }
