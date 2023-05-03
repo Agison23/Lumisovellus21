@@ -395,8 +395,8 @@ def send_existing_requests(connection, message, addr, s):
             gps1 = gpscoord.split(",")
             gps2 = req_gpscoord.split(",")
             dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
-            battery_status = db.get_battery_by_dev_id(connection, user[0])
-            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{},{}".format(
+            battery_status = db.get_battery_by_dev_id(connection, dev_id)
+            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}:{}".format(
             dev_id, gpscoord, dist, helptype, chatRoomId,battery_status
             )
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
