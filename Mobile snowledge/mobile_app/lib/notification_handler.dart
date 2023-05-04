@@ -193,4 +193,22 @@ class NotificationHandler {
           iOS: _iosNotificationDetails),
     );
   }
+
+  static Future<void> newMessageNotification(message, sender, AppState state,
+      {int id = 12345}) async {
+    flutterLocalNotificationsPlugin.show(
+      id,
+      translations[sender][state.language] +
+          translations['hasSent'][state.language],
+      message,
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
+  }
 }

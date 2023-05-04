@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,6 +12,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'helper/utility.dart';
 import 'main_page.dart';
 import '../translations/translations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_app/notification_handler.dart';
 
 class HelpOffered extends StatefulWidget {
   const HelpOffered(this.payload, this.pushUp, {Key? key}) : super(key: key);
@@ -31,6 +34,7 @@ class HelpOfferedState extends State<HelpOffered> {
   static late Timer _stateUpdateTimer;
   static List<Marker> _markers = [];
   static LatLng _toBeHelpedLatLng = LatLng(0, 0);
+  late String myPhoneNum;
 
   static late String _distance;
   @override
@@ -43,6 +47,48 @@ class HelpOfferedState extends State<HelpOffered> {
       });
     }
     _pageOpen = true;
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        myPhoneNum = prefs.getString('pNumber') ?? '';
+      });
+    });
+    var appState = Provider.of<AppState>(context, listen: false);
+    String roomId = appState.chatRoomId;
+    String whoSent;
+
+    final stream = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc(roomId)
+        .collection('Messages')
+        .orderBy('datetime', descending: true)
+        .snapshots(includeMetadataChanges: false)
+        .listen((event) async {
+      for (var change in event.docChanges) {
+        switch (change.type) {
+          case DocumentChangeType.added:
+            // Notify the user of the new message if it's not from the sender
+            if (change.doc.data()?['sent_by'] != myPhoneNum) {
+              appState.setHasUnreadMessages = true;
+              // Add notificationhandler call here
+              if (change.doc.data()?['sent_by'] == roomId) {
+                whoSent = 'whoRequest';
+              } else {
+                whoSent = 'helper';
+              }
+              String? message = change.doc.data()?['message'].toString();
+              NotificationHandler.newMessageNotification(
+                  message, whoSent, appState);
+            }
+            break;
+          case DocumentChangeType.modified:
+            debugPrint("Modified message: ${change.doc.data()}");
+            break;
+          case DocumentChangeType.removed:
+            debugPrint("Removed message: ${change.doc.data()}");
+            break;
+        }
+      }
+    });
     List<String> payloadparts = widget.payload!.split(':');
     _distance = payloadparts[1];
     List<String> gpsParts = payloadparts[0].split(',');

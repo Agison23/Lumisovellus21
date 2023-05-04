@@ -800,13 +800,20 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Vain laskualueet',
     'en': 'Skiing areas only',
   },
+
   'no': {
     'fi': 'En',
     'en': 'No',
   },
+
   'yes': {
     'fi': 'Kyllä',
     'en': 'Yes',
+  },
+
+  'hasSent': {
+    'fi': ' lähetti sinulle viestin',
+    'en': ' sent you a message',
   },
 
   'lowBatteryTitle': {
