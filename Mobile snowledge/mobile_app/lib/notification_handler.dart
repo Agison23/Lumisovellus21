@@ -5,7 +5,6 @@ import 'onboarding.dart';
 import 'help_offered.dart';
 import 'main.dart';
 import 'package:mobile_app/translations/translations.dart';
-import 'package:mobile_app/widgets/rescue_chat.dart';
 
 class NotificationHandler {
   static final NotificationHandler _notificationService =
