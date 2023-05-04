@@ -305,11 +305,33 @@ Map translations = {
         'Your location data indicates that you already received help. If you still need help, make a new request please!',
   },
 
+  'requesterReqOverAutomatically1': {
+    'fi': 'Tulkitsimme sijaintitiedoistanne saaneesi apua',
+    'en': 'Your location data indicates that you already received help',
+  },
+
+  'requesterReqOverAutomatically2': {
+    'fi': 'Jos olet edelleen hädässä, tee uusi avunpyyntö!',
+    'en': 'If you still need help, make a new request please!',
+  },
+
   'helperReqOverAutomatically': {
     'fi':
         'Avunpyytäjä sai oletettavasti apua ja avunpyyntö poistettiin automaattisesti. Tämä saattoi olla virhearvio, joten tarkkaile hetki tilannetta uuden pyynnön varalta.',
     'en':
         'The help requester seems to have received help and the help session was ended automatically. Another help request might pop up shortly if help is still needed.',
+  },
+
+  'helperReqOverAutomatically1': {
+    'fi':
+        'Avunpyytäjä sai oletettavasti apua ja avunpyyntö poistettiin automaattisesti.',
+    'en':
+        'The help requester seems to have received help and the help session was ended automatically.',
+  },
+
+  'helperReqOverAutomatically2': {
+    'fi': 'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
+    'en': 'Another help request might pop up shortly if help is still needed.',
   },
 
   'nearbyReq': {
@@ -778,16 +800,34 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Vain laskualueet',
     'en': 'Skiing areas only',
   },
+
   'no': {
     'fi': 'En',
     'en': 'No',
   },
+
   'yes': {
     'fi': 'Kyllä',
     'en': 'Yes',
   },
+
   'hasSent': {
     'fi': ' lähetti sinulle viestin',
     'en': ' sent you a message',
+  },
+
+  'lowBatteryTitle': {
+    'fi': 'HUOMIO!',
+    'en': 'ATTENTION!',
+  },
+
+  'lowBatteryWarningHelper': {
+    'fi': 'Auttajan akku on vähissä ja yhteys saattaa katketa!',
+    'en': 'Helper has low battery and they may lose connection!',
+  },
+
+  'lowBatteryWarningRequester': {
+    'fi': 'Avun pyytäjän akku on vähissä ja yhteys saattaa katketa!',
+    'en': 'Help requester has low battery and they may lose connection!',
   },
 };

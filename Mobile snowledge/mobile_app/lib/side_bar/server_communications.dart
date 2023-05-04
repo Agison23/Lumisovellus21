@@ -306,11 +306,14 @@ class ServerComms {
                   debugPrint('========== RESULT PARTS: $resultParts =========');
                   appState.setChatRoomId = resultParts[5];
                   String payload = resultParts[2] + ':' + resultParts[3];
+                  String batteryLevel = resultParts[6];
 
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
-                      MyApp.navigatorKey.currentState?.context, payload);
+                      MyApp.navigatorKey.currentState?.context,
+                      payload,
+                      batteryLevel);
                 }
               } else {
                 messageToServer("HELP_RESPONSE:0");
@@ -322,6 +325,9 @@ class ServerComms {
                   "=================== PRINT FROM LOW_BATTERY_HELPEE =========================");
               // this is for user that have accepted the help request, then the help requester battery run low
               // Need to set helpRequesterBatteryState to low.
+              NotificationHandler.helpModeBatteryLowNotification(
+                  appState, 'helper');
+              String helpRequesterBatteryState;
               String requesterNumber = appState.chatRoomId;
               appState.setChatRoomUsersBattery(requesterNumber, 'low');
               break;
@@ -330,6 +336,9 @@ class ServerComms {
                   "=================== PRINT FROM LOW_BATTERY_HELPER =========================");
               // This is for help requester to know that a specific helper has low battery
               //LOW_BATTERY_HELPER:phone_num
+              NotificationHandler.helpModeBatteryLowNotification(
+                  appState, 'help_requester');
+              String helper_phone_num = resultParts[1];
               String helperPhoneNum = resultParts[1];
               appState.setChatRoomUsersBattery(helperPhoneNum, 'low');
               break;
@@ -346,7 +355,7 @@ class ServerComms {
 
               if (resultParts[1] == devId) {
                 NotificationHandler.cancelPushUpNotification();
-                NotificationHandler.helpRequestCancelledNotification(appState);
+
                 try {
                   if (MyApp.navigatorKey.currentState != null) {
                     if (Dialogs.helpRequestedDialogOpen) {
@@ -358,9 +367,14 @@ class ServerComms {
                       //Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
                       if (resultParts[2] == "AUTOMATIC_END") {
+                        NotificationHandler
+                            .locationCancelledRequestNotification(
+                                appState, 'helper');
                         await Dialogs.showRequestEndedAutomaticallyDialog(
                             MyApp.navigatorKey.currentState?.context, 'helper');
                       } else {
+                        NotificationHandler.helpRequestCancelledNotification(
+                            appState);
                         await Dialogs.showHelpNeedOverDialog(
                             MyApp.navigatorKey.currentState?.context);
                       }
@@ -379,6 +393,8 @@ class ServerComms {
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
               Navigator.pop(MyApp.navigatorKey.currentState!.context);
 
+              NotificationHandler.locationCancelledRequestNotification(
+                  appState, 'help_requester');
               await Dialogs.showRequestEndedAutomaticallyDialog(
                   MyApp.navigatorKey.currentState?.context, 'help_requester');
 

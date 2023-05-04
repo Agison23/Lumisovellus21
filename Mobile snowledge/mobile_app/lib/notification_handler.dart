@@ -137,6 +137,64 @@ class NotificationHandler {
         payload: payload);
   }
 
+  static Future<void> locationCancelledRequestNotification(
+      AppState state, String user,
+      {int id = 12345}) async {
+    String title = '';
+    String text = '';
+
+    if (user == 'help_requester') {
+      title = translations['requesterReqOverAutomatically1'][state.language];
+      text = translations['requesterReqOverAutomatically2'][state.language];
+    } else if (user == 'helper') {
+      title = translations['helperReqOverAutomatically1'][state.language];
+      text = translations['helperReqOverAutomatically2'][state.language];
+    }
+
+    flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      text,
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
+  }
+
+  static Future<void> helpModeBatteryLowNotification(
+      AppState state, String user,
+      {int id = 12345}) async {
+    String title = '';
+    String text = '';
+
+    if (user == 'help_requester') {
+      title = translations['lowBatteryTitle'][state.language];
+      text = translations['lowBatteryWarningHelper'][state.language];
+    } else if (user == 'helper') {
+      title = translations['lowBatteryTitle'][state.language];
+      text = translations['lowBatteryWarningRequester'][state.language];
+    }
+
+    flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      text,
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
+  }
+
   static Future<void> newMessageNotification(message, sender, AppState state,
       {int id = 12345}) async {
     flutterLocalNotificationsPlugin.show(
