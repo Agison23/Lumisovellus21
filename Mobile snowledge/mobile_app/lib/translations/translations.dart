@@ -331,7 +331,7 @@ Map translations = {
 
   'helperReqOverAutomatically2': {
     'fi':
-        'Tämä saattoi olla virhearvio, joten tarkkaile hetki tilannetta uuden pyynnön varalta.',
+        'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
     'en': 'Another help request might pop up shortly if help is still needed.',
   },
 
