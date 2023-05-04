@@ -596,7 +596,8 @@ class Dialogs {
                     ),
                     if (batteryLevel == 'low')
                       Text(
-                        translations['reqBatteryLow'][appState.language],
+                        translations['lowBatteryWarningRequester']
+                            [appState.language],
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.orange,
