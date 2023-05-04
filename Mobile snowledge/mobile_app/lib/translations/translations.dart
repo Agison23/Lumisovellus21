@@ -322,6 +322,11 @@ Map translations = {
     'en': 'You can offer help or ignore the request.',
   },
 
+  'reqBatteryLow': {
+    'fi': 'Avunpyytäjän puhelimen akku on vähissä!',
+    'en': 'The help requester has low battery!',
+  },
+
   'endRequest': {
     'fi': 'Haluatko lopettaa avunpyynnön?',
     'en': 'Do you want to end the help request?',

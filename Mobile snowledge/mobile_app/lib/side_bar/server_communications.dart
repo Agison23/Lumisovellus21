@@ -306,11 +306,14 @@ class ServerComms {
                   debugPrint('========== RESULT PARTS: $resultParts =========');
                   appState.setChatRoomId = resultParts[5];
                   String payload = resultParts[2] + ':' + resultParts[3];
+                  String batteryLevel = resultParts[6];
 
                   await NotificationHandler.pushUpNotification(
                       resultParts[2], resultParts[3], appState);
                   await Dialogs.showHelpRequestedDialog(
-                      MyApp.navigatorKey.currentState?.context, payload);
+                      MyApp.navigatorKey.currentState?.context,
+                      payload,
+                      batteryLevel);
                 }
               } else {
                 messageToServer("HELP_RESPONSE:0");

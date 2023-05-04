@@ -548,7 +548,7 @@ class Dialogs {
     );
   }
 
-  static showHelpRequestedDialog(context, payload) async {
+  static showHelpRequestedDialog(context, payload, batteryLevel) async {
     var appState = Provider.of<AppState>(context, listen: false);
     helpRequestedDialogOpen = true;
     return await showDialog<void>(
@@ -569,43 +569,59 @@ class Dialogs {
             content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        translations['nearbyReq'][appState.language],
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      translations['nearbyReq'][appState.language],
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20.0,
+                        bottom: 10.0,
+                      ),
+                      child: Text(
+                        translations['actionOptions'][appState.language],
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                        child: Text(
-                          translations['actionOptions'][appState.language],
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+                          color: Colors.white,
+                          fontSize: 18,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Buttons.cancelButton(
-                              context,
-                              translations['cancel'][appState.language],
-                              'offer_help'),
-                          FutureBuilder<bool?>(
-                              future: GpsHandler.loadGpsSetting(),
-                              builder: (context, _snapshot) {
-                                return Buttons.giveHelpButton(context, payload);
-                              })
-                        ],
+                    ),
+                    if (batteryLevel == 'low')
+                      Text(
+                        translations['reqBatteryLow'][appState.language],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 18,
+                        ),
                       ),
-                    ]);
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Buttons.cancelButton(
+                          context,
+                          translations['cancel'][appState.language],
+                          'offer_help',
+                        ),
+                        FutureBuilder<bool?>(
+                          future: GpsHandler.loadGpsSetting(),
+                          builder: (context, _snapshot) {
+                            return Buttons.giveHelpButton(context, payload);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
               },
             ),
           ),
