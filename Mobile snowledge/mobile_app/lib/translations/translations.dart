@@ -330,8 +330,7 @@ Map translations = {
   },
 
   'helperReqOverAutomatically2': {
-    'fi':
-        'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
+    'fi': 'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
     'en': 'Another help request might pop up shortly if help is still needed.',
   },
 
