@@ -30,9 +30,6 @@ class _RescueChatState extends State<RescueChat> {
         myPhoneNum = prefs.getString('pNumber') ?? '';
       });
     });
-    var appState = Provider.of<AppState>(context, listen: false);
-    String roomId = appState.chatRoomId;
-    String whoSent;
   }
 
   @override
