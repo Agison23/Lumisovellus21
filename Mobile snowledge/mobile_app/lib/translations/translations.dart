@@ -816,16 +816,12 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
   },
 
   'lowBatteryWarningHelper': {
-    'fi':
-        'Auttajan akku on vähissä ja sijaintimerkki ei välttämättä ole ajan tasalla!',
-    'en':
-        'Helper is running out of battery and their location marker may not be up-to-date!',
+    'fi': 'Auttajan akku on vähissä ja yhteys saattaa katketa!',
+    'en': 'Helper has low battery and they may lose connection!',
   },
 
   'lowBatteryWarningRequester': {
-    'fi':
-        'Avun tarpeessa olevan akku on vähissä ja sijaintimerkki ei välttämättä ole ajan tasalla!',
-    'en':
-        'Help requester is running out of battery and their location marker may not be up-to-date!',
+    'fi': 'Avun pyytäjän akku on vähissä ja yhteys saattaa katketa!',
+    'en': 'Help requester has low battery and they may lose connection!',
   },
 };
