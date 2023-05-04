@@ -13,6 +13,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../translations/translations.dart';
 import 'main.dart';
 import 'widgets/buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_app/notification_handler.dart';
 
 class HelpNeeded extends StatefulWidget {
   final bool tempGps;
@@ -29,6 +31,7 @@ class HelpNeededState extends State<HelpNeeded> {
   static late List<Marker> _markers = [];
   static final List<Marker> _helpers = [];
   static final List _users = [];
+  late String myPhoneNum;
 
   int _start = 1;
 
@@ -50,6 +53,50 @@ class HelpNeededState extends State<HelpNeeded> {
   @override
   initState() {
     super.initState();
+    // Create a new chat room when a user start a new request (here, go into help needed mode)
+    Utility.createChatRoom(context);
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        myPhoneNum = prefs.getString('pNumber') ?? '';
+      });
+    });
+    var appState = Provider.of<AppState>(context, listen: false);
+    String roomId = appState.chatRoomId;
+    String whoSent;
+
+    final stream = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc(roomId)
+        .collection('Messages')
+        .orderBy('datetime', descending: true)
+        .snapshots(includeMetadataChanges: false)
+        .listen((event) async {
+      for (var change in event.docChanges) {
+        switch (change.type) {
+          case DocumentChangeType.added:
+            // Notify the user of the new message if it's not from the sender
+            if (change.doc.data()?['sent_by'] != myPhoneNum) {
+              appState.setHasUnreadMessages = true;
+              // Add notificationhandler call here
+              if (change.doc.data()?['sent_by'] == roomId) {
+                whoSent = 'whoRequest';
+              } else {
+                whoSent = 'helper';
+              }
+              String? message = change.doc.data()?['message'].toString();
+              NotificationHandler.newMessageNotification(
+                  message, whoSent, appState);
+            }
+            break;
+          case DocumentChangeType.modified:
+            debugPrint("Modified message: ${change.doc.data()}");
+            break;
+          case DocumentChangeType.removed:
+            debugPrint("Removed message: ${change.doc.data()}");
+            break;
+        }
+      }
+    });
     _users.add('1');
     // Add this line to add a user and verify that the dialog stays close if a user is nearby
     // _helpers.add(newHelper('2', LatLng(69.4547856, 31.8517288)));
@@ -101,9 +148,6 @@ class HelpNeededState extends State<HelpNeeded> {
     );
 
     ServerComms.messageToServer("HELP");
-
-    // Create a new chat room when a user start a new request (here, go into help needed mode)
-    Utility.createChatRoom(context);
   }
 
   /// start a timer of 5 minutes and opens dialog if no users has accepted the request

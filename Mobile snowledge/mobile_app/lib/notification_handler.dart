@@ -5,6 +5,7 @@ import 'onboarding.dart';
 import 'help_offered.dart';
 import 'main.dart';
 import 'package:mobile_app/translations/translations.dart';
+import 'package:mobile_app/widgets/rescue_chat.dart';
 
 class NotificationHandler {
   static final NotificationHandler _notificationService =
@@ -134,5 +135,23 @@ class NotificationHandler {
                 ticker: 'ticker'),
             iOS: _iosNotificationDetails),
         payload: payload);
+  }
+
+  static Future<void> newMessageNotification(message, sender, AppState state,
+      {int id = 12345}) async {
+    flutterLocalNotificationsPlugin.show(
+      id,
+      translations[sender][state.language] +
+          translations['hasSent'][state.language],
+      message,
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name',
+              channelDescription: 'your channel description',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'ticker'),
+          iOS: _iosNotificationDetails),
+    );
   }
 }

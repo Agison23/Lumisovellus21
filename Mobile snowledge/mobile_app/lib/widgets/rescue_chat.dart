@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/notification_handler.dart';
 import 'package:mobile_app/user_information_view.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -31,31 +32,7 @@ class _RescueChatState extends State<RescueChat> {
     });
     var appState = Provider.of<AppState>(context, listen: false);
     String roomId = appState.chatRoomId;
-
-    final stream = FirebaseFirestore.instance
-        .collection('Rooms')
-        .doc(roomId)
-        .collection('Messages')
-        .orderBy('datetime', descending: true)
-        .snapshots(includeMetadataChanges: false)
-        .listen((event) async {
-      for (var change in event.docChanges) {
-        switch (change.type) {
-          case DocumentChangeType.added:
-            // Notify the user of the new message if it's not from the sender
-            if (change.doc.data()?['sent_by'] != myPhoneNum) {
-              appState.setHasUnreadMessages = true;
-            }
-            break;
-          case DocumentChangeType.modified:
-            debugPrint("Modified message: ${change.doc.data()}");
-            break;
-          case DocumentChangeType.removed:
-            debugPrint("Removed message: ${change.doc.data()}");
-            break;
-        }
-      }
-    });
+    String whoSent;
   }
 
   @override
