@@ -330,8 +330,7 @@ Map translations = {
   },
 
   'helperReqOverAutomatically2': {
-    'fi':
-        'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
+    'fi': 'Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
     'en': 'Another help request might pop up shortly if help is still needed.',
   },
 
@@ -343,11 +342,6 @@ Map translations = {
   'actionOptions': {
     'fi': 'Voit tarjota apua tai ohittaa pyynnön.',
     'en': 'You can offer help or ignore the request.',
-  },
-
-  'reqBatteryLow': {
-    'fi': 'Avunpyytäjän puhelimen akku on vähissä!',
-    'en': 'The help requester has low battery!',
   },
 
   'endRequest': {
