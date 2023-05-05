@@ -20,6 +20,6 @@ void main() {
     await tester.tap(find.text('Pyydä\napua'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Millaista apua tarvitset?'), findsOneWidget);
+    expect(find.text('Mihin ongelmaan tarvitset apua?'), findsOneWidget);
   });
 }
