@@ -445,18 +445,23 @@ class RescueChatWidgets {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
-          controller: con,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: 'Enter Message',
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  onSubmit(con);
-                },
-                icon: const Icon(Icons.send)),
-          )),
+        controller: con,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Enter Message',
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          suffixIcon: IconButton(
+              onPressed: () {
+                onSubmit(con);
+              },
+              icon: const Icon(Icons.send)),
+        ),
+        onSubmitted: (value) {
+          onSubmit(con);
+          con.clear();
+        },
+      ),
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.indigo),
