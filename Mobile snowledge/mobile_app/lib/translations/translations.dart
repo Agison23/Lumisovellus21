@@ -317,7 +317,7 @@ Map translations = {
 
   'helperReqOverAutomatically': {
     'fi':
-        'Avunpyytäjä sai oletettavasti apua ja avunpyyntö poistettiin automaattisesti. Tämä saattoi olla virhearvio, joten tarkkaile hetki tilannetta uuden pyynnön varalta.',
+        'Avunpyytäjä sai oletettavasti apua ja avunpyyntö poistettiin automaattisesti. Uusi pyyntö saattaa saapua pian, jos apua tarvitaan vielä.',
     'en':
         'The help requester seems to have received help and the help session was ended automatically. Another help request might pop up shortly if help is still needed.',
   },
