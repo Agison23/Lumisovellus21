@@ -22,16 +22,16 @@ def insert_data(connection):
                         """
     """Password of admin is admin; of operator is operator, below are the hased value of them when store in the database"""
     sql_table_accounts = """INSERT INTO accounts(username, password, role)
-                            VALUES  ('admin2','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','admin'),
+                            VALUES  ('admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','admin'),
                                     ('operator','06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23','operator');
                         """
 
     sql_table_requests = """INSERT INTO requests(help_giver, help_requester, state)
                             VALUES ('test','test1',0);"""
 
-    sql_table_rescue = """INSERT INTO rescue(user_id, username, password, is_admin)
-                            VALUES  (3,'admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',1),
-                                    (4,'operator','06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23',0);
+    sql_table_rescue = """INSERT INTO rescue(username, password, is_admin)
+                            VALUES  ('admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',1),
+                                    ('operator','06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23',0);
                         """
     cur = connection.cursor()
     cur.execute(sql_table_users)
