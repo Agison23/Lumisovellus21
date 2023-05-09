@@ -150,6 +150,7 @@ class HelpOfferedState extends State<HelpOffered> {
                   ElevatedButton(
                       onPressed: () {
                         ServerComms.messageToServer('DECLINE');
+                        appState.setChatRoomId = '';
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
