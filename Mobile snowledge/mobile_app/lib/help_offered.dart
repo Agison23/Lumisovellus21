@@ -36,6 +36,8 @@ class HelpOfferedState extends State<HelpOffered> {
   static LatLng _toBeHelpedLatLng = LatLng(0, 0);
   late String myPhoneNum;
 
+  StreamSubscription<QuerySnapshot>? _streamSubscription;
+
   static late String _distance;
   @override
   initState() {
@@ -56,7 +58,7 @@ class HelpOfferedState extends State<HelpOffered> {
     String roomId = appState.chatRoomId;
     String whoSent;
 
-    final stream = FirebaseFirestore.instance
+    _streamSubscription = FirebaseFirestore.instance
         .collection('Rooms')
         .doc(roomId)
         .collection('Messages')
@@ -150,7 +152,7 @@ class HelpOfferedState extends State<HelpOffered> {
                   ElevatedButton(
                       onPressed: () {
                         ServerComms.messageToServer('DECLINE');
-                        appState.setChatRoomId = '';
+
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -318,11 +320,15 @@ class HelpOfferedState extends State<HelpOffered> {
                   title: Text(translations['stopHelpQuery'][appState.language]),
                   actions: [
                     ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(false),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
                       child: Text(translations['no'][appState.language]),
                     ),
                     ElevatedButton(
                         onPressed: () {
+                          _streamSubscription?.cancel();
+                          appState.setChatRoomId = '';
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
