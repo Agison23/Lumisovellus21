@@ -87,9 +87,12 @@ class Buttons {
   /// Cancel button
   static ElevatedButton cancelButton(
       BuildContext context, String text, String type) {
+    var appState = Provider.of<AppState>(context, listen: false);
+
     return ElevatedButton(
       onPressed: () {
         if (type == 'help_request') {
+          appState.setChatRoomId = '';
           Navigator.pop(context);
           Navigator.pop(context);
           Navigator.pop(context);
