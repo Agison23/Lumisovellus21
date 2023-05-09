@@ -298,7 +298,7 @@ def send_location_updates(connection, timestamp, s):
                 help_requesters_auto_end.append(help_requesters_dev_id)
             else:
                 messages.append(message)
-            
+    help_requesters_auto_end = list(set(help_requesters_auto_end))   
     for help_requester_dev_id in help_requesters_auto_end:
         requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
         requester_ip, _ = db.check_if_entry_exists(
