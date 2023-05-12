@@ -280,6 +280,7 @@ def send_location_updates(connection, timestamp, s):
     coordinates = db.get_latest_locations(connection, timestamp)
     
     messages = []
+    help_requesters_auto_end = []
     for request in requests:
         message = do_work(request[0], request[1], coordinates)
         past_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
@@ -288,27 +289,27 @@ def send_location_updates(connection, timestamp, s):
         else:
             two_latest_requester_gps = [past_requester_gps[0][0], past_requester_gps[1][0]]
             if (points_not_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
-                dev_id = request[1]
-                users = db.select_request_entry(connection, dev_id, "help_requester")
-
-                for user in users:
-                    ip_address, _ = db.check_if_entry_exists(
-                        connection, "users", "ip_address", "dev_id", user[0], False
+                helper_dev_id = request[0]
+                help_requesters_dev_id = request[1]
+                ip_address, _ = db.check_if_entry_exists(
+                        connection, "users", "ip_address", "dev_id", helper_dev_id, False
                     )
-                    message = "HELP_OVER:{}:AUTOMATIC_END".format(user[0])
-                    ip_address, port = ip_address.split(",")
-                    s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-
-                db.delete_help_entry(connection, dev_id)
-                requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
-                requester_ip, _ = db.check_if_entry_exists(
-                        connection, "users", "ip_address", "dev_id", dev_id, False
-                    )
-                requester_ip_addr, requester_p = requester_ip.split(",")
-                s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
-                db.delete_request_entry(connection, dev_id, "help_requester")
+                message = "HELP_OVER:{}:AUTOMATIC_END".format(helper_dev_id)
+                ip_address, port = ip_address.split(",")
+                s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
+                help_requesters_auto_end.append(help_requesters_dev_id)
             else:
                 messages.append(message)
+    help_requesters_auto_end = list(set(help_requesters_auto_end))   
+    for help_requester_dev_id in help_requesters_auto_end:
+        requester_message_distance_cancel = "HELP_ENDED_BY_GPS"
+        requester_ip, _ = db.check_if_entry_exists(
+                connection, "users", "ip_address", "dev_id", help_requester_dev_id, False
+            )
+        requester_ip_addr, requester_p = requester_ip.split(",")
+        s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
+        db.delete_help_entry(connection, help_requester_dev_id)
+        db.delete_request_entry(connection, help_requester_dev_id, "help_requester")
 
     for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]
