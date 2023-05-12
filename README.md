@@ -45,7 +45,7 @@ Mobiilisovellus koostuu pääosin rescue- elementistä ja se käyttää lumitila
 
 # Snowledge - Lumisovellus
 
-This is a repository for the Snowledge application
+This is a repository for the Snowledge application. See [Wiki](https://gitlab.com/lumisovellus/snowledge/-/wikis/home) for more in-depth documentation!
 
 ---
 
