@@ -16,7 +16,7 @@ class UdpServer:
         self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         # self.udp.bind(("::1", 50943))
-        self.udp.bind(("127.0.0.1", 50943))
+        self.udp.bind(("", 50943))
 
         db.init_tables(self.connection)
         self.max_time_from_closest_users = 7200
