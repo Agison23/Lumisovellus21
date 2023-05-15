@@ -40,7 +40,7 @@ class UdpServer:
                 continue
             msg, addr = readable[0].recvfrom(4096)
             message, msg_type = prs.parse_message(msg)
-            print(f"{msg_type} message: {message} - address: {addr}")
+            #print(f"{msg_type} message: {message} - address: {addr}")
             try:
                 if msg_type == "HELP":
                     prs.parse_help_request(
@@ -79,7 +79,10 @@ class UdpServer:
                 elif msg_type == "KEEP_ALIVE":
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
             except:
-                print(f"Message parse error : {msg_type} {message}")
+                pass
+                #print(f"Message parse error : {msg_type} {message}")
+                
+
 
 
 if __name__ == "__main__":
