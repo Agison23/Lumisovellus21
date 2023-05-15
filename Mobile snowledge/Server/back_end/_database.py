@@ -265,7 +265,7 @@ def create_table(connection, create_table_sql):
 
 
 def init_tables(connection):
-    print("tulee tähän")
+    
     sql_table_users = """ CREATE TABLE IF NOT EXISTS users (
                             dev_id text PRIMARY KEY,
                             first_name text NOT NULL,
