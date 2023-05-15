@@ -335,5 +335,5 @@ def get_last_x_locations(num_locations, dev_id):
 
 
 if __name__ == "__main__":
-    print(f"App.py started correctly")
+    #print(f"App.py started correctly")
     serve(app, listen="*:3002")

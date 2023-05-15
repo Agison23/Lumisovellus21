@@ -185,7 +185,7 @@ def modify_user():
 
     query = query[:-1]
     query += f"WHERE user_id = {user_id}"
-    print(query)
+    #print(query)
     cur = connection.cursor()
     cur.execute(query)
     connection.commit()
