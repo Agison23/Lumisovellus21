@@ -11,8 +11,8 @@ class UdpServer:
         self.connection = db.connect_to_database()
         self.status = True
 
-        # self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
-        self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
+        self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
+        # self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         # self.udp.bind(("::1", 50943))
