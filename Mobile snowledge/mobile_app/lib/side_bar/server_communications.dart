@@ -365,13 +365,15 @@ class ServerComms {
 
                     if (HelpOfferedState.pageOpen) {
                       //Navigator.pop(MyApp.navigatorKey.currentState!.context);
-
-                      if (resultParts[2] == "AUTOMATIC_END") {
-                        NotificationHandler
-                            .locationCancelledRequestNotification(
-                                appState, 'helper');
-                        await Dialogs.showRequestEndedAutomaticallyDialog(
-                            MyApp.navigatorKey.currentState?.context, 'helper');
+                      if (resultParts.length > 2) {
+                        if (resultParts[2] == "AUTOMATIC_END") {
+                          NotificationHandler
+                              .locationCancelledRequestNotification(
+                                  appState, 'helper');
+                          await Dialogs.showRequestEndedAutomaticallyDialog(
+                              MyApp.navigatorKey.currentState?.context,
+                              'helper');
+                        }
                       } else {
                         NotificationHandler.helpRequestCancelledNotification(
                             appState);
