@@ -4,19 +4,22 @@ import _database as db
 import _parser as prs
 from datetime import datetime
 import time
-
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+ENVIRONMENT = os.getenv('APP_ENVIRONMENT')
 class UdpServer:
     def __init__(self):
         self.connection = db.connect_to_database()
         self.status = True
-
         self.udp = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)
-        # self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
-        self.udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+        if ENVIRONMENT == 'development':
+            self.udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self.udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        # self.udp.bind(("::1", 50943))
-        self.udp.bind(("", 50943))
+        if ENVIRONMENT == 'development':
+            self.udp.bind(("127.0.0.1", 50943)) 
+        else:
+            udp.bind(("", 50943))
 
         db.init_tables(self.connection)
         self.max_time_from_closest_users = 7200
@@ -38,9 +41,10 @@ class UdpServer:
             readable, _, _ = select.select([self.udp], [], [], 60)
             if not readable:
                 continue
+
             msg, addr = readable[0].recvfrom(4096)
             message, msg_type = prs.parse_message(msg)
-            #print(f"{msg_type} message: {message} - address: {addr}")
+            print(f"{msg_type} message: {message} - address: {addr}")
             try:
                 if msg_type == "HELP":
                     prs.parse_help_request(
@@ -80,7 +84,7 @@ class UdpServer:
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
             except:
                 pass
-                #print(f"Message parse error : {msg_type} {message}")
+                print(f"Message parse error : {msg_type} {message}")
                 
 
 
