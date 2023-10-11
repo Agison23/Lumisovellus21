@@ -89,8 +89,8 @@ def get_all_pending_requests(connection, requester):
 
 
 def create_user_entry(connection, user):
-    sql = """ INSERT INTO users(dev_id,first_name,last_name,ip_address,phone_number)
-              VALUES (?,?,?,?,?) """
+    sql = """ INSERT INTO users(dev_id,first_name,last_name,ip_address,phone_number,role)
+              VALUES (?,?,?,?,?,'normal') """
 
     cur = connection.cursor()
     cur.execute(sql, user)
@@ -272,7 +272,9 @@ def init_tables(connection):
                             last_name text NOT NULL,
                             ip_address text NOT NULL,
                             phone_number text,
-                            low_battery INTEGER DEFAULT '0'
+                            low_battery INTEGER DEFAULT '0',
+                            role TEXT,
+                            FOREIGN KEY (role) REFERENCES Role(name)
                          ); """
 
     sql_table_data = """CREATE TABLE IF NOT EXISTS data (
@@ -308,7 +310,13 @@ def init_tables(connection):
                             password text NOT NULL,
                             is_admin INTEGER NOT NULL
                             );"""
-
+    
+    sql_table_role = """CREATE TABLE IF NOT EXISTS role (
+                            name TEXT PRIMARY KEY,
+                            permissions TEXT NOT NULL
+                            );"""
+    
+    create_table(connection, sql_table_role)
     create_table(connection, sql_table_users)
     create_table(connection, sql_table_data)
     create_table(connection, sql_table_help)
@@ -318,14 +326,17 @@ def init_tables(connection):
     sql = "DELETE FROM accounts WHERE role = 'Admin'"
     sql2 = "INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);"
     sql3 = "INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);"
+    sql4 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('normal', 'rescue');"
+    sql5 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('premium', 'rescue, snow condition');"
     username = ADMIN
     password = PASSWORD
     role = "Admin"
-
     cur = connection.cursor()
     cur.execute(sql)
     cur.execute(sql2, (username, password, role))
     cur.execute(sql3, (username, password))
+    cur.execute(sql4)
+    cur.execute(sql5)
     rescue_users_from_db(connection)
     connection.commit()
 
@@ -425,6 +436,7 @@ def get_all_help_requests(connection):
     cur.execute(sql)
     entry = cur.fetchall()
     return entry
+
 def set_user_battery(connection, dev_id, battery_status):
     sql = "UPDATE users SET low_battery=? WHERE dev_id=?"
     cur = connection.cursor()
@@ -434,6 +446,29 @@ def set_user_battery(connection, dev_id, battery_status):
         cur.execute(sql, (0,dev_id))
     connection.commit()
     return
+
+def set_user_role(connection, dev_id, role):
+    sql = "UPDATE users SET role=? WHERE dev_id=?"
+    cur = connection.cursor()
+    cur.execute(sql, (role, dev_id))
+    connection.commit()
+    return
+
+def get_user_role(connection, dev_id):
+    sql = """SELECT users.role AS role, role.permissions AS permissions
+             FROM users
+             INNER JOIN role ON role.name = users.role
+             WHERE users.dev_id=?
+          """
+    cur = connection.cursor()
+    try:
+        cur.execute(sql, (dev_id,))
+        result = cur.fetchone()
+        print("result:", result)
+        return result
+    except Exception as e:
+        print("Error:", e)
+        return None
 
 def get_helpers(connection, requester):
     sql = """SELECT help_giver
