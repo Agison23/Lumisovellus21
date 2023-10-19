@@ -1,6 +1,5 @@
 image:
   name: cirrusci/flutter:3.7.0
-  entrypoint: ["/usr/bin/dumb-init", "--"]
 
 variables:
   DEBIAN_FRONTEND: noninteractive
