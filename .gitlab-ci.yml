@@ -7,10 +7,15 @@ stages:
 build_android:
   stage: build
   script:
+    - echo 'Building mobile Snowledge...'
+    - pwd
+    - cd '.\Mobile snowledge\mobile_app\'
     - flutter packages get
     - flutter build apk --release
 
 test:
   stage: test
   script:
+    - pwd && ls
+    - echo 'Running integration test'
     - flutter test integration_test
