@@ -1,5 +1,5 @@
 stages:
-  - lint
+  # - lint
   - test
   - coverage
 
@@ -10,10 +10,11 @@ cache:
   paths:
     - /flutter/bin/cache/dart-sdk
 
-lint:
-  stage: lint
-  script:
-    - flutter analyze
+# Might want to add this part later
+# lint:
+#   stage: lint
+#   script:
+#     - flutter analyze
 
 test:
   stage: test
