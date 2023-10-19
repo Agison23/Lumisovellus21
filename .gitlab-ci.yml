@@ -9,9 +9,9 @@ stages:
   - test
 
 before_script:
-  - apt-get update -qy
-  - apt-get install -y cmake cmake-doc ninja-build cmake-format clang
-  - sudo apt install clang
+  - sudo apt-get update -qy
+  - sudo apt-get install -y cmake cmake-doc ninja-build cmake-format clang pkg-config cmake-data
+  # - sudo apt install clang
 
 # build:
 #   stage: build
