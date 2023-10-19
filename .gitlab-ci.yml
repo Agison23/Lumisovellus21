@@ -37,6 +37,6 @@ test:
       cmake-data
     - cd 'Mobile snowledge/mobile_app'
     - echo 'Running integration test'
-    - flutter test -v integration_test
+    - flutter test integration_test
 
 
