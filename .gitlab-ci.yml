@@ -9,13 +9,13 @@ stages:
   - test
 
 before_script:
-  - sudo apt-get update -qy
-  - sudo apt-get install -y cmake cmake-doc ninja-build cmake-format clang pkg-config cmake-data
   # These next 3 lines are to get rid of the tzdata choosing interaction
   - echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y --no-install-recommends install tzdata
   - sudo cp /usr/share/zoneinfo/Australia/Brisbane /etc/localtime
-  # - sudo apt install clang
+  # Installing some packages for building
+  - sudo apt-get update -qy
+  - sudo apt-get install -y cmake cmake-doc ninja-build cmake-format clang pkg-config cmake-data
 
 # build:
 #   stage: build
