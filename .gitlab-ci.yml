@@ -9,7 +9,8 @@ build_android:
   script:
     - echo 'Building mobile Snowledge...'
     - pwd && ls
-    - cd '.\Mobile snowledge\mobile_app\'
+    - cd '.\Mobile snowledge'
+    - pwd && ls
     - flutter packages get
     - flutter build apk --release
 
