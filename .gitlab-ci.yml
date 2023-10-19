@@ -1,27 +1,16 @@
+image: cirrusci/flutter:3.7.0
+
 stages:
+  - build
   - test
 
-integration_test:
-  stage: test
-  image: cirrusci/flutter:3.7.0
+build_android:
+  stage: build
   script:
-    - flutter pub get
-    - flutter pub run test integration_test/
-  artifacts:
-    when: always
-    paths:
-      - $CI_PROJECT_DIR/build/integration_test
-  only:
-    - merge_requests
+    - flutter packages get
+    - flutter build apk --release
 
-test_report:
+test:
   stage: test
-  image: alpine:latest
   script:
-    - cat $CI_PROJECT_DIR/build/integration_test/integration_test_results.json
-  artifacts:
-    when: always
-    paths:
-      - $CI_PROJECT_DIR/build/integration_test/integration_test_results.json
-  only:
-    - merge_requests
+    - flutter test integration_test
