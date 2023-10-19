@@ -24,8 +24,6 @@ before_script:
 test:
   stage: test
   script:
-    - ln -fs /usr/share/zoneinfo/UTC /etc/localtime
-    - dpkg-reconfigure --frontend noninteractive tzdata
     - cd 'Mobile snowledge/mobile_app'
     - echo 'Running integration test'
     - flutter test integration_test
