@@ -13,9 +13,6 @@ before_script:
   - echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y --no-install-recommends install tzdata
   - sudo cp /usr/share/zoneinfo/Australia/Brisbane /etc/localtime
-  # Installing some packages for building
-  - sudo apt-get update -qy
-  - sudo apt-get install -y cmake cmake-doc ninja-build cmake-format clang pkg-config cmake-data
 
 # build:
 #   stage: build
@@ -28,8 +25,18 @@ before_script:
 test:
   stage: test
   script:
+    # Installing some packages for building
+    - sudo apt-get update -qy
+    - sudo apt-get install -y 
+      cmake 
+      cmake-doc
+      ninja-build 
+      cmake-format 
+      clang 
+      pkg-config 
+      cmake-data
     - cd 'Mobile snowledge/mobile_app'
     - echo 'Running integration test'
-    - flutter test integration_test
+    - flutter test -v integration_test
 
 
