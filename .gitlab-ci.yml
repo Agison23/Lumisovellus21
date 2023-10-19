@@ -1,21 +1,21 @@
 image: cirrusci/flutter:3.7.0
 
 stages:
-  - build
+  # - build
   - test
 
 # Install CMake for the testing environment
 before_script:
   - apt-get update -qy
-  - apt-get install -y cmake cmake-doc ninja-build cmake-format lrzip
+  - apt-get install -y cmake cmake-doc ninja-build cmake-format
 
-build_android:
-  stage: build
-  script:
-    - echo 'Building mobile Snowledge...'
-    - cd 'Mobile snowledge/mobile_app'
-    - flutter packages get
-    - flutter build apk --release
+# build_android:
+#   stage: build
+#   script:
+#     - echo 'Building mobile Snowledge...'
+#     - cd 'Mobile snowledge/mobile_app'
+#     - flutter packages get
+#     - flutter build apk --release
 
 test:
   stage: test
