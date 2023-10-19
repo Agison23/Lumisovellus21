@@ -1,0 +1,27 @@
+stages:
+  - test
+
+integration_test:
+  stage: test
+  image: cirrusci/flutter:3.7.0
+  script:
+    - flutter pub get
+    - flutter pub run test integration_test/
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/build/integration_test
+  only:
+    - merge_requests
+
+test_report:
+  stage: test
+  image: alpine:latest
+  script:
+    - cat $CI_PROJECT_DIR/build/integration_test/integration_test_results.json
+  artifacts:
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/build/integration_test/integration_test_results.json
+  only:
+    - merge_requests

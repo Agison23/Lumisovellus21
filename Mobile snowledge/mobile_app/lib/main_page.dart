@@ -126,6 +126,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                     });
                   },
                   javascriptMode: JavascriptMode.unrestricted,
+                  key: const Key('snowConditionWebView'),
                 ),
                 // Stacking the bottom bar on top of the webview
                 const Align(
