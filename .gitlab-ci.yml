@@ -5,7 +5,7 @@ variables:
   DEBIAN_FRONTEND: noninteractive
 
 stages:
-  # - build 
+  - build 
   - test
 
 before_script:
@@ -14,21 +14,23 @@ before_script:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y --no-install-recommends install tzdata
   - sudo cp /usr/share/zoneinfo/Australia/Brisbane /etc/localtime
 
-# build:
-#   stage: build
-#   script:
-#     - echo 'Building mobile Snowledge...'
-#     - cd 'Mobile snowledge/mobile_app'
-#     - flutter packages get
-#     - flutter build apk --release
+build:
+  stage: build
+  script:
+    - echo 'Building mobile Snowledge...'
+    - cd 'Mobile snowledge/mobile_app'
+    - flutter packages get
+    - flutter build apk --release
 
 test:
   stage: test
   script:
     # Installing some packages for building
     - sudo apt-get update -qy
-    - sudo apt-get install -y 
-      cmake 
+    - sudo apt-get install -y
+      openjdk-11-jdk
+      openjdk-8-jdk
+      cmake=3.17.3
       cmake-doc
       ninja-build 
       cmake-format 
