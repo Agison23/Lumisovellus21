@@ -10,7 +10,8 @@ stages:
 
 before_script:
   - apt-get update -qy
-  - apt-get install -y cmake cmake-doc ninja-build cmake-format
+  - apt-get install -y cmake cmake-doc ninja-build cmake-format clang
+  - sudo apt install clang
 
 # build:
 #   stage: build
