@@ -7,7 +7,7 @@ stages:
 # Install CMake for the testing environment
 before_script:
   - apt-get update -qy
-  - apt-get install -y cmake
+  - apt-get install -y cmake cmake-doc ninja-build cmake-format lrzip
 
 build_android:
   stage: build
