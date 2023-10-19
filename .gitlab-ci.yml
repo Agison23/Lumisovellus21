@@ -1,45 +1,39 @@
-image:
-  name: cirrusci/flutter:3.7.0
-
-variables:
-  DEBIAN_FRONTEND: noninteractive
-
 stages:
-  # - build 
+  - lint
   - test
+  - coverage
 
-before_script:
-  # These next 3 lines are to get rid of the tzdata choosing interaction
-  - echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
-  - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y --no-install-recommends install tzdata
-  - sudo cp /usr/share/zoneinfo/Australia/Brisbane /etc/localtime
-  # Installing some packages for building
-  - sudo apt-get update -qy
-  - sudo apt-get install -y
-    openjdk-11-jdk
-    openjdk-8-jdk
-    cmake
-    cmake-doc
-    ninja-build 
-    cmake-format 
-    clang 
-    pkg-config 
-    cmake-data
+default:
+  image: greycastle/flutter:3.7.0
 
-# build:
-#   stage: build
-#   script:
-#     - echo 'Building mobile Snowledge...'
-#     - cd 'Mobile snowledge/mobile_app'
-#     - flutter packages get
-#     - flutter build apk --release
+cache:
+  paths:
+    - /flutter/bin/cache/dart-sdk
+
+lint:
+  stage: lint
+  script:
+    - flutter analyze
 
 test:
   stage: test
   script:
     - cd 'Mobile snowledge/mobile_app'
-    - flutter packages get
-    - echo 'Running integration test'
-    - flutter test integration_test
+    - pub global activate junitreport
+    - export PATH="$PATH":"$HOME/.pub-cache/bin"
+    - flutter pub get
+    - flutter test --coverage --machine | tojunit > testreport.xml
+  artifacts:
+    reports:
+      junit: testreport.xml
+    paths:
+      - coverage
 
-
+coverage:
+  stage: coverage
+  script:
+    - genhtml coverage/lcov.info --output=coverage
+    - mv coverage/ public/
+  artifacts:
+    paths:
+      - public
