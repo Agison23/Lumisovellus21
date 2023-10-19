@@ -4,7 +4,7 @@ stages:
   - coverage
 
 default:
-  image: greycastle/flutter:3.7.0
+  image: cirrusci/flutter:3.7.0
 
 cache:
   paths:
