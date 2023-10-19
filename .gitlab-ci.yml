@@ -20,6 +20,9 @@ before_script:
 test:
   stage: test
   script:
+    - export DEBIAN_FRONTEND=noninteractive  # Set non-interactive mode
+    - ln -fs /usr/share/zoneinfo/UTC /etc/localtime  # Set the timezone to UTC
+    - dpkg-reconfigure --frontend noninteractive tzdata  # Configure tzdata non-interactively
     - cd 'Mobile snowledge/mobile_app'
     - echo 'Running integration test'
     - flutter test integration_test
