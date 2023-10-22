@@ -7,6 +7,10 @@ class AppState extends ChangeNotifier {
   String _languageName = 'SUOMI';
   String _chatRoomId = '';
   bool _hasUnreadMessages = false; // For unread message notifications
+  bool _isMenuItemDisabled = false; // Hide menu item
+  bool _isPremiumSidebar = false;
+
+  final List _premiumFeatureMenuItems = [0, 3];
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -23,6 +27,12 @@ class AppState extends ChangeNotifier {
   final Map _chatRoomUsersBattery = {};
 
   Map get chatRoomUsersBattery => _chatRoomUsersBattery;
+
+  bool get isMenuItemDisabled => _isMenuItemDisabled;
+
+  bool get isPremiumSidebar => _isPremiumSidebar;
+
+  List get premiumFeatureMenuItems => _premiumFeatureMenuItems;
 
   void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
     _chatRoomUsersBattery[phoneNum] = batteryStatus;
@@ -63,6 +73,16 @@ class AppState extends ChangeNotifier {
 
   set setHasUnreadMessages(bool value) {
     _hasUnreadMessages = value;
+    notifyListeners();
+  }
+
+  set setIsMenuItemDisabled(bool value) {
+    _isMenuItemDisabled = value;
+    notifyListeners();
+  }
+
+  set setIsPremiumSidebar(bool value) {
+    _isPremiumSidebar = value;
     notifyListeners();
   }
 }

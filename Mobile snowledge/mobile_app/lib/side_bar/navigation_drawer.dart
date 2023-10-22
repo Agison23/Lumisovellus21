@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/app_info.dart';
 import 'package:mobile_app/helper/utility.dart';
@@ -31,23 +30,46 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   bool winter = Utility.getSummerOrWinter();
 
   @override
-  Widget build(BuildContext context) => Drawer(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildHeader(context),
-              buildMenuItems(context),
-            ],
-          ),
-        ),
-      );
+  Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    appState.setIsMenuItemDisabled = true;
 
-  Widget buildHeader(BuildContext context) => Container(
+    return Drawer(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            buildHeader(context),
+            buildMenuItems(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildHeader(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    if (appState.isMenuItemDisabled) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Icon(Icons.verified_outlined, size: 30.0),
+          Switch(
+              value: appState.isPremiumSidebar,
+              onChanged: (value) {
+                appState.setIsPremiumSidebar = value;
+              })
+        ],
+      );
+    } else {
+      return Container(
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top,
         ),
       );
+    }
+  }
 
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
@@ -69,8 +91,11 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       child: Wrap(
         runSpacing: 8,
         children: [
-          _item(0, Icons.area_chart_outlined,
-              translations['conditions'][appState.language]),
+          Visibility(
+            child: _item(0, Icons.area_chart_outlined,
+                translations['conditions'][appState.language]),
+            visible: appState.isPremiumSidebar,
+          ),
           Visibility(
             child: _item(1, Icons.map_outlined,
                 translations['mapView'][appState.language]),
@@ -82,8 +107,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           Visibility(
             child: _item(3, Icons.ac_unit,
                 translations['snowDescription'][appState.language]),
-            visible:
-                true, // replace with winter (line 22) if you want to hide during summertime
+            visible: appState.isPremiumSidebar, // show if user is premium
+            // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
               translations['userInfo'][appState.language]),
@@ -130,17 +155,19 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       children: [
         ListTile(
           leading: Icon(iconData),
-          iconColor: index == appState.pageIndex
-              ? const Color(0xff5A97EE)
-              : Colors.black,
-          textColor: index == appState.pageIndex
-              ? const Color(0xff5A97EE)
-              : Colors.black,
+          iconColor: _getMenuIconColor(index, appState),
+          textColor: _getMenuIconColor(index, appState),
           title: Text(title),
-          trailing: index == 6 || index == 7 ? const Icon(Icons.launch) : null,
+          trailing: _showMenuItemIcon(index, appState),
           onTap: () async {
             if (index == appState.pageIndex) {
             } else {
+              if (appState.premiumFeatureMenuItems.contains(index) &&
+                  appState.isPremiumSidebar &&
+                  appState.isMenuItemDisabled) {
+                _showPremiumDialog(context);
+                return;
+              }
               setState(() {
                 appState.setPageIndex = index;
               });
@@ -202,6 +229,85 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           },
         ),
       ],
+    );
+  }
+
+  Color _getMenuIconColor(int index, AppState appState) {
+    if (appState.premiumFeatureMenuItems.contains(index) &&
+        appState.isMenuItemDisabled) {
+      return Colors.grey;
+    } else {
+      if (index == appState.pageIndex) {
+        return const Color(0xff5A97EE);
+      } else {
+        return Colors.black;
+      }
+    }
+  }
+
+  Widget? _showMenuItemIcon(int index, AppState appState) {
+    if (appState.premiumFeatureMenuItems.contains(index) &&
+        appState.isMenuItemDisabled) {
+      return const Icon(Icons.lock_outline);
+    }
+    if (index == 6 || index == 7) {
+      return const Icon(Icons.launch);
+    }
+    return null;
+  }
+
+  Future<void> _showPremiumDialog(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          icon: const Icon(Icons.verified_outlined, size: 40.0),
+          title: Text(translations['premiumDialogTitle'][appState.language]),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+          content: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.lock_open, color: Colors.black),
+                title: Text(translations['conditions'][appState.language]),
+              ),
+              ListTile(
+                leading: const Icon(Icons.lock_open, color: Colors.black),
+                title: Text(translations['snowDescription'][appState.language]),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 40.0),
+                    backgroundColor: const Color(0xff5A97EE),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    foregroundColor: Colors.white),
+                child: Text(
+                    translations['premiumDialogButtonText'][appState.language]),
+                onPressed: () {
+                  setState(() {
+                    appState.setPageIndex = 4;
+                  });
+                  Navigator.pop(context);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserInfoPage()),
+                      (route) => false);
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -52,6 +52,16 @@ Map translations = {
     'en': 'Continue',
   },
 
+  'premiumDialogTitle': {
+    'fi': 'Upgrade to Premium User to unlock',
+    'en': 'Upgrade to Premium User to unlock'
+  },
+
+  'premiumDialogButtonText': {
+    'fi': 'Go to User Information',
+    'en': 'Go to User Information'
+  },
+
   'conditions': {
     'fi': 'Lumiolosuhteet Pallaksella',
     'en': 'Snow conditions in Pallas',
