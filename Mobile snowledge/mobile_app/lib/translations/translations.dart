@@ -53,12 +53,12 @@ Map translations = {
   },
 
   'premiumDialogTitle': {
-    'fi': 'Upgrade to Premium User to unlock',
+    'fi': 'Päivitä Premium Käyttäjään avataksesi',
     'en': 'Upgrade to Premium User to unlock'
   },
 
   'premiumDialogButtonText': {
-    'fi': 'Go to User Information',
+    'fi': 'Mene Käyttäjätietoihin',
     'en': 'Go to User Information'
   },
 
