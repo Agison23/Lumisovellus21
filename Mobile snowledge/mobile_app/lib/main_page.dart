@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app/helper/utility.dart';
@@ -73,6 +74,15 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
     var languageToChangeTo = appState.language;
     String? appURL;
 
+    JavascriptChannel _channel = JavascriptChannel(
+      name: 'myChannel', // Name your channel.
+      onMessageReceived: (message) {
+        // Handle messages received from JavaScript here.
+        print("Received message from JavaScript: $message");
+        // You can trigger Flutter functions based on the message received.
+      },
+    );
+
     if (!isLoading) {
       appURL = appEnv == 'production'
           ? 'https://lumisovellus.fi/mobiili'
@@ -113,19 +123,63 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
             body: Stack(
               children: [
                 WebView(
-                  initialUrl: appURL,
+                  // initialUrl: appURL,
+                  initialUrl: "",
                   onWebViewCreated: (WebViewController webViewController) {
                     _controller.complete(webViewController);
-                  },
-                  // Change the global React state after the page has been loaded
-                  onPageFinished: (String url) {
                     _controller.future.then((controller) {
-                      controller.runJavascript("""
-                      window.changeLanguageTo("$languageToChangeTo");
-                    """);
+                      const String content = '''
+                        <!DOCTYPE html>
+                        <html lang="en">
+                          <head>
+                            <meta charset="UTF-8" />
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                            <title>Two-Way Communication</title>
+                          </head>
+                          <body>
+                            <h1>Two-Way Communication</h1>
+
+                            <p>Message from Flutter: <span id="messageFromFlutter"></span></p>
+                            <button onclick="sendMessageToFlutter()">Send Message to Flutter</button>
+
+                            <script>
+                              function sendMessageToFlutter() {
+                                var message = "Hello from the web!";
+                                messageHandler.postMessage(message);
+                              }
+                            </script>
+                          </body>
+                        </html>
+                      ''';
+
+                      // Use Uri.dataFromString to load the HTML content
+                      controller.loadUrl(Uri.dataFromString(
+                        content,
+                        mimeType: 'text/html',
+                        encoding: Encoding.getByName('utf-8'),
+                      ).toString());
                     });
                   },
+                  // Change the global React state after the page has been loaded
+                  // onPageFinished: (String url) {
+                  //   _controller.future.then((controller) {
+                  //     controller.runJavascript("""
+                  //     window.changeLanguageTo("$languageToChangeTo");
+                  //   """);
+                  //   });
+                  // },
                   javascriptMode: JavascriptMode.unrestricted,
+                  javascriptChannels: {
+                    JavascriptChannel(
+                        name: 'messageHandler',
+                        onMessageReceived: (JavascriptMessage message) {
+                          //This is where you receive message from
+                          //javascript code and handle in Flutter/Dart
+                          //like here, the message is just being printed
+                          //in Run/LogCat window of android studio
+                          print(message.message);
+                        })
+                  },
                 ),
                 // Stacking the bottom bar on top of the webview
                 const Align(
