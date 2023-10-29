@@ -5,6 +5,8 @@ import 'package:mobile_app/main.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   group('Snow condition of the app is locked by default - ', () {
     testWidgets(
         'GIVEN the app is started for the first time, '
