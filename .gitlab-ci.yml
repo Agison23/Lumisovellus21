@@ -1,5 +1,6 @@
 stages:
   # - lint
+  - android_setup
   - test
   - coverage
 
@@ -10,11 +11,30 @@ cache:
   paths:
     - /flutter/bin/cache/dart-sdk
 
-# Might want to add this part later
+# Might want to add this part later, analyze code to see if any lint problem
 # lint:
 #   stage: lint
 #   script:
 #     - flutter analyze
+
+android_setup:
+  stage: android_setup
+  variables:
+    apiLevel: "27"
+    target: "google_apis"
+    arch: "x86"
+    deviceName: "android_emulator"
+    deviceType: "pixel"
+  script:
+    - sdkmanager "platform-tools" "platforms;android-${apiLevel}"
+    - sdkmanager --install "system-images;android-${apiLevel};${target}${arch}"
+    - sdkmanager --update
+    - echo "y" | sdkmanager --licenses
+    - sdkmanager --list
+    - echo "no" | avdmanager -v create avd --force --name "${deviceName}" --package "system-images;android-${apiLevel};${target};${arch}" --tag "${target}" --sdcard 128M --device "${deviceType}"
+    - emulator -avd "${deviceName}" -no-audio -no-window -no-snapstorage -no-snapshot -gpu swiftshader_indirect -no-boot-anim -no-accel -wipe-data -skip-adb-auth &
+    - adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+    - flutter doctor -v 
 
 test:
   stage: test
