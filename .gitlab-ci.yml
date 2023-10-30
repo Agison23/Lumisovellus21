@@ -11,8 +11,11 @@ cache:
     - /flutter/bin/cache/dart-sdk
 
 before_script:
+  - echo "Installing Flutter packages"
   - cd 'Mobile snowledge/mobile_app'
   - flutter packages get
+  - echo "Checking python & pip version"
+  - python --version && pip --version
 
 # Might want to add this part later, analyze code to see if any lint problem
 lint:
