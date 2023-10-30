@@ -18,6 +18,8 @@ import 'helper/utility.dart';
 import 'notification_handler.dart';
 import '../translations/translations.dart';
 import 'package:logging/logging.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
+import 'package:speech_bubble/speech_bubble.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -30,6 +32,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   Map<String, String>? env;
   String appEnv = 'production';
   bool isLoading = true;
+
+  final GlobalKey menuIconKey = GlobalKey();
 
   @override
   void initState() {
@@ -184,17 +188,58 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                 // Stacking the bottom bar on top of the webview
                 const Align(
                     alignment: Alignment.bottomCenter, child: BottomBar()),
-                IconButton(
-                  iconSize: 30,
-                  icon: Stack(
-                    children: const [
-                      Icon(Icons.menu),
-                    ],
+                BubbleShowcase(
+                  bubbleShowcaseId: 'my_bubble_showcase',
+                  bubbleShowcaseVersion: 1,
+                  bubbleSlides: [
+                    RelativeBubbleSlide(
+                      widgetKey: menuIconKey,
+                      child: RelativeBubbleSlideChild(
+                        direction: AxisDirection.down,
+                        widget: SpeechBubble(
+                          nipLocation: NipLocation.TOP,
+                          color: const Color(0xff5A97EE),
+                          child: const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'Tap to open the menu',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    RelativeBubbleSlide(
+                      widgetKey: menuIconKey,
+                      child: RelativeBubbleSlideChild(
+                        direction: AxisDirection.right,
+                        widget: SpeechBubble(
+                          nipLocation: NipLocation.LEFT,
+                          color: Colors.blue,
+                          child: const Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              'This is a new cool feature !',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  child: IconButton(
+                    key: menuIconKey,
+                    iconSize: 30,
+                    icon: Stack(
+                      children: const [
+                        Icon(Icons.menu),
+                      ],
+                    ),
+                    onPressed: () {
+                      _globalKey.currentState?.openDrawer();
+                    },
+                    color: Colors.black,
                   ),
-                  onPressed: () {
-                    _globalKey.currentState?.openDrawer();
-                  },
-                  color: Colors.black,
                 ),
               ],
             ),
