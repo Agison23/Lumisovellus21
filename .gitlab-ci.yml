@@ -24,15 +24,13 @@ lint:
 test:
   stage: test
   script:
-    - cd 'Mobile snowledge/mobile_app'
-    - flutter packages get
+    - pwd && ls
     - echo "Running unit tests..."
     - flutter test ./test/
 
 build:
   stage: build
   script:
+    - pwd && ls
     - echo 'Building Android mobile Snowledge...'
-    - cd 'Mobile snowledge/mobile_app'
-    - flutter packages get
     - flutter build apk --release
