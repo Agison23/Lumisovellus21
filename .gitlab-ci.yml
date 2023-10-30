@@ -10,10 +10,15 @@ cache:
   paths:
     - /flutter/bin/cache/dart-sdk
 
+before_script:
+  - cd 'Mobile snowledge/mobile_app'
+  - flutter packages get
+
 # Might want to add this part later, analyze code to see if any lint problem
 lint:
   stage: lint
   script:
+    - pwd && ls
     - flutter analyze --no-fatal-infos    # Don't treat info as fatal so the pipeline won't fail
 
 test:
