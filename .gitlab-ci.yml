@@ -52,4 +52,4 @@ test-python:
   script:
     - pwd && ls
     - echo "Testing backend database"
-    - python .\test.databaseFunc.py
+    - python test.databaseFunc.py
