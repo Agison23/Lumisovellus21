@@ -3,37 +3,46 @@ stages:
   - test
   - build
 
-default:
-  image: cirrusci/flutter:3.7.0
-
 cache:
   paths:
     - /flutter/bin/cache/dart-sdk
 
-before_script:
-  - echo "Installing Flutter packages"
-  - cd 'Mobile snowledge/mobile_app'
-  - flutter packages get
-  - echo "Checking python & pip version"
-  - python --version && pip --version
+# Define a job template for Flutter jobs
+.flutter-template: &flutter-job
+  image: cirrusci/flutter:3.7.0
+  before_script:
+    - pwd && ls
+    - cd 'Mobile snowledge/mobile_app'
+    - flutter packages get
 
-# Might want to add this part later, analyze code to see if any lint problem
-lint:
+lint-flutter:
+  <<: *flutter-job
   stage: lint
   script:
-    - pwd && ls
-    - flutter analyze --no-fatal-infos    # Don't treat info as fatal so the pipeline won't fail
+    - echo "Flutter linting"
+    - flutter analyze --no-fatal-infos
 
-test:
+test-flutter:
+  <<: *flutter-job
   stage: test
   script:
-    - pwd && ls
-    - echo "Running unit tests..."
+    - echo "Running Flutter unit tests..."
     - flutter test ./test/
 
-build:
+build-flutter-apk:
+  <<: *flutter-job
   stage: build
   script:
-    - pwd && ls
     - echo 'Building Android mobile Snowledge...'
     - flutter build apk --release
+
+# Define a job template for Python job
+.python-template: &python-job
+  image: python:3.7
+
+test-python:
+  <<: *python-job
+  stage: test
+  script:
+    - echo "Checking python & pip version"
+    - python --version && pip --version
