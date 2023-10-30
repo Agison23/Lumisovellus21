@@ -39,10 +39,17 @@ build-flutter-apk:
 # Define a job template for Python job
 .python-template: &python-job
   image: python:3.7
+  before_script:
+    - pwd && ls
+    - cd 'Mobile snowledge/Server/back_end'
+    - python --version && pip --version
+    - echo "Install required packages"
+    - pip install -r requirements.txt
 
 test-python:
   <<: *python-job
   stage: test
   script:
-    - echo "Checking python & pip version"
-    - python --version && pip --version
+    - pwd && ls
+    - echo "Testing backend database"
+    - python .\test.databaseFunc.py
