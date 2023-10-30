@@ -3,6 +3,7 @@ import 'package:mobile_app/app_info.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
+import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
@@ -31,9 +32,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    appState.setIsMenuItemDisabled = true;
-
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
@@ -48,27 +46,19 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   Widget buildHeader(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-
-    if (appState.isMenuItemDisabled) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Icon(Icons.verified_outlined, size: 30.0),
-          Switch(
-              value: appState.isPremiumSidebar,
-              onChanged: (value) {
-                appState.setIsPremiumSidebar = value;
-              })
-        ],
-      );
-    } else {
-      return Container(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top,
-        ),
-      );
-    }
+    var appState = Provider.of<AppState>(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Icon(Icons.verified_outlined, size: 30.0),
+        Switch(
+            value: appState.isPremiumSidebar,
+            onChanged: (value) {
+              ServerComms.messageToServer('GET_ROLE');
+              appState.setIsPremiumSidebar = value;
+            })
+      ],
+    );
   }
 
   // creating hamburger bar contents
@@ -86,6 +76,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       appState.setLanguage = language;
     }
 
+    debugPrint('ROLE:' + appState.userRole);
     return Container(
       padding: const EdgeInsets.all(24),
       child: Wrap(
@@ -164,7 +155,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
             } else {
               if (appState.premiumFeatureMenuItems.contains(index) &&
                   appState.isPremiumSidebar &&
-                  appState.isMenuItemDisabled) {
+                  appState.userRole != 'premium') {
                 _showPremiumDialog(context);
                 return;
               }
@@ -234,7 +225,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   Color _getMenuIconColor(int index, AppState appState) {
     if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.isMenuItemDisabled) {
+        appState.userRole != 'premium') {
       return Colors.grey;
     } else {
       if (index == appState.pageIndex) {
@@ -247,7 +238,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   Widget? _showMenuItemIcon(int index, AppState appState) {
     if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.isMenuItemDisabled) {
+        appState.userRole != 'premium') {
       return const Icon(Icons.lock_outline);
     }
     if (index == 6 || index == 7) {

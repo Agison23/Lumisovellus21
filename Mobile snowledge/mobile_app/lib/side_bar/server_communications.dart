@@ -412,6 +412,7 @@ class ServerComms {
             case "GET_ROLE":
               //result contains the role and permission of that user
               result = resultParts[1];
+              appState.setUserRole = result;
               //print("GET_ROLE result ${result}"); -> GET_ROLE result ('premium', 'rescue, snow condition')
               break;
             default:
