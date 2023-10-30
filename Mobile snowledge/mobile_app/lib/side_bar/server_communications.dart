@@ -93,6 +93,7 @@ class ServerComms {
   ///Starts a timer. Avoid calling this again second time, before calling the stopSendingLocationMessages() method.
   static void startSendingLocationMessages() {
     if (SetSharingLocationState.gpsSwitchState) {
+      messageToServer("GET_ROLE");
       messageToServer("LOCATION");
     }
     _timer = Timer.periodic(
