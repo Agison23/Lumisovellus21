@@ -1,8 +1,7 @@
 stages:
-  # - lint
-  - android_setup
+  - lint
   - test
-  - coverage
+  - build
 
 default:
   image: cirrusci/flutter:3.7.0
@@ -12,49 +11,23 @@ cache:
     - /flutter/bin/cache/dart-sdk
 
 # Might want to add this part later, analyze code to see if any lint problem
-# lint:
-#   stage: lint
-#   script:
-#     - flutter analyze
-
-android_setup:
-  stage: android_setup
-  variables:
-    apiLevel: "28"  # Change the API level to match Google Pixel 3
-    target: "google_apis"
-    arch: "x86"
-    deviceName: "android_emulator"
-    deviceType: "pixel"
+lint:
+  stage: lint
   script:
-    - sdkmanager "platform-tools" "platforms;android-${apiLevel}"
-    - sdkmanager "system-images;android-${apiLevel};${target}${arch}"
-    - sdkmanager --update
-    - echo "y" | sdkmanager --licenses
-    - sdkmanager --list
-    - echo "no" | avdmanager -v create avd --force --name "${deviceName}" --package "system-images;android-${apiLevel};${target};${arch}" --tag "${target}" --sdcard 128M --device "${deviceType}"
-    - emulator -avd "${deviceName}" -no-audio -no-window -no-snapshot -gpu swiftshader_indirect -no-boot-anim -no-accel -wipe-data -skip-adb-auth &
-    - adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
-    - flutter doctor -v
+    - flutter analyze --no-fatal-infos    # Don't treat info as fatal so the pipeline won't fail
 
 test:
   stage: test
   script:
     - cd 'Mobile snowledge/mobile_app'
-    - pub global activate junitreport
-    - export PATH="$PATH":"$HOME/.pub-cache/bin"
-    - flutter pub get
-    - flutter test --coverage --machine | tojunit > testreport.xml
-  artifacts:
-    reports:
-      junit: testreport.xml
-    paths:
-      - coverage
+    - flutter packages get
+    - echo "Running unit tests..."
+    - flutter test ./test/
 
-coverage:
-  stage: coverage
+build:
+  stage: build
   script:
-    - genhtml coverage/lcov.info --output=coverage
-    - mv coverage/ public/
-  artifacts:
-    paths:
-      - public
+    - echo 'Building Android mobile Snowledge...'
+    - cd 'Mobile snowledge/mobile_app'
+    - flutter packages get
+    - flutter build apk --release
