@@ -158,6 +158,7 @@ class ServerComms {
           break;
         case 'BATTERY':
           // Last measured battery, true if low
+          wasBatteryLow = await checkBattery();
           if (wasBatteryLow) {
             message = '$messagetype:$devId:low';
           } else {
