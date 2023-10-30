@@ -328,7 +328,7 @@ def init_tables(connection):
     sql3 = "INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);"
     sql4 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('normal', 'rescue');"
     sql5 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('premium', 'rescue, snow condition');"
-    sql6 = "UPDATE users SET role='normal' WHERE role IS NULL"
+    sql6 = "UPDATE users SET role='premium' WHERE role IS NULL"
     username = ADMIN
     password = PASSWORD
     role = "Admin"
