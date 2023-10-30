@@ -29,6 +29,7 @@ class Buttons {
               if (text == translations['call112'][appState.language]) {
                 open112();
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+                await ServerComms.messageToServer("BATTERY");
                 await ServerComms.messageToServer(locationMessage);
                 Navigator.of(contx).push(MaterialPageRoute(
                     builder: (contx) => const HelpNeeded(true)));
@@ -36,6 +37,7 @@ class Buttons {
               if (text == translations['helpReq'][appState.language]) {
                 Dialogs().showDialogMinorHelpQuestions(contx);
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
+                await ServerComms.messageToServer("BATTERY");
                 await ServerComms.messageToServer(locationMessage);
               }
             } else {
@@ -56,6 +58,7 @@ class Buttons {
             }
           });
         } else {
+          await ServerComms.messageToServer("BATTERY");
           await ServerComms.messageToServer(locationMessage);
           if (text == translations['call112'][appState.language]) {
             open112();

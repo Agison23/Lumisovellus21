@@ -82,6 +82,10 @@ class UdpServer:
                     prs.parse_help_decline(self.connection, message, self.udp)
                 elif msg_type == "KEEP_ALIVE":
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
+                elif msg_type == "UPDATE_ROLE":
+                    prs.parse_update_user_role(self.connection, message)
+                elif msg_type == "GET_ROLE":
+                    prs.parse_get_user_role(self.connection, message, self.udp, addr)
             except:
                 pass
                 print(f"Message parse error : {msg_type} {message}")
