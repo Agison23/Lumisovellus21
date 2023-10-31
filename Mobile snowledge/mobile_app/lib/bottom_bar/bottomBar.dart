@@ -1,7 +1,9 @@
+import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
+import 'package:speech_bubble/speech_bubble.dart';
 
 import '../state/appState.dart';
 import '../translations/translations.dart';
@@ -14,9 +16,50 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
+  final GlobalKey _askForHelpButtonKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    Widget bottomBar = buildBottomBar(appState);
+    // return bottomBar;
+    return BubbleShowcase(
+      bubbleShowcaseId: 'my_bubble_showcase',
+      bubbleShowcaseVersion: 1,
+      bubbleSlides: [
+        _askForHelpButtonSlide(),
+      ],
+      child: bottomBar,
+    );
+  }
+
+  RelativeBubbleSlide _askForHelpButtonSlide() {
+    return RelativeBubbleSlide(
+      widgetKey: _askForHelpButtonKey,
+      shape: const Oval(
+        spreadRadius: 0,
+      ),
+      child: RelativeBubbleSlideChild(
+        direction: AxisDirection.up,
+        widget: Padding(
+          padding: const EdgeInsets.only(bottom: 15.0),
+          child: SpeechBubble(
+            nipLocation: NipLocation.BOTTOM,
+            color: Colors.blue,
+            child: const Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                'This is a new cool feature !',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildBottomBar(AppState appState) {
     return Stack(children: [
       Align(
         alignment: Alignment.bottomCenter,
@@ -37,49 +80,58 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
               Container(
                 width: 40.0,
               ),
-              InkWell(
-                onTap: () {
-                  // add page infos about sharing location
-                  Dialogs().showDialogSharingLocation(context);
-                },
-                child: Row(
-                  children: [
-                    const Icon(Icons.near_me_rounded, color: Colors.white),
-                    const SizedBox(width: 10),
-                    Text(
-                      translations['location'][appState.language],
-                      style: const TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
+              buildShareLocationButton(appState),
             ],
           ),
         ),
       ),
       Align(
         alignment: Alignment.bottomCenter,
-        child: InkWell(
-          onTap: () {
-            Dialogs().showHelpNeededDialog(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 20.0),
-            height: 90.0,
-            width: 90.0,
-            decoration: BoxDecoration(
-                color: const Color(0xffd99222),
-                borderRadius: BorderRadius.circular(50.0)),
-            child: Center(
-              child: Text(
-                translations['askHelp'][appState.language],
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
-            ),
+        child: buildAskForHelpButton(appState),
+      ),
+    ]);
+  }
+
+  Widget buildAskForHelpButton(AppState appState) {
+    return InkWell(
+      key: _askForHelpButtonKey,
+      onTap: () {
+        Dialogs().showHelpNeededDialog(context);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20.0),
+        height: 90.0,
+        width: 90.0,
+        decoration: BoxDecoration(
+            color: const Color(0xffd99222),
+            borderRadius: BorderRadius.circular(50.0)),
+        child: Center(
+          child: Text(
+            translations['askHelp'][appState.language],
+            style: const TextStyle(color: Colors.white, fontSize: 15),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
-    ]);
+    );
+  }
+
+  Widget buildShareLocationButton(AppState appState) {
+    return InkWell(
+      onTap: () {
+        // add page infos about sharing location
+        Dialogs().showDialogSharingLocation(context);
+      },
+      child: Row(
+        children: [
+          const Icon(Icons.near_me_rounded, color: Colors.white),
+          const SizedBox(width: 10),
+          Text(
+            translations['location'][appState.language],
+            style: const TextStyle(color: Colors.white),
+          )
+        ],
+      ),
+    );
   }
 }

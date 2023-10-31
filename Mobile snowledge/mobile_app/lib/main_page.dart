@@ -74,8 +74,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
-    var appState = Provider.of<AppState>(context, listen: false);
-    var languageToChangeTo = appState.language;
+    AppState appState = Provider.of<AppState>(context, listen: false);
+    String languageToChangeTo = appState.language;
     String? appURL;
 
     JavascriptChannel _channel = JavascriptChannel(
@@ -91,48 +91,103 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
       appURL = appEnv == 'production'
           ? 'https://lumisovellus.fi/mobiili'
           : 'http://10.0.2.2:3000/mobiili';
-      return WillPopScope(
-        onWillPop: () async {
-          if (_globalKey.currentState?.isDrawerOpen == true) {
-            Navigator.of(context).pop();
-            return false;
-          } else {
-            final value = await showDialog<bool>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text(translations['quitApp'][appState.language]),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text(translations['no'][appState.language]),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text(translations['yes'][appState.language]),
-                      ),
-                    ],
-                  );
-                });
-            if (value != null) {
-              return Future.value(value);
-            } else {
-              return Future.value(false);
-            }
-          }
-        },
-        child: SafeArea(
-          child: Scaffold(
-            key: _globalKey,
-            body: Stack(
-              children: [
-                WebView(
-                  // initialUrl: appURL,
-                  initialUrl: "",
-                  onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
-                    _controller.future.then((controller) {
-                      const String content = '''
+      Widget mainApp =
+          buildMainApp(appState, _controller, appURL, languageToChangeTo);
+      // return BubbleShowcase(
+      //   bubbleShowcaseId: 'my_bubble_showcase',
+      //   bubbleShowcaseVersion: 1,
+      //   bubbleSlides: [
+      //     _menuButtonSlide(),
+      //   ],
+      //   child: mainApp,
+      // );
+
+      return mainApp;
+    } else {
+      return buildLoading();
+    }
+  }
+
+  RelativeBubbleSlide _menuButtonSlide() {
+    return RelativeBubbleSlide(
+      widgetKey: menuIconKey,
+      shape: const Oval(
+        spreadRadius: 1,
+      ),
+      child: RelativeBubbleSlideChild(
+        direction: AxisDirection.left,
+        widget: Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: SpeechBubble(
+            nipLocation: NipLocation.LEFT,
+            color: Colors.blue,
+            child: const Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                'This is a new cool feature !',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildMainApp(
+      AppState appState,
+      Completer<WebViewController> _controller,
+      String appURL,
+      String languageToChangeTo) {
+    return WillPopScope(
+      onWillPop: () async {
+        return onBackButtonPress(appState);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          key: _globalKey,
+          body: Stack(
+            children: [
+              // Stacking the bottom bar on top of the webview
+              createWebView(_controller, appURL, languageToChangeTo),
+              const Align(
+                  alignment: Alignment.bottomCenter, child: BottomBar()),
+              IconButton(
+                key: menuIconKey,
+                iconSize: 30,
+                icon: Stack(
+                  children: const [
+                    Icon(Icons.menu),
+                  ],
+                ),
+                onPressed: () {
+                  _globalKey.currentState?.openDrawer();
+                },
+                color: Colors.black,
+              )
+            ],
+          ),
+          drawer: MyNavigationDrawer(
+            webViewController: _controller.future,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoading() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  WebView createWebView(Completer<WebViewController> _controller, String appURL,
+      String languageToChangeTo) {
+    return WebView(
+      // initialUrl: appURL,
+      initialUrl: "",
+      onWebViewCreated: (WebViewController webViewController) {
+        _controller.complete(webViewController);
+        _controller.future.then((controller) {
+          const String content = '''
                         <!DOCTYPE html>
                         <html lang="en">
                           <head>
@@ -156,101 +211,63 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                         </html>
                       ''';
 
-                      // Use Uri.dataFromString to load the HTML content
-                      controller.loadUrl(Uri.dataFromString(
-                        content,
-                        mimeType: 'text/html',
-                        encoding: Encoding.getByName('utf-8'),
-                      ).toString());
-                    });
-                  },
-                  // Change the global React state after the page has been loaded
-                  // onPageFinished: (String url) {
-                  //   _controller.future.then((controller) {
-                  //     controller.runJavascript("""
-                  //     window.changeLanguageTo("$languageToChangeTo");
-                  //   """);
-                  //   });
-                  // },
-                  javascriptMode: JavascriptMode.unrestricted,
-                  javascriptChannels: {
-                    JavascriptChannel(
-                        name: 'messageHandler',
-                        onMessageReceived: (JavascriptMessage message) {
-                          //This is where you receive message from
-                          //javascript code and handle in Flutter/Dart
-                          //like here, the message is just being printed
-                          //in Run/LogCat window of android studio
-                          print(message.message);
-                        })
-                  },
+          // Use Uri.dataFromString to load the HTML content
+          controller.loadUrl(Uri.dataFromString(
+            content,
+            mimeType: 'text/html',
+            encoding: Encoding.getByName('utf-8'),
+          ).toString());
+        });
+      },
+      // Change the global React state after the page has been loaded
+      // onPageFinished: (String url) {
+      //   _controller.future.then((controller) {
+      //     controller.runJavascript("""
+      //     window.changeLanguageTo("$languageToChangeTo");
+      //   """);
+      //   });
+      // },
+      javascriptMode: JavascriptMode.unrestricted,
+      javascriptChannels: {
+        JavascriptChannel(
+            name: 'messageHandler',
+            onMessageReceived: (JavascriptMessage message) {
+              //This is where you receive message from
+              //javascript code and handle in Flutter/Dart
+              //like here, the message is just being printed
+              //in Run/LogCat window of android studio
+              print(message.message);
+            })
+      },
+    );
+  }
+
+  Future<bool> onBackButtonPress(AppState appState) async {
+    if (_globalKey.currentState?.isDrawerOpen == true) {
+      Navigator.of(context).pop();
+      return false;
+    } else {
+      final value = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(translations['quitApp'][appState.language]),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(translations['no'][appState.language]),
                 ),
-                // Stacking the bottom bar on top of the webview
-                const Align(
-                    alignment: Alignment.bottomCenter, child: BottomBar()),
-                BubbleShowcase(
-                  bubbleShowcaseId: 'my_bubble_showcase',
-                  bubbleShowcaseVersion: 1,
-                  bubbleSlides: [
-                    RelativeBubbleSlide(
-                      widgetKey: menuIconKey,
-                      child: RelativeBubbleSlideChild(
-                        direction: AxisDirection.down,
-                        widget: SpeechBubble(
-                          nipLocation: NipLocation.TOP,
-                          color: const Color(0xff5A97EE),
-                          child: const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'Tap to open the menu',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    RelativeBubbleSlide(
-                      widgetKey: menuIconKey,
-                      child: RelativeBubbleSlideChild(
-                        direction: AxisDirection.right,
-                        widget: SpeechBubble(
-                          nipLocation: NipLocation.LEFT,
-                          color: Colors.blue,
-                          child: const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'This is a new cool feature !',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  child: IconButton(
-                    key: menuIconKey,
-                    iconSize: 30,
-                    icon: Stack(
-                      children: const [
-                        Icon(Icons.menu),
-                      ],
-                    ),
-                    onPressed: () {
-                      _globalKey.currentState?.openDrawer();
-                    },
-                    color: Colors.black,
-                  ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(translations['yes'][appState.language]),
                 ),
               ],
-            ),
-            drawer: MyNavigationDrawer(
-              webViewController: _controller.future,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return const Center(child: CircularProgressIndicator());
+            );
+          });
+      if (value != null) {
+        return value;
+      }
+      return false;
     }
   }
 }
