@@ -53,8 +53,16 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
         const Icon(Icons.verified_outlined, size: 30.0),
         Switch(
             value: appState.isPremiumSidebar,
-            onChanged: (value) {
-              ServerComms.messageToServer('GET_ROLE');
+            onChanged: (value) async {
+              // Check user role
+              await ServerComms.messageToServer('GET_ROLE');
+              if (appState.userRole != 'premium' &&
+                  appState.userRole != 'normal') {
+                await ServerComms.messageToServer('UPDATE_ROLE',
+                    role: appState.appEnv == 'development'
+                        ? 'premium'
+                        : 'normal');
+              }
               appState.setIsPremiumSidebar = value;
             })
       ],
@@ -76,7 +84,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       appState.setLanguage = language;
     }
 
-    debugPrint('ROLE:' + appState.userRole);
     return Container(
       padding: const EdgeInsets.all(24),
       child: Wrap(
