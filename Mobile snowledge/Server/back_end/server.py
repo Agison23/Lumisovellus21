@@ -83,7 +83,7 @@ class UdpServer:
                 elif msg_type == "KEEP_ALIVE":
                     self.udp.sendto(bytes(message[0], "UTF-8"), addr)
                 elif msg_type == "UPDATE_ROLE":
-                    prs.parse_update_user_role(self.connection, message)
+                    prs.parse_update_user_role(self.connection, message, addr)
                 elif msg_type == "GET_ROLE":
                     prs.parse_get_user_role(self.connection, message, self.udp, addr)
             except:
