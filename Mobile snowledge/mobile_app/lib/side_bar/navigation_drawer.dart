@@ -76,6 +76,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 translations['mapView'][appState.language]),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
+            key: const ValueKey('snowCondition'),
           ),
           _item(2, Icons.sunny_snowing,
               translations['weather'][appState.language]),
