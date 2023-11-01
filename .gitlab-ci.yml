@@ -52,7 +52,7 @@ test-python-db:
     - python test.databaseFunc.py
 
 test-python-server:
-  <<: *python-jon
+  <<: *python-job
   stage: test
   script:
     - echo "Testing backend server"
