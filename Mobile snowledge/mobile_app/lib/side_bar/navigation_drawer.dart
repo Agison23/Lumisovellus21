@@ -29,6 +29,26 @@ class MyNavigationDrawer extends StatefulWidget {
 
 class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   bool winter = Utility.getSummerOrWinter();
+  String premiumRole = 'premium';
+  String normalRole = 'normal';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Fetch user role
+    fetchUserRole();
+  }
+
+  Future<void> fetchUserRole() async {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    await ServerComms.messageToServer('GET_ROLE');
+    if (appState.userRole != premiumRole && appState.userRole != normalRole) {
+      await ServerComms.messageToServer('UPDATE_ROLE',
+          role: appState.appEnv == 'development' ? premiumRole : normalRole);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,29 +65,25 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     );
   }
 
-  Widget buildHeader(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        const Icon(Icons.verified_outlined, size: 30.0),
-        Switch(
-            value: appState.isPremiumSidebar,
-            onChanged: (value) async {
-              // Check user role
-              await ServerComms.messageToServer('GET_ROLE');
-              if (appState.userRole != 'premium' &&
-                  appState.userRole != 'normal') {
-                await ServerComms.messageToServer('UPDATE_ROLE',
-                    role: appState.appEnv == 'development'
-                        ? 'premium'
-                        : 'normal');
-                await ServerComms.messageToServer('GET_ROLE');
-              }
-              appState.setIsPremiumSidebar = value;
-            })
-      ],
-    );
+  buildHeader(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    return appState.userRole == premiumRole
+        ? Container(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+            ),
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Icon(Icons.verified_outlined, size: 30.0),
+              Switch(
+                  value: appState.isPremiumSidebar,
+                  onChanged: (value) async {
+                    appState.setIsPremiumSidebar = value;
+                  })
+            ],
+          );
   }
 
   // creating hamburger bar contents
@@ -93,7 +109,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           Visibility(
             child: _item(0, Icons.area_chart_outlined,
                 translations['conditions'][appState.language]),
-            visible: appState.isPremiumSidebar,
+            visible:
+                appState.isPremiumSidebar || appState.userRole == premiumRole,
           ),
           Visibility(
             child: _item(1, Icons.map_outlined,
@@ -106,7 +123,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           Visibility(
             child: _item(3, Icons.ac_unit,
                 translations['snowDescription'][appState.language]),
-            visible: appState.isPremiumSidebar, // show if user is premium
+            visible:
+                appState.isPremiumSidebar || appState.userRole == premiumRole,
             // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
@@ -163,7 +181,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
             } else {
               if (appState.premiumFeatureMenuItems.contains(index) &&
                   appState.isPremiumSidebar &&
-                  appState.userRole != 'premium') {
+                  appState.userRole != premiumRole) {
                 _showPremiumDialog(context);
                 return;
               }
@@ -233,7 +251,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   Color _getMenuIconColor(int index, AppState appState) {
     if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != 'premium') {
+        appState.userRole != premiumRole) {
       return Colors.grey;
     } else {
       if (index == appState.pageIndex) {
@@ -246,7 +264,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   Widget? _showMenuItemIcon(int index, AppState appState) {
     if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != 'premium') {
+        appState.userRole != premiumRole) {
       return const Icon(Icons.lock_outline);
     }
     if (index == 6 || index == 7) {
