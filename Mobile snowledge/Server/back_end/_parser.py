@@ -331,7 +331,7 @@ def parse_battery(connection, message, s):
         send_low_battery_current_requests(connection, dev_id, s)
     return
 
-def parse_update_user_role(connection, message, addr):
+def parse_update_user_role(connection, message, s, addr):
     dev_id = message[0]
     role = message[1]
     user_role = db.set_user_role(connection, dev_id, role)
