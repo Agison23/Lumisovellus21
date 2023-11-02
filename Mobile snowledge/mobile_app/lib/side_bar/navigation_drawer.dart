@@ -62,6 +62,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                     role: appState.appEnv == 'development'
                         ? 'premium'
                         : 'normal');
+                await ServerComms.messageToServer('GET_ROLE');
               }
               appState.setIsPremiumSidebar = value;
             })
