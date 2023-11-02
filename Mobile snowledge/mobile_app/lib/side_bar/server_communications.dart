@@ -208,7 +208,7 @@ class ServerComms {
           break;
         case "GET_ROLE":
           // get both role and permission
-          message = '$messagetype:$devId';
+          message = '$messagetype:$devId:$role';
           break;
         default:
           message = "invalid messagetype";
