@@ -208,7 +208,7 @@ class ServerComms {
           break;
         case "GET_ROLE":
           // get both role and permission
-          message = '$messagetype:$devId';
+          message = '$messagetype:$devId:$role';
           break;
         default:
           message = "invalid messagetype";
@@ -413,6 +413,12 @@ class ServerComms {
             case "GET_ROLE":
               //result contains the role and permission of that user
               result = resultParts[1];
+              String role = result
+                  .split(',')[0]
+                  .replaceAll('(', '')
+                  .replaceAll("'", '')
+                  .trim();
+              appState.setUserRole = role;
               //print("GET_ROLE result ${result}"); -> GET_ROLE result ('premium', 'rescue, snow condition')
               break;
             default:
