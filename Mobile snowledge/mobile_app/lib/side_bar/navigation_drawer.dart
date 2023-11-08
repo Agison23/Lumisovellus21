@@ -32,24 +32,52 @@ class MyNavigationDrawer extends StatefulWidget {
 class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   bool winter = Utility.getSummerOrWinter();
 
-  @override
-  Widget build(BuildContext context) => Drawer(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildHeader(context),
-              buildMenuItems(context),
-            ],
-          ),
-        ),
-      );
+  final GlobalKey _snowConditionKey = GlobalKey();
+  final GlobalKey _mapViewKey = GlobalKey();
+  final GlobalKey _weatherKey = GlobalKey();
+  final GlobalKey _snowTypeKey = GlobalKey();
+  final GlobalKey _userInfoKey = GlobalKey();
+  final GlobalKey _serviceInfo = GlobalKey();
+  final GlobalKey _appNameKey = GlobalKey();
+  final GlobalKey _privacyKey = GlobalKey();
+  final ValueKey _languageKey = ValueKey('languageSideDropdown');
 
-  Widget buildHeader(BuildContext context) => Container(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top,
+  @override
+  Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: true);
+    Widget navigationDrawer = buildNavigationDrawer(context);
+
+    return (appState.showTutorial && appState.currentTutorialStep == 2)
+        ? BubbleShowcase(
+            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleShowcaseVersion: 1,
+            bubbleSlides: [
+              _buttonSlide("Show snow condition", _snowConditionKey),
+              _buttonSlide("Show area's map", _mapViewKey),
+              _buttonSlide("Show weather", _weatherKey),
+            ],
+            child: navigationDrawer,
+          )
+        : navigationDrawer;
+  }
+
+  Widget buildNavigationDrawer(BuildContext context) {
+    return Drawer(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
+              ),
+            ),
+            buildMenuItems(context),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
@@ -72,40 +100,37 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
         runSpacing: 8,
         children: [
           _item(0, Icons.area_chart_outlined,
-              translations['conditions'][appState.language]),
+              translations['conditions'][appState.language], _snowConditionKey),
           Visibility(
             child: _item(1, Icons.map_outlined,
-                translations['mapView'][appState.language]),
+                translations['mapView'][appState.language], _mapViewKey),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(2, Icons.sunny_snowing,
-              translations['weather'][appState.language]),
+              translations['weather'][appState.language], _weatherKey),
           Visibility(
-            child: _item(3, Icons.ac_unit,
-                translations['snowDescription'][appState.language]),
+            child: _item(
+                3,
+                Icons.ac_unit,
+                translations['snowDescription'][appState.language],
+                _snowTypeKey),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
-              translations['userInfo'][appState.language]),
+              translations['userInfo'][appState.language], _userInfoKey),
           _item(5, Icons.menu_book_outlined,
-              translations['serviceInfo'][appState.language]),
+              translations['serviceInfo'][appState.language], _serviceInfo),
           const Divider(color: Colors.black),
-          _item(
-            6,
-            Icons.downhill_skiing_outlined,
-            translations['appName'][appState.language],
-          ),
-          _item(
-            7,
-            Icons.privacy_tip_outlined,
-            translations['privacy'][appState.language],
-          ),
+          _item(6, Icons.downhill_skiing_outlined,
+              translations['appName'][appState.language], _appNameKey),
+          _item(7, Icons.privacy_tip_outlined,
+              translations['privacy'][appState.language], _privacyKey),
           const Divider(color: Colors.black),
           Center(
             child: DropdownButton<String>(
-              key: const ValueKey('languageSideDropdown'),
+              key: _languageKey,
               value: appState.languageName,
               onChanged: (String? value) {
                 setLanguage(value!);
@@ -126,9 +151,10 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     );
   }
 
-  Widget _item(int index, IconData iconData, String title) {
+  Widget _item(int index, IconData iconData, String title, GlobalKey key) {
     var appState = Provider.of<AppState>(context);
     return Stack(
+      key: key,
       children: [
         ListTile(
           leading: Icon(iconData),
@@ -204,6 +230,33 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           },
         ),
       ],
+    );
+  }
+
+  RelativeBubbleSlide _buttonSlide(String message, GlobalKey key) {
+    print("=============== Showing bubble slide for" + message);
+    return RelativeBubbleSlide(
+      widgetKey: key,
+      shape: const Oval(
+        spreadRadius: 0,
+      ),
+      child: RelativeBubbleSlideChild(
+        direction: AxisDirection.down,
+        widget: Padding(
+          padding: const EdgeInsets.only(bottom: 15.0),
+          child: SpeechBubble(
+            nipLocation: NipLocation.TOP,
+            color: Colors.blue,
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

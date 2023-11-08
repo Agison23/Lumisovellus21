@@ -20,17 +20,20 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: true);
     Widget bottomBar = buildBottomBar(appState);
+
     // return bottomBar;
-    return BubbleShowcase(
-      bubbleShowcaseId: 'my_bubble_showcase',
-      bubbleShowcaseVersion: 1,
-      bubbleSlides: [
-        _askForHelpButtonSlide(),
-      ],
-      child: bottomBar,
-    );
+    return appState.showTutorial && appState.currentTutorialStep == 3
+        ? BubbleShowcase(
+            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleShowcaseVersion: 1,
+            bubbleSlides: [
+              _askForHelpButtonSlide(),
+            ],
+            child: bottomBar,
+          )
+        : bottomBar;
   }
 
   RelativeBubbleSlide _askForHelpButtonSlide() {
@@ -97,6 +100,10 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
       key: _askForHelpButtonKey,
       onTap: () {
         Dialogs().showHelpNeededDialog(context);
+        if (appState.showTutorial && appState.currentTutorialStep == 3) {
+          print("Advance to next tutorial step!");
+          appState.nextTutorialStep();
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20.0),

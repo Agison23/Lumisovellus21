@@ -8,6 +8,9 @@ class AppState extends ChangeNotifier {
   String _chatRoomId = '';
   bool _hasUnreadMessages = false; // For unread message notifications
 
+  bool _showTutorial = true;
+  int _currentTutorialStep = 1;
+
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
   Map get allLanguages => _allLanguages;
@@ -20,9 +23,13 @@ class AppState extends ChangeNotifier {
 
   bool get hasUnreadMessages => _hasUnreadMessages;
 
+  int get currentTutorialStep => _currentTutorialStep;
+
   final Map _chatRoomUsersBattery = {};
 
   Map get chatRoomUsersBattery => _chatRoomUsersBattery;
+
+  bool get showTutorial => _showTutorial;
 
   void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
     _chatRoomUsersBattery[phoneNum] = batteryStatus;
@@ -63,6 +70,16 @@ class AppState extends ChangeNotifier {
 
   set setHasUnreadMessages(bool value) {
     _hasUnreadMessages = value;
+    notifyListeners();
+  }
+
+  set setShowTutorial(bool value) {
+    _showTutorial = value;
+    notifyListeners();
+  }
+
+  void nextTutorialStep() {
+    _currentTutorialStep += 1;
     notifyListeners();
   }
 }

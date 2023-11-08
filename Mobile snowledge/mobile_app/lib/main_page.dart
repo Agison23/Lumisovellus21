@@ -74,9 +74,13 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
-    AppState appState = Provider.of<AppState>(context, listen: false);
+    AppState appState = Provider.of<AppState>(context, listen: true);
     String languageToChangeTo = appState.language;
     String? appURL;
+
+    // Let's try to only trigger the bubble showcase when step is 1
+    bool showTutorial = appState.showTutorial;
+    int currentTutorialStep = appState.currentTutorialStep;
 
     JavascriptChannel _channel = JavascriptChannel(
       name: 'myChannel', // Name your channel.
@@ -93,16 +97,18 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
           : 'http://10.0.2.2:3000/mobiili';
       Widget mainApp =
           buildMainApp(appState, _controller, appURL, languageToChangeTo);
-      // return BubbleShowcase(
-      //   bubbleShowcaseId: 'my_bubble_showcase',
-      //   bubbleShowcaseVersion: 1,
-      //   bubbleSlides: [
-      //     _menuButtonSlide(),
-      //   ],
-      //   child: mainApp,
-      // );
+      return currentTutorialStep == 1 && showTutorial
+          ? BubbleShowcase(
+              bubbleShowcaseId: 'my_bubble_showcase',
+              bubbleShowcaseVersion: 1,
+              bubbleSlides: [
+                _menuButtonSlide(),
+              ],
+              child: mainApp,
+            )
+          : mainApp;
 
-      return mainApp;
+      // return mainApp;
     } else {
       return buildLoading();
     }
@@ -162,6 +168,11 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
                 ),
                 onPressed: () {
                   _globalKey.currentState?.openDrawer();
+                  print("Menu button pressed");
+                  if (appState.showTutorial &&
+                      appState.currentTutorialStep == 1) {
+                    appState.nextTutorialStep();
+                  }
                 },
                 color: Colors.black,
               )
