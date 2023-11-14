@@ -216,7 +216,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
               Align(
                   alignment: const Alignment(0.95, 0.62),
                   child: IconButton(
-                    icon: const Icon(Icons.my_location),
+                    icon: const Icon(Icons.navigation),
                     onPressed: () {
                       compassOff = !compassOff;
                     },
