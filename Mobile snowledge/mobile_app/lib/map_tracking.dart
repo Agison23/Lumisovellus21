@@ -15,6 +15,8 @@ import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import '../../widgets_binding_observer_state.dart';
 import '../translations/translations.dart';
+import 'package:flutter_compass/flutter_compass.dart';
+import 'dart:math' as math;
 
 class MapTracking extends StatefulWidget {
   const MapTracking({Key? key}) : super(key: key);
@@ -56,6 +58,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
   @override
   Widget build(BuildContext context) {
+    bool compassOff = true;
+    double _direction = 0;
     var appState = Provider.of<AppState>(context);
     var lat;
     var lng;
@@ -103,7 +107,6 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                     if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     }
-
                     String locationData =
                         snapshot.data.toString().replaceAll(RegExp('[,>]'), '');
                     List<String> dataList = locationData.toString().split(' ');
@@ -121,10 +124,48 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         TileLayer(urlTemplate: getSummerOrWinterMap()
                             // Pöllöille oma API avain!
                             ),
-                        MarkerLayer(
-                          markers: getMarker(LatLng(lat, lng)),
-                          rotate: true,
-                        ),
+                        StreamBuilder<CompassEvent>(
+                            stream: FlutterCompass.events,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                // return Text(
+                                //     'Error reading heading: ${snapshot.error}');
+                                return MarkerLayer(
+                                  markers: getMarker(LatLng(lat, lng), 0),
+                                  rotate: true,
+                                );
+                              }
+
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                // return Center(
+                                //   child: CircularProgressIndicator(),
+                                // );
+                                return MarkerLayer(
+                                  markers: getMarker(LatLng(lat, lng), 0),
+                                  rotate: true,
+                                );
+                              }
+                              double? direction = snapshot.data!.heading;
+
+                              if (direction == null) {
+                                // return Center(
+                                //   child: Text("Device does not have sensors !"),
+                                // );
+                                return MarkerLayer(
+                                  markers: getMarker(LatLng(lat, lng), 0),
+                                  rotate: true,
+                                );
+                              }
+
+                              _direction = direction;
+
+                              return MarkerLayer(
+                                markers: getMarker(LatLng(lat, lng),
+                                    compassOff ? 0 : _direction),
+                                rotate: compassOff,
+                              );
+                            })
                       ],
                     );
                   })),
@@ -172,6 +213,14 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                           LatLng(lat, lng), _mapController.zoom, 0);
                     },
                   )),
+              Align(
+                  alignment: const Alignment(0.95, 0.62),
+                  child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    onPressed: () {
+                      compassOff = !compassOff;
+                    },
+                  )),
               const Align(
                   alignment: Alignment.topCenter,
                   child: Image(
@@ -195,18 +244,20 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
-  static List<Marker> getMarker(LatLng usersLatLng) {
+  static List<Marker> getMarker(LatLng usersLatLng, double direction) {
     List<Marker> marker = [];
     marker.add(Marker(
-      point: usersLatLng,
-      builder: (ctx) => Container(
-          width: 1.0,
-          height: 1.0,
-          child: const Icon(
-            Icons.person_pin_circle,
-            size: 40,
-          )),
-    ));
+        point: usersLatLng,
+        builder: (ctx) => Transform.rotate(
+              angle: direction * math.pi / 180,
+              child: Container(
+                  width: 1.0,
+                  height: 1.0,
+                  child: const Icon(
+                    Icons.person_pin_circle,
+                    size: 40,
+                  )),
+            )));
     return marker;
   }
 }
