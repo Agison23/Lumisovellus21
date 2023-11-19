@@ -139,7 +139,7 @@ class ServerComms {
   }
 
   // Constructing different messages to server
-  static messageToServer(String messagetype) async {
+  static messageToServer(String messagetype, {String role = 'normal'}) async {
     Map<String, String> _env =
         await Utility.parseStringToMap(assetsFileName: '.env');
     bool con = true;
@@ -161,6 +161,7 @@ class ServerComms {
           break;
         case 'BATTERY':
           // Last measured battery, true if low
+          wasBatteryLow = await checkBattery();
           if (wasBatteryLow) {
             message = '$messagetype:$devId:low';
           } else {
@@ -203,6 +204,14 @@ class ServerComms {
           break;
         case "KEEP_ALIVE":
           message = '$messagetype:123';
+          break;
+        case "UPDATE_ROLE":
+          // Example call messageToServer("UPDATE_ROLE", role: "premium")
+          message = '$messagetype:$devId:$role';
+          break;
+        case "GET_ROLE":
+          // get both role and permission
+          message = '$messagetype:$devId';
           break;
         default:
           message = "invalid messagetype";
@@ -425,6 +434,11 @@ class ServerComms {
               await Dialogs.showRequestEndedAutomaticallyDialog(
                   MyApp.navigatorKey.currentState?.context, 'help_requester');
 
+              break;
+            case "GET_ROLE":
+              //result contains the role and permission of that user
+              result = resultParts[1];
+              //print("GET_ROLE result ${result}"); -> GET_ROLE result ('premium', 'rescue, snow condition')
               break;
             default:
               // print("invalid message: $result");
