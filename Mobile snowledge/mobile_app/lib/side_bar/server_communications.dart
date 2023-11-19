@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
@@ -34,9 +35,11 @@ class ServerComms {
   static Future<RawDatagramSocket> initRDgS() {
     Future<RawDatagramSocket> rDgS =
         RawDatagramSocket.bind(InternetAddress.anyIPv4, 50943);
+    // RawDatagramSocket.bind(InternetAddress.anyIPv4, 50000);
     supportsIPv6().then((supportIPv6) {
       if (supportIPv6) {
         rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv6, 50943);
+        // rDgS = RawDatagramSocket.bind(InternetAddress.anyIPv6, 50000);
       }
     });
     return rDgS;
@@ -213,8 +216,10 @@ class ServerComms {
           if (_env['APP_ENVIRONMENT'] == 'development') {
             udpSocket.send(
                 data, InternetAddress(await initAddressLocal()), 50943);
+            // data,                InternetAddress(await initAddressLocal()),                50000);
           } else {
             udpSocket.send(data, InternetAddress(await initAddress()), 50943);
+            // udpSocket.send(data, InternetAddress(await initAddress()), 50000);
           }
         },
       );
@@ -240,6 +245,8 @@ class ServerComms {
 
   static listenServer(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    final firestore = FirebaseFirestore.instance;
+
     rDgS.then((RawDatagramSocket udpSocket) async {
       Map<String, String> _env =
           await Utility.parseStringToMap(assetsFileName: '.env');
@@ -327,9 +334,27 @@ class ServerComms {
               // Need to set helpRequesterBatteryState to low.
               NotificationHandler.helpModeBatteryLowNotification(
                   appState, 'helper');
-              String helpRequesterBatteryState;
               String requesterNumber = appState.chatRoomId;
               appState.setChatRoomUsersBattery(requesterNumber, 'low');
+              // Construct the chat message to store in chat room
+              var data = {
+                'message':
+                    "SYSTEM: The requester of this help message has low battery level!",
+                'sent_by': requesterNumber,
+                'datetime': DateTime.now(),
+              };
+              firestore.collection('Rooms').doc(requesterNumber).update({
+                'last_message_time': DateTime.now(),
+                'last_message': "",
+              });
+              // Save the chat message to the chat room
+              firestore
+                  .collection('Rooms')
+                  .doc(requesterNumber)
+                  .collection('Messages')
+                  .add(data);
+              print(
+                  'Sent new low battery message warning to chat room $requesterNumber');
               break;
             case "LOW_BATTERY_HELPER":
               print(
