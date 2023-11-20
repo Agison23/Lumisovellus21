@@ -127,44 +127,38 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         StreamBuilder<CompassEvent>(
                             stream: FlutterCompass.events,
                             builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                // return Text(
-                                //     'Error reading heading: ${snapshot.error}');
+                              if (!compassOff || !snapshot.hasError) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                double? direction = snapshot.data!.heading;
+
+                                if (direction == null) {
+                                  // return Center(
+                                  //   child: Text("Device does not have sensors !"),
+                                  // );
+                                  return MarkerLayer(
+                                    markers: getMarker(LatLng(lat, lng), 0),
+                                    rotate: true,
+                                  );
+                                }
+
+                                _direction = direction;
+
+                                return MarkerLayer(
+                                  markers:
+                                      getMarker(LatLng(lat, lng), _direction),
+                                  rotate: compassOff,
+                                );
+                              } else {
                                 return MarkerLayer(
                                   markers: getMarker(LatLng(lat, lng), 0),
                                   rotate: true,
                                 );
                               }
-
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // return Center(
-                                //   child: CircularProgressIndicator(),
-                                // );
-                                return MarkerLayer(
-                                  markers: getMarker(LatLng(lat, lng), 0),
-                                  rotate: true,
-                                );
-                              }
-                              double? direction = snapshot.data!.heading;
-
-                              if (direction == null) {
-                                // return Center(
-                                //   child: Text("Device does not have sensors !"),
-                                // );
-                                return MarkerLayer(
-                                  markers: getMarker(LatLng(lat, lng), 0),
-                                  rotate: true,
-                                );
-                              }
-
-                              _direction = direction;
-
-                              return MarkerLayer(
-                                markers: getMarker(LatLng(lat, lng),
-                                    compassOff ? 0 : _direction),
-                                rotate: compassOff,
-                              );
                             })
                       ],
                     );

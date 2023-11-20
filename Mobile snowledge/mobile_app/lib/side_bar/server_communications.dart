@@ -25,7 +25,7 @@ import '../helper/utility.dart';
 
 class ServerComms {
   static Future<RawDatagramSocket> rDgS = initRDgS();
-  static late Timer _timer;
+  static Timer? _timer;
   static bool _isOfferingHelp = false;
   static bool isRequestingHelp = false;
   static bool wasBatteryLow = false;
@@ -106,9 +106,9 @@ class ServerComms {
     bool isLocationSent = false;
     // print(_timer.tick);
     if (SetSharingLocationState.gpsSwitchState) {
-      if ((_timer.tick % (4 * minutesBetweenLocationMessages) == 0) ||
+      if ((_timer!.tick % (4 * minutesBetweenLocationMessages) == 0) ||
           _isOfferingHelp &&
-              _timer.tick % (1 * minutesBetweenLocationMessages) == 0) {
+              _timer!.tick % (1 * minutesBetweenLocationMessages) == 0) {
         messageToServer("LOCATION");
         isLocationSent = true;
       } else {
@@ -117,8 +117,8 @@ class ServerComms {
     }
 
     const batteryCheckInterval = 1; //1 minute
-    if ((_timer.tick % (4 * batteryCheckInterval) == 0) ||
-        _isOfferingHelp && _timer.tick % (1 * batteryCheckInterval) == 0) {
+    if ((_timer!.tick % (4 * batteryCheckInterval) == 0) ||
+        _isOfferingHelp && _timer!.tick % (1 * batteryCheckInterval) == 0) {
       //check battery here
       bool isBatteryLow = await checkBattery();
       if (isBatteryLow != wasBatteryLow) {
@@ -132,7 +132,7 @@ class ServerComms {
   }
 
   static void stopSendingLocationMessages() {
-    _timer.cancel();
+    if (_timer?.isActive == true) _timer!.cancel();
   }
 
   // Constructing different messages to server
