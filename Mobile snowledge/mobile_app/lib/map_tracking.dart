@@ -60,6 +60,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   Widget build(BuildContext context) {
     bool compassOff = true;
     double _direction = 0;
+    double _mapRotation = 0;
+    String _compassIcon = 'assets/images/compass_button.png';
     var appState = Provider.of<AppState>(context);
     var lat;
     var lng;
@@ -119,6 +121,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         maxZoom: 18,
                         center: LatLng(lat, lng),
                         zoom: 11.0,
+                        onMapEvent: (p0) =>
+                            _mapRotation = _mapController.rotation,
                       ),
                       children: [
                         TileLayer(urlTemplate: getSummerOrWinterMap()
@@ -199,35 +203,45 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
               ),
               Align(
                 alignment: const Alignment(0.95, 0.76),
-                child: MaterialButton(
+                child: IconButton(
+                  iconSize: 24,
+                  icon: const Image(
+                      image: AssetImage('assets/images/locate_button.png'),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.fill),
                   onPressed: () {
+                    _compassIcon = 'assets/images/north_button.png';
                     _mapController.moveAndRotate(
                         LatLng(lat, lng), _mapController.zoom, 0);
+                    Future.delayed(const Duration(milliseconds: 1000), () {
+                      _compassIcon = 'assets/images/compass_button.png';
+                      // Only to invoke mapEventStream
+                      _mapController.rotate(_mapRotation + 360);
+                    });
                   },
-                  color: Colors.white,
-                  textColor: Colors.black,
-                  child: const Icon(
-                    Icons.my_location,
-                    size: 24,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(0.0),
                 ),
               ),
               Align(
                 alignment: const Alignment(0.95, 0.56),
-                child: MaterialButton(
-                  onPressed: () {
-                    compassOff = !compassOff;
-                  },
-                  color: Colors.white,
-                  textColor: Colors.black,
-                  child: const Icon(
-                    Icons.navigation,
-                    size: 24,
+                child: StreamBuilder(
+                  stream: _mapController.mapEventStream,
+                  builder: (context, snapshot) => Transform.rotate(
+                    angle: _mapRotation * math.pi / 180,
+                    child: IconButton(
+                      iconSize: 24,
+                      icon: Image(
+                          image: AssetImage(_compassIcon),
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.fill),
+                      onPressed: () {
+                        compassOff = !compassOff;
+                      },
+                      padding: const EdgeInsets.all(0.0),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(16),
-                  shape: const CircleBorder(),
                 ),
               ),
               const Align(

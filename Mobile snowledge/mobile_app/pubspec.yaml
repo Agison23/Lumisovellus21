@@ -82,6 +82,12 @@ flutter:
     - android/app/src/main/res/drawable/logo_transparent_black.png
     - assets/images/MapTiler.png
     - assets/images/TAUSTAKUVA_SOVELLUS.jpg
+    - assets/images/compass_button.png
+    - assets/images/compass.png
+    - assets/images/locate_button.png
+    - assets/images/navigation_button_background.png
+    - assets/images/north_button.png
+    - assets/images/north.png
     - .env
   #   - images/a_dot_ham.jpeg
 
