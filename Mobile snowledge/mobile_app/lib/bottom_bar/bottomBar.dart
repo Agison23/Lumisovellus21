@@ -1,8 +1,9 @@
-import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/widgets/bubble_slides.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 import '../state/appState.dart';
@@ -17,6 +18,7 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
   final GlobalKey _askForHelpButtonKey = GlobalKey();
+  final GlobalKey _shareLocationButtonKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -24,42 +26,24 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
     Widget bottomBar = buildBottomBar(appState);
 
     // return bottomBar;
-    return appState.showTutorial && appState.currentTutorialStep == 3
+    return appState.showTutorial &&
+            appState.currentTutorialStep ==
+                appState.tutorialSteps['LOCATION_SHARING']
         ? BubbleShowcase(
             bubbleShowcaseId: 'my_bubble_showcase',
             bubbleShowcaseVersion: 1,
             bubbleSlides: [
-              _askForHelpButtonSlide(),
+              BubbleSlides().getRelativeBubbleSlide(
+                  appState,
+                  translations['rescueTutorial']['shareLocation']
+                      [appState.language],
+                  _shareLocationButtonKey,
+                  axisDirection: AxisDirection.up,
+                  nipLocation: NipLocation.BOTTOM)
             ],
             child: bottomBar,
           )
         : bottomBar;
-  }
-
-  RelativeBubbleSlide _askForHelpButtonSlide() {
-    return RelativeBubbleSlide(
-      widgetKey: _askForHelpButtonKey,
-      shape: const Oval(
-        spreadRadius: 0,
-      ),
-      child: RelativeBubbleSlideChild(
-        direction: AxisDirection.up,
-        widget: Padding(
-          padding: const EdgeInsets.only(bottom: 15.0),
-          child: SpeechBubble(
-            nipLocation: NipLocation.BOTTOM,
-            color: Colors.blue,
-            child: const Padding(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                'This is a new cool feature !',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget buildBottomBar(AppState appState) {
@@ -90,9 +74,31 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
       ),
       Align(
         alignment: Alignment.bottomCenter,
-        child: buildAskForHelpButton(appState),
+        child: buildAskHelpButton(appState),
       ),
     ]);
+  }
+
+  Widget buildAskHelpButton(AppState appState) {
+    return (appState.showTutorial &&
+            appState.currentTutorialStep ==
+                appState.tutorialSteps['ASK_FOR_HELP'])
+        ? BubbleShowcase(
+            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleShowcaseVersion: 1,
+            bubbleSlides: [
+              BubbleSlides().getRelativeBubbleSlide(
+                  appState,
+                  translations['rescueTutorial']['askForHelp']
+                      [appState.language],
+                  _askForHelpButtonKey,
+                  axisDirection: AxisDirection.up,
+                  nipLocation: NipLocation.BOTTOM,
+                  shape: const Oval(spreadRadius: 1))
+            ],
+            child: buildAskForHelpButton(appState),
+          )
+        : buildAskForHelpButton(appState);
   }
 
   Widget buildAskForHelpButton(AppState appState) {
@@ -100,7 +106,9 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
       key: _askForHelpButtonKey,
       onTap: () {
         Dialogs().showHelpNeededDialog(context);
-        if (appState.showTutorial && appState.currentTutorialStep == 3) {
+        if (appState.showTutorial &&
+            appState.currentTutorialStep ==
+                appState.tutorialSteps['ASK_FOR_HELP']) {
           print("Advance to next tutorial step!");
           appState.nextTutorialStep();
         }
@@ -125,9 +133,16 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
 
   Widget buildShareLocationButton(AppState appState) {
     return InkWell(
+      key: _shareLocationButtonKey,
       onTap: () {
         // add page infos about sharing location
         Dialogs().showDialogSharingLocation(context);
+        if (appState.showTutorial &&
+            appState.currentTutorialStep ==
+                appState.tutorialSteps['LOCATION_SHARING']) {
+          print("Advance to next tutorial step!");
+          appState.nextTutorialStep();
+        }
       },
       child: Row(
         children: [

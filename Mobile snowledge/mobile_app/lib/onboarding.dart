@@ -4,11 +4,13 @@ import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets/bubble_slides.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'translations/translations.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({Key? key}) : super(key: key);
@@ -25,6 +27,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   final page4ScrollController = ScrollController();
   final page5ScrollController = ScrollController();
 
+  final GlobalKey _languageDropdownKey = GlobalKey();
+
   @override
   void dispose() {
     pageViewController.dispose();
@@ -35,6 +39,29 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
+    Widget onboardingPage = buildOnboardingPage(context, appState);
+
+    if (appState.showTutorial == true &&
+        appState.currentTutorialStep ==
+            appState.tutorialSteps['LANGUAGE_SELECTION']) {
+      return BubbleShowcase(
+        bubbleShowcaseId: 'my_bubble_showcase',
+        bubbleShowcaseVersion: 1,
+        bubbleSlides: [
+          // Work around
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['changeLanguage']
+                  [appState.language],
+              _languageDropdownKey)
+        ],
+        child: onboardingPage,
+      );
+    }
+    return onboardingPage;
+  }
+
+  Widget buildOnboardingPage(BuildContext context, AppState appState) {
     void setLanguage(String language) {
       appState.setLanguage = language;
     }
@@ -92,6 +119,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   context,
                                   translations['next'][appState.language],
                                   onPressed: () {
+                                    if (appState.showTutorial &&
+                                        appState.currentTutorialStep ==
+                                            appState.tutorialSteps[
+                                                'LANGUAGE_SELECTION']) {
+                                      appState.nextTutorialStep();
+                                    }
                                     pageViewController.nextPage(
                                       duration:
                                           const Duration(milliseconds: 500),
@@ -102,6 +135,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               ),
                               const SizedBox(height: 15),
                               Center(
+                                key: _languageDropdownKey,
                                 child: DropdownButton<String>(
                                   key: const ValueKey('languageStartDropdown'),
                                   value: appState.languageName,
@@ -220,7 +254,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       fontSize: 20,
                                       color: Colors.white)),
                               const SizedBox(height: 20),
-                              SetSharingLocation(),
+                              const SetSharingLocation(),
                               const SizedBox(height: 20),
                               Buttons.onboardingButton(context,
                                   translations['next'][appState.language],
@@ -329,7 +363,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 }
 
 class UserInfoForm extends StatefulWidget {
-  UserInfoForm({Key? key, required this.pageController}) : super(key: key);
+  const UserInfoForm({Key? key, required this.pageController})
+      : super(key: key);
 
   final PageController pageController;
 

@@ -7,6 +7,7 @@ import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets/bubble_slides.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,8 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   String appEnv = 'production';
   bool isLoading = true;
 
-  final GlobalKey menuIconKey = GlobalKey();
+  final GlobalKey _menuIconKey = GlobalKey();
+  final GlobalKey _mainViewKey = GlobalKey();
 
   @override
   void initState() {
@@ -97,47 +99,34 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
           : 'http://10.0.2.2:3000/mobiili';
       Widget mainApp =
           buildMainApp(appState, _controller, appURL, languageToChangeTo);
-      return currentTutorialStep == 1 && showTutorial
-          ? BubbleShowcase(
-              bubbleShowcaseId: 'my_bubble_showcase',
-              bubbleShowcaseVersion: 1,
-              bubbleSlides: [
-                _menuButtonSlide(),
-              ],
-              child: mainApp,
-            )
-          : mainApp;
+      if (currentTutorialStep == appState.tutorialSteps['MENU_TAP'] &&
+          showTutorial) {
+        return BubbleShowcase(
+          bubbleShowcaseId: 'my_bubble_showcase',
+          bubbleShowcaseVersion: 1,
+          bubbleSlides: [
+            BubbleSlides().getRelativeBubbleSlide(
+                appState,
+                translations['menuNavigationTutorial']['openMenu']
+                    [appState.language],
+                _menuIconKey,
+                axisDirection: AxisDirection.left,
+                nipLocation: NipLocation.LEFT,
+                padding: const EdgeInsets.only(left: 15.0),
+                shape: const Oval(
+                  spreadRadius: 1,
+                ))
+          ],
+          child: mainApp,
+        );
+      }
+
+      return mainApp;
 
       // return mainApp;
     } else {
       return buildLoading();
     }
-  }
-
-  RelativeBubbleSlide _menuButtonSlide() {
-    return RelativeBubbleSlide(
-      widgetKey: menuIconKey,
-      shape: const Oval(
-        spreadRadius: 1,
-      ),
-      child: RelativeBubbleSlideChild(
-        direction: AxisDirection.left,
-        widget: Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: SpeechBubble(
-            nipLocation: NipLocation.LEFT,
-            color: Colors.blue,
-            child: const Padding(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                'This is a new cool feature !',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget buildMainApp(
@@ -150,38 +139,49 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         return onBackButtonPress(appState);
       },
       child: SafeArea(
+        key: _mainViewKey,
         child: Scaffold(
-          key: _globalKey,
-          body: Stack(
-            children: [
-              // Stacking the bottom bar on top of the webview
-              createWebView(_controller, appURL, languageToChangeTo),
-              const Align(
-                  alignment: Alignment.bottomCenter, child: BottomBar()),
-              IconButton(
-                key: menuIconKey,
-                iconSize: 30,
-                icon: Stack(
-                  children: const [
-                    Icon(Icons.menu),
-                  ],
-                ),
-                onPressed: () {
-                  _globalKey.currentState?.openDrawer();
-                  print("Menu button pressed");
-                  if (appState.showTutorial &&
-                      appState.currentTutorialStep == 1) {
-                    appState.nextTutorialStep();
-                  }
-                },
-                color: Colors.black,
-              )
-            ],
-          ),
-          drawer: MyNavigationDrawer(
-            webViewController: _controller.future,
-          ),
-        ),
+            key: _globalKey,
+            body: Stack(
+              children: [
+                // Stacking the bottom bar on top of the webview
+                createWebView(
+                    _controller, appURL, languageToChangeTo, appState),
+                const Align(
+                    alignment: Alignment.bottomCenter, child: BottomBar()),
+                IconButton(
+                  key: _menuIconKey,
+                  iconSize: 30,
+                  icon: Stack(
+                    children: const [
+                      Icon(Icons.menu),
+                    ],
+                  ),
+                  onPressed: () {
+                    _globalKey.currentState?.openDrawer();
+                    print("Menu button pressed");
+                    if (appState.showTutorial &&
+                        appState.currentTutorialStep ==
+                            appState.tutorialSteps['MENU_TAP']) {
+                      appState.nextTutorialStep();
+                    }
+                  },
+                  color: Colors.black,
+                )
+              ],
+            ),
+            drawer: MyNavigationDrawer(
+              webViewController: _controller.future,
+            ),
+            onDrawerChanged: (isOpen) {
+              if (!isOpen) {
+                if (appState.showTutorial &&
+                    appState.currentTutorialStep ==
+                        appState.tutorialSteps['MENU_NAVIGATION']) {
+                  appState.nextTutorialStep();
+                }
+              }
+            }),
       ),
     );
   }
@@ -191,65 +191,21 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   }
 
   WebView createWebView(Completer<WebViewController> _controller, String appURL,
-      String languageToChangeTo) {
+      String languageToChangeTo, AppState appState) {
     return WebView(
-      // initialUrl: appURL,
-      initialUrl: "",
+      initialUrl: appURL,
       onWebViewCreated: (WebViewController webViewController) {
         _controller.complete(webViewController);
-        _controller.future.then((controller) {
-          const String content = '''
-                        <!DOCTYPE html>
-                        <html lang="en">
-                          <head>
-                            <meta charset="UTF-8" />
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                            <title>Two-Way Communication</title>
-                          </head>
-                          <body>
-                            <h1>Two-Way Communication</h1>
-
-                            <p>Message from Flutter: <span id="messageFromFlutter"></span></p>
-                            <button onclick="sendMessageToFlutter()">Send Message to Flutter</button>
-
-                            <script>
-                              function sendMessageToFlutter() {
-                                var message = "Hello from the web!";
-                                messageHandler.postMessage(message);
-                              }
-                            </script>
-                          </body>
-                        </html>
-                      ''';
-
-          // Use Uri.dataFromString to load the HTML content
-          controller.loadUrl(Uri.dataFromString(
-            content,
-            mimeType: 'text/html',
-            encoding: Encoding.getByName('utf-8'),
-          ).toString());
-        });
       },
       // Change the global React state after the page has been loaded
-      // onPageFinished: (String url) {
-      //   _controller.future.then((controller) {
-      //     controller.runJavascript("""
-      //     window.changeLanguageTo("$languageToChangeTo");
-      //   """);
-      //   });
-      // },
-      javascriptMode: JavascriptMode.unrestricted,
-      javascriptChannels: {
-        JavascriptChannel(
-            name: 'messageHandler',
-            onMessageReceived: (JavascriptMessage message) {
-              //This is where you receive message from
-              //javascript code and handle in Flutter/Dart
-              //like here, the message is just being printed
-              //in Run/LogCat window of android studio
-              print(message.message);
-            })
+      onPageFinished: (String url) {
+        _controller.future.then((controller) {
+          controller.runJavascript("""
+                      window.changeLanguageTo("$languageToChangeTo");
+                    """);
+        });
       },
+      javascriptMode: JavascriptMode.unrestricted,
     );
   }
 

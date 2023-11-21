@@ -18,9 +18,11 @@ class Buttons {
 
   /// Help button
   ElevatedButton helpButton(
-      bool gpsSettingIsOff, BuildContext contx, String text, Color color) {
+      bool gpsSettingIsOff, BuildContext contx, String text, Color color,
+      {Key? key, Function? callback}) {
     var appState = Provider.of<AppState>(contx);
     return ElevatedButton(
+      key: key,
       onPressed: () async {
         if (gpsSettingIsOff) {
           GpsHandler.setGpsSetting(contx, true, insistAlwaysOn: false)
@@ -35,6 +37,9 @@ class Buttons {
               }
               if (text == translations['helpReq'][appState.language]) {
                 Dialogs().showDialogMinorHelpQuestions(contx);
+                if (callback != null) {
+                  callback();
+                }
                 await GpsHandler.updateGpsVariable(ignoreSwitch: true);
                 await ServerComms.messageToServer(locationMessage);
               }
@@ -65,6 +70,9 @@ class Buttons {
 
           if (text == translations['helpReq'][appState.language]) {
             Dialogs().showDialogMinorHelpQuestions(contx);
+            if (callback != null) {
+              callback();
+            }
           }
         }
       },
@@ -260,11 +268,19 @@ class Buttons {
     );
   }
 
-  static IconButton crossIconButton(BuildContext context) {
+  static IconButton crossIconButton(
+    BuildContext context, {
+    Key? key,
+    Function? callback,
+  }) {
     return IconButton(
+        key: key,
         padding: EdgeInsets.zero,
         onPressed: () {
           Navigator.pop(context);
+          if (callback != null) {
+            callback();
+          }
         },
         icon: const Icon(Icons.close_rounded, size: 50, color: Colors.white));
   }
@@ -279,7 +295,7 @@ class Buttons {
       },
       child: Stack(
         children: [
-          Icon(Icons.chat),
+          const Icon(Icons.chat),
           if (hasUnreadMsg)
             Positioned(
               top: 0,
@@ -287,7 +303,7 @@ class Buttons {
               child: Container(
                 width: 10,
                 height: 10,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.red,
                   shape: BoxShape.circle,
                 ),

@@ -7,6 +7,7 @@ import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
+import 'package:mobile_app/widgets/bubble_slides.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:mobile_app/user_info.dart';
@@ -40,6 +41,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   final GlobalKey _serviceInfo = GlobalKey();
   final GlobalKey _appNameKey = GlobalKey();
   final GlobalKey _privacyKey = GlobalKey();
+  final GlobalKey _languageDropdownKey = GlobalKey();
   final ValueKey _languageKey = ValueKey('languageSideDropdown');
 
   @override
@@ -47,18 +49,63 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     var appState = Provider.of<AppState>(context, listen: true);
     Widget navigationDrawer = buildNavigationDrawer(context);
 
-    return (appState.showTutorial && appState.currentTutorialStep == 2)
-        ? BubbleShowcase(
-            bubbleShowcaseId: 'my_bubble_showcase',
-            bubbleShowcaseVersion: 1,
-            bubbleSlides: [
-              _buttonSlide("Show snow condition", _snowConditionKey),
-              _buttonSlide("Show area's map", _mapViewKey),
-              _buttonSlide("Show weather", _weatherKey),
-            ],
-            child: navigationDrawer,
-          )
-        : navigationDrawer;
+    if (appState.showTutorial &&
+        appState.currentTutorialStep ==
+            appState.tutorialSteps['MENU_NAVIGATION']) {
+      return BubbleShowcase(
+        bubbleShowcaseId: 'my_bubble_showcase',
+        bubbleShowcaseVersion: 1,
+        bubbleSlides: [
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showSnowCondition']
+                  [appState.language],
+              _snowConditionKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showLocationArea']
+                  [appState.language],
+              _mapViewKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showWeather']
+                  [appState.language],
+              _weatherKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showSnowType']
+                  [appState.language],
+              _snowTypeKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showUserInfo']
+                  [appState.language],
+              _userInfoKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['showServiceInfo']
+                  [appState.language],
+              _serviceInfo),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['openWebPage']
+                  [appState.language],
+              _appNameKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['openPrivacy']
+                  [appState.language],
+              _privacyKey),
+          BubbleSlides().getRelativeBubbleSlide(
+              appState,
+              translations['menuNavigationTutorial']['changeLanguage']
+                  [appState.language],
+              _languageDropdownKey)
+        ],
+        child: navigationDrawer,
+      );
+    }
+    return navigationDrawer;
   }
 
   Widget buildNavigationDrawer(BuildContext context) {
@@ -129,6 +176,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
               translations['privacy'][appState.language], _privacyKey),
           const Divider(color: Colors.black),
           Center(
+            key: _languageDropdownKey,
             child: DropdownButton<String>(
               key: _languageKey,
               value: appState.languageName,
@@ -230,33 +278,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           },
         ),
       ],
-    );
-  }
-
-  RelativeBubbleSlide _buttonSlide(String message, GlobalKey key) {
-    print("=============== Showing bubble slide for" + message);
-    return RelativeBubbleSlide(
-      widgetKey: key,
-      shape: const Oval(
-        spreadRadius: 0,
-      ),
-      child: RelativeBubbleSlideChild(
-        direction: AxisDirection.down,
-        widget: Padding(
-          padding: const EdgeInsets.only(bottom: 15.0),
-          child: SpeechBubble(
-            nipLocation: NipLocation.TOP,
-            color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
   int _pageIndex = 0;
@@ -10,6 +11,19 @@ class AppState extends ChangeNotifier {
 
   bool _showTutorial = true;
   int _currentTutorialStep = 1;
+
+  final Map _tutorialSteps = {
+    'LANGUAGE_SELECTION': 1,
+    'MENU_TAP': 2,
+    'MENU_NAVIGATION': 3,
+    'LOCATION_SHARING': 4,
+    'SHARE_LOCATION_DIALOG': 5,
+    'ASK_FOR_HELP': 6,
+    'HELP_DIALOG': 7,
+    'MINOR_HELP_DIALOG': 8
+  };
+
+  Map get tutorialSteps => _tutorialSteps;
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
@@ -75,11 +89,26 @@ class AppState extends ChangeNotifier {
 
   set setShowTutorial(bool value) {
     _showTutorial = value;
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((pref) {
+      pref.setBool('showTutorial', value);
+    });
+    notifyListeners();
+  }
+
+  set setCurrentTutorialStep(int value) {
+    _currentTutorialStep = value;
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((pref) {
+      pref.setInt('currentTutorialStep', value);
+    });
     notifyListeners();
   }
 
   void nextTutorialStep() {
     _currentTutorialStep += 1;
+    setCurrentTutorialStep =
+        _currentTutorialStep < tutorialSteps.length ? _currentTutorialStep : 1;
     notifyListeners();
   }
 }

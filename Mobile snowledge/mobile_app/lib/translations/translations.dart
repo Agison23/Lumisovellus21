@@ -830,4 +830,96 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Avun pyytäjän akku on vähissä ja yhteys saattaa katketa!',
     'en': 'Help requester has low battery and they may lose connection!',
   },
+
+  'skipTutorial': {'fi': 'Skip tutorial >>', 'en': 'Skip tutorial >>'},
+
+  'menuNavigationTutorial': {
+    'openMenu': {
+      'fi': 'Tap here to open the menu bar',
+      'en': 'Tap here to open the menu bar'
+    },
+    'showSnowCondition': {
+      'fi': 'Show snow condition map',
+      'en': 'Show snow condition map'
+    },
+    'showLocationArea': {
+      'fi': 'Show local area map',
+      'en': 'Show local area map'
+    },
+    'showWeather': {
+      'fi': 'Show current weather situation in the Pallas area',
+      'en': 'Show current weather situation in the Pallas area'
+    },
+    'showSnowType': {
+      'fi': 'Show information about different snow types',
+      'en': 'Show information about different snow types'
+    },
+    'showUserInfo': {
+      'fi': 'Show personal information',
+      'en': 'Show personal information'
+    },
+    'showServiceInfo': {
+      'fi': 'Show information about Pallaksen Pöllöt',
+      'en': 'Show information about Pallaksen Pöllöt'
+    },
+    'openWebPage': {
+      'fi': 'Open their web page in a new browser window',
+      'en': 'Open their web page in a new browser window'
+    },
+    'openPrivacy': {
+      'fi': 'Open their privacy policy in a new browser window',
+      'en': 'Open their privacy policy in a new browser window'
+    },
+    'changeLanguage': {
+      'fi': 'Tap to change the language',
+      'en': 'Tap to change the language'
+    },
+  },
+
+  'rescueTutorial': {
+    'shareLocation': {
+      'fi': 'Tap here to share location',
+      'en': 'Tap here to share location'
+    },
+    'askForHelp': {
+      'fi': 'Tap here to ask for help',
+      'en': 'Tap here to ask for help'
+    },
+    'call112': {
+      'fi':
+          'Tap here to go to phone app and call 112. This should be used when there is no one around and require emergency help',
+      'en':
+          'Tap here to go to phone app and call 112. This should be used when there is no one around and require emergency help'
+    },
+    'sendHelpRequest': {
+      'fi': 'Tap here to send a new help request',
+      'en': 'Tap here to send a new help request'
+    },
+    'continueHelpRequest': {
+      'fi':
+          'Select an option above and tap "Continue" to initiate a help request',
+      'en':
+          'Select an option above and tap "Continue" to initiate a help request'
+    },
+    'shareLocationToggle': {
+      'fi': 'Make sure location sharing is on',
+      'en': 'Make sure location sharing is on'
+    },
+    'close': {'fi': 'Tap here to close', 'en': 'Tap here to close'}
+  },
+
+  'snowConditionTutorial': {
+    'navigate': {
+      'fi': 'Pan and zoom gestures to move around & zoom in and out the map',
+      'en': 'Pan and zoom gestures to move around & zoom in and out the map'
+    },
+    'filter': {
+      'fi': 'Tap here to select a filter option',
+      'en': 'Tap here to select a filter option'
+    },
+    'filterSelection': {
+      'fi': 'Select one of these options',
+      'en': 'Select one of these options'
+    }
+  }
 };
