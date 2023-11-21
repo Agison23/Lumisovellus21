@@ -197,24 +197,39 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                   ),
                 ),
               ),
-              // location centering button
               Align(
-                  alignment: const Alignment(0.95, 0.82),
-                  child: IconButton(
-                    icon: const Icon(Icons.my_location),
-                    onPressed: () {
-                      _mapController.moveAndRotate(
-                          LatLng(lat, lng), _mapController.zoom, 0);
-                    },
-                  )),
+                alignment: const Alignment(0.95, 0.76),
+                child: MaterialButton(
+                  onPressed: () {
+                    _mapController.moveAndRotate(
+                        LatLng(lat, lng), _mapController.zoom, 0);
+                  },
+                  color: Colors.white,
+                  textColor: Colors.black,
+                  child: const Icon(
+                    Icons.my_location,
+                    size: 24,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  shape: const CircleBorder(),
+                ),
+              ),
               Align(
-                  alignment: const Alignment(0.95, 0.62),
-                  child: IconButton(
-                    icon: const Icon(Icons.navigation),
-                    onPressed: () {
-                      compassOff = !compassOff;
-                    },
-                  )),
+                alignment: const Alignment(0.95, 0.56),
+                child: MaterialButton(
+                  onPressed: () {
+                    compassOff = !compassOff;
+                  },
+                  color: Colors.white,
+                  textColor: Colors.black,
+                  child: const Icon(
+                    Icons.navigation,
+                    size: 24,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  shape: const CircleBorder(),
+                ),
+              ),
               const Align(
                   alignment: Alignment.topCenter,
                   child: Image(
@@ -241,6 +256,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   static List<Marker> getMarker(LatLng usersLatLng, double direction) {
     List<Marker> marker = [];
     marker.add(Marker(
+        width: 55,
+        height: 55,
         point: usersLatLng,
         builder: (ctx) => Transform.rotate(
               angle: direction * math.pi / 180,
