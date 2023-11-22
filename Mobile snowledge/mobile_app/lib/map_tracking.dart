@@ -131,21 +131,35 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         StreamBuilder<CompassEvent>(
                             stream: FlutterCompass.events,
                             builder: (context, snapshot) {
-                              if (!compassOff || !snapshot.hasError) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
+                              if (compassOff) {
+                                // If compass off, return default marker
+                                return MarkerLayer(
+                                  markers: getMarker(LatLng(lat, lng)),
+                                  rotate: true,
+                                );
+                              } else {
+                                // Return default marker if reading direction results to error
+                                if (snapshot.hasError) {
+                                  return MarkerLayer(
+                                    markers: getMarker(LatLng(lat, lng)),
+                                    rotate: true,
                                   );
                                 }
+                                // Return default marker if connection is waiting
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return MarkerLayer(
+                                    markers: getMarker(LatLng(lat, lng)),
+                                    rotate: true,
+                                  );
+                                }
+
                                 double? direction = snapshot.data!.heading;
 
+                                // if direction is null, then device does not support this sensor
                                 if (direction == null) {
-                                  // return Center(
-                                  //   child: Text("Device does not have sensors !"),
-                                  // );
                                   return MarkerLayer(
-                                    markers: getMarker(LatLng(lat, lng), 0),
+                                    markers: getMarker(LatLng(lat, lng)),
                                     rotate: true,
                                   );
                                 }
@@ -153,15 +167,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                                 _direction = direction;
 
                                 return MarkerLayer(
-                                  markers:
-                                      getMarker(LatLng(lat, lng), _direction),
-                                  rotate: compassOff,
-                                );
-                              } else {
-                                return MarkerLayer(
-                                  markers: getMarker(LatLng(lat, lng), 0),
-                                  rotate: true,
-                                );
+                                    markers: getMarker(LatLng(lat, lng),
+                                        direction: _direction));
                               }
                             })
                       ],
@@ -267,7 +274,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
-  static List<Marker> getMarker(LatLng usersLatLng, double direction) {
+  static List<Marker> getMarker(LatLng usersLatLng, {double direction = 0}) {
     List<Marker> marker = [];
     marker.add(Marker(
         width: 55,
