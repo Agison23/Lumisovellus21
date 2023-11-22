@@ -831,94 +831,94 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'en': 'Help requester has low battery and they may lose connection!',
   },
 
-  'skipTutorial': {'fi': 'Skip tutorial >>', 'en': 'Skip tutorial >>'},
+  'skipTutorial': {'fi': 'Ohita ohjeistus >>', 'en': 'Skip tutorial >>'},
 
   'menuNavigationTutorial': {
     'openMenu': {
-      'fi': 'Tap here to open the menu bar',
+      'fi': 'Paina tästä avataksesi valikko',
       'en': 'Tap here to open the menu bar'
     },
     'showSnowCondition': {
-      'fi': 'Show snow condition map',
+      'fi': 'Näytä lumiolosuhteet alueittain',
       'en': 'Show snow condition map'
     },
     'showLocationArea': {
-      'fi': 'Show local area map',
+      'fi': 'Näytä sijainti kartalla',
       'en': 'Show local area map'
     },
     'showWeather': {
-      'fi': 'Show current weather situation in the Pallas area',
+      'fi': 'Näytä tämänhetkinen säätilanne Pallaksella',
       'en': 'Show current weather situation in the Pallas area'
     },
     'showSnowType': {
-      'fi': 'Show information about different snow types',
+      'fi': 'Näytä eri lumityyppien selitteet',
       'en': 'Show information about different snow types'
     },
     'showUserInfo': {
-      'fi': 'Show personal information',
+      'fi': 'Näytä käyttäjätiedot',
       'en': 'Show personal information'
     },
     'showServiceInfo': {
-      'fi': 'Show information about Pallaksen Pöllöt',
+      'fi': 'Näytä tietoa Pallaksen Pöllöistä',
       'en': 'Show information about Pallaksen Pöllöt'
     },
     'openWebPage': {
-      'fi': 'Open their web page in a new browser window',
+      'fi': 'Avaa nettisivut uuteen selainikkunaan',
       'en': 'Open their web page in a new browser window'
     },
     'openPrivacy': {
-      'fi': 'Open their privacy policy in a new browser window',
+      'fi': 'Avaa tietosuojaseloste uuteen selainikkunaan',
       'en': 'Open their privacy policy in a new browser window'
     },
     'changeLanguage': {
-      'fi': 'Tap to change the language',
+      'fi': 'Paina tästä vaihtaaksesi kieltä',
       'en': 'Tap to change the language'
     },
   },
 
   'rescueTutorial': {
     'shareLocation': {
-      'fi': 'Tap here to share location',
+      'fi': 'Paina tästä jakaaksesi sijainti',
       'en': 'Tap here to share location'
     },
     'askForHelp': {
-      'fi': 'Tap here to ask for help',
+      'fi': 'Paina tästä pyytääksesi apua',
       'en': 'Tap here to ask for help'
     },
     'call112': {
-      'fi':
-          'Tap here to go to phone app and call 112. This should be used when there is no one around and require emergency help',
+      'fi': 'Paina tästä soittaaksesi 112. Käytä aina hätätapauksissa',
       'en':
           'Tap here to go to phone app and call 112. This should be used when there is no one around and require emergency help'
     },
     'sendHelpRequest': {
-      'fi': 'Tap here to send a new help request',
+      'fi': 'Paina tästä lähettääksesi uuden avunpyynnön',
       'en': 'Tap here to send a new help request'
     },
     'continueHelpRequest': {
       'fi':
-          'Select an option above and tap "Continue" to initiate a help request',
+          'Valitse ylläolevista vaihtoehdoista ja paina "Jatka" lähettääksesi avunpyynnön',
       'en':
           'Select an option above and tap "Continue" to initiate a help request'
     },
     'shareLocationToggle': {
-      'fi': 'Make sure location sharing is on',
+      'fi': 'Varmista että sijainnin jakaminen on päällä',
       'en': 'Make sure location sharing is on'
     },
-    'close': {'fi': 'Tap here to close', 'en': 'Tap here to close'}
+    'close': {'fi': 'Paina tästä sulkeaksesi', 'en': 'Tap here to close'}
   },
 
   'snowConditionTutorial': {
     'navigate': {
-      'fi': 'Pan and zoom gestures to move around & zoom in and out the map',
+      'fi':
+          'Liikuta karttaa liu\'uttamalla ja suurenna kaksoisnapauttamalla tai nipistämällä',
       'en': 'Pan and zoom gestures to move around & zoom in and out the map'
     },
     'filter': {
-      'fi': 'Tap here to select a filter option',
+      'fi': 'Paina tästä valitaksesi suodatinvaihtoehdon',
       'en': 'Tap here to select a filter option'
     },
     'filterSelection': {
-      'fi': 'Select one of these options',
+      'fi': 'Valitse yksi vaihtoehdoista',
       'en': 'Select one of these options'
     }
   }
