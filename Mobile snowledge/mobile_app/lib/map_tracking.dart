@@ -149,10 +149,12 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
                                 _direction = direction;
 
+                                // Marker pointing at phone's direction
                                 return MarkerLayer(
                                     markers: getMarker(LatLng(lat, lng),
                                         direction: _direction));
                               }
+                              // Default marker lined up with the map
                               return MarkerLayer(
                                 markers: getMarker(LatLng(lat, lng)),
                                 rotate: true,
