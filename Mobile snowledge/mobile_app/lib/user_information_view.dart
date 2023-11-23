@@ -35,7 +35,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

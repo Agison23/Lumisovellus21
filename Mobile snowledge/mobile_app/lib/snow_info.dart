@@ -47,7 +47,7 @@ class _SnowInfoState extends State<SnowInfo> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     String languageToChangeTo = appState.language;
     String? appURL;
 
