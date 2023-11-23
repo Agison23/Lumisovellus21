@@ -131,38 +131,21 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         StreamBuilder<CompassEvent>(
                             stream: FlutterCompass.events,
                             builder: (context, snapshot) {
-                              if (compassOff) {
+                              while (true) {
                                 // If compass off, return default marker
-                                return MarkerLayer(
-                                  markers: getMarker(LatLng(lat, lng)),
-                                  rotate: true,
-                                );
-                              } else {
+                                if (compassOff) break;
+
                                 // Return default marker if reading direction results to error
-                                if (snapshot.hasError) {
-                                  return MarkerLayer(
-                                    markers: getMarker(LatLng(lat, lng)),
-                                    rotate: true,
-                                  );
-                                }
+                                if (snapshot.hasError) break;
+
                                 // Return default marker if connection is waiting
                                 if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return MarkerLayer(
-                                    markers: getMarker(LatLng(lat, lng)),
-                                    rotate: true,
-                                  );
-                                }
+                                    ConnectionState.waiting) break;
 
                                 double? direction = snapshot.data!.heading;
 
                                 // if direction is null, then device does not support this sensor
-                                if (direction == null) {
-                                  return MarkerLayer(
-                                    markers: getMarker(LatLng(lat, lng)),
-                                    rotate: true,
-                                  );
-                                }
+                                if (direction == null) break;
 
                                 _direction = direction;
 
@@ -170,6 +153,10 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                                     markers: getMarker(LatLng(lat, lng),
                                         direction: _direction));
                               }
+                              return MarkerLayer(
+                                markers: getMarker(LatLng(lat, lng)),
+                                rotate: true,
+                              );
                             })
                       ],
                     );
