@@ -30,8 +30,9 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
             appState.currentTutorialStep ==
                 appState.tutorialSteps['LOCATION_SHARING']
         ? BubbleShowcase(
-            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleShowcaseId: 'my_bubble_showcase_4',
             bubbleShowcaseVersion: 1,
+            doNotReopenOnClose: true,
             bubbleSlides: [
               BubbleSlides().getRelativeBubbleSlide(
                   appState,
@@ -84,8 +85,9 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
             appState.currentTutorialStep ==
                 appState.tutorialSteps['ASK_FOR_HELP'])
         ? BubbleShowcase(
-            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleShowcaseId: 'my_bubble_showcase_6',
             bubbleShowcaseVersion: 1,
+            doNotReopenOnClose: true,
             bubbleSlides: [
               BubbleSlides().getRelativeBubbleSlide(
                   appState,

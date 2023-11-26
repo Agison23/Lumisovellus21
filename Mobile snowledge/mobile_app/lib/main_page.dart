@@ -102,8 +102,9 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
       if (currentTutorialStep == appState.tutorialSteps['MENU_TAP'] &&
           showTutorial) {
         return BubbleShowcase(
-          bubbleShowcaseId: 'my_bubble_showcase',
+          bubbleShowcaseId: 'my_bubble_showcase_2',
           bubbleShowcaseVersion: 1,
+          doNotReopenOnClose: true,
           bubbleSlides: [
             BubbleSlides().getRelativeBubbleSlide(
                 appState,

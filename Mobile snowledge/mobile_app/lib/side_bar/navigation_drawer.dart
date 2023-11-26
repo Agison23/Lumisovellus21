@@ -53,8 +53,9 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
         appState.currentTutorialStep ==
             appState.tutorialSteps['MENU_NAVIGATION']) {
       return BubbleShowcase(
-        bubbleShowcaseId: 'my_bubble_showcase',
+        bubbleShowcaseId: 'my_bubble_showcase_3',
         bubbleShowcaseVersion: 1,
+        doNotReopenOnClose: true,
         bubbleSlides: [
           BubbleSlides().getRelativeBubbleSlide(
               appState,

@@ -71,8 +71,9 @@ class Dialogs {
                 appState.currentTutorialStep ==
                     appState.tutorialSteps['MINOR_HELP_DIALOG'])
             ? BubbleShowcase(
-                bubbleShowcaseId: 'my_bubble_showcase',
+                bubbleShowcaseId: 'my_bubble_showcase_8',
                 bubbleShowcaseVersion: 1,
+                doNotReopenOnClose: true,
                 bubbleSlides: [
                   BubbleSlides().getRelativeBubbleSlide(
                       appState,
@@ -157,8 +158,9 @@ class Dialogs {
                 appState.currentTutorialStep ==
                     appState.tutorialSteps['HELP_DIALOG'])
             ? BubbleShowcase(
-                bubbleShowcaseId: 'my_bubble_showcase',
+                bubbleShowcaseId: 'my_bubble_showcase_7',
                 bubbleShowcaseVersion: 1,
+                doNotReopenOnClose: true,
                 bubbleSlides: [
                   BubbleSlides().getRelativeBubbleSlide(
                       appState,
@@ -239,8 +241,7 @@ class Dialogs {
                           const Color(0xff7c94b6),
                           key: _sendHelpRequestButtonKey, callback: () {
                         if (appState.showTutorial &&
-                            appState.currentTutorialStep ==
-                                appState.tutorialSteps['HELP_DIALOG']) {
+                            appState.currentTutorialStep == 7) {
                           appState.nextTutorialStep();
                         }
                       });
@@ -278,8 +279,9 @@ class Dialogs {
                 appState.currentTutorialStep ==
                     appState.tutorialSteps['SHARE_LOCATION_DIALOG'])
             ? BubbleShowcase(
-                bubbleShowcaseId: 'my_bubble_showcase',
+                bubbleShowcaseId: 'my_bubble_showcase_5',
                 bubbleShowcaseVersion: 1,
+                doNotReopenOnClose: true,
                 bubbleSlides: [
                   BubbleSlides().getRelativeBubbleSlide(
                       appState,

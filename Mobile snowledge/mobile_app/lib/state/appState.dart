@@ -13,14 +13,13 @@ class AppState extends ChangeNotifier {
   int _currentTutorialStep = 1;
 
   final Map _tutorialSteps = {
-    'LANGUAGE_SELECTION': 1,
-    'MENU_TAP': 2,
-    'MENU_NAVIGATION': 3,
-    'LOCATION_SHARING': 4,
-    'SHARE_LOCATION_DIALOG': 5,
-    'ASK_FOR_HELP': 6,
-    'HELP_DIALOG': 7,
-    'MINOR_HELP_DIALOG': 8
+    'MENU_TAP': 1,
+    'MENU_NAVIGATION': 2,
+    'LOCATION_SHARING': 3,
+    'SHARE_LOCATION_DIALOG': 4,
+    'ASK_FOR_HELP': 5,
+    'HELP_DIALOG': 6,
+    'MINOR_HELP_DIALOG': 7
   };
 
   Map get tutorialSteps => _tutorialSteps;
@@ -108,7 +107,7 @@ class AppState extends ChangeNotifier {
   void nextTutorialStep() {
     _currentTutorialStep += 1;
     setCurrentTutorialStep =
-        _currentTutorialStep < tutorialSteps.length ? _currentTutorialStep : 1;
+        _currentTutorialStep <= tutorialSteps.length ? _currentTutorialStep : 1;
     notifyListeners();
   }
 }
