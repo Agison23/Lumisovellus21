@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
-  int _pageIndex = 0;
+  String _appEnv = 'development';
+  int _pageIndex = 1;
 
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
   String _chatRoomId = '';
   bool _hasUnreadMessages = false; // For unread message notifications
+  bool _isPremiumSidebar = false;
+
+  String _userRole = 'premium';
+
+  final List _premiumFeatureMenuItems = [0, 3];
 
   bool _showTutorial = true;
   int _currentTutorialStep = 1;
@@ -25,6 +31,8 @@ class AppState extends ChangeNotifier {
   Map get tutorialSteps => _tutorialSteps;
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
+
+  String get appEnv => _appEnv;
 
   Map get allLanguages => _allLanguages;
 
@@ -44,11 +52,22 @@ class AppState extends ChangeNotifier {
 
   bool get showTutorial => _showTutorial;
 
+  bool get isPremiumSidebar => _isPremiumSidebar;
+
+  List get premiumFeatureMenuItems => _premiumFeatureMenuItems;
+
+  String get userRole => _userRole;
+
   void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
     _chatRoomUsersBattery[phoneNum] = batteryStatus;
     debugPrint(
         '======== SET $phoneNum TO BATTERY STATUS $batteryStatus ========');
     notifyListeners(); // Notify any listeners that the state has changed
+  }
+
+  set setAppEnv(String value) {
+    _appEnv = value;
+    notifyListeners();
   }
 
   set setLanguage(String language) {
@@ -108,6 +127,16 @@ class AppState extends ChangeNotifier {
     _currentTutorialStep += 1;
     setCurrentTutorialStep =
         _currentTutorialStep <= tutorialSteps.length ? _currentTutorialStep : 1;
+    notifyListeners();
+  }
+
+  set setIsPremiumSidebar(bool value) {
+    _isPremiumSidebar = value;
+    notifyListeners();
+  }
+
+  set setUserRole(String value) {
+    _userRole = value;
     notifyListeners();
   }
 }

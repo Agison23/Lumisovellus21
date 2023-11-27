@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/app_info.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
+import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
@@ -32,6 +32,8 @@ class MyNavigationDrawer extends StatefulWidget {
 
 class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   bool winter = Utility.getSummerOrWinter();
+  String premiumRole = 'premium';
+  String normalRole = 'normal';
 
   final GlobalKey _snowConditionKey = GlobalKey();
   final GlobalKey _mapViewKey = GlobalKey();
@@ -43,6 +45,23 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   final GlobalKey _privacyKey = GlobalKey();
   final GlobalKey _languageDropdownKey = GlobalKey();
   final ValueKey _languageKey = ValueKey('languageSideDropdown');
+
+  void initState() {
+    super.initState();
+
+    // Fetch user role
+    fetchUserRole();
+  }
+
+  Future<void> fetchUserRole() async {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    await ServerComms.messageToServer('GET_ROLE', role: appState.userRole);
+    if (appState.userRole != premiumRole && appState.userRole != normalRole) {
+      await ServerComms.messageToServer('UPDATE_ROLE',
+          role: appState.appEnv == 'development' ? premiumRole : normalRole);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,16 +134,33 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-              ),
-            ),
+            buildHeader(context),
             buildMenuItems(context),
           ],
         ),
       ),
     );
+  }
+
+  buildHeader(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+    return appState.userRole == premiumRole
+        ? Container(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+            ),
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Icon(Icons.verified_outlined, size: 30.0),
+              Switch(
+                  value: appState.isPremiumSidebar,
+                  onChanged: (value) async {
+                    appState.setIsPremiumSidebar = value;
+                  })
+            ],
+          );
   }
 
   // creating hamburger bar contents
@@ -147,13 +183,21 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       child: Wrap(
         runSpacing: 8,
         children: [
-          _item(0, Icons.area_chart_outlined,
-              translations['conditions'][appState.language], _snowConditionKey),
+          Visibility(
+            child: _item(
+                0,
+                Icons.area_chart_outlined,
+                translations['conditions'][appState.language],
+                _snowConditionKey),
+            visible:
+                appState.isPremiumSidebar || appState.userRole == premiumRole,
+          ),
           Visibility(
             child: _item(1, Icons.map_outlined,
                 translations['mapView'][appState.language], _mapViewKey),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
+            key: const ValueKey('snowCondition'),
           ),
           _item(2, Icons.sunny_snowing,
               translations['weather'][appState.language], _weatherKey),
@@ -164,7 +208,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 translations['snowDescription'][appState.language],
                 _snowTypeKey),
             visible:
-                true, // replace with winter (line 22) if you want to hide during summertime
+                appState.isPremiumSidebar || appState.userRole == premiumRole,
+            // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
               translations['userInfo'][appState.language], _userInfoKey),
@@ -207,17 +252,19 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
       children: [
         ListTile(
           leading: Icon(iconData),
-          iconColor: index == appState.pageIndex
-              ? const Color(0xff5A97EE)
-              : Colors.black,
-          textColor: index == appState.pageIndex
-              ? const Color(0xff5A97EE)
-              : Colors.black,
+          iconColor: _getMenuIconColor(index, appState),
+          textColor: _getMenuIconColor(index, appState),
           title: Text(title),
-          trailing: index == 6 || index == 7 ? const Icon(Icons.launch) : null,
+          trailing: _showMenuItemIcon(index, appState),
           onTap: () async {
             if (index == appState.pageIndex) {
             } else {
+              if (appState.premiumFeatureMenuItems.contains(index) &&
+                  appState.isPremiumSidebar &&
+                  appState.userRole != premiumRole) {
+                _showPremiumDialog(context);
+                return;
+              }
               setState(() {
                 appState.setPageIndex = index;
               });
@@ -279,6 +326,85 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           },
         ),
       ],
+    );
+  }
+
+  Color _getMenuIconColor(int index, AppState appState) {
+    if (appState.premiumFeatureMenuItems.contains(index) &&
+        appState.userRole != premiumRole) {
+      return Colors.grey;
+    } else {
+      if (index == appState.pageIndex) {
+        return const Color(0xff5A97EE);
+      } else {
+        return Colors.black;
+      }
+    }
+  }
+
+  Widget? _showMenuItemIcon(int index, AppState appState) {
+    if (appState.premiumFeatureMenuItems.contains(index) &&
+        appState.userRole != premiumRole) {
+      return const Icon(Icons.lock_outline);
+    }
+    if (index == 6 || index == 7) {
+      return const Icon(Icons.launch);
+    }
+    return null;
+  }
+
+  Future<void> _showPremiumDialog(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: false);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          icon: const Icon(Icons.verified_outlined, size: 40.0),
+          title: Text(translations['premiumDialogTitle'][appState.language]),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+          content: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.lock_open, color: Colors.black),
+                title: Text(translations['conditions'][appState.language]),
+              ),
+              ListTile(
+                leading: const Icon(Icons.lock_open, color: Colors.black),
+                title: Text(translations['snowDescription'][appState.language]),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 40.0),
+                    backgroundColor: const Color(0xff5A97EE),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    foregroundColor: Colors.white),
+                child: Text(
+                    translations['premiumDialogButtonText'][appState.language]),
+                onPressed: () {
+                  setState(() {
+                    appState.setPageIndex = 4;
+                  });
+                  Navigator.pop(context);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserInfoPage()),
+                      (route) => false);
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

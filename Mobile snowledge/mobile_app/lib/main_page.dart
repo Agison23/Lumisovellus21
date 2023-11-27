@@ -62,12 +62,16 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
 
   Future<void> loadEnv() async {
     final _env = await Utility.parseStringToMap(assetsFileName: '.env');
+    var appState = Provider.of<AppState>(context, listen: false);
+
     setState(() {
       env = _env;
       // Set default value of app environment to production
       appEnv = env?['APP_ENVIRONMENT'] ?? 'production';
       isLoading = false;
       print('App Env is: $appEnv');
+
+      appState.setAppEnv = appEnv;
     });
   }
 
@@ -207,6 +211,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
         });
       },
       javascriptMode: JavascriptMode.unrestricted,
+      key: const Key('snowConditionWebView'),
     );
   }
 

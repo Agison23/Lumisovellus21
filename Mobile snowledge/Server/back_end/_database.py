@@ -89,13 +89,19 @@ def get_all_pending_requests(connection, requester):
 
 
 def create_user_entry(connection, user):
-    sql = """ INSERT INTO users(dev_id,first_name,last_name,ip_address,phone_number)
-              VALUES (?,?,?,?,?) """
+    try:
+        sql = """ INSERT INTO users(dev_id,first_name,last_name,ip_address,phone_number,role)
+                  VALUES (?,?,?,?,?,'premium') """
 
-    cur = connection.cursor()
-    cur.execute(sql, user)
-    connection.commit()
-    return user[0]
+        cur = connection.cursor()
+        cur.execute(sql, user)
+        connection.commit()
+        return user[0]
+    except sqlite3.Error as e:
+        # Handle the error here, for example, print an error message or log it.
+        print(f"Error creating user entry: {e}")
+        return None
+
 
 
 def create_data_entry(connection, data):
@@ -243,6 +249,7 @@ def delete_old_users(connection):
     cur = connection.cursor()
     cur.execute(sql)
     dev_ids = cur.fetchall()
+    print("dev_ids", dev_ids)
 
     for id in dev_ids:
         _, exists = check_if_entry_exists(
@@ -256,11 +263,12 @@ def delete_old_users(connection):
 
 def create_table(connection, create_table_sql):
     """this function creates tables"""
-
     try:
         cur = connection.cursor()
         cur.execute(create_table_sql)
+        connection.commit()
     except Error as e:
+        print("hllelel")
         print(e)
 
 
@@ -272,7 +280,9 @@ def init_tables(connection):
                             last_name text NOT NULL,
                             ip_address text NOT NULL,
                             phone_number text,
-                            low_battery INTEGER DEFAULT '0'
+                            low_battery INTEGER DEFAULT '0',
+                            role TEXT,
+                            FOREIGN KEY (role) REFERENCES Role(name)
                          ); """
 
     sql_table_data = """CREATE TABLE IF NOT EXISTS data (
@@ -308,7 +318,13 @@ def init_tables(connection):
                             password text NOT NULL,
                             is_admin INTEGER NOT NULL
                             );"""
-
+    
+    sql_table_role = """CREATE TABLE IF NOT EXISTS role (
+                            name TEXT PRIMARY KEY,
+                            permissions TEXT NOT NULL
+                            );"""
+    
+    create_table(connection, sql_table_role)
     create_table(connection, sql_table_users)
     create_table(connection, sql_table_data)
     create_table(connection, sql_table_help)
@@ -316,16 +332,23 @@ def init_tables(connection):
     create_table(connection, sql_table_requests)
     create_table(connection, sql_table_rescue)
     sql = "DELETE FROM accounts WHERE role = 'Admin'"
+    sql1 = "DELETE FROM rescue WHERE password = ?;"
     sql2 = "INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);"
     sql3 = "INSERT OR IGNORE INTO rescue (username,password,is_admin) VALUES(?,?,1);"
+    sql4 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('normal', 'rescue');"
+    sql5 = "INSERT OR IGNORE INTO role (name, permissions) VALUES ('premium', 'rescue,snow condition');"
+    sql6 = "UPDATE users SET role='premium' WHERE role IS NULL"
     username = ADMIN
     password = PASSWORD
     role = "Admin"
-
     cur = connection.cursor()
     cur.execute(sql)
+    cur.execute(sql1, (password,))
     cur.execute(sql2, (username, password, role))
     cur.execute(sql3, (username, password))
+    cur.execute(sql4)
+    cur.execute(sql5)
+    cur.execute(sql6)
     rescue_users_from_db(connection)
     connection.commit()
 
@@ -337,10 +360,17 @@ def get_user_id(connection, username, password):
     OR if the admin user wants to edit another user
     """
     sql = """SELECT user_id FROM rescue WHERE username=? AND password=?;"""
-    cur = connection.cursor()
-    cur.execute(sql, (username, password))
-    user_id = cur.fetchall()
-    return user_id[0][0]
+    try:
+        cur = connection.cursor()
+        cur.execute(sql, (username, password))
+        user_id = cur.fetchone()  # Use fetchone to get a single result
+        if user_id:
+            return user_id[0]
+        else:
+            return None  # Return None if user is not found
+    except sqlite3.Error as e:
+        print(f"Error in get_user_id: {e}")
+        return None  # Handle the error gracefully and return None
 
 
 def is_user_admin(connection, user_id):
@@ -355,15 +385,21 @@ def is_user_admin(connection, user_id):
 
 def get_user(connection, user_id):
     """
-    With this function, the user's information
-    (user ID, username and whether the user is admin)
-    can be seen in Rescue user management panel.
+    Retrieve user information (user ID, username, and admin status) from the Rescue user management panel.
     """
     sql = """SELECT * FROM rescue WHERE user_id=?;"""
-    cur = connection.cursor()
-    cur.execute(sql, (user_id,))
-    result = cur.fetchall()
-    return result[0]
+    try:
+        cur = connection.cursor()
+        cur.execute(sql, (user_id,))
+        result = cur.fetchone()  # Use fetchone instead of fetchall
+        if result:
+            return result
+        else:
+            return None  # Return None if no user is found
+    except sqlite3.Error as e:
+        # Handle any database-related errors here
+        print("Error while fetching user:", e)
+        return None  # Return None in case of an error
 
 
 def check_if_username_exists(connection, username):
@@ -425,6 +461,7 @@ def get_all_help_requests(connection):
     cur.execute(sql)
     entry = cur.fetchall()
     return entry
+
 def set_user_battery(connection, dev_id, battery_status):
     sql = "UPDATE users SET low_battery=? WHERE dev_id=?"
     cur = connection.cursor()
@@ -435,36 +472,92 @@ def set_user_battery(connection, dev_id, battery_status):
     connection.commit()
     return
 
-def get_helpers(connection, requester):
-    sql = """SELECT help_giver
-             FROM requests 
-             WHERE help_requester = ? 
-             AND state = 1;"""
-
+def set_user_role(connection, dev_id, role):
+    sql = "UPDATE users SET role=? WHERE dev_id=?"
     cur = connection.cursor()
-    cur.execute(sql, (requester,))
-    help_givers = cur.fetchall()
-    return help_givers[0]
+    cur.execute(sql, (role, dev_id))
+    connection.commit()
+    return get_user_role(connection, dev_id)
+
+def get_user_role(connection, dev_id):
+    sql = """SELECT users.role AS role, role.permissions AS permissions
+             FROM users
+             INNER JOIN role ON role.name = users.role
+             WHERE users.dev_id=?
+          """
+    cur = connection.cursor()
+    try:
+        cur.execute(sql, (dev_id,))
+        result = cur.fetchone()
+        return result
+    except Exception as e:
+        print("Error:", e)
+        return None
+
+def get_helpers(connection, requester):
+    try:
+        sql = """SELECT help_giver
+                 FROM requests 
+                 WHERE help_requester = ? 
+                 AND state = 1;"""
+
+        cur = connection.cursor()
+        cur.execute(sql, (requester,))
+        help_givers = cur.fetchall()
+
+        if help_givers:
+            return help_givers[0]
+        else:
+            return None  # No results found
+
+    except sqlite3.Error as e:
+        # Handle the exception (e.g., log the error or return an error message)
+        print(f"SQLite error: {e}")
+        return None  # Return an error indicator
+
 
 def get_user_ip_by_dev_id(connection, dev_id):
-    sql = """SELECT ip_address
-            FROM users
-            WHERE dev_id = ?;"""
-    cur = connection.cursor()
-    cur.execute(sql, (dev_id,))
-    user_ip = cur.fetchone()
-    return user_ip[0]
-    
+    try:
+        sql = """SELECT ip_address
+                FROM users
+                WHERE dev_id = ?;"""
+
+        cur = connection.cursor()
+        cur.execute(sql, (dev_id,))
+        user_ip = cur.fetchone()
+
+        if user_ip:
+            return user_ip[0]
+        else:
+            return None  # No results found
+
+    except sqlite3.Error as e:
+        # Handle the exception (e.g., log the error or return an error message)
+        print(f"SQLite error: {e}")
+        return None  # Return an error indicator
+
 def get_2_latest_location_dev_id(connection, dev_id):
-    sql = """SELECT gpscoord
-            FROM data
-            WHERE dev_id = ?
-            ORDER BY timestamp DESC;"""
-    cur = connection.cursor()
-    cur.execute(sql,(dev_id,))
-    user_coord = cur.fetchall()
-    #return [user_coord[0], user_coord[1]]
-    return user_coord
+    try:
+        sql = """SELECT gpscoord
+                FROM data
+                WHERE dev_id = ?
+                ORDER BY timestamp DESC
+                LIMIT 2;"""
+
+        cur = connection.cursor()
+        cur.execute(sql, (dev_id,))
+        user_coords = cur.fetchall()
+
+        if user_coords:
+            return user_coords
+        else:
+            return None  # No results found
+
+    except sqlite3.Error as e:
+        # Handle the exception (e.g., log the error or return an error message)
+        print(f"SQLite error: {e}")
+        return None  # Return an error indicator
+
 
 def get_battery_by_dev_id(connection, dev_id):
     sql = """SELECT low_battery

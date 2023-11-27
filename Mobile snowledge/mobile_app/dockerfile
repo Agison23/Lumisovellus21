@@ -1,0 +1,52 @@
+# Use an official Flutter base image
+FROM ubuntu:20.04
+
+# Install required dependencies including Git
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    openjdk-11-jdk \
+    openjdk-8-jdk \
+    unzip \
+    git \
+    curl\
+    wget\
+    && rm -rf /var/lib/apt/lists/*
+
+# Prepare Android directories and system variables
+RUN mkdir -p Android/sdk
+ENV ANDROID_SDK_ROOT /Android/sdk
+RUN mkdir -p .android && touch .android/repositories.cfg
+
+# Change to java 8 to run android sdkmanager, list available java version: update-java-alternatives --list
+RUN update-java-alternatives --set java-1.8.0-openjdk-amd64
+
+# Set up Android SDK
+RUN wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN unzip sdk-tools.zip && rm sdk-tools.zip
+RUN mv tools Android/sdk/tools
+RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses
+RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "platform-tools" "platforms;android-29" "sources;android-29"
+ENV PATH "$PATH:/Android/sdk/platform-tools"
+
+#ENV ANDROID_SDK_ROOT=/android-sdk
+
+# Install Flutter version 3.7.0
+RUN git clone https://github.com/flutter/flutter.git /flutter
+
+ENV PATH "$PATH:/flutter/bin"
+# Switch to the desired Flutter version (3.7.0)
+RUN cd flutter && git checkout 3.7.0
+
+
+ENV APP_ENVIRONMENT=development
+ENV ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
+
+# SET java back to v11 for the app
+RUN update-java-alternatives --set java-1.11.0-openjdk-amd64
+RUN flutter doctor
+# Build and run your Flutter app
+WORKDIR /app
+COPY . .
+
+RUN rm -rf build
+
+RUN flutter pub get
