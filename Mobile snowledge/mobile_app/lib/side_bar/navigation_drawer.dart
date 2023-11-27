@@ -44,8 +44,9 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   final GlobalKey _appNameKey = GlobalKey();
   final GlobalKey _privacyKey = GlobalKey();
   final GlobalKey _languageDropdownKey = GlobalKey();
-  final ValueKey _languageKey = ValueKey('languageSideDropdown');
+  final ValueKey _languageKey = const ValueKey('languageSideDropdown');
 
+  @override
   void initState() {
     super.initState();
 
@@ -71,61 +72,107 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     if (appState.showTutorial &&
         appState.currentTutorialStep ==
             appState.tutorialSteps['MENU_NAVIGATION']) {
+      List<BubbleSlide> slides = buildBubbleSlides(appState);
+
       return BubbleShowcase(
         bubbleShowcaseId: 'my_bubble_showcase_3',
         bubbleShowcaseVersion: 1,
         doNotReopenOnClose: true,
-        bubbleSlides: [
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showSnowCondition']
-                  [appState.language],
-              _snowConditionKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showLocationArea']
-                  [appState.language],
-              _mapViewKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showWeather']
-                  [appState.language],
-              _weatherKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showSnowType']
-                  [appState.language],
-              _snowTypeKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showUserInfo']
-                  [appState.language],
-              _userInfoKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['showServiceInfo']
-                  [appState.language],
-              _serviceInfo),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['openWebPage']
-                  [appState.language],
-              _appNameKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['openPrivacy']
-                  [appState.language],
-              _privacyKey),
-          BubbleSlides().getRelativeBubbleSlide(
-              appState,
-              translations['menuNavigationTutorial']['changeLanguage']
-                  [appState.language],
-              _languageDropdownKey)
-        ],
+        bubbleSlides: slides,
         child: navigationDrawer,
       );
     }
     return navigationDrawer;
+  }
+
+  List<BubbleSlide> buildBubbleSlides(AppState appState) {
+    List<BubbleSlide> normalSlides = [
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showLocationArea']
+              [appState.language],
+          _mapViewKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showWeather']
+              [appState.language],
+          _weatherKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showUserInfo']
+              [appState.language],
+          _userInfoKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showServiceInfo']
+              [appState.language],
+          _serviceInfo),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openWebPage']
+              [appState.language],
+          _appNameKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openPrivacy']
+              [appState.language],
+          _privacyKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['changeLanguage']
+              [appState.language],
+          _languageDropdownKey)
+    ];
+    List<BubbleSlide> premiumSlides = [
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showSnowCondition']
+              [appState.language],
+          _snowConditionKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showLocationArea']
+              [appState.language],
+          _mapViewKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showWeather']
+              [appState.language],
+          _weatherKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showSnowType']
+              [appState.language],
+          _snowTypeKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showUserInfo']
+              [appState.language],
+          _userInfoKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showServiceInfo']
+              [appState.language],
+          _serviceInfo),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openWebPage']
+              [appState.language],
+          _appNameKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openPrivacy']
+              [appState.language],
+          _privacyKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['changeLanguage']
+              [appState.language],
+          _languageDropdownKey)
+    ];
+    return appState.isPremiumSidebar || appState.userRole == premiumRole
+        ? premiumSlides
+        : normalSlides;
   }
 
   Widget buildNavigationDrawer(BuildContext context) {
