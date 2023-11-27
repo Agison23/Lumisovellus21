@@ -830,4 +830,9 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Avun pyytäjän akku on vähissä ja yhteys saattaa katketa!',
     'en': 'Help requester has low battery and they may lose connection!',
   },
+
+  'problemType': {
+    'fi': 'Ongelman tyyppi: ',
+    'en': 'Problem type: ',
+  },
 };

@@ -313,7 +313,8 @@ class ServerComms {
                   await Dialogs.showHelpRequestedDialog(
                       MyApp.navigatorKey.currentState?.context,
                       payload,
-                      batteryLevel);
+                      batteryLevel,
+                      resultParts[5]);
                 }
               } else {
                 messageToServer("HELP_RESPONSE:0");
