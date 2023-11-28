@@ -314,7 +314,7 @@ class ServerComms {
                       MyApp.navigatorKey.currentState?.context,
                       payload,
                       batteryLevel,
-                      resultParts[5]);
+                      resultParts[4]); // problem type
                 }
               } else {
                 messageToServer("HELP_RESPONSE:0");
