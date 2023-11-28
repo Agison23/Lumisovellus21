@@ -65,7 +65,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             connection, "users", "ip_address", "dev_id", user[0], False
         )
         battery_status = db.get_battery_by_dev_id(connection, dev_id)
-        message = "NOTIFY:{}:{}:{}:{}:{}:{}".format(user[0], gpscoord, helptype, chatRoomId, battery_status)
+        message = "NOTIFY:{}:{}:{}:{}:{}".format(user[0], gpscoord, helptype, chatRoomId, battery_status)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
