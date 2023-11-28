@@ -550,8 +550,6 @@ class Dialogs {
   static showHelpRequestedDialog(context, payload, batteryLevel, reason) async {
     var appState = Provider.of<AppState>(context, listen: false);
     helpRequestedDialogOpen = true;
-    // var tempReason = reason.split(' ');
-    // if (tempReason.length > 1) reason = tempReason[1];
     return await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withOpacity(0.9),
