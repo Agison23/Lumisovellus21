@@ -50,6 +50,8 @@ dependencies:
   cloud_firestore: ^4.4.3
   intl: ^0.18.0
   battery_plus: ^3.0.4
+  bubble_showcase: ^1.1.0
+  speech_bubble: ^0.0.9
   flutter_compass: ^0.8.0
 
 dev_dependencies:

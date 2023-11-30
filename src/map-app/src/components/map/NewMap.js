@@ -66,7 +66,8 @@ import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
 import getTranslationKey from "../../translations/getTranslationKey";
-
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import ErrorIcon from "@material-ui/icons/Error";
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
   menuContainer: {
@@ -91,6 +92,8 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonsCntainerMobile: {
     display: "flex",
+    flexDirection: "column",
+    alignItems: "baseline",
     padding: theme.spacing(1),
     position: "absolute",
     bottom: "60px",
@@ -136,6 +139,7 @@ function Map(props) {
   // An array of snow types that are currently applied to a segment on the map
   const [currentSnowTypes, setCurrentSnowTypes] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openMonitorData, setOpenMonitorData] = useState(false);
   const [buttonText, setButtonText] = useState("Näytä ainoastaan...");
   const { language } = useContext(GlobalContext);
 
@@ -239,6 +243,10 @@ function Map(props) {
     setOpen(!open);
   }
 
+  function toggleMonitorsPopups() {
+    setOpenMonitorData(!openMonitorData);
+  }
+
   // Use styles
   const styledClasses = useStyles();
 
@@ -264,9 +272,24 @@ function Map(props) {
         viewManagement={props.viewManagement}
         highlightedSnowType={highlightedSnowType}
         showMap={props.showMap}
+        monitorData={props.monitorData}
+        openMonitorData={openMonitorData}
       ></PallasMap>
       {props.isMobile ? (
         <Box className={styledClasses.buttonsCntainerMobile}>
+          <Box style={{ paddingRight: "10px" }}>
+            <IconButton
+              onClick={toggleMonitorsPopups}
+              style={{
+                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
+                height: "40px",
+                borderRadius: 8,
+                marginBottom: "10px",
+              }}
+            >
+              {openMonitorData ? <ErrorOutlineIcon /> : <ErrorIcon />}
+            </IconButton>
+          </Box>
           <Box style={{ paddingRight: "10px" }}>
             <IconButton
               onClick={handleClickOpen}
@@ -274,9 +297,10 @@ function Map(props) {
                 backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
                 height: "40px",
                 borderRadius: 8,
+                marginBottom: "10px",
               }}
             >
-              <FilterIcon></FilterIcon>
+              <FilterIcon />
             </IconButton>
           </Box>
           <Dialog onClose={handleClose} open={open}>
@@ -436,6 +460,20 @@ function Map(props) {
               ) : (
                 <VisibilityIcon />
               )}
+            </IconButton>
+          </Box>
+          <Box
+            className={styledClasses.eyeIconContainer}
+            style={{ marginLeft: "10px" }}
+          >
+            <IconButton
+              onClick={toggleMonitorsPopups}
+              style={{
+                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
+                borderRadius: 8,
+              }}
+            >
+              {openMonitorData ? <ErrorOutlineIcon /> : <ErrorIcon />}
             </IconButton>
           </Box>
         </Box>

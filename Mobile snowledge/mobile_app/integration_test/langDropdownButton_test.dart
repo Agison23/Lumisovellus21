@@ -4,8 +4,10 @@ import 'package:mobile_app/main.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   group('Language dropdown menu widget tests - ', () {
     testWidgets(
         'GIVEN the language is Finnish, '

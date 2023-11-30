@@ -52,6 +52,16 @@ Map translations = {
     'en': 'Continue',
   },
 
+  'premiumDialogTitle': {
+    'fi': 'Päivitä Premium Käyttäjään avataksesi',
+    'en': 'Upgrade to Premium User to unlock'
+  },
+
+  'premiumDialogButtonText': {
+    'fi': 'Mene Käyttäjätietoihin',
+    'en': 'Go to User Information'
+  },
+
   'conditions': {
     'fi': 'Lumiolosuhteet Pallaksella',
     'en': 'Snow conditions in Pallas',
@@ -830,4 +840,96 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'fi': 'Avun pyytäjän akku on vähissä ja yhteys saattaa katketa!',
     'en': 'Help requester has low battery and they may lose connection!',
   },
+
+  'skipTutorial': {'fi': 'Ohita ohjeistus >>', 'en': 'Skip tutorial >>'},
+
+  'menuNavigationTutorial': {
+    'openMenu': {
+      'fi': 'Paina tästä avataksesi valikko',
+      'en': 'Tap here to open the menu bar'
+    },
+    'showSnowCondition': {
+      'fi': 'Näytä lumiolosuhteet alueittain',
+      'en': 'Show snow condition map'
+    },
+    'showLocationArea': {
+      'fi': 'Näytä sijainti kartalla',
+      'en': 'Show local area map'
+    },
+    'showWeather': {
+      'fi': 'Näytä tämänhetkinen säätilanne Pallaksella',
+      'en': 'Show current weather situation in the Pallas area'
+    },
+    'showSnowType': {
+      'fi': 'Näytä eri lumityyppien selitteet',
+      'en': 'Show information about different snow types'
+    },
+    'showUserInfo': {
+      'fi': 'Näytä käyttäjätiedot',
+      'en': 'Show personal information'
+    },
+    'showServiceInfo': {
+      'fi': 'Näytä tietoa Pallaksen Pöllöistä',
+      'en': 'Show information about Pallaksen Pöllöt'
+    },
+    'openWebPage': {
+      'fi': 'Avaa nettisivut uuteen selainikkunaan',
+      'en': 'Open their web page in a new browser window'
+    },
+    'openPrivacy': {
+      'fi': 'Avaa tietosuojaseloste uuteen selainikkunaan',
+      'en': 'Open their privacy policy in a new browser window'
+    },
+    'changeLanguage': {
+      'fi': 'Paina tästä vaihtaaksesi kieltä',
+      'en': 'Tap to change the language'
+    },
+  },
+
+  'rescueTutorial': {
+    'shareLocation': {
+      'fi': 'Paina tästä jakaaksesi sijainti',
+      'en': 'Tap here to share location'
+    },
+    'askForHelp': {
+      'fi': 'Paina tästä pyytääksesi apua',
+      'en': 'Tap here to ask for help'
+    },
+    'call112': {
+      'fi': 'Paina tästä soittaaksesi 112. Käytä aina hätätapauksissa',
+      'en':
+          'Tap here to go to phone app and call 112. This should be used when there is no one around and require emergency help'
+    },
+    'sendHelpRequest': {
+      'fi': 'Paina tästä lähettääksesi uuden avunpyynnön',
+      'en': 'Tap here to send a new help request'
+    },
+    'continueHelpRequest': {
+      'fi':
+          'Valitse ylläolevista vaihtoehdoista ja paina "Jatka" lähettääksesi avunpyynnön',
+      'en':
+          'Select an option above and tap "Continue" to initiate a help request'
+    },
+    'shareLocationToggle': {
+      'fi': 'Varmista että sijainnin jakaminen on päällä',
+      'en': 'Make sure location sharing is on'
+    },
+    'close': {'fi': 'Paina tästä sulkeaksesi', 'en': 'Tap here to close'}
+  },
+
+  'snowConditionTutorial': {
+    'navigate': {
+      'fi':
+          'Liikuta karttaa liu\'uttamalla ja suurenna kaksoisnapauttamalla tai nipistämällä',
+      'en': 'Pan and zoom gestures to move around & zoom in and out the map'
+    },
+    'filter': {
+      'fi': 'Paina tästä valitaksesi suodatinvaihtoehdon',
+      'en': 'Tap here to select a filter option'
+    },
+    'filterSelection': {
+      'fi': 'Valitse yksi vaihtoehdoista',
+      'en': 'Select one of these options'
+    }
+  }
 };
