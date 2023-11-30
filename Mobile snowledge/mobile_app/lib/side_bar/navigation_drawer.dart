@@ -7,10 +7,13 @@ import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
+import 'package:mobile_app/widgets/bubble_slides.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:mobile_app/user_info.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
+import 'package:speech_bubble/speech_bubble.dart';
 
 import '../state/appState.dart';
 //import '../user_information_view.dart';
@@ -32,6 +35,17 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   String premiumRole = 'premium';
   String normalRole = 'normal';
 
+  final GlobalKey _snowConditionKey = GlobalKey();
+  final GlobalKey _mapViewKey = GlobalKey();
+  final GlobalKey _weatherKey = GlobalKey();
+  final GlobalKey _snowTypeKey = GlobalKey();
+  final GlobalKey _userInfoKey = GlobalKey();
+  final GlobalKey _serviceInfo = GlobalKey();
+  final GlobalKey _appNameKey = GlobalKey();
+  final GlobalKey _privacyKey = GlobalKey();
+  final GlobalKey _languageDropdownKey = GlobalKey();
+  final ValueKey _languageKey = const ValueKey('languageSideDropdown');
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +66,116 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context, listen: true);
+    Widget navigationDrawer = buildNavigationDrawer(context);
+
+    if (appState.showTutorial &&
+        appState.currentTutorialStep ==
+            appState.tutorialSteps['MENU_NAVIGATION']) {
+      List<BubbleSlide> slides = buildBubbleSlides(appState);
+
+      return BubbleShowcase(
+        bubbleShowcaseId: 'my_bubble_showcase_3',
+        bubbleShowcaseVersion: 1,
+        doNotReopenOnClose: true,
+        bubbleSlides: slides,
+        child: navigationDrawer,
+      );
+    }
+    return navigationDrawer;
+  }
+
+  List<BubbleSlide> buildBubbleSlides(AppState appState) {
+    List<BubbleSlide> normalSlides = [
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showLocationArea']
+              [appState.language],
+          _mapViewKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showWeather']
+              [appState.language],
+          _weatherKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showUserInfo']
+              [appState.language],
+          _userInfoKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showServiceInfo']
+              [appState.language],
+          _serviceInfo),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openWebPage']
+              [appState.language],
+          _appNameKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openPrivacy']
+              [appState.language],
+          _privacyKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['changeLanguage']
+              [appState.language],
+          _languageDropdownKey)
+    ];
+    List<BubbleSlide> premiumSlides = [
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showSnowCondition']
+              [appState.language],
+          _snowConditionKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showLocationArea']
+              [appState.language],
+          _mapViewKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showWeather']
+              [appState.language],
+          _weatherKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showSnowType']
+              [appState.language],
+          _snowTypeKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showUserInfo']
+              [appState.language],
+          _userInfoKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['showServiceInfo']
+              [appState.language],
+          _serviceInfo),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openWebPage']
+              [appState.language],
+          _appNameKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['openPrivacy']
+              [appState.language],
+          _privacyKey),
+      BubbleSlides().getRelativeBubbleSlide(
+          appState,
+          translations['menuNavigationTutorial']['changeLanguage']
+              [appState.language],
+          _languageDropdownKey)
+    ];
+    return appState.isPremiumSidebar || appState.userRole == premiumRole
+        ? premiumSlides
+        : normalSlides;
+  }
+
+  Widget buildNavigationDrawer(BuildContext context) {
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
@@ -107,46 +231,47 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
         runSpacing: 8,
         children: [
           Visibility(
-            child: _item(0, Icons.area_chart_outlined,
-                translations['conditions'][appState.language]),
+            child: _item(
+                0,
+                Icons.area_chart_outlined,
+                translations['conditions'][appState.language],
+                _snowConditionKey),
             visible:
                 appState.isPremiumSidebar || appState.userRole == premiumRole,
           ),
           Visibility(
             child: _item(1, Icons.map_outlined,
-                translations['mapView'][appState.language]),
+                translations['mapView'][appState.language], _mapViewKey),
             visible:
                 true, // replace with winter (line 22) if you want to hide during summertime
             key: const ValueKey('snowCondition'),
           ),
           _item(2, Icons.sunny_snowing,
-              translations['weather'][appState.language]),
+              translations['weather'][appState.language], _weatherKey),
           Visibility(
-            child: _item(3, Icons.ac_unit,
-                translations['snowDescription'][appState.language]),
+            child: _item(
+                3,
+                Icons.ac_unit,
+                translations['snowDescription'][appState.language],
+                _snowTypeKey),
             visible:
                 appState.isPremiumSidebar || appState.userRole == premiumRole,
             // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
-              translations['userInfo'][appState.language]),
+              translations['userInfo'][appState.language], _userInfoKey),
           _item(5, Icons.menu_book_outlined,
-              translations['serviceInfo'][appState.language]),
+              translations['serviceInfo'][appState.language], _serviceInfo),
           const Divider(color: Colors.black),
-          _item(
-            6,
-            Icons.downhill_skiing_outlined,
-            translations['appName'][appState.language],
-          ),
-          _item(
-            7,
-            Icons.privacy_tip_outlined,
-            translations['privacy'][appState.language],
-          ),
+          _item(6, Icons.downhill_skiing_outlined,
+              translations['appName'][appState.language], _appNameKey),
+          _item(7, Icons.privacy_tip_outlined,
+              translations['privacy'][appState.language], _privacyKey),
           const Divider(color: Colors.black),
           Center(
+            key: _languageDropdownKey,
             child: DropdownButton<String>(
-              key: const ValueKey('languageSideDropdown'),
+              key: _languageKey,
               value: appState.languageName,
               onChanged: (String? value) {
                 setLanguage(value!);
@@ -167,9 +292,10 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     );
   }
 
-  Widget _item(int index, IconData iconData, String title) {
+  Widget _item(int index, IconData iconData, String title, GlobalKey key) {
     var appState = Provider.of<AppState>(context);
     return Stack(
+      key: key,
       children: [
         ListTile(
           leading: Icon(iconData),

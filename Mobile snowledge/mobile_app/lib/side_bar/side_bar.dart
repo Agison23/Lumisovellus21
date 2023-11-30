@@ -27,6 +27,8 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
 
   static bool get gpsSwitchState => _gpsSwitchState;
 
+  String selectedValue = "Lievä";
+
   static void setGpsSwitchState(bool value) async {
     if (_gpsSwitchState != value) {
       _gpsSwitchState = value;
@@ -191,7 +193,6 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
     return menuItems;
   }
 
-  String selectedValue = "Lievä";
   Future _showDialog(context) async {
     var appState = Provider.of<AppState>(context);
     return await showDialog<void>(

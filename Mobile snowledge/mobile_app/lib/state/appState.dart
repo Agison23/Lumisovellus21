@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
   String _appEnv = 'development';
@@ -14,6 +15,21 @@ class AppState extends ChangeNotifier {
 
   final List _premiumFeatureMenuItems = [0, 3];
 
+  bool _showTutorial = true;
+  int _currentTutorialStep = 1;
+
+  final Map _tutorialSteps = {
+    'MENU_TAP': 1,
+    'MENU_NAVIGATION': 2,
+    'LOCATION_SHARING': 3,
+    'SHARE_LOCATION_DIALOG': 4,
+    'ASK_FOR_HELP': 5,
+    'HELP_DIALOG': 6,
+    'MINOR_HELP_DIALOG': 7
+  };
+
+  Map get tutorialSteps => _tutorialSteps;
+
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
 
   String get appEnv => _appEnv;
@@ -28,9 +44,13 @@ class AppState extends ChangeNotifier {
 
   bool get hasUnreadMessages => _hasUnreadMessages;
 
+  int get currentTutorialStep => _currentTutorialStep;
+
   final Map _chatRoomUsersBattery = {};
 
   Map get chatRoomUsersBattery => _chatRoomUsersBattery;
+
+  bool get showTutorial => _showTutorial;
 
   bool get isPremiumSidebar => _isPremiumSidebar;
 
@@ -82,6 +102,31 @@ class AppState extends ChangeNotifier {
 
   set setHasUnreadMessages(bool value) {
     _hasUnreadMessages = value;
+    notifyListeners();
+  }
+
+  set setShowTutorial(bool value) {
+    _showTutorial = value;
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((pref) {
+      pref.setBool('showTutorial', value);
+    });
+    notifyListeners();
+  }
+
+  set setCurrentTutorialStep(int value) {
+    _currentTutorialStep = value;
+    Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+    prefs.then((pref) {
+      pref.setInt('currentTutorialStep', value);
+    });
+    notifyListeners();
+  }
+
+  void nextTutorialStep() {
+    _currentTutorialStep += 1;
+    setCurrentTutorialStep =
+        _currentTutorialStep <= tutorialSteps.length ? _currentTutorialStep : 1;
     notifyListeners();
   }
 
