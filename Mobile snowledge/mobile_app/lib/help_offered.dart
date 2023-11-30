@@ -270,7 +270,7 @@ class HelpOfferedState extends State<HelpOffered> {
           translations['decline'][appState.language],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.red,
+            color: Color(0xFF2B2B2B),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -293,7 +293,7 @@ class HelpOfferedState extends State<HelpOffered> {
           translations['accept'][appState.language],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.green,
+            color: Color(0xFF2B2B2B),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
