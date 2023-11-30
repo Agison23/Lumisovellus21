@@ -85,6 +85,8 @@ flutter:
     - assets/images/compass_button.png
     - assets/images/locate_button.png
     - assets/images/north_button.png
+    - assets/images/location_marker.png
+    - assets/images/location_marker_direction.png
     - .env
   #   - images/a_dot_ham.jpeg
 

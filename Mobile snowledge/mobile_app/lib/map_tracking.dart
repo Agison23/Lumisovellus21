@@ -7,14 +7,14 @@ import 'package:mobile_app/helper/loading_indicator.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/translations/translations.dart';
+import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'bottom_bar/state/setSharingLocation.dart';
 import 'notification_handler.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
-import '../../widgets_binding_observer_state.dart';
-import '../translations/translations.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:math' as math;
 
@@ -58,10 +58,12 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
   @override
   Widget build(BuildContext context) {
-    bool compassOff = true;
     double _direction = 0;
     double _mapRotation = 0;
     String _compassIcon = 'assets/images/compass_button.png';
+    const String _markerIcon = 'assets/images/location_marker.png';
+    const String _markerDirectionIcon =
+        'assets/images/location_marker_direction.png';
     var appState = Provider.of<AppState>(context);
     var lat;
     var lng;
@@ -132,9 +134,6 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                             stream: FlutterCompass.events,
                             builder: (context, snapshot) {
                               while (true) {
-                                // If compass off, return default marker
-                                if (compassOff) break;
-
                                 // Return default marker if reading direction results to error
                                 if (snapshot.hasError) break;
 
@@ -151,14 +150,14 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
                                 // Marker pointing at phone's direction
                                 return MarkerLayer(
-                                    markers: getMarker(LatLng(lat, lng),
+                                    markers: getMarker(
+                                        LatLng(lat, lng), _markerDirectionIcon,
                                         direction: _direction));
                               }
                               // Default marker lined up with the map
                               return MarkerLayer(
-                                markers: getMarker(LatLng(lat, lng)),
-                                rotate: true,
-                              );
+                                  markers:
+                                      getMarker(LatLng(lat, lng), _markerIcon));
                             })
                       ],
                     );
@@ -210,9 +209,9 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                     _compassIcon = 'assets/images/north_button.png';
                     _mapController.moveAndRotate(
                         LatLng(lat, lng), _mapController.zoom, 0);
-                    Future.delayed(const Duration(milliseconds: 1000), () {
+                    Future.delayed(const Duration(milliseconds: 1200), () {
                       _compassIcon = 'assets/images/compass_button.png';
-                      // Only to invoke mapEventStream
+                      // Only to invoke mapEventStream to update compass icon
                       _mapController.rotate(_mapRotation + 360);
                     });
                   },
@@ -233,7 +232,13 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                           height: 80,
                           fit: BoxFit.fill),
                       onPressed: () {
-                        compassOff = !compassOff;
+                        _compassIcon = 'assets/images/north_button.png';
+                        _mapController.rotate(0);
+                        Future.delayed(const Duration(milliseconds: 1200), () {
+                          _compassIcon = 'assets/images/compass_button.png';
+                          // Only to invoke mapEventStream to update compass icon
+                          _mapController.rotate(_mapRotation + 360);
+                        });
                       },
                       padding: const EdgeInsets.all(0.0),
                     ),
@@ -263,22 +268,18 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     return "https://api.maptiler.com/maps/outdoor/256/{z}/{x}/{y}.png?key=vIqtYxkJALvxfiyLqutC";
   }
 
-  static List<Marker> getMarker(LatLng usersLatLng, {double direction = 0}) {
+  static List<Marker> getMarker(LatLng usersLatLng, String markerIcon,
+      {double direction = 0}) {
     List<Marker> marker = [];
     marker.add(Marker(
-        width: 55,
-        height: 55,
+        width: 60,
+        height: 60,
         point: usersLatLng,
         builder: (ctx) => Transform.rotate(
-              angle: direction * math.pi / 180,
-              child: Container(
-                  width: 1.0,
-                  height: 1.0,
-                  child: const Icon(
-                    Icons.person_pin_circle,
-                    size: 40,
-                  )),
-            )));
+            angle: direction * math.pi / 180,
+            child: Image(
+              image: AssetImage(markerIcon),
+            ))));
     return marker;
   }
 }
