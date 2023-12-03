@@ -212,7 +212,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                     Future.delayed(const Duration(milliseconds: 1200), () {
                       _compassIcon = 'assets/images/compass_button.png';
                       // Only to invoke mapEventStream to update compass icon
-                      _mapController.rotate(_mapRotation + 360);
+                      _mapController.rotate(_mapController.rotation + 360);
                     });
                   },
                   padding: const EdgeInsets.all(0.0),
@@ -237,7 +237,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         Future.delayed(const Duration(milliseconds: 1200), () {
                           _compassIcon = 'assets/images/compass_button.png';
                           // Only to invoke mapEventStream to update compass icon
-                          _mapController.rotate(_mapRotation + 360);
+                          _mapController.rotate(_mapController.rotation + 360);
                         });
                       },
                       padding: const EdgeInsets.all(0.0),
