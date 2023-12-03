@@ -31,9 +31,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        var appState = Provider.of<AppState>(context);
-        initiateTutorial(appState);
-
         if (!isInitialized) {
           isInitialized = true;
           ServerComms.listenServer(context);
@@ -51,15 +48,4 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-}
-
-void initiateTutorial(AppState appState) {
-  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  prefs.then((pref) {
-    // Show tutorial
-    appState.setShowTutorial = pref.getBool('showTutorial') ?? true;
-
-    // Set current step
-    appState.setCurrentTutorialStep = pref.getInt('currentTutorialStep') ?? 1;
-  });
 }

@@ -192,13 +192,10 @@ class RescueChatWidgets {
 
     bool isLowBattery = false;
     if (chatRoomUsersBattery.containsKey(roomId) &&
-        chatRoomUsersBattery[roomId] == 'low' &&
-        phoneNum == roomId) {
+        chatRoomUsersBattery[roomId] == 'low') {
       isLowBattery = true;
-    }
-    if (chatRoomUsersBattery.containsKey(phoneNum) &&
-        chatRoomUsersBattery[phoneNum] == 'low' &&
-        phoneNum == roomId) {
+    } else if (chatRoomUsersBattery.containsKey(phoneNum) &&
+        chatRoomUsersBattery[phoneNum] == 'low') {
       isLowBattery = true;
     }
 

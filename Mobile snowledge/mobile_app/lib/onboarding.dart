@@ -35,11 +35,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
-    Widget onboardingPage = buildOnboardingPage(context, appState);
-    return onboardingPage;
-  }
-
-  Widget buildOnboardingPage(BuildContext context, AppState appState) {
     void setLanguage(String language) {
       appState.setLanguage = language;
     }
@@ -97,12 +92,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   context,
                                   translations['next'][appState.language],
                                   onPressed: () {
-                                    if (appState.showTutorial &&
-                                        appState.currentTutorialStep ==
-                                            appState.tutorialSteps[
-                                                'LANGUAGE_SELECTION']) {
-                                      appState.nextTutorialStep();
-                                    }
                                     pageViewController.nextPage(
                                       duration:
                                           const Duration(milliseconds: 500),
@@ -231,7 +220,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       fontSize: 20,
                                       color: Colors.white)),
                               const SizedBox(height: 20),
-                              const SetSharingLocation(),
+                              SetSharingLocation(),
                               const SizedBox(height: 20),
                               Buttons.onboardingButton(context,
                                   translations['next'][appState.language],
@@ -340,8 +329,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 }
 
 class UserInfoForm extends StatefulWidget {
-  const UserInfoForm({Key? key, required this.pageController})
-      : super(key: key);
+  UserInfoForm({Key? key, required this.pageController}) : super(key: key);
 
   final PageController pageController;
 

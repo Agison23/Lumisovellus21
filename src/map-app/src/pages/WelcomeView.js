@@ -89,7 +89,7 @@ function WelcomeView(props) {
 
   useEffect(() => {
     setText(welcomeText[language]);
-  }, [language]);
+  }, language);
 
   const styledClasses = useStyles();
   if (props.isMobile) {

@@ -3,11 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_app/bottom_bar/bottomBar.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:provider/provider.dart';
-import 'package:integration_test/integration_test.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
   testWidgets(
       'GIVEN the user is at the main screen, '
       'WHEN the user presses the request help button, '

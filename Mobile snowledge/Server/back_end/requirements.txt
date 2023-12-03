@@ -1,5 +1,0 @@
-faker
-flask
-flask-cors
-waitress
-python-dotenv
