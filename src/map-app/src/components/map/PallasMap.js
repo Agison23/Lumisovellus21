@@ -3,6 +3,9 @@ Creation of map with maplibre-gl-library
 
 Latest updates:
 
+An Nguyen 30.11.2023
+Added monitor markers
+
 Joonas Konttila 27.11.2022
 Added striped polygon fills
 
@@ -36,7 +39,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import "maplibre-gl/dist/maplibre-gl.css";
 import union from "@turf/union";
 import { loadStripedPolygonImagesToMap } from "./loadStripedPolygonImagesToMap";
-
+import { SnowerAPI, monitors } from "../snower/SnowerAPI";
+import { createMarkersForMonitors } from "../snower/MonitorMarkers";
 const useStyles = makeStyles(() => ({
   mapContainer: {
     width: "100%",
@@ -72,7 +76,8 @@ function PallasMap(props) {
   const [data, setData] = useState({ type: "FeatureCollection", features: [] });
   const [segmentArray, setSegmentArray] = useState([]);
   const [polygonFillCombinations, setPolygonFillCombinations] = useState([]);
-
+  const [monitorData, setMonitorData] = useState(monitors);
+  const [monitorMarkers, setMonitorMarkers] = useState([]);
   const center = [24.05, 68.069];
   const bounds = props.isMobile
     ? [
@@ -83,6 +88,18 @@ function PallasMap(props) {
         [23.556208, 67.988229],
         [24.561503, 68.16228],
       ];
+
+  useEffect(() => {
+    const snowerService = new SnowerAPI();
+
+    async function fetchData() {
+      await snowerService.fetchDataAndStore();
+      const data = snowerService.getData();
+      setMonitorData(data);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
@@ -427,6 +444,9 @@ function PallasMap(props) {
           .setPopup(popup)
           .addTo(map);
 
+        // Adding monitor markers
+        setMonitorMarkers(createMarkersForMonitors(map, monitorData));
+
         // When user hovers over a segment, update its hover feature state to true
         var hoveredSegmentId = null;
         map.on("mousemove", "segments-fills", function (e) {
@@ -539,6 +559,19 @@ function PallasMap(props) {
       }
     }
   }, [data, props.subsOnly, props.shownSegment, props.highlightedSnowType]);
+
+  useEffect(() => {
+    if (map !== undefined && monitorMarkers.length > 0) {
+      monitorMarkers.forEach((marker) => {
+        const popup = marker.getPopup();
+        if (props.openMonitorData === true) {
+          popup.remove();
+        } else {
+          popup.addTo(map);
+        }
+      });
+    }
+  }, [props.openMonitorData, map, monitorMarkers]);
 
   //console.log(JSON.stringify(data));
   return <div className={styledClasses.mapContainer} ref={mapContainerRef} />;

@@ -63,3 +63,5 @@ vagrant/ubuntu*console.log
 
 #database
 Mobile snowledge/Server/back_end/db/database
+Mobile snowledge/Server/back_end/__pycache__
+*.pyc
