@@ -16,7 +16,6 @@ import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 import '../state/appState.dart';
-//import '../user_information_view.dart';
 
 class MyNavigationDrawer extends StatefulWidget {
   const MyNavigationDrawer({
@@ -212,7 +211,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
 
   // creating hamburger bar contents
   Widget buildMenuItems(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
 
     void setLanguage(String language) async {
       final controller = await widget.webViewController;
@@ -293,7 +292,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   Widget _item(int index, IconData iconData, String title, GlobalKey key) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     return Stack(
       key: key,
       children: [

@@ -56,7 +56,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     var lat;
     var lng;
     return WillPopScope(

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider<AppState>(create: (_) => AppState())],
       builder: (context, child) {
-        var appState = Provider.of<AppState>(context);
+        var appState = Provider.of<AppState>(context, listen: false);
         initiateTutorial(appState);
 
         if (!isInitialized) {

@@ -80,7 +80,7 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
   Widget build(BuildContext context) {
     final Completer<WebViewController> _controller =
         Completer<WebViewController>();
-    AppState appState = Provider.of<AppState>(context, listen: true);
+    AppState appState = Provider.of<AppState>(context, listen: false);
     String languageToChangeTo = appState.language;
     String? appURL;
 
