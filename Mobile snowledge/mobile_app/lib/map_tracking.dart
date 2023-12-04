@@ -59,7 +59,6 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   @override
   Widget build(BuildContext context) {
     double _direction = 0;
-    String _compassIcon = 'assets/images/compass_button.png';
     const String _markerIcon = 'assets/images/location_marker.png';
     const String _markerDirectionIcon =
         'assets/images/location_marker_direction.png';
