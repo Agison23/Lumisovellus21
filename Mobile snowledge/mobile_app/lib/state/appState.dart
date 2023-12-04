@@ -28,6 +28,12 @@ class AppState extends ChangeNotifier {
     'MINOR_HELP_DIALOG': 7
   };
 
+// Map rotation to controll compass
+  double _mapRotation = 0;
+
+  // Compass button's changing image between compass and north
+  String _compassIcon = 'assets/images/compass_button.png';
+
   Map get tutorialSteps => _tutorialSteps;
 
   final Map _allLanguages = {'SUOMI': 'fi', 'ENGLISH': 'en'};
@@ -57,6 +63,10 @@ class AppState extends ChangeNotifier {
   List get premiumFeatureMenuItems => _premiumFeatureMenuItems;
 
   String get userRole => _userRole;
+
+  double get mapRotation => _mapRotation;
+
+  String get compassIcon => _compassIcon;
 
   void setChatRoomUsersBattery(String phoneNum, String batteryStatus) {
     _chatRoomUsersBattery[phoneNum] = batteryStatus;
@@ -137,6 +147,16 @@ class AppState extends ChangeNotifier {
 
   set setUserRole(String value) {
     _userRole = value;
+    notifyListeners();
+  }
+
+  set setMapRotation(double value) {
+    _mapRotation = value;
+    notifyListeners();
+  }
+
+  set setCompassIcon(String value) {
+    _compassIcon = value;
     notifyListeners();
   }
 }

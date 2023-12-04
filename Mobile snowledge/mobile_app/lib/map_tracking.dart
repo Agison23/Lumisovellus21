@@ -59,7 +59,6 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
   @override
   Widget build(BuildContext context) {
     double _direction = 0;
-    double _mapRotation = 0;
     String _compassIcon = 'assets/images/compass_button.png';
     const String _markerIcon = 'assets/images/location_marker.png';
     const String _markerDirectionIcon =
@@ -124,7 +123,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         center: LatLng(lat, lng),
                         zoom: 11.0,
                         onMapEvent: (p0) =>
-                            _mapRotation = _mapController.rotation,
+                            appState.setMapRotation = _mapController.rotation,
                       ),
                       children: [
                         TileLayer(urlTemplate: getSummerOrWinterMap()
@@ -206,11 +205,12 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                       height: 80,
                       fit: BoxFit.fill),
                   onPressed: () {
-                    _compassIcon = 'assets/images/north_button.png';
+                    appState.setCompassIcon = 'assets/images/north_button.png';
                     _mapController.moveAndRotate(
                         LatLng(lat, lng), _mapController.zoom, 0);
                     Future.delayed(const Duration(milliseconds: 1200), () {
-                      _compassIcon = 'assets/images/compass_button.png';
+                      appState.setCompassIcon =
+                          'assets/images/compass_button.png';
                       // Only to invoke mapEventStream to update compass icon
                       _mapController.rotate(_mapController.rotation + 360);
                     });
@@ -223,19 +223,21 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                 child: StreamBuilder(
                   stream: _mapController.mapEventStream,
                   builder: (context, snapshot) => Transform.rotate(
-                    angle: _mapRotation * math.pi / 180,
+                    angle: appState.mapRotation * math.pi / 180,
                     child: IconButton(
                       iconSize: 24,
                       icon: Image(
-                          image: AssetImage(_compassIcon),
+                          image: AssetImage(appState.compassIcon),
                           width: 80,
                           height: 80,
                           fit: BoxFit.fill),
                       onPressed: () {
-                        _compassIcon = 'assets/images/north_button.png';
+                        appState.setCompassIcon =
+                            'assets/images/north_button.png';
                         _mapController.rotate(0);
                         Future.delayed(const Duration(milliseconds: 1200), () {
-                          _compassIcon = 'assets/images/compass_button.png';
+                          appState.setCompassIcon =
+                              'assets/images/compass_button.png';
                           // Only to invoke mapEventStream to update compass icon
                           _mapController.rotate(_mapController.rotation + 360);
                         });
