@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:mobile_app/help_needed_mode.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
-import 'package:mobile_app/user_information_view.dart';
+import 'package:mobile_app/user_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../open_112app.dart';
@@ -59,7 +59,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: <Widget>[
       Padding(
@@ -182,7 +182,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
   }
 
   List<DropdownMenuItem<String>> get dropdownItems {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: true);
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(
           child: Text(translations['mild'][appState.language]), value: "Lievä"),
@@ -194,7 +194,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
   }
 
   Future _showDialog(context) async {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: true);
     return await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -241,7 +241,7 @@ class SideBarState extends WidgetsBindingObserverState<SideBar> {
   }
 
   ElevatedButton _helpButton(bool gpsSettingIsOff, BuildContext contx) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: true);
     return ElevatedButton(
       onPressed: () async {
         if (gpsSettingIsOff) {

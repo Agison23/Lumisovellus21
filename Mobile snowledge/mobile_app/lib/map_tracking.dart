@@ -62,7 +62,7 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
     const String _markerIcon = 'assets/images/location_marker.png';
     const String _markerDirectionIcon =
         'assets/images/location_marker_direction.png';
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     var lat;
     var lng;
     return WillPopScope(
