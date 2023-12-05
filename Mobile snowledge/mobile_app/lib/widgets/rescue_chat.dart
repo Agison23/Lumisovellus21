@@ -32,7 +32,7 @@ class _RescueChatState extends State<RescueChat> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
