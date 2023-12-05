@@ -19,6 +19,7 @@ class _RescueChatState extends State<RescueChat> {
   final Stream<QuerySnapshot> _roomsStream =
       FirebaseFirestore.instance.collection('Rooms').snapshots();
   Map<String, dynamic>? selectedUser;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _RescueChatState extends State<RescueChat> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
@@ -135,7 +136,8 @@ class _RescueChatState extends State<RescueChat> {
                         roomId: roomId,
                         myPhoneNum: myPhoneNum,
                         users: users,
-                        appState: appState),
+                        appState: appState,
+                        textFieldController: textEditingController),
                     // Button to close the chat dialog
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -259,7 +261,8 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget chatRoom({roomId, myPhoneNum, users, appState}) {
+  static Widget chatRoom(
+      {roomId, myPhoneNum, users, appState, textFieldController}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
 
@@ -343,27 +346,29 @@ class RescueChatWidgets {
           // Message field
           Container(
             color: Colors.white,
-            child: RescueChatWidgets.messageField(onSubmit: (controller) {
-              if (controller.text.toString() != '') {
-                if (roomId != null) {
-                  Map<String, dynamic> data = {
-                    'message': controller.text.trim(),
-                    'sent_by': myPhoneNum,
-                    'datetime': DateTime.now(),
-                  };
-                  firestore.collection('Rooms').doc(roomId).update({
-                    'last_message_time': DateTime.now(),
-                    'last_message': controller.text,
-                  });
-                  firestore
-                      .collection('Rooms')
-                      .doc(roomId)
-                      .collection('Messages')
-                      .add(data);
-                }
-              }
-              controller.clear();
-            }),
+            child: RescueChatWidgets.messageField(
+                onSubmit: (controller) {
+                  if (controller.text.toString() != '') {
+                    if (roomId != null) {
+                      Map<String, dynamic> data = {
+                        'message': controller.text.trim(),
+                        'sent_by': myPhoneNum,
+                        'datetime': DateTime.now(),
+                      };
+                      firestore.collection('Rooms').doc(roomId).update({
+                        'last_message_time': DateTime.now(),
+                        'last_message': controller.text,
+                      });
+                      firestore
+                          .collection('Rooms')
+                          .doc(roomId)
+                          .collection('Messages')
+                          .add(data);
+                    }
+                  }
+                  controller.clear();
+                },
+                con: textFieldController),
           )
         ],
       ),
@@ -442,9 +447,7 @@ class RescueChatWidgets {
     );
   }
 
-  static messageField({required onSubmit}) {
-    final con = TextEditingController();
-
+  static messageField({required onSubmit, required TextEditingController con}) {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
