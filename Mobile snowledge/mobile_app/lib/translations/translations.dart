@@ -465,6 +465,15 @@ Map translations = {
     'en': 'Click to see the help request',
   },
 
+  'close': {'fi': 'Sulje', 'en': 'Close'},
+
+  'enterMessage': {'fi': 'Kirjoita viesti', 'en': 'Enter message'},
+
+  'startNewConversation': {
+    'fi': 'Aloita uusi keskustelu',
+    'en': 'Start a new conversation'
+  },
+
   'snowAppInfo': {
     'fi':
         'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.',
