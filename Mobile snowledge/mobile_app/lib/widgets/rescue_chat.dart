@@ -116,11 +116,20 @@ class _RescueChatState extends State<RescueChat> {
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 5, 0)),
                           onPressed: () {
                             Navigator.of(context).pop();
                             appState.setHasUnreadMessages = false;
                           },
-                          child: Text(translations['close'][appState.language]),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(translations['close'][appState.language]),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.close),
+                            ],
+                          ),
                         ),
                       ),
                     ),
