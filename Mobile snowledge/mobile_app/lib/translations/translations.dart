@@ -234,6 +234,11 @@ Map translations = {
     'en': 'serious emergency, the help requester has been advised to call 112 ',
   },
 
+  'problemType': {
+    'fi': 'Ongelman tyyppi: ',
+    'en': 'Problem type: ',
+  },
+
   'helpQuery': {
     'fi': 'Mihin ongelmaan tarvitset apua?',
     'en': 'What kind of problem do you have?',
@@ -458,6 +463,15 @@ Map translations = {
   'seeRequest': {
     'fi': 'Siirry katsomaan avuntarve',
     'en': 'Click to see the help request',
+  },
+
+  'close': {'fi': 'Sulje', 'en': 'Close'},
+
+  'enterMessage': {'fi': 'Kirjoita viesti', 'en': 'Enter message'},
+
+  'startNewConversation': {
+    'fi': 'Aloita uusi keskustelu',
+    'en': 'Start a new conversation'
   },
 
   'snowAppInfo': {
@@ -930,6 +944,6 @@ Remember to share your location with someone, with for example Whatsapp. Let's t
     'filterSelection': {
       'fi': 'Valitse yksi vaihtoehdoista',
       'en': 'Select one of these options'
-    }
+    },
   }
 };
