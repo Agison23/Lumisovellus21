@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../state/appState.dart';
+import '../translations/translations.dart';
 
 class RescueChat extends StatefulWidget {
   final BuildContext context;
@@ -19,6 +21,7 @@ class _RescueChatState extends State<RescueChat> {
   final Stream<QuerySnapshot> _roomsStream =
       FirebaseFirestore.instance.collection('Rooms').snapshots();
   Map<String, dynamic>? selectedUser;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -108,6 +111,29 @@ class _RescueChatState extends State<RescueChat> {
               child: Scaffold(
                 body: Column(
                   children: [
+                    // Button to close the chat dialog
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 5, 0)),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            appState.setHasUnreadMessages = false;
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(translations['close'][appState.language]),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.close),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     // Display available users to chat with
                     Container(
                       width: dialogWidth,
@@ -135,22 +161,8 @@ class _RescueChatState extends State<RescueChat> {
                         roomId: roomId,
                         myPhoneNum: myPhoneNum,
                         users: users,
-                        appState: appState),
-                    // Button to close the chat dialog
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            appState.setHasUnreadMessages = false;
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ),
-                    ),
+                        appState: appState,
+                        textFieldController: textEditingController),
                   ],
                 ),
               ),
@@ -225,7 +237,7 @@ class RescueChatWidgets {
                     child: Text(
                       roomId == phoneNum ? 'Rescuee' : 'Helper',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         height: 1.5,
                         fontSize: 11,
                         color: Colors.black,
@@ -242,11 +254,11 @@ class RescueChatWidgets {
                 right: 0,
                 top: 0,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.red,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.battery_alert,
                     color: Colors.white,
                     size: 16,
@@ -259,7 +271,8 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget chatRoom({roomId, myPhoneNum, users, appState}) {
+  static Widget chatRoom(
+      {roomId, myPhoneNum, users, appState, textFieldController}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
 
@@ -295,7 +308,8 @@ class RescueChatWidgets {
                         // If a room doesn't have any data, start the conversation
                         Center(
                             child: Text(
-                              'Start a new conversation',
+                              translations['startNewConversation']
+                                  [appState.language],
                               style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
@@ -343,7 +357,8 @@ class RescueChatWidgets {
           // Message field
           Container(
             color: Colors.white,
-            child: RescueChatWidgets.messageField(onSubmit: (controller) {
+            child: RescueChatWidgets.messageField(appState,
+                onSubmit: (controller) {
               if (controller.text.toString() != '') {
                 if (roomId != null) {
                   Map<String, dynamic> data = {
@@ -363,7 +378,7 @@ class RescueChatWidgets {
                 }
               }
               controller.clear();
-            }),
+            }, con: textFieldController),
           )
         ],
       ),
@@ -428,7 +443,7 @@ class RescueChatWidgets {
           ),
           if (check)
             CircleAvatar(
-              child: Icon(
+              child: const Icon(
                 Icons.person,
                 size: 13,
                 color: Colors.white,
@@ -442,16 +457,15 @@ class RescueChatWidgets {
     );
   }
 
-  static messageField({required onSubmit}) {
-    final con = TextEditingController();
-
+  static messageField(AppState appState,
+      {required onSubmit, required TextEditingController con}) {
     return Container(
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.all(10),
       child: TextField(
         controller: con,
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: 'Enter Message',
+          hintText: translations['enterMessage'][appState.language],
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           suffixIcon: IconButton(
