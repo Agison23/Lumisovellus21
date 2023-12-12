@@ -21,6 +21,7 @@ class _RescueChatState extends State<RescueChat> {
   final Stream<QuerySnapshot> _roomsStream =
       FirebaseFirestore.instance.collection('Rooms').snapshots();
   Map<String, dynamic>? selectedUser;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _RescueChatState extends State<RescueChat> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
+    var appState = Provider.of<AppState>(context, listen: false);
     String roomId = appState.chatRoomId;
 
     // Calculate the width and height of the dialog based on the screen size
@@ -160,7 +161,8 @@ class _RescueChatState extends State<RescueChat> {
                         roomId: roomId,
                         myPhoneNum: myPhoneNum,
                         users: users,
-                        appState: appState),
+                        appState: appState,
+                        textFieldController: textEditingController),
                   ],
                 ),
               ),
@@ -269,7 +271,8 @@ class RescueChatWidgets {
     );
   }
 
-  static Widget chatRoom({roomId, myPhoneNum, users, appState}) {
+  static Widget chatRoom(
+      {roomId, myPhoneNum, users, appState, textFieldController}) {
     final firestore = FirebaseFirestore.instance;
     final _roomStream = firestore.collection('Rooms').snapshots();
 
@@ -375,7 +378,7 @@ class RescueChatWidgets {
                 }
               }
               controller.clear();
-            }),
+            }, con: textFieldController),
           )
         ],
       ),
@@ -454,9 +457,8 @@ class RescueChatWidgets {
     );
   }
 
-  static messageField(AppState appState, {required onSubmit}) {
-    final con = TextEditingController();
-
+  static messageField(AppState appState,
+      {required onSubmit, required TextEditingController con}) {
     return Container(
       margin: const EdgeInsets.all(10),
       child: TextField(

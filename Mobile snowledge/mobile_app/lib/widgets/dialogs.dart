@@ -240,7 +240,8 @@ class Dialogs {
                           const Color(0xff7c94b6),
                           key: _sendHelpRequestButtonKey, callback: () {
                         if (appState.showTutorial &&
-                            appState.currentTutorialStep == 7) {
+                            appState.currentTutorialStep ==
+                                appState.tutorialSteps['HELP_DIALOG']) {
                           appState.nextTutorialStep();
                         }
                       });

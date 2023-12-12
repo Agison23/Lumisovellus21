@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:mobile_app/state/appState.dart';
+import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,13 @@ String? lastName;
 String? phoneNumber;
 
 class UserInfoPage extends StatefulWidget {
+  const UserInfoPage({Key? key}) : super(key: key);
+
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
 
-class _UserInfoPageState extends State<UserInfoPage> {
+class _UserInfoPageState extends WidgetsBindingObserverState<UserInfoPage> {
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController pNumberController = TextEditingController();
@@ -28,6 +31,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   @override
   void initState() {
+    super.initState();
     Future<SharedPreferences> prefs = SharedPreferences.getInstance();
     prefs.then((pref) {
       firstName = pref.getString('fName');
@@ -41,6 +45,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
+  @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
     return WillPopScope(

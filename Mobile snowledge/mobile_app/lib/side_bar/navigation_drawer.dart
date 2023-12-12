@@ -343,7 +343,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 Navigator.pop(context);
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => UserInfoPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const UserInfoPage()),
                     (route) => false);
               } else if (index == 5) {
                 Navigator.pop(context);
@@ -443,7 +444,8 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                   Navigator.pop(context);
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => UserInfoPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const UserInfoPage()),
                       (route) => false);
                 },
               ),
