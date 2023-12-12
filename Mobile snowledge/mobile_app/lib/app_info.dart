@@ -47,12 +47,6 @@ class _AppInfoState extends WidgetsBindingObserverState<AppInfo> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final Completer<WebViewController> _controller =
-        Completer<WebViewController>();
-    var appState = Provider.of<AppState>(context, listen: false);
-    String languageToChangeTo = appState.language;
-    String? appURL;
-
     if (!isLoading) {
       appURL = appEnv == 'production'
           ? 'https://lumisovellus.fi/tietoasovelluksesta'
@@ -83,7 +77,7 @@ class _AppInfoState extends WidgetsBindingObserverState<AppInfo> {
   }
 
   Widget buildAppInfoPage(BuildContext context) {
-    AppState appState = Provider.of<AppState>(context, listen: true);
+    AppState appState = Provider.of<AppState>(context, listen: false);
     String languageToChangeTo = appState.language;
     return SafeArea(
       child: Scaffold(

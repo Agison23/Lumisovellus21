@@ -47,7 +47,7 @@ class _UserInfoPageState extends WidgetsBindingObserverState<UserInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: true);
+    var appState = Provider.of<AppState>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         if (_globalKey.currentState?.isDrawerOpen == true) {
