@@ -187,11 +187,14 @@ class HelpOfferedState extends State<HelpOffered> {
             backgroundColor: Colors.red[200],
             centerTitle: true,
           ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            child: Buttons.showRescueChatButton(context),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: _accepted
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Buttons.showRescueChatButton(context),
+                )
+              : null,
+          floatingActionButtonLocation:
+              _accepted ? FloatingActionButtonLocation.endFloat : null,
           body: Stack(
             children: [
               FlutterMap(
@@ -270,7 +273,7 @@ class HelpOfferedState extends State<HelpOffered> {
           translations['decline'][appState.language],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.red,
+            color: Color(0xFF2B2B2B),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -293,7 +296,7 @@ class HelpOfferedState extends State<HelpOffered> {
           translations['accept'][appState.language],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.green,
+            color: Color(0xFF2B2B2B),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
