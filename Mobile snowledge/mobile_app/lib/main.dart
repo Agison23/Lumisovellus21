@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/map_tracking.dart';
 import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile_app/state/appState.dart';
@@ -10,6 +11,8 @@ import 'main_page.dart';
 import 'onboarding.dart';
 
 String? fName;
+String premiumRole = 'premium';
+String normalRole = 'normal';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,15 +44,35 @@ class MyApp extends StatelessWidget {
           ServerComms.messageToServer("REQUEST_INIT");
           // set the battery status when the app begins
           ServerComms.messageToServer("BATTERY");
+
+          // Fetch user role and set page index
+          fetchUserRole(appState);
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
           title: 'Snowledge',
-          home: (fName == null) ? const OnBoardingPage() : const MainPage(),
+          home: (fName == null)
+              ? const OnBoardingPage()
+              : (appState.userRole != '' && appState.userRole == premiumRole
+                  ? const MainPage()
+                  : const MapTracking()),
         );
       },
     );
+  }
+}
+
+Future<void> fetchUserRole(AppState appState) async {
+  await ServerComms.messageToServer('GET_ROLE', role: appState.userRole);
+  if (appState.userRole != premiumRole && appState.userRole != normalRole) {
+    await ServerComms.messageToServer('UPDATE_ROLE',
+        role: appState.appEnv == 'development' ? premiumRole : normalRole);
+  }
+
+  // navigate to Snowmap if user is normal
+  if (appState.userRole == premiumRole) {
+    appState.setPageIndex = 0;
   }
 }
 

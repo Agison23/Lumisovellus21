@@ -48,19 +48,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   @override
   void initState() {
     super.initState();
-
-    // Fetch user role
-    fetchUserRole();
-  }
-
-  Future<void> fetchUserRole() async {
-    var appState = Provider.of<AppState>(context, listen: false);
-
-    await ServerComms.messageToServer('GET_ROLE', role: appState.userRole);
-    if (appState.userRole != premiumRole && appState.userRole != normalRole) {
-      await ServerComms.messageToServer('UPDATE_ROLE',
-          role: appState.appEnv == 'development' ? premiumRole : normalRole);
-    }
   }
 
   @override
