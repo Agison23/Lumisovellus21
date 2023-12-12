@@ -24,11 +24,10 @@ class Dialogs {
   // 1: equipment  problems
   // 2: health problems
   // 3: lost (no direction)
-  final String minorHelp1 = 'Varusteongelma';
-  final String minorHelp2 = 'Terveysongelma';
-  final String minorHelp3 = 'Eksynyt';
-  final String seriousHelp =
-      'Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112';
+  final String minorHelp1 = 'eqptProblem';
+  final String minorHelp2 = 'healthIssue';
+  final String minorHelp3 = 'lost';
+  final String seriousHelp = 'seriousEmerg';
 
   String getMinorHelpCondition() {
     int helpNeed = _selectedRadio as int;
@@ -241,7 +240,8 @@ class Dialogs {
                           const Color(0xff7c94b6),
                           key: _sendHelpRequestButtonKey, callback: () {
                         if (appState.showTutorial &&
-                            appState.currentTutorialStep == 7) {
+                            appState.currentTutorialStep ==
+                                appState.tutorialSteps['HELP_DIALOG']) {
                           appState.nextTutorialStep();
                         }
                       });
@@ -673,7 +673,7 @@ class Dialogs {
     );
   }
 
-  static showHelpRequestedDialog(context, payload, batteryLevel) async {
+  static showHelpRequestedDialog(context, payload, batteryLevel, reason) async {
     var appState = Provider.of<AppState>(context, listen: false);
     helpRequestedDialogOpen = true;
     return await showDialog<void>(
@@ -718,6 +718,29 @@ class Dialogs {
                           fontSize: 18,
                         ),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20.0,
+                        bottom: 10.0,
+                      ),
+                      child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: translations['problemType']
+                                      [appState.language]),
+                              TextSpan(
+                                  text: translations[reason][appState.language],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          textAlign: TextAlign.center),
                     ),
                     if (batteryLevel == 'low')
                       Text(
