@@ -66,8 +66,6 @@ import FilterIcon from "@material-ui/icons/FilterList";
 import GlobalContext from "../../context/GlobalContext.js";
 import translations from "../../translations/translations";
 import getTranslationKey from "../../translations/getTranslationKey";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import ErrorIcon from "@material-ui/icons/Error";
 // Tyylimäärittelyt kartan päälle piirrettäville laatikoille
 const useStyles = makeStyles((theme) => ({
   menuContainer: {
@@ -277,17 +275,16 @@ function Map(props) {
       ></PallasMap>
       {props.isMobile ? (
         <Box className={styledClasses.buttonsCntainerMobile}>
-          <Box style={{ paddingRight: "10px" }}>
+          <Box className={styledClasses.eyeIconContainer}>
             <IconButton
               onClick={toggleMonitorsPopups}
-              style={{
-                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
-                height: "40px",
-                borderRadius: 8,
-                marginBottom: "10px",
-              }}
+              className={styledClasses.eyeIcon}
             >
-              {openMonitorData ? <ErrorOutlineIcon /> : <ErrorIcon />}
+              {openMonitorData ? (
+                <img src="icons/sensors_krx.svg" />
+              ) : (
+                <img src="icons/sensors_krx_off.svg" />
+              )}
             </IconButton>
           </Box>
           <Box style={{ paddingRight: "10px" }}>
@@ -468,12 +465,13 @@ function Map(props) {
           >
             <IconButton
               onClick={toggleMonitorsPopups}
-              style={{
-                backgroundColor: highlightedSnowType > -2 ? "#ed7a72" : "white",
-                borderRadius: 8,
-              }}
+              className={styledClasses.eyeIcon}
             >
-              {openMonitorData ? <ErrorOutlineIcon /> : <ErrorIcon />}
+              {openMonitorData ? (
+                <img src="icons/sensors_krx.svg" />
+              ) : (
+                <img src="icons/sensors_krx_off.svg" />
+              )}
             </IconButton>
           </Box>
         </Box>
