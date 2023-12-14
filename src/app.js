@@ -32,7 +32,8 @@ var options = {
   cert: fs.readFileSync(path.join(__dirname, "cert.pem")),
 };
 
-console.log("Listening to port 443");
-https.createServer(options, app).listen(443);
+// Switch port to 8443, because the VM instance is using nginx on port 443
+console.log("Listening to port 8443");
+https.createServer(options, app).listen(8443);
 
 userReviewUpdater;
