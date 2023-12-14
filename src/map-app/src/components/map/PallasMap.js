@@ -6,6 +6,9 @@ Latest updates:
 An Nguyen 30.11.2023
 Added monitor markers
 
+An Nguyen 30.11.2023
+Added monitor markers
+
 Joonas Konttila 27.11.2022
 Added striped polygon fills
 
@@ -39,7 +42,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import "maplibre-gl/dist/maplibre-gl.css";
 import union from "@turf/union";
 import { loadStripedPolygonImagesToMap } from "./loadStripedPolygonImagesToMap";
-import { SnowerAPI, monitors } from "../snower/SnowerAPI";
+import { SnowerAPI, defaultMonitors } from "../snower/SnowerAPI";
 import { createMarkersForMonitors } from "../snower/MonitorMarkers";
 const useStyles = makeStyles(() => ({
   mapContainer: {
@@ -68,7 +71,10 @@ const hotel_area = {
 };
 
 let map;
-
+export const defaultBoundingBox = [
+  [23.849004, 68.0],
+  [24.240507, 68.142811],
+];
 function PallasMap(props) {
   const mapContainerRef = useRef(null);
   const styledClasses = useStyles();
@@ -76,21 +82,18 @@ function PallasMap(props) {
   const [data, setData] = useState({ type: "FeatureCollection", features: [] });
   const [segmentArray, setSegmentArray] = useState([]);
   const [polygonFillCombinations, setPolygonFillCombinations] = useState([]);
-  const [monitorData, setMonitorData] = useState(monitors);
+  const [monitorData, setMonitorData] = useState(defaultMonitors);
   const [monitorMarkers, setMonitorMarkers] = useState([]);
   const center = [24.05, 68.069];
   const bounds = props.isMobile
-    ? [
-        [23.849004, 68.0],
-        [24.240507, 68.142811],
-      ]
+    ? defaultBoundingBox
     : [
         [23.556208, 67.988229],
         [24.561503, 68.16228],
       ];
 
   useEffect(() => {
-    const snowerService = new SnowerAPI();
+    const snowerService = new SnowerAPI(bounds);
 
     async function fetchData() {
       await snowerService.fetchDataAndStore();
@@ -562,12 +565,25 @@ function PallasMap(props) {
 
   useEffect(() => {
     if (map !== undefined && monitorMarkers.length > 0) {
+      // Following code toggle the markers pop up
+      // monitorMarkers.forEach((marker) => {
+      //   const popup = marker.getPopup();
+      //   if (props.openMonitorData === true) {
+      //     popup.remove();
+      //   } else {
+      //     popup.addTo(map);
+      //   }
+      // });
+
+      // Following code toggle the markers visibility
       monitorMarkers.forEach((marker) => {
+        const markerElement = marker.getElement();
         const popup = marker.getPopup();
-        if (props.openMonitorData === true) {
+        if (props.openMonitorData == false) {
+          markerElement.style.display = "none";
           popup.remove();
         } else {
-          popup.addTo(map);
+          markerElement.style.display = "block";
         }
       });
     }

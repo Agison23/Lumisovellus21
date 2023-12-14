@@ -1,13 +1,18 @@
-export const monitors = [
+import { defaultBoundingBox } from "../map/PallasMap";
+export const defaultMonitors = [
   {
     name: "Pallas - metsä",
     lat: 68.046281479,
     lng: 24.05705337,
+    temperature: "No Data",
+    snowDepth: "No data",
   },
   {
     name: "Pallas - huippu",
     lat: 68.059666819,
     lng: 24.03386725,
+    temperature: "No Data",
+    snowDepth: "No data",
   },
 ];
 
@@ -19,58 +24,224 @@ function formatValue(value, unit) {
   return `${num.toFixed(2)} ${unit}`;
 }
 
-const urlInfo = "https://app.snower.fi/api/last_reading";
-
+const credentialURL = "https://app.snower.fi/api/login";
+const monitorListURL = "https://app.snower.fi/api/defaultMonitors_list";
+const monitorActiveStatusURL =
+  "https://app.snower.fi/api/monitor_active_status";
+const monitorLocationURL = "https://app.snower.fi/api/monitor_location";
+const latestReadingURL = "https://app.snower.fi/api/last_reading";
 export class SnowerAPI {
-  constructor() {
+  constructor(props) {
+    this.props = props;
+    this.authKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW5fcm9sZXMiOnsicHVibGljIjpbImFwaXMtYWNjZXNzIl19LCJ1c2VyX2lkIjoicHVibGljX2FwaXNfdXNlciJ9.aOq9ZkzxokT3q0-zgpw95pFOhvdre9tgNMoiL4RkTVk";
+    this.boundingBox = this.props.bounds || defaultBoundingBox;
+    this.monitorList = [];
     this.monitorData = [];
   }
 
-  async fetchDataFromAPI() {
+  async fetchAuthKey() {
     try {
-      const promises = monitors.map(async (monitor, index) => {
-        const response = await fetch(urlInfo, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain",
-            "authentication-key":
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW5fcm9sZXMiOnsicHVibGljIjpbImFwaXMtYWNjZXNzIl19LCJ1c2VyX2lkIjoicHVibGljX2FwaXNfdXNlciJ9.aOq9ZkzxokT3q0-zgpw95pFOhvdre9tgNMoiL4RkTVk",
-            "domain-id": "public",
-          },
-          body: JSON.stringify({ monitor: monitor.name }),
-        });
-
-        if (!response.ok) {
-          return monitor[index];
-        }
-
-        const data = await response.json();
-        const temperature_unit =
-          data["probe_temperature"]["unit"] === "Celcius"
-            ? "ºC"
-            : data["probe_temperature"]["unit"];
-        const temperature = formatValue(
-          data["probe_temperature"]["value"],
-          temperature_unit
-        );
-        const snowDepth = formatValue(
-          data["snow_depth"]["value"],
-          data["snow_depth"]["unit"]
-        );
-        return {
-          ...monitor,
-          temperature,
-          snowDepth,
-        };
+      const response = await fetch(credentialURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+          "domain-id": "public",
+        },
+        body: JSON.stringify({
+          username: "publicapisuser",
+          password: "TlLWIooyMf7aXB2",
+        }),
       });
 
-      this.monitorData = await Promise.all(promises);
+      if (!response.ok) {
+        return;
+      }
+      const data = await response.json();
+      if (data && data.authentication_key) {
+        this.authKey = data.authentication_key;
+      }
+      return;
+    } catch (error) {
+      console.error("Error fetching monitor list info:", error);
+    }
+  }
+
+  async fetchMonitorList() {
+    try {
+      const response = await fetch(monitorListURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+          "authentication-key": this.authKey,
+          "domain-id": "public",
+        },
+        body: JSON.stringify({
+          area: "Pallas",
+        }),
+      });
+
+      if (!response.ok) {
+        this.monitorList = defaultMonitors.map((m) => m.name);
+        return;
+      }
+      this.monitorList = await response.json();
+    } catch (error) {
+      console.error("Error fetching monitor list info:", error);
+    }
+  }
+
+  async fetchMonitorActiveStatus() {
+    try {
+      const monitorStatusPromises = this.monitorList.map(async (monitor) => {
+        try {
+          const response = await fetch(monitorActiveStatusURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "authentication-key": this.authKey,
+              "domain-id": "public",
+            },
+            body: JSON.stringify({ monitor }),
+          });
+
+          if (!response.ok) {
+            console.error("Error fetching monitor active status:", monitor);
+            return null;
+          }
+
+          const data = await response.json();
+          if (data && data.active_status === true) {
+            return monitor;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching monitor active status:", error.message);
+          return null;
+        }
+      });
+
+      this.monitorList = (await Promise.all(monitorStatusPromises)).filter(
+        (monitor) => monitor !== null
+      );
+    } catch (error) {
+      console.error("Error fetching monitor active status:", error);
+    }
+  }
+
+  async fetchMonitorLocation() {
+    try {
+      const monitorLocationPromises = this.monitorList.map(async (monitor) => {
+        try {
+          const response = await fetch(monitorLocationURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "authentication-key": this.authKey,
+              "domain-id": "public",
+            },
+            body: JSON.stringify({ monitor }),
+          });
+
+          if (!response.ok) {
+            console.error("Error fetching monitor location:", monitor);
+            return null;
+          }
+
+          const data = await response.json();
+          if (data && data.location && data.location.lat && data.location.lng) {
+            const { lat, lng } = data.location;
+            // Check if the location is within the bounding box
+            const [minLat, maxLat] = this.props.boundingBox[0];
+            const [minLng, maxLng] = this.props.boundingBox[1];
+
+            if (
+              lat >= minLat &&
+              lat <= maxLat &&
+              lng >= minLng &&
+              lng <= maxLng
+            ) {
+              return {
+                name: monitor,
+                lat: lat,
+                lng: lng,
+              };
+            } else {
+              // Location is outside the bounding box, skip this monitor
+              return null;
+            }
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching monitor location:", error.message);
+          return null;
+        }
+      });
+
+      this.monitorList = (await Promise.all(monitorLocationPromises)).filter(
+        (monitor) => monitor !== null
+      );
+    } catch (error) {
+      console.error("Error fetching monitor location:", error);
+    }
+  }
+  async fetchMonitorReading() {
+    try {
+      const promises = this.monitorList.map(async (monitor) => {
+        try {
+          const response = await fetch(latestReadingURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "authentication-key": this.authKey,
+              "domain-id": "public",
+            },
+            body: JSON.stringify({ monitor: monitor.name }),
+          });
+
+          if (!response.ok) {
+            return {
+              ...monitor,
+            };
+          }
+
+          const data = await response.json();
+
+          const formattedData = {
+            temperature: formatValue(
+              data?.probe_temperature?.value,
+              data?.probe_temperature?.unit
+            ),
+            snowDepth: formatValue(
+              data?.snow_depth?.value,
+              data?.snow_depth?.unit
+            ),
+          };
+
+          return {
+            ...monitor,
+            ...formattedData,
+          };
+        } catch (error) {
+          console.error("Error processing monitor data:", error.message);
+          return null;
+        }
+      });
+
+      this.monitorData = await Promise.all(
+        promises.filter((promise) => promise !== null)
+      );
     } catch (error) {
       console.error("Error fetching monitor info:", error);
     }
   }
 
   getData() {
+    if (this.monitorData || !this.monitorData.length) {
+      return defaultMonitors;
+    }
     return this.monitorData;
   }
 
@@ -82,7 +253,11 @@ export class SnowerAPI {
     if (storedData) {
       this.monitorData = JSON.parse(storedData);
     } else {
-      await this.fetchDataFromAPI();
+      await this.fetchAuthKey();
+      await this.fetchMonitorList();
+      await this.fetchMonitorActiveStatus();
+      await this.fetchMonitorLocation();
+      await this.fetchMonitorReading();
       localStorage.setItem(localStorageKey, JSON.stringify(this.monitorData));
     }
   }
