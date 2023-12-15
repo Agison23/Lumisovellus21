@@ -1,19 +1,35 @@
 import { defaultBoundingBox } from "../map/PallasMap";
+
 export const defaultMonitors = [
   {
-    name: "Pallas - metsä",
-    lat: 68.046281479,
-    lng: 24.05705337,
+    lat: 68.045527778,
+    lng: 24.06225,
+    name: "Aistin Level Pro #12648",
     temperature: "No Data",
-    snowDepth: "No data",
+    snowDepth: "No Data",
+  },
+  {
+    lat: 68.079611111,
+    lng: 24.070944444,
+    name: "Aistin Level Pro #12649",
+    temperature: "No Data",
+    snowDepth: "No Data",
   },
   {
     name: "Pallas - huippu",
     lat: 68.059666819,
     lng: 24.03386725,
     temperature: "No Data",
-    snowDepth: "No data",
+    snowDepth: "No Data",
   },
+  {
+    name: "Pallas - metsä",
+    lat: 68.046281479,
+    lng: 24.05705337,
+    temperature: "No Data",
+    snowDepth: "No Data",
+  },
+
 ];
 
 function formatValue(value, unit) {
@@ -24,8 +40,26 @@ function formatValue(value, unit) {
   return `${num.toFixed(2)} ${unit}`;
 }
 
+function mergeArrays(arr1, arr2) {
+  const merged = arr1.map(item1 => {
+    const matchingItem = arr2.find(item2 => item2.name === item1.name);
+    return matchingItem ? { ...item1, ...matchingItem } : item1;
+  });
+
+  // Add items from arr2 that are not present in arr1
+  arr2.forEach(item2 => {
+    const exists = merged.some(item => item.name === item2.name);
+    if (!exists) {
+      merged.push(item2);
+    }
+  });
+
+  return merged;
+}
+
+
 const credentialURL = "https://app.snower.fi/api/login";
-const monitorListURL = "https://app.snower.fi/api/defaultMonitors_list";
+const monitorListURL = "https://app.snower.fi/api/monitors_list";
 const monitorActiveStatusURL =
   "https://app.snower.fi/api/monitor_active_status";
 const monitorLocationURL = "https://app.snower.fi/api/monitor_location";
@@ -102,7 +136,7 @@ export class SnowerAPI {
               "authentication-key": this.authKey,
               "domain-id": "public",
             },
-            body: JSON.stringify({ monitor }),
+            body: JSON.stringify({ monitor, area: "Pallas" }),
           });
 
           if (!response.ok) {
@@ -141,7 +175,7 @@ export class SnowerAPI {
               "authentication-key": this.authKey,
               "domain-id": "public",
             },
-            body: JSON.stringify({ monitor }),
+            body: JSON.stringify({ monitor, area: "Pallas" }),
           });
 
           if (!response.ok) {
@@ -153,8 +187,8 @@ export class SnowerAPI {
           if (data && data.location && data.location.lat && data.location.lng) {
             const { lat, lng } = data.location;
             // Check if the location is within the bounding box
-            const [minLat, maxLat] = this.props.boundingBox[0];
-            const [minLng, maxLng] = this.props.boundingBox[1];
+            const [minLng, minLat] = this.boundingBox[0];
+            const [maxLng, maxLat] = this.boundingBox[1];
 
             if (
               lat >= minLat &&
@@ -198,7 +232,7 @@ export class SnowerAPI {
               "authentication-key": this.authKey,
               "domain-id": "public",
             },
-            body: JSON.stringify({ monitor: monitor.name }),
+            body: JSON.stringify({ monitor: monitor.name, area: "Pallas" }),
           });
 
           if (!response.ok) {
@@ -239,10 +273,10 @@ export class SnowerAPI {
   }
 
   getData() {
-    if (this.monitorData || !this.monitorData.length) {
+    if (!this.monitorData || !this.monitorData.length) {
       return defaultMonitors;
     }
-    return this.monitorData;
+    return mergeArrays(defaultMonitors, this.monitorData);
   }
 
   // This function is to fetch information from the local storage so that don't need to call API every time this refresh
