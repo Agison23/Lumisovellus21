@@ -9,6 +9,9 @@ Added monitor markers
 An Nguyen 30.11.2023
 Added monitor markers
 
+An Nguyen 30.11.2023
+Added monitor markers
+
 Joonas Konttila 27.11.2022
 Added striped polygon fills
 
@@ -84,6 +87,7 @@ function PallasMap(props) {
   const [polygonFillCombinations, setPolygonFillCombinations] = useState([]);
   const [monitorData, setMonitorData] = useState(defaultMonitors);
   const [monitorMarkers, setMonitorMarkers] = useState([]);
+  const [dataFetched, setDataFetched] = useState(false);
   const center = [24.05, 68.069];
   const bounds = props.isMobile
     ? defaultBoundingBox
@@ -93,12 +97,13 @@ function PallasMap(props) {
       ];
 
   useEffect(() => {
-    const snowerService = new SnowerAPI(bounds);
+    const snowerService = new SnowerAPI({ bounds });
 
     async function fetchData() {
       await snowerService.fetchDataAndStore();
       const data = snowerService.getData();
       setMonitorData(data);
+      setDataFetched(true);
     }
 
     fetchData();
@@ -303,265 +308,281 @@ function PallasMap(props) {
   }, [props.segments]);
 
   useEffect(() => {
-    if (data.features.length > 0 && map === undefined) {
-      map = new maplibregl.Map({
-        container: mapContainerRef.current,
-        style: mapStyle,
-        center: center,
-        zoom: props.zoom,
-        maxBounds: bounds,
-        maxZoom: 15,
-        minZoom: 11,
-        maxPitch: 0,
-        dragRotate: false,
-      });
-    }
-
-    if (map !== undefined) {
-      map.on("load", function () {
-        // Add geojson as source for layers
-        if (map.getSource("segments-source") === undefined) {
-          map.addSource("segments-source", {
-            type: "geojson",
-            data: data,
-          });
-        }
-
-        // An array that specifies which color layers paint property needs to paint a certain segment
-        const fillColor = [];
-        fillColor.push("#000000");
-        props.segmentColors.forEach((item) => {
-          //fillColor.push(item.ID);
-          fillColor.push(item.color);
+    if (dataFetched) {
+      if (data.features.length > 0 && map === undefined) {
+        map = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: mapStyle,
+          center: center,
+          zoom: props.zoom,
+          maxBounds: bounds,
+          maxZoom: 15,
+          minZoom: 11,
+          maxPitch: 0,
+          dragRotate: false,
         });
-        //console.log(JSON.stringify(fillColor));
-        // Layer for segment highlights
-        if (map.getLayer("segments-highlights") === undefined) {
-          map.addLayer({
-            id: "segments-highlights",
-            source: "segments-source",
-            type: "fill",
-            layout: {},
-            paint: {
-              "fill-pattern": ["get", "snowType"],
-              // Opacity is dependant on the segments hover or highlight feature state
-              "fill-opacity": 0.6,
-            },
-            filter: ["==", ["get", "segmentId"], 0],
+      }
+
+      if (map !== undefined) {
+        map.on("load", function () {
+          // Add geojson as source for layers
+          if (map.getSource("segments-source") === undefined) {
+            map.addSource("segments-source", {
+              type: "geojson",
+              data: data,
+            });
+          }
+
+          // An array that specifies which color layers paint property needs to paint a certain segment
+          const fillColor = [];
+          fillColor.push("#000000");
+          props.segmentColors.forEach((item) => {
+            //fillColor.push(item.ID);
+            fillColor.push(item.color);
           });
-        }
+          //console.log(JSON.stringify(fillColor));
+          // Layer for segment highlights
+          if (map.getLayer("segments-highlights") === undefined) {
+            map.addLayer({
+              id: "segments-highlights",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                // Opacity is dependant on the segments hover or highlight feature state
+                "fill-opacity": 0.6,
+              },
+              filter: ["==", ["get", "segmentId"], 0],
+            });
+          }
 
-        loadStripedPolygonImagesToMap(map, polygonFillCombinations, fillColor);
+          loadStripedPolygonImagesToMap(
+            map,
+            polygonFillCombinations,
+            fillColor
+          );
 
-        // Layer for segment fills
-        if (map.getLayer("segments-fills") === undefined) {
-          map.addLayer({
-            id: "segments-fills",
-            source: "segments-source",
-            type: "fill",
-            layout: {},
-            paint: {
-              "fill-pattern": ["get", "snowType"],
-              "fill-color": "#000000",
-              // Opacity is dependant on the segments hover or highlight feature state
-              "fill-opacity": [
-                "case",
-                ["boolean", ["feature-state", "hover"], false],
-                0.6,
-                0,
-              ],
-            },
+          // Layer for segment fills
+          if (map.getLayer("segments-fills") === undefined) {
+            map.addLayer({
+              id: "segments-fills",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                "fill-color": "#000000",
+                // Opacity is dependant on the segments hover or highlight feature state
+                "fill-opacity": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  0.6,
+                  0,
+                ],
+              },
+            });
+          }
+
+          // Layer for selected segment
+          if (map.getLayer("segments-selected") === undefined) {
+            map.addLayer({
+              id: "segments-selected",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                "fill-opacity": 0.6,
+              },
+              filter: ["==", ["get", "segmentId"], 0],
+            });
+          }
+
+          // Layer for segment outlines
+          if (map.getLayer("segments-outlines") === undefined) {
+            map.addLayer({
+              id: "segments-outlines",
+              source: "segments-source",
+              type: "line",
+              layout: {},
+              paint: {
+                "line-color": "#000000",
+                "line-width": 1.15,
+              },
+            });
+          }
+
+          // Disable map rotation using touch rotation gesture
+          map.touchZoomRotate.disableRotation();
+
+          // Add a scale bar to the bottom right of the map
+          map.addControl(
+            new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric" }),
+            "bottom-right"
+          );
+
+          //Geolocation control
+          map.addControl(
+            new maplibregl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true,
+              },
+              trackUserLocation: true,
+            }),
+            "bottom-right"
+          );
+
+          //Add hotel location marker and ski-lift lines to map.
+          var hotel = document.createElement("img");
+          hotel.className = "Hotel";
+          hotel.src = "icons/hotel_marker.svg";
+          hotel.alt = "Hotel_icon";
+          hotel.style.width = "45px";
+          hotel.style.height = "45px";
+
+          var popup = new maplibregl.Popup({
+            offset: 25,
+            closeOnClick: true,
+            closeButton: false,
+          }).setHTML(
+            "<div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>" +
+              "<h4 style='margin: 0;'>Hotelli Pallas</h4>" +
+              "<a style=' text-decoration:none; color: #539BD5' href=\"https://www.laplandhotels.com/FI/lapin-hotellit/pallas/lapland-hotels-pallas.html\">Kotisivut</a>" +
+              "</div>"
+          );
+
+          new maplibregl.Marker(hotel)
+            .setLngLat([24.062026, 68.046691])
+            .setPopup(popup)
+            .addTo(map);
+
+          // Adding monitor markers
+          setMonitorMarkers(createMarkersForMonitors(map, monitorData));
+
+          // When user hovers over a segment, update its hover feature state to true
+          var hoveredSegmentId = null;
+          map.on("mousemove", "segments-fills", function (e) {
+            map.getCanvas().style.cursor = "pointer";
+            if (e.features.length > 0) {
+              if (hoveredSegmentId) {
+                map.setFeatureState(
+                  { source: "segments-source", id: hoveredSegmentId },
+                  { hover: false }
+                );
+              }
+              hoveredSegmentId = e.features[0].id;
+              map.setFeatureState(
+                { source: "segments-source", id: hoveredSegmentId },
+                { hover: true }
+              );
+            }
           });
-        }
 
-        // Layer for selected segment
-        if (map.getLayer("segments-selected") === undefined) {
-          map.addLayer({
-            id: "segments-selected",
-            source: "segments-source",
-            type: "fill",
-            layout: {},
-            paint: {
-              "fill-pattern": ["get", "snowType"],
-              "fill-opacity": 0.6,
-            },
-            filter: ["==", ["get", "segmentId"], 0],
-          });
-        }
-
-        // Layer for segment outlines
-        if (map.getLayer("segments-outlines") === undefined) {
-          map.addLayer({
-            id: "segments-outlines",
-            source: "segments-source",
-            type: "line",
-            layout: {},
-            paint: {
-              "line-color": "#000000",
-              "line-width": 1.15,
-            },
-          });
-        }
-
-        // Disable map rotation using touch rotation gesture
-        map.touchZoomRotate.disableRotation();
-
-        // Add a scale bar to the bottom right of the map
-        map.addControl(
-          new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric" }),
-          "bottom-right"
-        );
-
-        //Geolocation control
-        map.addControl(
-          new maplibregl.GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true,
-            },
-            trackUserLocation: true,
-          }),
-          "bottom-right"
-        );
-
-        //Add hotel location marker and ski-lift lines to map.
-        var hotel = document.createElement("img");
-        hotel.className = "Hotel";
-        hotel.src = "icons/hotel_marker.svg";
-        hotel.alt = "Hotel_icon";
-        hotel.style.width = "45px";
-        hotel.style.height = "45px";
-
-        var popup = new maplibregl.Popup({
-          offset: 25,
-          closeOnClick: true,
-          closeButton: false,
-        }).setHTML(
-          "<div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>" +
-            "<h4 style='margin: 0;'>Hotelli Pallas</h4>" +
-            "<a style=' text-decoration:none; color: #539BD5' href=\"https://www.laplandhotels.com/FI/lapin-hotellit/pallas/lapland-hotels-pallas.html\">Kotisivut</a>" +
-            "</div>"
-        );
-
-        new maplibregl.Marker(hotel)
-          .setLngLat([24.062026, 68.046691])
-          .setPopup(popup)
-          .addTo(map);
-
-        // Adding monitor markers
-        setMonitorMarkers(createMarkersForMonitors(map, monitorData));
-
-        // When user hovers over a segment, update its hover feature state to true
-        var hoveredSegmentId = null;
-        map.on("mousemove", "segments-fills", function (e) {
-          map.getCanvas().style.cursor = "pointer";
-          if (e.features.length > 0) {
+          // When mouse leaves the segments-fills layer, update hover feature state of latest segment hovered to false
+          map.on("mouseleave", "segments-fills", function () {
+            map.getCanvas().style.cursor = "";
             if (hoveredSegmentId) {
               map.setFeatureState(
                 { source: "segments-source", id: hoveredSegmentId },
                 { hover: false }
               );
             }
-            hoveredSegmentId = e.features[0].id;
-            map.setFeatureState(
-              { source: "segments-source", id: hoveredSegmentId },
-              { hover: true }
-            );
-          }
-        });
+            hoveredSegmentId = null;
+          });
 
-        // When mouse leaves the segments-fills layer, update hover feature state of latest segment hovered to false
-        map.on("mouseleave", "segments-fills", function () {
-          map.getCanvas().style.cursor = "";
-          if (hoveredSegmentId) {
-            map.setFeatureState(
-              { source: "segments-source", id: hoveredSegmentId },
-              { hover: false }
+          // When a segment is clicked send it to NewMap.js to update chosen segment and filter segment-highlights layer so that selected segment is shown
+          map.on("click", "segments-fills", function (e) {
+            props.chosenSegment(
+              segmentArray.find((item) => item.ID === e.features[0].id)
             );
-          }
-          hoveredSegmentId = null;
-        });
-
-        // When a segment is clicked send it to NewMap.js to update chosen segment and filter segment-highlights layer so that selected segment is shown
-        map.on("click", "segments-fills", function (e) {
-          props.chosenSegment(
-            segmentArray.find((item) => item.ID === e.features[0].id)
-          );
-          console.log(e.features[0].properties.snowType);
-          map.setFilter("segments-selected", [
-            "==",
-            ["get", "segmentId"],
-            e.features[0].id,
-          ]);
-          // Filter out the selected segment from segments-fills layer when it is visible in segments-highlight layer
-          // If only subsegments should be shown, filter out segments that are not subsegments
-          if (map.getFilter("segments-fills") === undefined) {
-            map.setFilter("segments-fills", [
-              "!=",
+            console.log(e.features[0].properties.snowType);
+            map.setFilter("segments-selected", [
+              "==",
               ["get", "segmentId"],
               e.features[0].id,
             ]);
-          } else {
-            if (
-              JSON.stringify(map.getFilter("segments-fills")) ===
-                JSON.stringify(["==", ["get", "subsegment"], true]) ||
-              map.getFilter("segments-fills")[0] === "all"
-            ) {
-              map.setFilter("segments-fills", [
-                "all",
-                ["!=", ["get", "segmentId"], e.features[0].id],
-                ["==", ["get", "subsegment"], true],
-              ]);
-            } else {
+            // Filter out the selected segment from segments-fills layer when it is visible in segments-highlight layer
+            // If only subsegments should be shown, filter out segments that are not subsegments
+            if (map.getFilter("segments-fills") === undefined) {
               map.setFilter("segments-fills", [
                 "!=",
                 ["get", "segmentId"],
                 e.features[0].id,
               ]);
+            } else {
+              if (
+                JSON.stringify(map.getFilter("segments-fills")) ===
+                  JSON.stringify(["==", ["get", "subsegment"], true]) ||
+                map.getFilter("segments-fills")[0] === "all"
+              ) {
+                map.setFilter("segments-fills", [
+                  "all",
+                  ["!=", ["get", "segmentId"], e.features[0].id],
+                  ["==", ["get", "subsegment"], true],
+                ]);
+              } else {
+                map.setFilter("segments-fills", [
+                  "!=",
+                  ["get", "segmentId"],
+                  e.features[0].id,
+                ]);
+              }
             }
-          }
+          });
         });
-      });
 
-      if (map.isStyleLoaded()) {
-        // Add a filter so that only subsegments get highlighted
-        if (props.highlightedSnowType === -1) {
-          map.setFilter("segments-highlights", [
-            "==",
-            ["get", "subsegment"],
-            true,
-          ]);
-        }
+        if (map.isStyleLoaded()) {
+          // Add a filter so that only subsegments get highlighted
+          if (props.highlightedSnowType === -1) {
+            map.setFilter("segments-highlights", [
+              "==",
+              ["get", "subsegment"],
+              true,
+            ]);
+          }
 
-        // Add a filter so that only a certain snowtype gets highlighted
-        if (props.highlightedSnowType > -1) {
-          map.setFilter("segments-highlights", [
-            "any",
-            ["==", ["get", "snowId1"], props.highlightedSnowType],
-            ["==", ["get", "snowId2"], props.highlightedSnowType],
-            ["==", ["get", "snowId3"], props.highlightedSnowType],
-            ["==", ["get", "snowId4"], props.highlightedSnowType],
-            ["==", ["get", "snowId5"], props.highlightedSnowType],
-          ]);
-        }
+          // Add a filter so that only a certain snowtype gets highlighted
+          if (props.highlightedSnowType > -1) {
+            map.setFilter("segments-highlights", [
+              "any",
+              ["==", ["get", "snowId1"], props.highlightedSnowType],
+              ["==", ["get", "snowId2"], props.highlightedSnowType],
+              ["==", ["get", "snowId3"], props.highlightedSnowType],
+              ["==", ["get", "snowId4"], props.highlightedSnowType],
+              ["==", ["get", "snowId5"], props.highlightedSnowType],
+            ]);
+          }
 
-        // Make highligt layer completely visible
-        if (props.highlightedSnowType === -2) {
-          map.setFilter("segments-highlights", null);
-        }
+          // Make highligt layer completely visible
+          if (props.highlightedSnowType === -2) {
+            map.setFilter("segments-highlights", null);
+          }
 
-        // Remove the filters set above if all segments should be visible
-        if (props.highlightedSnowType === -3) {
-          map.setFilter("segments-highlights", ["==", ["get", "segmentId"], 0]);
-        }
+          // Remove the filters set above if all segments should be visible
+          if (props.highlightedSnowType === -3) {
+            map.setFilter("segments-highlights", [
+              "==",
+              ["get", "segmentId"],
+              0,
+            ]);
+          }
 
-        // Hide segments-highlighted layer and remove filter from segments-highlight layer if no segment is currently selected
-        if (props.shownSegment === null) {
-          map.setFilter("segments-selected", ["==", ["get", "segmentId"], 0]);
-          if (!props.subsOnly) map.setFilter("segments-fills", null);
+          // Hide segments-highlighted layer and remove filter from segments-highlight layer if no segment is currently selected
+          if (props.shownSegment === null) {
+            map.setFilter("segments-selected", ["==", ["get", "segmentId"], 0]);
+            if (!props.subsOnly) map.setFilter("segments-fills", null);
+          }
         }
       }
     }
-  }, [data, props.subsOnly, props.shownSegment, props.highlightedSnowType]);
+  }, [
+    data,
+    props.subsOnly,
+    props.shownSegment,
+    props.highlightedSnowType,
+    dataFetched,
+  ]);
 
   useEffect(() => {
     if (map !== undefined && monitorMarkers.length > 0) {
