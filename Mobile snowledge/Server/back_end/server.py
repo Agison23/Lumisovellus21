@@ -5,7 +5,7 @@ import _parser as prs
 from datetime import datetime
 import time
 import os
-from load_dotenv import load_dotenv
+from dotenv import load_dotenv
 load_dotenv()
 ENVIRONMENT = os.getenv('APP_ENVIRONMENT')
 class UdpServer:
