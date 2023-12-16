@@ -4,7 +4,8 @@ const mysql = require("mysql2");
 const con = mysql.createConnection({
   host: "localhost",
   user: "pallas",
-  password: "testpass",
+  // Update this password to be the same as the one in the VM instance
+  password: "u9szFQcsGV",
   database: "pallas",
 });
 

@@ -27,7 +27,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
 
     help = (user_id, timestamp, gpscoord, helptype, chatRoomId)
     db.create_help_entry(connection, help)
-    if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
+    if helptype == 'seriousEmerg':
         max_distance = 1
     else:
         max_distance = 3
@@ -51,7 +51,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             connection, "users", "ip_address", "dev_id", user[0], False
         )
         battery_status = db.get_battery_by_dev_id(connection, dev_id)
-        message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}:{}".format(
+        message = "NOTIFY:{}:{}:{:.2f}km:{}:{}:{}".format(
             user[0], gpscoord, user[1], helptype, chatRoomId, battery_status
         )
         ip_address, port = ip_address.split(",")
@@ -65,7 +65,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
             connection, "users", "ip_address", "dev_id", user[0], False
         )
         battery_status = db.get_battery_by_dev_id(connection, dev_id)
-        message = "NOTIFY:{}:{}:Syy {}:{}:{}".format(user[0], gpscoord, helptype, chatRoomId, battery_status)
+        message = "NOTIFY:{}:{}:{}:{}:{}".format(user[0], gpscoord, helptype, chatRoomId, battery_status)
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
 
@@ -331,6 +331,21 @@ def parse_battery(connection, message, s):
         send_low_battery_current_requests(connection, dev_id, s)
     return
 
+def parse_update_user_role(connection, message, s, addr):
+    dev_id = message[0]
+    role = message[1]
+    user_role = db.set_user_role(connection, dev_id, role)
+    message = "GET_ROLE:{}".format(user_role)
+    s.sendto(bytes(message, "UTF-8"), addr)
+    return
+
+def parse_get_user_role(connection, message, s, addr):
+    dev_id = message[0]
+    user_role = db.get_user_role(connection, dev_id)
+    message = "GET_ROLE:{}".format(user_role)
+    s.sendto(bytes(message, "UTF-8"), addr)
+    return
+
 def send_low_battery_current_requests(connection, dev_id, s):
     # Send when help requester have low battery to helper
     _, isHelpee = db.check_if_entry_exists(connection, "help", "dev_id", "dev_id", dev_id, False)
@@ -387,7 +402,7 @@ def send_existing_requests(connection, message, addr, s):
         req_gpscoord = help[2]
         helptype = help[3]
         chatRoomId = help[4]
-        if helptype == "Vakava hätä, avunpyytäjä on ohjeistettu soittamaan 112":
+        if helptype == 'seriousEmerg':
             max_distance = 1
         else:
             max_distance = 3
@@ -397,7 +412,7 @@ def send_existing_requests(connection, message, addr, s):
             gps2 = req_gpscoord.split(",")
             dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
             battery_status = db.get_battery_by_dev_id(connection, req_dev_id)
-            message = "NOTIFY:{}:{}:{:.2f}km:Syy {}:{}:{}".format(
+            message = "NOTIFY:{}:{}:{:.2f}km:{}:{}:{}".format(
             dev_id, gpscoord, dist, helptype, chatRoomId,battery_status
             )
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))

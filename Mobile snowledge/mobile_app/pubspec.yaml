@@ -50,6 +50,9 @@ dependencies:
   cloud_firestore: ^4.4.3
   intl: ^0.18.0
   battery_plus: ^3.0.4
+  bubble_showcase: ^1.1.0
+  speech_bubble: ^0.0.9
+  flutter_compass: ^0.8.0
 
 dev_dependencies:
   integration_test:
@@ -81,6 +84,11 @@ flutter:
     - android/app/src/main/res/drawable/logo_transparent_black.png
     - assets/images/MapTiler.png
     - assets/images/TAUSTAKUVA_SOVELLUS.jpg
+    - assets/images/compass_button.png
+    - assets/images/locate_button.png
+    - assets/images/north_button.png
+    - assets/images/location_marker.png
+    - assets/images/location_marker_direction.png
     - .env
   #   - images/a_dot_ham.jpeg
 

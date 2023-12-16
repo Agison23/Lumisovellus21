@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  bubble_showcase:
+    dependency: "direct main"
+    description:
+      name: bubble_showcase
+      sha256: cee0776c59ab648aaa651c861d51f47720754fe3ff505a680a3ea15bbffef15d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   characters:
     dependency: transitive
     description:
@@ -286,6 +294,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_compass:
+    dependency: "direct main"
+    description:
+      name: flutter_compass
+      sha256: be642484f9f6975c1c6edff568281b001f2f1e604de27ecea18d97eebbdef22f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   flutter_driver:
     dependency: transitive
     description: flutter
@@ -684,6 +700,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  speech_bubble:
+    dependency: "direct main"
+    description:
+      name: speech_bubble
+      sha256: c26f7ff6f61bef162a4b13e79a554c1d59b063e3f9087bc2cd088928fcb35480
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
   stack_trace:
     dependency: transitive
     description:
