@@ -1,0 +1,617 @@
+/**
+Creation of map with maplibre-gl-library
+
+Latest updates:
+
+An Nguyen 30.11.2023
+Added monitor markers
+
+An Nguyen 30.11.2023
+Added monitor markers
+
+An Nguyen 30.11.2023
+Added monitor markers
+
+Joonas Konttila 27.11.2022
+Added striped polygon fills
+
+Emil Calonius 15.12
+Disable map rotation
+
+Emil Calonius 18.11
+Forest segment covers the whole visible map except other segments
+
+Emil Calonius 13.11
+Bugfixes and improvements to segment coloring
+Added different bounds on mobile and large screen
+When a segment is highlighted, subsegments inside it don't get highlighted
+
+Emil Calonius 7.11
+Segment highlighting
+Subsegment filter
+segment coloring based on snowtype
+
+Emil Calonius 4.11
+Create map with maplibre-gl
+Setting bounds and max and min zoom levels
+Drawing of segments
+
+ **/
+
+import React, { useRef, useEffect, useState } from "react";
+import maplibregl from "maplibre-gl";
+import mapStyle from "./pallas_map";
+import { makeStyles } from "@material-ui/core/styles";
+import "maplibre-gl/dist/maplibre-gl.css";
+import union from "@turf/union";
+import { loadStripedPolygonImagesToMap } from "./loadStripedPolygonImagesToMap";
+import { SnowerAPI, defaultMonitors } from "../snower/SnowerAPI";
+import { createMarkersForMonitors } from "../snower/MonitorMarkers";
+const useStyles = makeStyles(() => ({
+  mapContainer: {
+    width: "100%",
+    height: "100%",
+  },
+}));
+
+//Defines area around the hotel which is not to be rendered as forest area, so user can click hotel icon
+// without opening forest info window.
+const hotel_area = {
+  type: "Feature",
+  geometry: {
+    type: "Polygon",
+    coordinates: [
+      [
+        [24.052997678518295, 68.04969970288553],
+        [24.044299945235252, 68.04799995622012],
+        [24.080684781074524, 68.04010418233425],
+        [24.06219631433487, 68.05130333086372],
+        [24.052997678518295, 68.04969970288553],
+      ],
+    ],
+  },
+  properties: {},
+};
+
+let map;
+export const defaultBoundingBox = [
+  [23.849004, 68.0],
+  [24.240507, 68.142811],
+];
+function PallasMap(props) {
+  const mapContainerRef = useRef(null);
+  const styledClasses = useStyles();
+
+  const [data, setData] = useState({ type: "FeatureCollection", features: [] });
+  const [segmentArray, setSegmentArray] = useState([]);
+  const [polygonFillCombinations, setPolygonFillCombinations] = useState([]);
+  const [monitorData, setMonitorData] = useState(defaultMonitors);
+  const [monitorMarkers, setMonitorMarkers] = useState([]);
+  const [dataFetched, setDataFetched] = useState(false);
+  const center = [24.05, 68.069];
+  const bounds = props.isMobile
+    ? defaultBoundingBox
+    : [
+        [23.556208, 67.988229],
+        [24.561503, 68.16228],
+      ];
+
+  useEffect(() => {
+    const snowerService = new SnowerAPI({ bounds });
+
+    async function fetchData() {
+      await snowerService.fetchDataAndStore();
+      const data = snowerService.getData();
+      setMonitorData(data);
+      setDataFetched(true);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Create an array of the segments so that first comes woods segment, second normal segments and last subsegments
+    // This ensures that subsegments get drawn on top of other segments
+    let woodsSegments = [];
+    let normalSegments = [];
+    let subSegments = [];
+    props.segments.forEach((segment) => {
+      if (segment.Nimi === "Metsä") {
+        woodsSegments.push(segment);
+      } else if (segment.On_Alasegmentti != null) {
+        subSegments.push(segment);
+      } else {
+        normalSegments.push(segment);
+      }
+    });
+    let noWoodsSegments = normalSegments.concat(subSegments);
+    let segments = woodsSegments.concat(noWoodsSegments);
+    setSegmentArray(segments);
+
+    // Gets the coordinates for the geometry of a segment
+    // If segemnts has a subsegment add it as a hole to the segment
+    // For forest segment add the union of all other segments as a hole
+    function getCoordinates(id) {
+      let coordinates = [];
+      let segment = segments.find((item) => item.ID === id);
+      coordinates.push(
+        segment.Points.map((point) => {
+          return [point.lng, point.lat];
+        })
+      );
+
+      if (segment.Nimi === "Metsä") {
+        let index = segments.indexOf(segment);
+        let newSegments = [...segments];
+        newSegments.splice(index, 1);
+        let unifiedSegment = {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              newSegments[0].Points.map((point) => {
+                return [point.lng, point.lat];
+              }),
+            ],
+          },
+          properties: {},
+        };
+
+        unifiedSegment = union(unifiedSegment, hotel_area);
+
+        let otherSegment = {};
+        for (let i = 1; i < newSegments.length; i++) {
+          otherSegment = {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                newSegments[i].Points.map((point) => {
+                  return [point.lng, point.lat];
+                }),
+              ],
+            },
+            properties: {},
+          };
+          unifiedSegment = union(unifiedSegment, otherSegment);
+        }
+        coordinates.push(unifiedSegment.geometry.coordinates[0]);
+      } else {
+        if (segment.On_Alasegmentti === null) {
+          segments.forEach((item) => {
+            if (item.On_Alasegmentti === segment.Nimi) {
+              coordinates.push(
+                item.Points.map((point) => {
+                  return [point.lng, point.lat];
+                })
+              );
+            }
+          });
+        }
+      }
+
+      return coordinates;
+    }
+
+    // Create a geojson feature collection that the segments are drawn from
+    var _data = {
+      type: "FeatureCollection",
+      features: segments.map((item) => {
+        return {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: getCoordinates(item.ID),
+          },
+          properties: {
+            name: item.Nimi,
+            subsegment: item.On_Alasegmentti === null ? false : true,
+            segmentId: item.ID,
+            snowId1:
+              item.update !== null
+                ? item.update.Lumi1 !== undefined
+                  ? item.update.Lumi1.ID
+                  : 0
+                : 0,
+            snowId2:
+              item.update !== null
+                ? item.update.Lumi2 !== undefined
+                  ? item.update.Lumi2.ID
+                  : 0
+                : 0,
+            snowId3:
+              item.update !== null
+                ? item.update.Lumi3 !== undefined
+                  ? item.update.Lumi3.ID
+                  : 0
+                : 0,
+            snowId4:
+              item.update !== null
+                ? item.update.Lumi4 !== undefined
+                  ? item.update.Lumi4.ID
+                  : 0
+                : 0,
+            snowId5:
+              item.update !== null
+                ? item.update.Lumi5 !== undefined
+                  ? item.update.Lumi5.ID
+                  : 0
+                : 0,
+            snowId6:
+              item.update !== null
+                ? item.update.Lumi6 !== undefined
+                  ? item.update.Lumi6.ID
+                  : 0
+                : 0,
+            snowId7:
+              item.update !== null
+                ? item.update.Lumi7 !== undefined
+                  ? item.update.Lumi7.ID
+                  : 0
+                : 0,
+          },
+          id: item.ID,
+        };
+      }),
+    };
+    var _polygonFillCombinations = [];
+    //_data.featureisiin on tallennettu jokaiselle segmentille lumityypit.
+    //snowId1 & snowId2 on pallaksen käyttäjällä lisätyt ensisijaiset lumityypit
+    //snowId3 & snowId4 on pallaksen käyttäjällä lisätyt toissijaiset lumityypit
+    //snowId5 - snowId7 on vierailijoiden lisäämät lumityypit
+    //loopataan kaikki segmentit läpi, ja tallennetaan jokaiselle lumityypille segmentin lumityypit snowType-muuttujaan.
+    //muuttuja on string, jossa on kaksi numeroa esim: "5:2", eka numero on viimeisimmin lisätyn lumityypin tyyppi ja toinen on sitä aiemmin lisätyn lumityypin tyyppi
+    //jos on vain yksi väri, muuttuja on silloin mallia "5:"
+    //näistä muuttujista luodaan array, joka tallennetaan stateen.
+    _data.features.forEach((feature) => {
+      var snowType = getSnowType(feature);
+      _polygonFillCombinations.push(snowType);
+      feature.properties.snowType = snowType;
+    });
+
+    function getSnowType(feature) {
+      var snowType = "";
+      var snowId1 = feature.properties.snowId1;
+      var snowId2 = feature.properties.snowId2;
+      var snowId3 = feature.properties.snowId3;
+      //var snowId4 = feature.properties.snowId4;
+      var snowId5 = feature.properties.snowId5;
+      //var snowId6 = feature.properties.snowId6;
+      //var snowId7 = feature.properties.snowId7;
+
+      if (snowId1 !== 0) {
+        snowType += snowId1 + ":";
+        if (snowId2 !== 0) {
+          snowType += snowId2;
+        }
+        return snowType;
+      }
+      if (snowId2 !== 0) {
+        snowType += snowId2 + ":";
+        return snowType;
+      }
+      if (snowId3 !== 0) {
+        snowType += snowId3 + ":";
+        return snowType;
+      }
+      if (snowId5 !== 0) snowType = snowId5 + ":";
+
+      if (snowType === "") snowType = "0:";
+
+      return snowType;
+    }
+
+    setData(_data);
+    //poistetaan duplikaatit
+    _polygonFillCombinations = [...new Set(_polygonFillCombinations)];
+    setPolygonFillCombinations(_polygonFillCombinations);
+  }, [props.segments]);
+
+  useEffect(() => {
+    if (dataFetched) {
+      if (data.features.length > 0 && map === undefined) {
+        map = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: mapStyle,
+          center: center,
+          zoom: props.zoom,
+          maxBounds: bounds,
+          maxZoom: 15,
+          minZoom: 11,
+          maxPitch: 0,
+          dragRotate: false,
+        });
+      }
+
+      if (map !== undefined) {
+        map.on("load", function () {
+          // Add geojson as source for layers
+          if (map.getSource("segments-source") === undefined) {
+            map.addSource("segments-source", {
+              type: "geojson",
+              data: data,
+            });
+          }
+
+          // An array that specifies which color layers paint property needs to paint a certain segment
+          const fillColor = [];
+          fillColor.push("#000000");
+          props.segmentColors.forEach((item) => {
+            //fillColor.push(item.ID);
+            fillColor.push(item.color);
+          });
+          //console.log(JSON.stringify(fillColor));
+          // Layer for segment highlights
+          if (map.getLayer("segments-highlights") === undefined) {
+            map.addLayer({
+              id: "segments-highlights",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                // Opacity is dependant on the segments hover or highlight feature state
+                "fill-opacity": 0.6,
+              },
+              filter: ["==", ["get", "segmentId"], 0],
+            });
+          }
+
+          loadStripedPolygonImagesToMap(
+            map,
+            polygonFillCombinations,
+            fillColor
+          );
+
+          // Layer for segment fills
+          if (map.getLayer("segments-fills") === undefined) {
+            map.addLayer({
+              id: "segments-fills",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                "fill-color": "#000000",
+                // Opacity is dependant on the segments hover or highlight feature state
+                "fill-opacity": [
+                  "case",
+                  ["boolean", ["feature-state", "hover"], false],
+                  0.6,
+                  0,
+                ],
+              },
+            });
+          }
+
+          // Layer for selected segment
+          if (map.getLayer("segments-selected") === undefined) {
+            map.addLayer({
+              id: "segments-selected",
+              source: "segments-source",
+              type: "fill",
+              layout: {},
+              paint: {
+                "fill-pattern": ["get", "snowType"],
+                "fill-opacity": 0.6,
+              },
+              filter: ["==", ["get", "segmentId"], 0],
+            });
+          }
+
+          // Layer for segment outlines
+          if (map.getLayer("segments-outlines") === undefined) {
+            map.addLayer({
+              id: "segments-outlines",
+              source: "segments-source",
+              type: "line",
+              layout: {},
+              paint: {
+                "line-color": "#000000",
+                "line-width": 1.15,
+              },
+            });
+          }
+
+          // Disable map rotation using touch rotation gesture
+          map.touchZoomRotate.disableRotation();
+
+          // Add a scale bar to the bottom right of the map
+          map.addControl(
+            new maplibregl.ScaleControl({ maxWidth: 100, unit: "metric" }),
+            "bottom-right"
+          );
+
+          //Geolocation control
+          map.addControl(
+            new maplibregl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true,
+              },
+              trackUserLocation: true,
+            }),
+            "bottom-right"
+          );
+
+          //Add hotel location marker and ski-lift lines to map.
+          var hotel = document.createElement("img");
+          hotel.className = "Hotel";
+          hotel.src = "icons/hotel_marker.svg";
+          hotel.alt = "Hotel_icon";
+          hotel.style.width = "45px";
+          hotel.style.height = "45px";
+
+          var popup = new maplibregl.Popup({
+            offset: 25,
+            closeOnClick: true,
+            closeButton: false,
+          }).setHTML(
+            "<div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>" +
+              "<h4 style='margin: 0;'>Hotelli Pallas</h4>" +
+              "<a style=' text-decoration:none; color: #539BD5' href=\"https://www.laplandhotels.com/FI/lapin-hotellit/pallas/lapland-hotels-pallas.html\">Kotisivut</a>" +
+              "</div>"
+          );
+
+          new maplibregl.Marker(hotel)
+            .setLngLat([24.062026, 68.046691])
+            .setPopup(popup)
+            .addTo(map);
+
+          // Adding monitor markers
+          setMonitorMarkers(createMarkersForMonitors(map, monitorData));
+
+          // When user hovers over a segment, update its hover feature state to true
+          var hoveredSegmentId = null;
+          map.on("mousemove", "segments-fills", function (e) {
+            map.getCanvas().style.cursor = "pointer";
+            if (e.features.length > 0) {
+              if (hoveredSegmentId) {
+                map.setFeatureState(
+                  { source: "segments-source", id: hoveredSegmentId },
+                  { hover: false }
+                );
+              }
+              hoveredSegmentId = e.features[0].id;
+              map.setFeatureState(
+                { source: "segments-source", id: hoveredSegmentId },
+                { hover: true }
+              );
+            }
+          });
+
+          // When mouse leaves the segments-fills layer, update hover feature state of latest segment hovered to false
+          map.on("mouseleave", "segments-fills", function () {
+            map.getCanvas().style.cursor = "";
+            if (hoveredSegmentId) {
+              map.setFeatureState(
+                { source: "segments-source", id: hoveredSegmentId },
+                { hover: false }
+              );
+            }
+            hoveredSegmentId = null;
+          });
+
+          // When a segment is clicked send it to NewMap.js to update chosen segment and filter segment-highlights layer so that selected segment is shown
+          map.on("click", "segments-fills", function (e) {
+            props.chosenSegment(
+              segmentArray.find((item) => item.ID === e.features[0].id)
+            );
+            console.log(e.features[0].properties.snowType);
+            map.setFilter("segments-selected", [
+              "==",
+              ["get", "segmentId"],
+              e.features[0].id,
+            ]);
+            // Filter out the selected segment from segments-fills layer when it is visible in segments-highlight layer
+            // If only subsegments should be shown, filter out segments that are not subsegments
+            if (map.getFilter("segments-fills") === undefined) {
+              map.setFilter("segments-fills", [
+                "!=",
+                ["get", "segmentId"],
+                e.features[0].id,
+              ]);
+            } else {
+              if (
+                JSON.stringify(map.getFilter("segments-fills")) ===
+                  JSON.stringify(["==", ["get", "subsegment"], true]) ||
+                map.getFilter("segments-fills")[0] === "all"
+              ) {
+                map.setFilter("segments-fills", [
+                  "all",
+                  ["!=", ["get", "segmentId"], e.features[0].id],
+                  ["==", ["get", "subsegment"], true],
+                ]);
+              } else {
+                map.setFilter("segments-fills", [
+                  "!=",
+                  ["get", "segmentId"],
+                  e.features[0].id,
+                ]);
+              }
+            }
+          });
+        });
+
+        if (map.isStyleLoaded()) {
+          // Add a filter so that only subsegments get highlighted
+          if (props.highlightedSnowType === -1) {
+            map.setFilter("segments-highlights", [
+              "==",
+              ["get", "subsegment"],
+              true,
+            ]);
+          }
+
+          // Add a filter so that only a certain snowtype gets highlighted
+          if (props.highlightedSnowType > -1) {
+            map.setFilter("segments-highlights", [
+              "any",
+              ["==", ["get", "snowId1"], props.highlightedSnowType],
+              ["==", ["get", "snowId2"], props.highlightedSnowType],
+              ["==", ["get", "snowId3"], props.highlightedSnowType],
+              ["==", ["get", "snowId4"], props.highlightedSnowType],
+              ["==", ["get", "snowId5"], props.highlightedSnowType],
+            ]);
+          }
+
+          // Make highligt layer completely visible
+          if (props.highlightedSnowType === -2) {
+            map.setFilter("segments-highlights", null);
+          }
+
+          // Remove the filters set above if all segments should be visible
+          if (props.highlightedSnowType === -3) {
+            map.setFilter("segments-highlights", [
+              "==",
+              ["get", "segmentId"],
+              0,
+            ]);
+          }
+
+          // Hide segments-highlighted layer and remove filter from segments-highlight layer if no segment is currently selected
+          if (props.shownSegment === null) {
+            map.setFilter("segments-selected", ["==", ["get", "segmentId"], 0]);
+            if (!props.subsOnly) map.setFilter("segments-fills", null);
+          }
+        }
+      }
+    }
+  }, [
+    data,
+    props.subsOnly,
+    props.shownSegment,
+    props.highlightedSnowType,
+    dataFetched,
+  ]);
+
+  useEffect(() => {
+    if (map !== undefined && monitorMarkers.length > 0) {
+      // Following code toggle the markers pop up
+      // monitorMarkers.forEach((marker) => {
+      //   const popup = marker.getPopup();
+      //   if (props.openMonitorData === true) {
+      //     popup.remove();
+      //   } else {
+      //     popup.addTo(map);
+      //   }
+      // });
+
+      // Following code toggle the markers visibility
+      monitorMarkers.forEach((marker) => {
+        const markerElement = marker.getElement();
+        const popup = marker.getPopup();
+        if (props.openMonitorData == false) {
+          markerElement.style.display = "none";
+          popup.remove();
+        } else {
+          markerElement.style.display = "block";
+        }
+      });
+    }
+  }, [props.openMonitorData, map, monitorMarkers]);
+
+  //console.log(JSON.stringify(data));
+  return <div className={styledClasses.mapContainer} ref={mapContainerRef} />;
+}
+
+export default PallasMap;

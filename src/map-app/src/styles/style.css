@@ -1,0 +1,200 @@
+/*
+ *
+ * Tyylimäärittelyjä
+ *
+ * 
+ *
+ */
+
+/* 
+.box {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+} */
+
+/* .map_container {
+  height: 600px;
+  /* The height is 600 pixels */
+/* width: 100%; */
+/* The width is the width of the web page */
+/*} */
+
+@font-face {
+  font-family: Donau;
+  src: url("../fonts/donau.otf") format("opentype");
+}
+
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.app {
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+  flex: 75%;
+}
+
+.app .top_bar {
+  flex: 0 1 auto;
+}
+
+.app .weather_tab,
+.weather_tab_inner {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+  overflow-y: scroll;
+  width: 75vw;
+  z-index: 4;
+  background: linear-gradient(135deg, #1c4777, #b8c1e0, #539bd5);
+}
+
+.app .map_container {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+}
+
+.map {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+  width: 75vw;
+}
+
+.info {
+  background-color: rgb(255, 255, 255);
+  width: 500px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  z-index: 6;
+  margin: auto;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.mobileInfo {
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  z-index: 6;
+  margin: auto;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.app .snow_tab {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+  z-index: 4;
+  overflow-y: scroll;
+  width: 75vw;
+  background-color: white;
+}
+
+.maplibregl-ctrl-bottom-right {
+  position: absolute;
+  bottom: 60px !important;
+  right: 5px;
+}
+
+.bottom_navigation {
+  z-index: 5;
+  position: fixed;
+  bottom: 0;
+  height: 55px;
+}
+
+.root {
+  display: flex;
+  width: 100vw;
+}
+
+.welcome_view {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 25vw;
+}
+
+.app .login_icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.app .management_view {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+  z-index: 3;
+  overflow-y: scroll;
+  width: 75vw;
+  background-color: white;
+}
+
+/* Styling for mobile devices */
+@media (max-width: 900px) {
+  .app .management_view {
+    width: 100vw;
+  }
+
+  .app .snow_tab,
+  .snow_tab_inner {
+    width: 100vw;
+  }
+  .snow_tab_inner > div:first-child {
+    width: 100vw !important;
+  }
+
+  .app .map_container {
+    width: 100vw;
+  }
+
+  .map {
+    width: 100vw;
+  }
+
+  .app .weather_tab,
+  .weather_tab_inner {
+    width: 100vw;
+  }
+
+  .welcome_view {
+    width: 100vw;
+    z-index: 6;
+  }
+}
+
+/*
+* Style for scrollbars
+*/
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* .map {
+  height: 600px; */
+/* The height is 600 pixels */
+/* width: 100%; */
+/* The width is the width of the web page */
+/* } */

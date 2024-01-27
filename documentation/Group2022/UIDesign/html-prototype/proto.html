@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/1e36511bb8.js" crossorigin="anonymous"></script>
+
+    <title>Snowledge</title>
+</head>
+<body>
+    <div class="container">
+        <div class="page page-1">
+            <img src="/images/pallaksen_pollot_logo_white.png" alt="">
+            <p class="info">Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista.</p>
+            <button id="page-1" class="general next">Seuraava</button>
+            <p class="no-location"></p>
+        </div>
+        <div class="page page-2">
+            <img src="/images/pallaksen_pollot_logo_white.png" alt="">
+            <p class="info">Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska tahansa poistaa sijainnin käytöstä.</p>
+            <button id="page-2" class="general next">Salli sijainti</button>
+            <p class="no-location">Älä salli sijaintia</p>
+        </div>
+        <div class="page page-2-b">
+            <img src="/images/pallaksen_pollot_logo_white.png" alt="">
+            <p class="info">Kaikki valmista! Nyt voit retkeillä turvallisesti tietäen, että sinut löydetään hätätilanteessakin.</p>
+            <button id="page-1" class="general next">Aloita käyttö</button>
+        </div>
+        <div class="page page-3">
+            <button class="menu-button black">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <img src="/images/pallaksen_pollot_logo_white.png" alt="">
+            <div class="help d-none">
+                <button class="close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h2>Millaista apua tarvitset?</h2>
+                <p>Vakavassa hädässä, soita aina hätänumeroon 112.</p>
+                <p>Avunpyyntö -painike ilmoittaa sijaintisi ja avuntarpeesi lähialueen käyttäjille.</p>
+                <div class="help-buttons">
+                    <button class="general emergency">
+                        Soita 112
+                    </button>
+                    <button class="general mild">
+                        Avunpyyntö
+                    </button>
+                </div>
+            </div>
+            <div class="location-screen d-none">
+                <h2>Sijaintitiedon jakaminen</h2>
+                <p>Sovellus kerää tietoja sijainnistasi. Tarvitsemme sijaintiasi auttaaksemme sinua hätätilanteen sattuessa. Voit koska
+                    tahansa poistaa sijainnin käytöstä.</p>
+                <div class="location-button">
+                    <label for="location">Sijainnin lähettäminen</label>
+                    <i class="fa-solid fa-toggle-on location-toggle"></i>
+                </div>
+            </div>
+            <div class="tutorial d-none">
+                <p>
+                    Pyydä apua -painikkeella aloitat avunpyynnnön.
+                </p>
+                <p>
+                    Lievemmässä avuntarpeessa voit pyytää apua muilta sovelluksen käyttäjiltä, jotka ovat lähistölläsi.
+                </p>
+                <p>
+                    Vakavassa hätätilanteessa voit soittaa hätänumeroon 112, jolloin sijaintitietojasi hyödynnetään paikantamisessasi.
+                </p>
+            </div>
+            <div class="footer">
+                <button class="sos">
+                    Pyydä apua
+                </button>
+                <div class="footer-button location">
+                    <i class="fa-solid fa-location-arrow"></i>
+                    Sijainti
+                </div>
+            </div>
+            <div class="menu d-flex flex-column">
+                <ul class="menu-list d-flex flex-column">
+                    <li>Käyttäjätiedot</li>
+                    <li class="kartta">Kartta</li>
+                    <li class="pallas">Pallas</li>
+                    <li>Ylläs</li>
+                    <li>Levi</li>
+                    <li>Tee tutoriaali uudelleen</li>
+                    <li>Tietoa sovelluksesta</li>
+                </ul>
+                <div class="small-menu d-flex">
+                    <p>Tietosuojakäytäntö</p>
+                    <p>Admin kirjautuminen</p>
+                </div>
+                <button class="menu-button">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <i class="fa-regular fa-circle-dot your-location"></i>
+        </div>
+        <div class="page page-4">
+            <button class="menu-button black">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <img src="/images/pallaksen_pollot_logo_white.png" alt="">
+            <div class="current-area">
+                Pallas
+            </div>
+            <div class="footer">
+                <div class="footer-button location">
+                    <i class="fa-solid fa-cloud-sun"></i>
+                    Sää
+                </div>
+                <button class="sos">
+                    Pyydä apua
+                </button>
+                <div class="footer-button location">
+                    <i class="fa-solid fa-location-arrow"></i>
+                    Sijainti
+                </div>
+            </div>
+        </div>
+        <!-- <div class="page page-4">
+            <img src="/pallaksen_pollot_logo_white.png" alt="">
+            <div class="header">
+                <p>Avunpyyntö päällä</p>
+                <p>Hyväksynyt 0 henkilöä.</p>
+            </div>
+            <div class="footer">
+                <div>Lopeta avun pyytäminen</div>
+            </div>
+        </div> -->
+
+
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>

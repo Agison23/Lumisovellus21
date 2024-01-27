@@ -1,0 +1,32 @@
+import maplibregl from "maplibre-gl";
+
+export function createMarkersForMonitors(map, monitorData) {
+  let markers = [];
+  monitorData.forEach((monitor) => {
+    const currentMonitor = document.createElement("img");
+    currentMonitor.className = "monitor";
+    currentMonitor.src = "icons/fmd_bad.svg";
+    currentMonitor.alt = "monitor_icon";
+    currentMonitor.style.width = "40px";
+    currentMonitor.style.height = "40px";
+
+    const currentPopup = new maplibregl.Popup({
+      offset: 25,
+      closeOnClick: true,
+      closeButton: false,
+    }).setHTML(`
+      <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large' class='snow-monitor-data-dialog'>
+        <p>❄️ ${monitor.snowDepth} </p>
+        <p>🌡️ ${monitor.temperature} </p>
+      </div>
+    `);
+
+    const currentMarker = new maplibregl.Marker(currentMonitor)
+      .setLngLat([monitor.lng, monitor.lat])
+      .setPopup(currentPopup)
+      .addTo(map);
+    markers.push(currentMarker);
+  });
+
+  return markers;
+}
