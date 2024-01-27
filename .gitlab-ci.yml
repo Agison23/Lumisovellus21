@@ -37,6 +37,7 @@ build-flutter-apk:
     - echo 'Building Android mobile Snowledge...'
     - flutter build apk --release
   only:
+    - main
     - master    # Only build when merge into production
 
 # Define a job template for Python job
