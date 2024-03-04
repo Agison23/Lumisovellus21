@@ -390,17 +390,19 @@ class HelpNeededState extends State<HelpNeeded> {
                       message:
                           "© MapTiler\n© OpenStreetMap contributors\nhttps://maptiler.com/",
                       child: IconButton(
-                        onPressed: () async {
-                          const url = "https://maptiler.com/";
-                          if (await canLaunchUrlString(url)) {
-                            await launchUrlString(url);
-                          } else {
-                            // print('ERROR');
-                          }
-                        },
-                        icon: Image.asset('assets/images/MapTiler.png'),
-                        iconSize: 20,
-                      ),
+                          onPressed: () async {
+                            const url = "https://maptiler.com/";
+                            if (await canLaunchUrlString(url)) {
+                              await launchUrlString(url);
+                            } else {
+                              // print('ERROR');
+                            }
+                          },
+                          icon: Container(
+                            child: Image.asset('assets/images/MapTiler.png'),
+                            width: 40,
+                            height: 40,
+                          )),
                     ),
                   ],
                 ),
