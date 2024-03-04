@@ -246,8 +246,11 @@ class HelpOfferedState extends State<HelpOffered> {
                             // print('ERROR');
                           }
                         },
-                        icon: Image.asset('assets/images/MapTiler.png'),
-                        iconSize: 20,
+                        icon: Container(
+                          child: Image.asset('assets/images/MapTiler.png'),
+                          width: 40,
+                          height: 40,
+                        ),
                       ),
                     ),
                   ],
