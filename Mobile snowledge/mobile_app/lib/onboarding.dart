@@ -73,7 +73,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
                         controller: page1ScrollController,
-                        isAlwaysShown: true,
+                        //isAlwaysShown: true,
                         child: SingleChildScrollView(
                           controller: page1ScrollController,
                           child: Column(
@@ -141,7 +141,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
                         controller: page2ScrollController,
-                        isAlwaysShown: true,
+                        //isAlwaysShown: true,
                         child: SingleChildScrollView(
                           controller: page2ScrollController,
                           child: Column(
@@ -206,7 +206,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
                         controller: page3ScrollController,
-                        isAlwaysShown: true,
+                        //isAlwaysShown: true,
                         child: SingleChildScrollView(
                           controller: page3ScrollController,
                           child: Column(
@@ -256,7 +256,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         behavior: MyScrollBehavior(),
                         child: Scrollbar(
                           controller: page4ScrollController,
-                          isAlwaysShown: true,
+                          //isAlwaysShown: true,
                           child: SingleChildScrollView(
                             controller: page4ScrollController,
                             child: Column(
@@ -299,7 +299,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Scrollbar(
                         controller: page5ScrollController,
-                        isAlwaysShown: true,
+                        //isAlwaysShown: true,
                         child: SingleChildScrollView(
                           controller: page5ScrollController,
                           child: Column(

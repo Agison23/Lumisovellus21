@@ -241,7 +241,7 @@ class ServerComms {
     String? devId = "notSet";
     if (Platform.isAndroid) {
       var build = await deviceInfoPlugin.androidInfo;
-      devId = build.androidId;
+      devId = build.id;
     } else if (Platform.isIOS) {
       var data = await deviceInfoPlugin.iosInfo;
       devId = data.identifierForVendor;
