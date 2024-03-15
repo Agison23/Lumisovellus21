@@ -22,8 +22,8 @@ class NotificationHandler {
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('logo_transparent_black');
 
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
       requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
@@ -37,16 +37,17 @@ class NotificationHandler {
             macOS: null);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification:
-            onSelectNotification); //(context) => selectNotification
+        onDidReceiveNotificationResponse:
+            onDidReceiveNotificationResponse); //(context) => selectNotification
   }
 
-  Future onSelectNotification(String? payload) async {
+  Future onDidReceiveNotificationResponse(
+      NotificationResponse? response) async {
     try {
       //if notification = new help request alert notification
-      if (payload != "") {
+      if (response?.payload != null) {
         await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
-            builder: (context) => HelpOffered(payload, true)));
+            builder: (context) => HelpOffered(response?.payload, true)));
       }
     } catch (e) {
       // print(e.toString());
@@ -66,8 +67,8 @@ class NotificationHandler {
 
   NotificationHandler._internal();
 
-  static const IOSNotificationDetails _iosNotificationDetails =
-      IOSNotificationDetails(
+  static const DarwinNotificationDetails _iosNotificationDetails =
+      DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
@@ -99,7 +100,6 @@ class NotificationHandler {
 
   static Future<void> helperCancelledAcceptanceNotification(AppState state,
       {int id = 12345}) async {
-    String? payload = "";
     flutterLocalNotificationsPlugin.show(
       id,
       translations['helperEnded'][state.language],

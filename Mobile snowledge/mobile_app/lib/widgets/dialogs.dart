@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/bottom_bar/state/setSharingLocation.dart';
 import 'package:mobile_app/helper/utility.dart';
@@ -8,13 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
+
 import '../../side_bar/gps_handler.dart';
 import '../../widgets/buttons.dart';
 import '../help_needed_mode.dart';
 import '../state/appState.dart';
 import '../side_bar/server_communications.dart';
 import '../notification_handler.dart';
-
 import '../translations/translations.dart';
 
 class Dialogs {

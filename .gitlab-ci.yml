@@ -9,7 +9,7 @@ cache:
 
 # Define a job template for Flutter jobs
 .flutter-template: &flutter-job
-  image: cirrusci/flutter:3.7.0
+  image: ghcr.io/cirruslabs/flutter:3.19.3
   before_script:
     - cd 'Mobile snowledge/mobile_app'
     - flutter packages get

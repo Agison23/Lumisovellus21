@@ -3,7 +3,6 @@ import 'package:mobile_app/app_info.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/main_page.dart';
 import 'package:mobile_app/map_tracking.dart';
-import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/snow_info.dart';
 import 'package:mobile_app/translations/translations.dart';
 import 'package:mobile_app/weather.dart';
@@ -13,7 +12,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:mobile_app/user_info.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
-import 'package:speech_bubble/speech_bubble.dart';
 
 import '../state/appState.dart';
 
