@@ -13,8 +13,6 @@ cache:
   before_script:
     - cd 'Mobile snowledge/mobile_app'
     - flutter packages get
-  only:
-    - merge_requests 
 
 lint-flutter:
   <<: *flutter-job
@@ -22,6 +20,8 @@ lint-flutter:
   script:
     - echo "Flutter linting"
     - flutter analyze --no-fatal-infos
+  only:
+    - merge_requests
 
 test-flutter:
   <<: *flutter-job
@@ -29,6 +29,8 @@ test-flutter:
   script:
     - echo "Running Flutter unit tests..."
     - flutter test ./test/
+  only:
+    - merge_requests
 
 build-flutter-apk:
   <<: *flutter-job
@@ -38,7 +40,17 @@ build-flutter-apk:
     - flutter build apk --release
   only:
     - main
-    - master    # Only build when merge into production
+
+build-flutter-apk-manual:
+  <<: *flutter-job
+  stage: build
+  script:
+    - echo 'Building Android mobile Snowledge...'
+    - flutter build apk
+  only:
+    - merge_requests
+  when: manual
+
 
 # Define a job template for Python job
 .python-template: &python-job
@@ -49,7 +61,7 @@ build-flutter-apk:
     - echo "Install required packages"
     - pip install -r requirements.txt
   only:
-    - merge_requests 
+    - merge_requests
 
 test-python-db:
   <<: *python-job
