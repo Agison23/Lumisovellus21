@@ -64,7 +64,7 @@ class HelpNeededState extends State<HelpNeeded> {
     String roomId = appState.chatRoomId;
     String whoSent;
 
-    final stream = FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('Rooms')
         .doc(roomId)
         .collection('Messages')
@@ -107,44 +107,42 @@ class HelpNeededState extends State<HelpNeeded> {
 
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
-      (Timer t) => {
-        getLatLng().then((usersLatLng) {
-          // if users nearby
-          if (_users.isNotEmpty) {
+      (Timer t) => getLatLng().then((usersLatLng) {
+        // if users nearby
+        if (_users.isNotEmpty) {
+          setState(() {
+            _markers = getMarkers(_helpers, usersLatLng);
+          });
+          // if users has accepted the request
+          if (_helpers.isNotEmpty) {
+            if (_start == 0) {
+              _start = 1;
+
+              if (_timer != null) {
+                if (_timer!.isActive) {
+                  _timer!.cancel();
+                }
+              }
+            }
             setState(() {
               _markers = getMarkers(_helpers, usersLatLng);
             });
-            // if users has accepted the request
-            if (_helpers.isNotEmpty) {
-              if (_start == 0) {
-                _start = 1;
-
-                if (_timer != null) {
-                  if (_timer!.isActive) {
-                    _timer!.cancel();
-                  }
-                }
-              }
-              setState(() {
-                _markers = getMarkers(_helpers, usersLatLng);
-              });
-            } else {
-              // start a timer once
-              if (_start == 0) {
-              } else {
-                showDialogAfter5Minutes();
-                setState(() {
-                  _start = 0;
-                });
-              }
-            }
           } else {
-            // if no users nearby
-            _stateUpdateTimer?.cancel();
-            Dialogs.showNoUserCloseDialog(context);
+            // start a timer once
+            if (_start == 0) {
+            } else {
+              showDialogAfter5Minutes();
+              setState(() {
+                _start = 0;
+              });
+            }
           }
-        })
-      },
+        } else {
+          // if no users nearby
+          _stateUpdateTimer?.cancel();
+          Dialogs.showNoUserCloseDialog(context);
+        }
+      }),
     );
 
     ServerComms.messageToServer("HELP");
@@ -196,7 +194,6 @@ class HelpNeededState extends State<HelpNeeded> {
         break;
       default:
         throw Exception("Invalid input! the int diff value must be -1, 0 or 1");
-        break;
     }
     getLatLng().then((usersLatLng) {
       _markers = getMarkers(_helpers, usersLatLng);

@@ -2,8 +2,6 @@ import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/translations/translations.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 class BubbleSlides {

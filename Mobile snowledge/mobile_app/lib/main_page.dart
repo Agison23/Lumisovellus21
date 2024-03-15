@@ -1,24 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app/helper/utility.dart';
 import 'package:mobile_app/side_bar/gps_handler.dart';
 import 'package:mobile_app/side_bar/navigation_drawer.dart';
-import 'package:mobile_app/side_bar/server_communications.dart';
 import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/bubble_slides.dart';
-import 'package:mobile_app/widgets/buttons.dart';
-import 'package:mobile_app/widgets/dialogs.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../widgets_binding_observer_state.dart';
 import 'bottom_bar/bottomBar.dart';
 import 'bottom_bar/state/setSharingLocation.dart';
-import 'helper/utility.dart';
 import 'notification_handler.dart';
 import '../translations/translations.dart';
-import 'package:logging/logging.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
@@ -87,15 +81,6 @@ class _MainPageState extends WidgetsBindingObserverState<MainPage> {
     // Let's try to only trigger the bubble showcase when step is 1
     bool showTutorial = appState.showTutorial;
     int currentTutorialStep = appState.currentTutorialStep;
-
-    JavascriptChannel _channel = JavascriptChannel(
-      name: 'myChannel', // Name your channel.
-      onMessageReceived: (message) {
-        // Handle messages received from JavaScript here.
-        print("Received message from JavaScript: $message");
-        // You can trigger Flutter functions based on the message received.
-      },
-    );
 
     if (!isLoading) {
       appURL = appEnv == 'production'
