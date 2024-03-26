@@ -12,8 +12,9 @@
     "@testing-library/user-event": "^12.1.10",
     "@turf/helpers": "^6.5.0",
     "@turf/union": "^6.5.0",
-    "axios": "^0.21.0",
+    "axios": "^1.6.7",
     "clsx": "^1.1.1",
+    "eslint-plugin-cypress": "^2.15.1",
     "google-maps-react": "^2.0.6",
     "maplibre-gl": "^1.15.2",
     "react": "^16.14.0",
@@ -67,9 +68,6 @@
     "@testing-library/cypress": "^10.0.1",
     "chokidar": "^3.5.2",
     "cypress": "^13.2.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-cypress": "^2.12.1",
-    "eslint-plugin-react": "^7.26.1",
     "npm-watch": "^0.11.0"
   }
 }
