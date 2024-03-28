@@ -68,4 +68,3 @@ CREATE TABLE updates (
     CONSTRAINT reviewId3 FOREIGN KEY (reviewId3) REFERENCES userReviews (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT tag  PRIMARY KEY (time, segment)
 );
-
