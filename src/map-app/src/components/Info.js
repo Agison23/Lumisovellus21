@@ -206,25 +206,27 @@ function Info(props) {
 
     setEntryVisible(true);
     setText(
-      props.segmentdata.update !== null ? props.segmentdata.update.Kuvaus : ""
+      props.segmentdata.update !== null
+        ? props.segmentdata.update.description
+        : ""
     );
     const idArray = [];
 
     idArray[0] =
       props.segmentdata.update !== null
-        ? props.segmentdata.update.Lumilaatu_ID1
+        ? props.segmentdata.update.snowTypeId1
         : 0;
     idArray[1] =
       props.segmentdata.update !== null
-        ? props.segmentdata.update.Lumilaatu_ID2
+        ? props.segmentdata.update.snowTypeId2
         : 0;
     idArray[2] =
       props.segmentdata.update !== null
-        ? props.segmentdata.update.Toissijainen_ID1
+        ? props.segmentdata.update.secondaryId1
         : 0;
     idArray[3] =
       props.segmentdata.update !== null
-        ? props.segmentdata.update.Toissijainen_ID2
+        ? props.segmentdata.update.secondaryId2
         : 0;
 
     snowRecordStartUp(idArray);
@@ -292,8 +294,8 @@ function Info(props) {
   // closes search
   const handleSearchClose = (e, value) => {
     if (value !== null) {
-      addSnowRecordContent(value.ID);
-      setDisabledSnowTypes(disabledSnowTypes.concat(value.ID));
+      addSnowRecordContent(value.id);
+      setDisabledSnowTypes(disabledSnowTypes.concat(value.id));
     }
 
     if (snowRecordContent.length < 3) {
@@ -449,7 +451,7 @@ function Info(props) {
   // Defines the default value of a snowtype box
   const getValue = (id) => {
     let index = snowTypeList.findIndex(
-      (snowTypeList) => snowTypeList.ID === id
+      (snowTypeList) => snowTypeList.id === id
     );
     return snowTypeList[index];
   };
@@ -458,7 +460,7 @@ function Info(props) {
     let returnValue = false;
 
     disabledSnowTypes.forEach((type) => {
-      if (option.ID === type) {
+      if (option.id === type) {
         returnValue = true;
       }
     });
@@ -470,7 +472,7 @@ function Info(props) {
     setUpdateEnabled(true);
 
     let itemId = item.id;
-    let valueId = value.ID;
+    let valueId = value.id;
     let index = snowRecordContent.findIndex(
       (snowRecorditem) => snowRecorditem.id === itemId
     );
@@ -486,7 +488,7 @@ function Info(props) {
     setDisabledSnowTypes(newContent2);
   };
 
-  // Kun lomake lähetetään, tehdään POST methodin api-kutsu polkuun /api/update/:id
+  // When form is sent, do a POST method api-call to /api/update/:id
   const sendForm = () => {
     const idValues = getSnowRecordContentIDs();
 
@@ -494,7 +496,7 @@ function Info(props) {
 
     // When checkbox is not checked:
     if (entryVisible) {
-      datavalues[0] = props.segmentdata.ID;
+      datavalues[0] = props.segmentdata.id;
       datavalues[1] = idValues[0];
       datavalues[2] = idValues[1];
       datavalues[3] = idValues[2];
@@ -507,14 +509,14 @@ function Info(props) {
         props.segmentdata.update !== null &&
         props.segmentdata.update !== undefined
       ) {
-        datavalues[0] = props.segmentdata.ID;
-        datavalues[1] = props.segmentdata.update.Lumilaatu_ID1;
-        datavalues[2] = props.segmentdata.update.Lumilaatu_ID2;
-        datavalues[3] = props.segmentdata.update.Toissijainen_ID1;
-        datavalues[4] = props.segmentdata.update.Toissijainen_ID2;
-        datavalues[5] = props.segmentdata.update.Kuvaus;
+        datavalues[0] = props.segmentdata.id;
+        datavalues[1] = props.segmentdata.update.snowTypeId1;
+        datavalues[2] = props.segmentdata.update.snowTypeId2;
+        datavalues[3] = props.segmentdata.update.secondaryId1;
+        datavalues[4] = props.segmentdata.update.secondaryId2;
+        datavalues[5] = props.segmentdata.update.description;
       } else {
-        datavalues[0] = props.segmentdata.ID;
+        datavalues[0] = props.segmentdata.id;
         datavalues[1] = null;
         datavalues[2] = null;
         datavalues[3] = null;
@@ -525,17 +527,17 @@ function Info(props) {
 
     // Tallennushetken lumilaatujen id:t, kuvausteksti. Lisäksi päivitettävän (valitun) segmentin ID
     const data = {
-      Segmentti: datavalues[0],
-      Lumilaatu_ID1: datavalues[1],
-      Lumilaatu_ID2: datavalues[2],
-      Toissijainen_ID1: datavalues[3],
-      Toissijainen_ID2: datavalues[4],
-      Kuvaus: datavalues[5],
+      segment: datavalues[0],
+      snowTypeId1: datavalues[1],
+      snowTypeId2: datavalues[2],
+      secondaryId1: datavalues[3],
+      secondaryId2: datavalues[4],
+      description: datavalues[5],
     };
 
     const fetchUpdate = async () => {
       //setLoading(true);
-      const response = await fetch("api/update/" + props.segmentdata.ID, {
+      const response = await fetch("api/update/" + props.segmentdata.id, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -559,19 +561,19 @@ function Info(props) {
 
       await updateData.forEach((update) => {
         snowdata.forEach((snow) => {
-          if (snow.ID === update.Lumilaatu_ID1) {
+          if (snow.id === update.snowTypeId1) {
             update.Lumi1 = snow;
           }
-          if (snow.ID === update.Lumilaatu_ID2) {
+          if (snow.id === update.snowTypeId2) {
             update.Lumi2 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID1) {
+          if (snow.id === update.secondaryId1) {
             update.Lumi3 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID2) {
+          if (snow.id === update.secondaryId2) {
             update.Lumi4 = snow;
           }
-          if (snow.ID === update.A1_Lumilaatu) {
+          if (snow.id === update.a1SnowType) {
             update.Lumi5 = snow;
           }
         });
@@ -580,22 +582,22 @@ function Info(props) {
       data.forEach((segment) => {
         segment.update = null;
         updateData.forEach((update) => {
-          if (update.Segmentti === segment.ID) {
+          if (update.segment === segment.id) {
             segment.update = update;
           }
-          // päivitetään näytettävä segmentti
-          if (segment.ID === props.segmentdata.ID) {
-            props.onUpdate(segment.ID);
+          // Update the segment that was updated
+          if (segment.id === props.segmentdata.id) {
+            props.onUpdate(segment.id);
           }
         });
-        if (segment.On_Alasegmentti != null) {
-          data.forEach((mahd_yla_segmentti) => {
-            if (mahd_yla_segmentti.ID === segment.On_Alasegmentti) {
-              segment.On_Alasegmentti = mahd_yla_segmentti.Nimi;
+        if (segment.isLowerSegment != null) {
+          data.forEach((possibleHigherSegment) => {
+            if (possibleHigherSegment.id === segment.isLowerSegment) {
+              segment.isLowerSegment = possibleHigherSegment.name;
             }
           });
         }
-        if (segment.Nimi === "Metsä") {
+        if (segment.name === "Metsä") {
           props.updateWoods(segment);
         }
       });
@@ -649,7 +651,7 @@ function Info(props) {
                 </Typography>
                 {/*Segment name */}
                 <Typography className={classes.smallHeaders}>
-                  {props.segmentdata.Nimi}
+                  {props.segmentdata.name}
                 </Typography>
                 <Box className={classes.part}>
                   {/* Timestamp update checkbox*/}
@@ -723,7 +725,7 @@ function Info(props) {
                               checkDisabledValues(option)
                             }
                             getOptionLabel={(option) =>
-                              translations[getTranslationKey(option.Nimi)][
+                              translations[getTranslationKey(option.name)][
                                 language
                               ]
                             }
@@ -781,7 +783,7 @@ function Info(props) {
                               }
                               defaultValue={getValue(item.id)}
                               getOptionLabel={(option) =>
-                                translations[getTranslationKey(option.Nimi)][
+                                translations[getTranslationKey(option.name)][
                                   language
                                 ]
                               }
