@@ -80,10 +80,10 @@ const userReviewUpdater = cron.schedule("*/1 * * * *", async () => {
 
   //Get numbers of segments
   const segmentCount = await sqlQuery(
-    "SELECT ID FROM segments order by ID desc limit 1;"
+    "SELECT id FROM segments order by id desc limit 1;"
   ).then(function (results) {
     results = JSON.parse(JSON.stringify(results));
-    return results[0].ID;
+    return results[0].id;
   });
 
   //loop goes through every segment in database
