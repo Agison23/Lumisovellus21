@@ -562,19 +562,19 @@ function Info(props) {
       await updateData.forEach((update) => {
         snowdata.forEach((snow) => {
           if (snow.id === update.snowTypeId1) {
-            update.Lumi1 = snow;
+            update.snow1 = snow;
           }
           if (snow.id === update.snowTypeId2) {
-            update.Lumi2 = snow;
+            update.snow2 = snow;
           }
           if (snow.id === update.secondaryId1) {
-            update.Lumi3 = snow;
+            update.snow3 = snow;
           }
           if (snow.id === update.secondaryId2) {
-            update.Lumi4 = snow;
+            update.snow4 = snow;
           }
           if (snow.id === update.a1SnowType) {
-            update.Lumi5 = snow;
+            update.snow5 = snow;
           }
         });
       });

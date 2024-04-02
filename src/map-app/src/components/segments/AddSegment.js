@@ -95,11 +95,11 @@ function AddSegment(props) {
   const handleAdd = () => {
     // Tiedot  tulevat hookeista
     const data = {
-      Nimi: segmentName,
-      Maasto: terrain,
-      Lumivyöryvaara: danger,
-      On_Alasegmentti: props.id !== null ? props.id : null,
-      Points: points,
+      name: segmentName,
+      terrain: terrain,
+      avalancheDanger: danger,
+      isLowerSegment: props.id !== null ? props.id : null,
+      Points: points, // Comes from API as Points, can't bother to change to lower case
     };
 
     // Segmentin lisäämisen api-kutsu
@@ -129,20 +129,20 @@ function AddSegment(props) {
 
       await updateData.forEach((update) => {
         snowdata.forEach((snow) => {
-          if (snow.ID === update.Lumilaatu_ID1) {
-            update.Lumi1 = snow;
+          if (snow.id === update.snowTypeId1) {
+            update.snow1 = snow;
           }
-          if (snow.ID === update.Lumilaatu_ID2) {
-            update.Lumi2 = snow;
+          if (snow.id === update.snowTypeId2) {
+            update.snow2 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID1) {
-            update.Lumi3 = snow;
+          if (snow.id === update.secondaryId1) {
+            update.snow3 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID2) {
-            update.Lumi4 = snow;
+          if (snow.id === update.secondaryId2) {
+            update.snow4 = snow;
           }
-          if (snow.ID === update.A1_Lumilaatu) {
-            update.Lumi5 = snow;
+          if (snow.id === update.a1SnowType) {
+            update.snow5 = snow;
           }
         });
       });
@@ -150,11 +150,11 @@ function AddSegment(props) {
       data.forEach((segment) => {
         segment.update = null;
         updateData.forEach((update) => {
-          if (update.Segmentti === segment.ID) {
+          if (update.segment === segment.id) {
             segment.update = update;
           }
         });
-        if (segment.Nimi === "Metsä") {
+        if (segment.name === "Metsä") {
           props.updateWoods(segment);
         }
       });
