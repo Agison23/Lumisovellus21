@@ -76,7 +76,7 @@ router.get("/segments", function (req, res) {
       if (err) throw err;
       //transfere needed data to array
       const coordsForSegments = points.map((item) => {
-        item.locatian.lat = item.location.x;
+        item.location.lat = item.location.x;
         item.location.lng = item.location.y;
         delete item.location.x;
         delete item.location.y;
@@ -129,9 +129,9 @@ router.get("/segments/update/:id", function (req, res) {
 router.get("/segments/update", function (req, res) {
   database.query(
     `SELECT P.segment, P.time, P.description, P.snowTypeId1, P.snowTypeId2, P.secondaryId1, P.secondaryId2, 
-      a1.time AS a1Time, a1.snowType AS A1SnowType, a1.details AS A1Details, 
-      a2.time AS a2Time, a2.snowType AS A2SnowType, a2.details AS A2Details, 
-      a3.time AS a3Time, a3.snowType AS A3SnowType, a3.details AS A3Details
+      a1.time AS a1Time, a1.snowType AS a1SnowType, a1.details AS a1Details,
+      a2.time AS a2Time, a2.snowType AS a2SnowType, a2.details AS a2Details,
+      a3.time AS a3Time, a3.snowType AS a3SnowType, a3.details AS a3Details
       FROM updates P
       LEFT JOIN userReviews a1 ON P.reviewId1 = a1.id
       LEFT JOIN userReviews a2 ON P.reviewId2 = a2.id
@@ -203,12 +203,7 @@ router.post("/review/:id", function (req, res) {
   }
   database.query(
     "INSERT INTO userReviews(time, segment, snowType, details, comment) VALUES(NOW(), ?, ?, ?, ?)",
-    [
-      req.body.segment,
-      req.body.snowType,
-      req.body.details,
-      req.body.comment,
-    ],
+    [req.body.segment, req.body.snowType, req.body.details, req.body.comment],
     function (err) {
       if (err) throw err;
 
