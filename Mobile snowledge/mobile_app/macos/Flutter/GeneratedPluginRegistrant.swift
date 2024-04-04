@@ -8,7 +8,7 @@ import Foundation
 import battery_plus
 import cloud_firestore
 import connectivity_macos
-import device_info_plus_macos
+import device_info_plus
 import firebase_core
 import flutter_local_notifications
 import location
