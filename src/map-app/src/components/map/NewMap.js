@@ -150,44 +150,44 @@ function Map(props) {
     props.segments.forEach((segment) => {
       if (segment.update !== null) {
         if (
-          segment.update.Lumi1 !== undefined &&
+          segment.update.snow1 !== undefined &&
           !(
-            snowTypes.filter((e) => e.ID === segment.update.Lumi1.ID).length > 0
+            snowTypes.filter((e) => e.id === segment.update.snow1.id).length > 0
           )
         ) {
-          snowTypes.push(segment.update.Lumi1);
+          snowTypes.push(segment.update.snow1);
         }
         if (
-          segment.update.Lumi2 !== undefined &&
+          segment.update.snow2 !== undefined &&
           !(
-            snowTypes.filter((e) => e.ID === segment.update.Lumi2.ID).length > 0
+            snowTypes.filter((e) => e.id === segment.update.snow2.id).length > 0
           )
         ) {
-          snowTypes.push(segment.update.Lumi2);
+          snowTypes.push(segment.update.snow2);
         }
         if (
-          segment.update.Lumi3 !== undefined &&
+          segment.update.snow3 !== undefined &&
           !(
-            snowTypes.filter((e) => e.ID === segment.update.Lumi3.ID).length > 0
+            snowTypes.filter((e) => e.id === segment.update.snow3.id).length > 0
           )
         ) {
-          snowTypes.push(segment.update.Lumi3);
+          snowTypes.push(segment.update.snow3);
         }
         if (
-          segment.update.Lumi4 !== undefined &&
+          segment.update.snow4 !== undefined &&
           !(
-            snowTypes.filter((e) => e.ID === segment.update.Lumi4.ID).length > 0
+            snowTypes.filter((e) => e.id === segment.update.snow4.id).length > 0
           )
         ) {
-          snowTypes.push(segment.update.Lumi4);
+          snowTypes.push(segment.update.snow4);
         }
         if (
-          segment.update.Lumi5 !== undefined &&
+          segment.update.snow5 !== undefined &&
           !(
-            snowTypes.filter((e) => e.ID === segment.update.Lumi5.ID).length > 0
+            snowTypes.filter((e) => e.id === segment.update.snow5.id).length > 0
           )
         ) {
-          snowTypes.push(segment.update.Lumi5);
+          snowTypes.push(segment.update.snow5);
         }
       }
       setCurrentSnowTypes(snowTypes);
@@ -219,18 +219,18 @@ function Map(props) {
 
   function updateHighlightedSnowType(snow) {
     let showOnlyString = translations["showOnly"][language];
-    let snowName = translations[getTranslationKey(snow.Nimi)][language];
-    if (highlightedSnowType === snow.ID) {
+    let snowName = translations[getTranslationKey(snow.name)][language];
+    if (highlightedSnowType === snow.id) {
       setHighlightedSnowType(-3);
       setButtonText(showOnlyString);
     } else {
-      setHighlightedSnowType(snow.ID);
+      setHighlightedSnowType(snow.id);
       setButtonText(snowName);
     }
   }
   // Updates the chosen segment
   function updateChosen(segment) {
-    props.onClick(segment.ID);
+    props.onClick(segment.id);
   }
 
   function handleClose() {
@@ -307,7 +307,7 @@ function Map(props) {
                   // Append a snow type to the list if it can be found on a segment
                   currentSnowTypes.map((snowType) => {
                     return (
-                      <Box key={snowType.ID}>
+                      <Box key={snowType.id}>
                         <Button
                           fullWidth={true}
                           onClick={() => {
@@ -316,13 +316,13 @@ function Map(props) {
                           }}
                           style={{
                             backgroundColor:
-                              highlightedSnowType === snowType.ID
+                              highlightedSnowType === snowType.id
                                 ? "#ed7a72"
                                 : "white",
                           }}
                         >
                           {
-                            translations[getTranslationKey(snowType.Nimi)][
+                            translations[getTranslationKey(snowType.name)][
                               language
                             ]
                           }
@@ -335,8 +335,8 @@ function Map(props) {
                   fullWidth={true}
                   onClick={() => {
                     updateHighlightedSnowType({
-                      Nimi: "Vain laskualueet",
-                      ID: -1,
+                      name: "Vain laskualueet",
+                      id: -1,
                     });
                     handleClickOpen();
                   }}
@@ -356,12 +356,12 @@ function Map(props) {
               onClick={() => {
                 highlightedSnowType === -2
                   ? updateHighlightedSnowType({
-                      ID: -3,
-                      Nimi: "Näytä ainoastaan...",
+                      id: -3,
+                      name: "Näytä ainoastaan...",
                     })
                   : updateHighlightedSnowType({
-                      ID: -2,
-                      Nimi: "Näytä ainoastaan...",
+                      id: -2,
+                      name: "Näytä ainoastaan...",
                     });
               }}
             >
@@ -393,7 +393,7 @@ function Map(props) {
                     // Append a snow type to the list if it can be found on a segment
                     currentSnowTypes.map((snowType) => {
                       return (
-                        <Box key={snowType.ID}>
+                        <Box key={snowType.id}>
                           <Button
                             fullWidth={true}
                             onClick={() => {
@@ -402,13 +402,13 @@ function Map(props) {
                             }}
                             style={{
                               backgroundColor:
-                                highlightedSnowType === snowType.ID
+                                highlightedSnowType === snowType.id
                                   ? "#ed7a72"
                                   : "white",
                             }}
                           >
                             {
-                              translations[getTranslationKey(snowType.Nimi)][
+                              translations[getTranslationKey(snowType.name)][
                                 language
                               ]
                             }
@@ -421,8 +421,8 @@ function Map(props) {
                     fullWidth={true}
                     onClick={() => {
                       updateHighlightedSnowType({
-                        Nimi: "Vain laskualueet",
-                        ID: -1,
+                        name: "Vain laskualueet",
+                        id: -1,
                       });
                       handleClick();
                     }}
@@ -443,12 +443,12 @@ function Map(props) {
               onClick={() => {
                 highlightedSnowType === -2
                   ? updateHighlightedSnowType({
-                      ID: -3,
-                      Nimi: "Näytä ainoastaan...",
+                      id: -3,
+                      name: "Näytä ainoastaan...",
                     })
                   : updateHighlightedSnowType({
-                      ID: -2,
-                      Nimi: "Näytä ainoastaan...",
+                      id: -2,
+                      name: "Näytä ainoastaan...",
                     });
               }}
             >
