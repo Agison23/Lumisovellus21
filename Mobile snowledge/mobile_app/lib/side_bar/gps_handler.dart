@@ -31,7 +31,7 @@ class GpsHandler {
     _gps = await _location.getLocation();
     _timer = Timer.periodic(
       const Duration(seconds: 5),
-      (Timer t) async => {updateGpsVariable()},
+      (Timer t) async => updateGpsVariable(),
     );
   }
 
@@ -96,7 +96,7 @@ class GpsHandler {
       if (Platform.isAndroid) {
         int androidVersion = int.parse((await DeviceInfoPlugin().androidInfo)
             .version
-            .release!
+            .release
             .split('.')[0]);
         if (androidVersion > 10) {
           return await _askWhenInUseAndThenAlwaysLocationPermission(

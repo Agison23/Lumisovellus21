@@ -191,8 +191,11 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                         // print('ERROR');
                       }
                     },
-                    icon: Image.asset('assets/images/MapTiler.png'),
-                    iconSize: 20,
+                    icon: Container(
+                      child: Image.asset('assets/images/MapTiler.png'),
+                      width: 40,
+                      height: 40,
+                    ),
                   ),
                 ),
               ),
@@ -202,8 +205,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                   iconSize: 24,
                   icon: const Image(
                       image: AssetImage('assets/images/locate_button.png'),
-                      width: 80,
-                      height: 80,
+                      width: 60,
+                      height: 60,
                       fit: BoxFit.fill),
                   onPressed: () {
                     _compassIcon = 'assets/images/north_button.png';
@@ -228,8 +231,8 @@ class MapTrackingState extends WidgetsBindingObserverState<MapTracking> {
                       iconSize: 24,
                       icon: Image(
                           image: AssetImage(_compassIcon),
-                          width: 80,
-                          height: 80,
+                          width: 60,
+                          height: 60,
                           fit: BoxFit.fill),
                       onPressed: () {
                         _compassIcon = 'assets/images/north_button.png';

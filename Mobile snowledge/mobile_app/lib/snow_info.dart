@@ -7,9 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bottom_bar/bottomBar.dart';
-
-import 'package:provider/provider.dart';
-import '../state/appState.dart';
 import '../translations/translations.dart';
 import 'helper/utility.dart';
 

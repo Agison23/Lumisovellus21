@@ -21,36 +21,35 @@ const bcrypt = require("bcryptjs");
 const users = require("./objectRouters/users");
 const updates = require("./objectRouters/updates");
 const segments = require("./objectRouters/segments");
-//alusta salaukset
+// Init secrets
 const saltRounds = 15;
 const secret = "Lumihiriv0";
-//alusta tarkistus
+// Init validation
 const { body, validationResult } = require("express-validator");
 
-//käyttäjä sisäänkirjautuminen
 router.post("/user/login", function (req, res) {
   database.query(
-    "SELECT * FROM Kayttajat WHERE Sähköposti = ?",
-    [req.body.Sähköposti],
+    "SELECT * FROM users WHERE email = ?",
+    [req.body.email],
     function (err, result) {
       if (err) throw err;
       if (result.length == 1) {
         let user = result[0];
-        bcrypt.compare(req.body.Salasana, user.Salasana, function (err, login) {
+        bcrypt.compare(req.body.password, user.password, function (err, login) {
           if (login) {
             jwt.sign(
-              { id: user.ID, Sahkoposti: user.Sähköposti },
+              { id: user.id, email: user.email },
               secret,
               { algorithm: "HS256" },
               function (err, token) {
                 res.json({
                   token: token,
                   user: {
-                    Etunimi: user.Etunimi,
-                    Sukunimi: user.Sukunimi,
-                    ID: user.ID,
-                    Rooli: user.Rooli,
-                    Sähköposti: user.Sähköposti,
+                    firstName: user.firstName,
+                    surname: user.surname,
+                    id: user.id,
+                    role: user.role,
+                    email: user.email,
                   },
                 });
                 res.status(200);
@@ -69,28 +68,26 @@ router.post("/user/login", function (req, res) {
   );
 });
 
-//segmenttien haku
 router.get("/segments", function (req, res) {
   //get points from database
   database.query(
-    "SELECT * FROM Koordinaatit ORDER BY Segmentti",
+    "SELECT * FROM coordinates ORDER BY segment",
     function (err, points, fields) {
       if (err) throw err;
       //transfere needed data to array
       const coordsForSegments = points.map((item) => {
-        item.Sijainti.lat = item.Sijainti.x;
-        item.Sijainti.lng = item.Sijainti.y;
-        delete item.Sijainti.x;
-        delete item.Sijainti.y;
-        return [item.Segmentti, item.Sijainti];
+        item.location.lat = item.location.x;
+        item.location.lng = item.location.y;
+        delete item.location.x;
+        delete item.location.y;
+        return [item.segment, item.location];
       });
-      //get segments from database
 
-      database.query("SELECT * FROM Segmentit", function (err, result) {
+      database.query("SELECT * FROM segment", function (err, result) {
         let pointsDict = [];
         //create dictionary of arrays
         result.forEach((obj) => {
-          pointsDict[obj.ID] = [];
+          pointsDict[obj.id] = [];
         });
         //Fill points to it
         coordsForSegments.forEach((obj) => {
@@ -98,7 +95,7 @@ router.get("/segments", function (req, res) {
         });
         //add arrays from dict to result as object properties
         result.forEach((obj) => {
-          obj.Points = pointsDict[obj.ID];
+          obj.Points = pointsDict[obj.id];
         });
         res.setHeader("Access-Control-Allow-Origin", "http://localhost:3002");
         res.json(result);
@@ -108,19 +105,18 @@ router.get("/segments", function (req, res) {
   );
 });
 
-//segmentin tuoreimman päivityksen haku
 router.get("/segments/update/:id", function (req, res) {
   database.query(
-    `SELECT Tekija, Segmentti, Aika, Kuvaus, Lumilaatu_ID1, Lumilaatu_ID2,Toissijainen_ID1 ,Toissijainen_ID2, Arvio_ID1, Arvio_ID2, Arvio_ID3
-  FROM Paivitykset
-  WHERE (Segmentti, Aika)
+    `SELECT *
+  FROM updates
+  WHERE (segment, time)
   IN
-  (SELECT Segmentti, MAX(Aika)
-    FROM Paivitykset
-    WHERE Segmentti = ?
-    GROUP BY(Segmentti)
+  (SELECT segment, MAX(time)
+    FROM updates
+    WHERE segment = ?
+    GROUP BY(segment)
    )
-   ORDER BY(Segmentti)`,
+   ORDER BY(segment)`,
     [req.params.id],
     function (err, result, fields) {
       if (err) throw err;
@@ -130,25 +126,24 @@ router.get("/segments/update/:id", function (req, res) {
   );
 });
 
-//päivitysten haku
 router.get("/segments/update", function (req, res) {
   database.query(
-    `SELECT P.Segmentti, P.Aika, P.Kuvaus, P.Lumilaatu_ID1, P.Lumilaatu_ID2, P.Toissijainen_ID1, P.Toissijainen_ID2, 
-      a1.Aika AS A1_Aika, a1.Lumilaatu AS A1_Lumilaatu, a1.Lisätiedot AS A1_Lisätiedot, 
-      a2.Aika AS A2_Aika, a2.Lumilaatu AS A2_Lumilaatu, a2.Lisätiedot AS A2_Lisätiedot, 
-      a3.Aika AS A3_Aika, a3.Lumilaatu AS A3_Lumilaatu, a3.Lisätiedot AS A3_Lisätiedot
-      FROM Paivitykset P
-      LEFT JOIN KayttajaArviot a1 ON P.Arvio_ID1 = a1.ID
-      LEFT JOIN KayttajaArviot a2 ON P.Arvio_ID2 = a2.ID
-      LEFT JOIN KayttajaArviot a3 ON P.Arvio_ID3 = a3.ID
-      WHERE (P.Segmentti, P.Aika)
+    `SELECT P.segment, P.time, P.description, P.snowTypeId1, P.snowTypeId2, P.secondaryId1, P.secondaryId2, 
+      a1.time AS a1Time, a1.snowType AS a1SnowType, a1.details AS a1Details,
+      a2.time AS a2Time, a2.snowType AS a2SnowType, a2.details AS a2Details,
+      a3.time AS a3Time, a3.snowType AS a3SnowType, a3.details AS a3Details
+      FROM updates P
+      LEFT JOIN userReviews a1 ON P.reviewId1 = a1.id
+      LEFT JOIN userReviews a2 ON P.reviewId2 = a2.id
+      LEFT JOIN userReviews a3 ON P.reviewId3 = a3.id
+      WHERE (P.segment, P.time)
       IN
-      (SELECT Segmentti, MAX(Aika)
-        FROM Paivitykset
-        GROUP BY(Segmentti)
+      (SELECT segment, MAX(time)
+        FROM updates
+        GROUP BY(segment)
        )
-       AND P.Aika > NOW() - INTERVAL 3 DAY
-       ORDER BY(P.Segmentti);`,
+       AND P.time > NOW() - INTERVAL 3 DAY
+       ORDER BY(P.segment);`,
     function (err, result, fields) {
       if (err) throw err;
       res.json(result);
@@ -157,19 +152,18 @@ router.get("/segments/update", function (req, res) {
   );
 });
 
-//segmentin uusimman arvion haku
 router.get("/reviews", function (req, res) {
   database.query(
-    `SELECT ID, Aika, Segmentti, Lumilaatu, Lisätiedot, Kommentti
-  FROM KayttajaArviot
-  WHERE (Segmentti, Aika)
+    `SELECT id, time, segment, snowType, details, comment
+  FROM userReviews
+  WHERE (segment, time)
   IN
-  (SELECT Segmentti, MAX(Aika)
-    FROM KayttajaArviot
-    GROUP BY(Segmentti)
+  (SELECT segment, MAX(time)
+    FROM userReviews
+    GROUP BY(segment)
    )
-   AND Aika > NOW() - INTERVAL 3 DAY
-   ORDER BY(Segmentti)`,
+   AND time > NOW() - INTERVAL 3 DAY
+   ORDER BY(segment)`,
     function (err, result, fields) {
       if (err) throw err;
       res.json(result);
@@ -178,15 +172,14 @@ router.get("/reviews", function (req, res) {
   );
 });
 
-//Kaikkien arvioiden haku
 router.get("/allReviews", function (req, res) {
   database.query(
-    `SELECT KayttajaArviot.Aika, KayttajaArviot.Lisätiedot, KayttajaArviot.Lumilaatu, KayttajaArviot.Kommentti, Lumilaadut.Nimi AS Lumi, Segmentit.Nimi AS Segmentti
-    FROM KayttajaArviot
-    LEFT JOIN Lumilaadut ON KayttajaArviot.Lumilaatu=Lumilaadut.ID
-    LEFT JOIN Segmentit ON KayttajaArviot.Segmentti=Segmentit.ID
-    WHERE Aika > NOW() - INTERVAL 1 WEEK
-    ORDER BY (Aika) DESC`,
+    `SELECT userReviews.time, userReviews.details, userReviews.snowType, userReviews.comment, snowTypes.name AS snow, segments.name AS segment
+    FROM userReviews
+    LEFT JOIN snowTypes ON userReviews.snowType=snowTypes.id
+    LEFT JOIN segments ON userReviews.segment=segments.id
+    WHERE time > NOW() - INTERVAL 1 WEEK
+    ORDER BY (time) DESC`,
     function (err, result, fields) {
       if (err) throw err;
       res.json(result);
@@ -195,33 +188,26 @@ router.get("/allReviews", function (req, res) {
   );
 });
 
-//lumilaatujen haku
 router.get("/lumilaadut", function (req, res) {
-  database.query("Select * FROM Lumilaadut", function (err, result, fields) {
+  database.query("Select * FROM snowTypes", function (err, result, fields) {
     if (err) throw err;
     res.json(result);
     res.status(200);
   });
 });
 
-//Arvioinnin lisääminen lumi-informaatioon
 router.post("/review/:id", function (req, res) {
-  if (req.body.Segmentti != req.params.id) {
-    res.json("Segmentti numerot eivät täsmää");
+  if (req.body.segment != req.params.id) {
+    res.json("Segment id did not match any id in the database.");
     res.status(400);
   }
   database.query(
-    "INSERT INTO KayttajaArviot(Aika, Segmentti, Lumilaatu, Lisätiedot, Kommentti) VALUES(NOW(), ?, ?, ?, ?)",
-    [
-      req.body.Segmentti,
-      req.body.Lumilaatu,
-      req.body.Lisätiedot,
-      req.body.Kommentti,
-    ],
+    "INSERT INTO userReviews(time, segment, snowType, details, comment) VALUES(NOW(), ?, ?, ?, ?)",
+    [req.body.segment, req.body.snowType, req.body.details, req.body.comment],
     function (err) {
       if (err) throw err;
 
-      database.query("SELECT LAST_INSERT_ID()", function (err, result) {
+      database.query("SELECT LAST_INSERT_id()", function (err, result) {
         if (err) throw err;
 
         res.json(result);
@@ -233,10 +219,10 @@ router.post("/review/:id", function (req, res) {
 
 router.post("/updateReview/:id", function (req, res) {
   database.query(
-    `UPDATE KayttajaArviot 
-    SET Kommentti = ?
-    WHERE ID = ? `,
-    [req.body.Kommentti, req.params.id],
+    `UPDATE userReviews 
+    SET comment = ?
+    WHERE id = ? `,
+    [req.body.comment, req.params.id],
     function (err, result) {
       if (err) throw err;
       res.json(result);
@@ -245,8 +231,7 @@ router.post("/updateReview/:id", function (req, res) {
   );
 });
 
-//Salasanan tarkistus
-
+//password check
 router.use(function (req, res, next) {
   if (req.headers.authorization) {
     if (req.headers.authorization.startsWith("Bearer ")) {
@@ -257,7 +242,7 @@ router.use(function (req, res, next) {
       jwt.verify(token, secret, function (err, decoded) {
         if (err) res.sendStatus(401);
         else {
-          //jos kirjautuminen onnistuu kirjataan jääneet tiedot muistiin
+          //if login succeeds log the data
           req.decoded = decoded;
           next();
         }
@@ -270,7 +255,6 @@ router.use(function (req, res, next) {
   }
 });
 
-//object routers
 router.use("/user/", users);
 router.use("/segment/", segments);
 router.use("/update/", updates);

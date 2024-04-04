@@ -99,13 +99,11 @@ class HelpOfferedState extends State<HelpOffered> {
     super.initState();
     _stateUpdateTimer = Timer.periodic(
       const Duration(seconds: 2),
-      (Timer t) => {
-        getLatLng().then((usersLatLng) {
-          setState(() {
-            _markers = getMarkers(usersLatLng, _toBeHelpedLatLng);
-          });
-        })
-      },
+      (Timer t) => getLatLng().then((usersLatLng) {
+        setState(() {
+          _markers = getMarkers(usersLatLng, _toBeHelpedLatLng);
+        });
+      }),
     );
   }
 
@@ -246,8 +244,11 @@ class HelpOfferedState extends State<HelpOffered> {
                             // print('ERROR');
                           }
                         },
-                        icon: Image.asset('assets/images/MapTiler.png'),
-                        iconSize: 20,
+                        icon: Container(
+                          child: Image.asset('assets/images/MapTiler.png'),
+                          width: 40,
+                          height: 40,
+                        ),
                       ),
                     ),
                   ],
@@ -367,7 +368,6 @@ class HelpOfferedState extends State<HelpOffered> {
   }
 
   List<Marker> getMarkers(LatLng usersLatLng, LatLng toBeHelpedLatLng) {
-    var appState = Provider.of<AppState>(context, listen: false);
     return [
       getToBeHelpedMarker(usersLatLng),
       Marker(

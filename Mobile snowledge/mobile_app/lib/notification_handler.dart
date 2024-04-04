@@ -36,14 +36,16 @@ class NotificationHandler {
             iOS: initializationSettingsIOS,
             macOS: null);
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
-}
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse:
+            onDidReceiveNotificationResponse); //(context) => selectNotification
+  }
 
-  Future onDidReceiveNotificationResponse(NotificationResponse? response) async {
+  Future onDidReceiveNotificationResponse(
+      NotificationResponse? response) async {
     try {
       //if notification = new help request alert notification
-      if (response?.payload != "") {
+      if (response?.payload != null) {
         await MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
             builder: (context) => HelpOffered(response?.payload, true)));
       }
@@ -98,7 +100,6 @@ class NotificationHandler {
 
   static Future<void> helperCancelledAcceptanceNotification(AppState state,
       {int id = 12345}) async {
-    String? payload = "";
     flutterLocalNotificationsPlugin.show(
       id,
       translations['helperEnded'][state.language],

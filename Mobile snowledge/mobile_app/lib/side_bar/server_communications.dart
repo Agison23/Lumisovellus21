@@ -11,8 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:android_id/android_id.dart';
 
-import 'package:dart_ipify/dart_ipify.dart';
 import '../help_needed_mode.dart';
 import '../help_offered.dart';
 import '../main.dart';
@@ -97,7 +97,7 @@ class ServerComms {
     }
     _timer = Timer.periodic(
       const Duration(seconds: 15),
-      (Timer t) => {_listenServerTimerInsides(5)},
+      (Timer t) => _listenServerTimerInsides(5),
     );
   }
 
@@ -238,10 +238,11 @@ class ServerComms {
   // Get the ID of device to add into the help message
   static _getDeviceID() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    const _androidIdPlugin = AndroidId();
     String? devId = "notSet";
     if (Platform.isAndroid) {
-      var build = await deviceInfoPlugin.androidInfo;
-      devId = build.id;
+      final String? androidId = await _androidIdPlugin.getId();
+      devId = androidId;
     } else if (Platform.isIOS) {
       var data = await deviceInfoPlugin.iosInfo;
       devId = data.identifierForVendor;
@@ -254,15 +255,8 @@ class ServerComms {
     final firestore = FirebaseFirestore.instance;
 
     rDgS.then((RawDatagramSocket udpSocket) async {
-      Map<String, String> _env =
-          await Utility.parseStringToMap(assetsFileName: '.env');
       udpSocket.readEventsEnabled = true;
-      String address;
-      if (_env['APP_ENVIRONMENT'] == 'development') {
-        address = await initAddressLocal();
-      } else {
-        address = await initAddress();
-      }
+
       String result;
       udpSocket.listen((event) async {
         print("phone listening: ${event}");
@@ -370,7 +364,6 @@ class ServerComms {
               //LOW_BATTERY_HELPER:phone_num
               NotificationHandler.helpModeBatteryLowNotification(
                   appState, 'help_requester');
-              String helper_phone_num = resultParts[1];
               String helperPhoneNum = resultParts[1];
               appState.setChatRoomUsersBattery(helperPhoneNum, 'low');
               break;

@@ -1,4 +1,4 @@
-INSERT INTO Segmentit (Nimi,Maasto,Lumivyöryvaara,On_Alasegmentti)
+INSERT INTO segments (name,terrain,avalancheDanger,isLowerSegment)
 VALUES('Metsä', 'Metsä', FALSE, null),
       ('Laukukero Pohjoisseinä', 'Tuulikangas', FALSE, null),
       ('Lehmäkero länsiseinä ja laakso', 'Tuulikangas ja varvikko', FALSE, null),

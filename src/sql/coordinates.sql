@@ -1,4 +1,4 @@
-INSERT INTO Koordinaatit(Segmentti, Jarjestys, Sijainti)
+INSERT INTO coordinates(segment, order, location)
 VALUES(1, 0, ST_GeomFromText('POINT(68.2861 23.0780)')),
       (1, 1, ST_GeomFromText('POINT(67.7465 23.1280)')),
       (1, 2, ST_GeomFromText('POINT(67.7352 25.1663)')),

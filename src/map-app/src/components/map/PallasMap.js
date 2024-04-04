@@ -116,9 +116,9 @@ function PallasMap(props) {
     let normalSegments = [];
     let subSegments = [];
     props.segments.forEach((segment) => {
-      if (segment.Nimi === "Metsä") {
+      if (segment.name === "Metsä") {
         woodsSegments.push(segment);
-      } else if (segment.On_Alasegmentti != null) {
+      } else if (segment.isLowerSegment != null) {
         subSegments.push(segment);
       } else {
         normalSegments.push(segment);
@@ -133,14 +133,14 @@ function PallasMap(props) {
     // For forest segment add the union of all other segments as a hole
     function getCoordinates(id) {
       let coordinates = [];
-      let segment = segments.find((item) => item.ID === id);
+      let segment = segments.find((item) => item.id === id);
       coordinates.push(
         segment.Points.map((point) => {
           return [point.lng, point.lat];
         })
       );
 
-      if (segment.Nimi === "Metsä") {
+      if (segment.name === "Metsä") {
         let index = segments.indexOf(segment);
         let newSegments = [...segments];
         newSegments.splice(index, 1);
@@ -177,9 +177,9 @@ function PallasMap(props) {
         }
         coordinates.push(unifiedSegment.geometry.coordinates[0]);
       } else {
-        if (segment.On_Alasegmentti === null) {
+        if (segment.isLowerSegment === null) {
           segments.forEach((item) => {
-            if (item.On_Alasegmentti === segment.Nimi) {
+            if (item.isLowerSegment === segment.name) {
               coordinates.push(
                 item.Points.map((point) => {
                   return [point.lng, point.lat];
@@ -201,56 +201,56 @@ function PallasMap(props) {
           type: "Feature",
           geometry: {
             type: "Polygon",
-            coordinates: getCoordinates(item.ID),
+            coordinates: getCoordinates(item.id),
           },
           properties: {
-            name: item.Nimi,
-            subsegment: item.On_Alasegmentti === null ? false : true,
-            segmentId: item.ID,
+            name: item.name,
+            subsegment: item.isLowerSegment === null ? false : true,
+            segmentId: item.id,
             snowId1:
               item.update !== null
-                ? item.update.Lumi1 !== undefined
-                  ? item.update.Lumi1.ID
+                ? item.update.snow1 !== undefined
+                  ? item.update.snow1.id
                   : 0
                 : 0,
             snowId2:
               item.update !== null
-                ? item.update.Lumi2 !== undefined
-                  ? item.update.Lumi2.ID
+                ? item.update.snow2 !== undefined
+                  ? item.update.snow2.id
                   : 0
                 : 0,
             snowId3:
               item.update !== null
-                ? item.update.Lumi3 !== undefined
-                  ? item.update.Lumi3.ID
+                ? item.update.snow3 !== undefined
+                  ? item.update.snow3.id
                   : 0
                 : 0,
             snowId4:
               item.update !== null
-                ? item.update.Lumi4 !== undefined
-                  ? item.update.Lumi4.ID
+                ? item.update.snow4 !== undefined
+                  ? item.update.snow4.id
                   : 0
                 : 0,
             snowId5:
               item.update !== null
-                ? item.update.Lumi5 !== undefined
-                  ? item.update.Lumi5.ID
+                ? item.update.snow5 !== undefined
+                  ? item.update.snow5.id
                   : 0
                 : 0,
             snowId6:
               item.update !== null
-                ? item.update.Lumi6 !== undefined
-                  ? item.update.Lumi6.ID
+                ? item.update.snow6 !== undefined
+                  ? item.update.snow6.id
                   : 0
                 : 0,
             snowId7:
               item.update !== null
-                ? item.update.Lumi7 !== undefined
-                  ? item.update.Lumi7.ID
+                ? item.update.snow7 !== undefined
+                  ? item.update.snow7.id
                   : 0
                 : 0,
           },
-          id: item.ID,
+          id: item.id,
         };
       }),
     };
@@ -494,7 +494,7 @@ function PallasMap(props) {
           // When a segment is clicked send it to NewMap.js to update chosen segment and filter segment-highlights layer so that selected segment is shown
           map.on("click", "segments-fills", function (e) {
             props.chosenSegment(
-              segmentArray.find((item) => item.ID === e.features[0].id)
+              segmentArray.find((item) => item.id === e.features[0].id)
             );
             console.log(e.features[0].properties.snowType);
             map.setFilter("segments-selected", [

@@ -26,9 +26,15 @@ void main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   static final navigatorKey = GlobalKey<NavigatorState>();
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   bool isInitialized = false;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -50,7 +56,7 @@ class MyApp extends StatelessWidget {
         }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          navigatorKey: navigatorKey,
+          navigatorKey: MyApp.navigatorKey,
           title: 'Snowledge',
           home: (fName == null)
               ? const OnBoardingPage()
@@ -67,7 +73,8 @@ Future<void> fetchUserRole(AppState appState) async {
   await ServerComms.messageToServer('GET_ROLE', role: appState.userRole);
   if (appState.userRole != premiumRole && appState.userRole != normalRole) {
     await ServerComms.messageToServer('UPDATE_ROLE',
-        role: appState.appEnv == 'development' ? premiumRole : normalRole);
+        // TODO: Change the latter to normalRole when the app is ready for production with premium role
+        role: appState.appEnv == 'development' ? premiumRole : premiumRole);
   }
 
   // navigate to Snowmap if user is normal
