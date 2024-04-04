@@ -73,10 +73,10 @@ def register_user():
             print("käyttäjänimeä ei ole varattu")
             response = jsonify({"message": "OK: Authorized, User registered"}), 200
             query = f'INSERT INTO rescue (username, password, is_admin)\
-                        VALUES ("{username}", "{password}", "{is_admin}");'
+                        VALUES (?, ?, ?);'
 
             cur = connection.cursor()
-            cur.execute(query)
+            cur.execute(query, (username, password, is_admin))
             connection.commit()
     else:
         response = jsonify({"message": "ERROR: Unauthorized, not registered"}), 401
@@ -115,6 +115,9 @@ def modify_user():
     # check if username is already reserved for another user
     is_username_reserved = db.check_if_username_exists(connection, username)
 
+    query = "UPDATE rescue SET "
+    values = []
+    
     if is_username_changed == None or username == None:
         print("KÄYTTÄJÄNIMI HALUTAAN VAIHTAA")
         if username == None:
@@ -127,13 +130,17 @@ def modify_user():
             print("Käyttäjänimi varattuna")
             return response
 
-        query = f"UPDATE rescue SET "
-        if username != None:
-            query += f'username = "{username}",'
-        if password != None:
-            query += f'password = "{password}",'
-        if is_admin != None:
-            query += f'is_admin = "{is_admin}",'
+         if username is not None:
+            query += 'username = ?,'
+            values.append(username)
+
+        if password is not None:
+            query += 'password = ?,'
+            values.append(password)
+            
+        if is_admin is not None:
+            query += 'is_admin = ?,'
+            values.append(is_admin)
 
     else:
         print("KÄYTTÄJÄNIMEÄ EI HALUTA VAIHTAA")
@@ -144,21 +151,25 @@ def modify_user():
             response = jsonify({"message": "ERROR: 401"}), 401
             return response
 
-        query = f"UPDATE rescue SET "
-        if username != None:
-            query += f'username = "{username}",'
-        if password != None:
-            query += f'password = "{password}",'
-        if is_admin != None:
-            query += f'is_admin = "{is_admin}",'
+        if username is not None:
+            query += 'username = ?,'
+            values.append(username)
+        if password is not None:
+            query += 'password = ?,'
+            values.append(password)
+        if is_ admin is not None:
+            query += 'is_admin = ?,'
+            values.append(is_admin)
 
     # viimenen pilkku pois
 
     query = query[:-1]
-    query += f"WHERE user_id = {user_id}"
-    print(query)
+    query += f"WHERE user_id = ?"
+    values.append(user_id)
+
+    #print(query)
     cur = connection.cursor()
-    cur.execute(query)
+    cur.execute(query, tuple(values))
     connection.commit()
 
     return jsonify({"message": "OK"}), 200
@@ -183,9 +194,9 @@ def delete_user():
         return 401  # "user_id parameter not provided"
 
     print(user_id)
-    query = f"DELETE FROM rescue WHERE user_id = {user_id};"
+    query = f"DELETE FROM rescue WHERE user_id = ?;"
     cur = connection.cursor()
-    cur.execute(query)
+    cur.execute(query,(user_id))
     connection.commit()
 
     return jsonify({"message": "OK"}), 200
