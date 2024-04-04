@@ -111,33 +111,33 @@ function App() {
       // Mikäli muutetaan, muutettava myös siellä.
       // const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
       const snowcolors = snowdata.map((item) => {
-        return { color: item.Vari, name: item.Nimi, ID: item.ID };
+        return { colour: item.colour, name: item.name, ID: item.id };
       });
       // Yhdistetään olemassa olevat värit ja "ei tietoa" (viimeiseksi)
       setSegmentColors(snowcolors);
 
       await updateData.forEach((update) => {
         snowdata.forEach((snow) => {
-          if (snow.ID === update.Lumilaatu_ID1) {
-            update.Lumi1 = snow;
+          if (snow.ID === update.snowTypeId1) {
+            update.snow1 = snow;
           }
-          if (snow.ID === update.Lumilaatu_ID2) {
-            update.Lumi2 = snow;
+          if (snow.ID === update.snowTypeId2) {
+            update.snow2 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID1) {
-            update.Lumi3 = snow;
+          if (snow.ID === update.secondaryId1) {
+            update.snow3 = snow;
           }
-          if (snow.ID === update.Toissijainen_ID2) {
-            update.Lumi4 = snow;
+          if (snow.ID === update.secondaryId2) {
+            update.snow4 = snow;
           }
-          if (snow.ID === update.A1_Lumilaatu) {
-            update.Lumi5 = snow;
+          if (snow.ID === update.a1SnowType) {
+            update.snow5 = snow;
           }
-          if (snow.ID === update.A2_Lumilaatu) {
-            update.Lumi6 = snow;
+          if (snow.ID === update.a2SnowType) {
+            update.snow6 = snow;
           }
-          if (snow.ID === update.A3_Lumilaatu) {
-            update.Lumi7 = snow;
+          if (snow.ID === update.a3SnowType) {
+            update.snow7 = snow;
           }
         });
       });
@@ -146,18 +146,18 @@ function App() {
       data.forEach((segment) => {
         segment.update = null;
         updateData.forEach((update) => {
-          if (update.Segmentti === segment.ID) {
+          if (update.segment === segment.id) {
             segment.update = update;
           }
         });
-        if (segment.On_Alasegmentti != null) {
-          data.forEach((mahd_yla_segmentti) => {
-            if (mahd_yla_segmentti.ID === segment.On_Alasegmentti) {
-              segment.On_Alasegmentti = mahd_yla_segmentti.Nimi;
+        if (segment.isLowerSegment != null) {
+          data.forEach((possibleUpperSegment) => {
+            if (possibleUpperSegment.id === segment.isLowerSegment) {
+              segment.isLowerSegment = possibleUpperSegment.name;
             }
           });
         }
-        if (segment.Nimi === "Metsä") {
+        if (segment.name === "Metsä") {
           setWoodsSegment(segment);
         }
       });
