@@ -244,7 +244,7 @@ function SnowRecordView({
   const description =
     segmentdata.update === null || segmentdata.update === undefined
       ? ""
-      : segmentdata.update.Kuvaus;
+      : segmentdata.update.description;
 
   const isEmpty =
     segmentdata.update === null || segmentdata.update === undefined
@@ -263,11 +263,11 @@ function SnowRecordView({
       let currentTime = new Date();
 
       if (
-        segmentdata.update.Aika !== null &&
-        segmentdata.update.Aika !== undefined
+        segmentdata.update.time !== null &&
+        segmentdata.update.time !== undefined
       ) {
         // Datasta saadaan viimeisin päivitysaika
-        let latestUpdateTime = new Date(segmentdata.update.Aika);
+        let latestUpdateTime = new Date(segmentdata.update.time);
         let guideUpdateTime = `${
           translations["lastUpdated"][language]
         } ${getRelativeTimestamp(currentTime, latestUpdateTime, language)}`;
@@ -278,23 +278,23 @@ function SnowRecordView({
       let userTime2 = "";
       let userTime3 = "";
 
-      if (segmentdata.update.A1_Aika !== null) {
+      if (segmentdata.update.a1Time !== null) {
         // Datasta saadaan viimeisin päivitysaika
-        let latestUpdateTime = new Date(segmentdata.update.A1_Aika);
+        let latestUpdateTime = new Date(segmentdata.update.a1Time);
         userTime1 = `${
           translations["lastUpdated"][language]
         } ${getRelativeTimestamp(currentTime, latestUpdateTime, language)}`;
       }
-      if (segmentdata.update.A2_Aika !== null) {
+      if (segmentdata.update.a2Time !== null) {
         // Datasta saadaan viimeisin päivitysaika
-        let latestUpdateTime = new Date(segmentdata.update.A2_Aika);
+        let latestUpdateTime = new Date(segmentdata.update.a2Time);
         userTime2 = `${
           translations["lastUpdated"][language]
         } ${getRelativeTimestamp(currentTime, latestUpdateTime, language)}`;
       }
-      if (segmentdata.update.A3_Aika !== null) {
+      if (segmentdata.update.a3Time !== null) {
         // Datasta saadaan viimeisin päivitysaika
-        let latestUpdateTime = new Date(segmentdata.update.A3_Aika);
+        let latestUpdateTime = new Date(segmentdata.update.a3Time);
         userTime3 = `${
           translations["lastUpdated"][language]
         } ${getRelativeTimestamp(currentTime, latestUpdateTime, language)}`;
@@ -309,19 +309,19 @@ function SnowRecordView({
     if (segmentdata.update !== null && segmentdata.update !== undefined) {
       switch (index) {
         case 1:
-          if (segmentdata.update.Lumi1 !== undefined) return true;
+          if (segmentdata.update.snow1 !== undefined) return true;
           break;
         case 2:
-          if (segmentdata.update.Lumi2 !== undefined) return true;
+          if (segmentdata.update.snow2 !== undefined) return true;
           break;
         case 3:
-          if (segmentdata.update.Lumi3 !== undefined) return true;
+          if (segmentdata.update.snow3 !== undefined) return true;
           break;
         case 4:
-          if (segmentdata.update.Lumi4 !== undefined) return true;
+          if (segmentdata.update.snow4 !== undefined) return true;
           break;
         case 5:
-          if (segmentdata.update.Lumi5 !== undefined) return true;
+          if (segmentdata.update.snow5 !== undefined) return true;
           break;
         default:
           break;
@@ -362,7 +362,7 @@ function SnowRecordView({
 
   // Alustetaan komponentit, mikäli valitulla segmentillä on lumivyöryvaara
   if (segmentdata !== null) {
-    if (segmentdata.Lumivyöryvaara) {
+    if (segmentdata.avalancheDanger) {
       // Lumivyöryvaaran merkin tiedostonimi on !.png
       dangerimage = (
         <Grid
@@ -611,7 +611,7 @@ function SnowRecordView({
             align="center"
             component="p"
           >
-            {segmentdata === null ? "Ei nimitietoa" : segmentdata.Nimi}
+            {segmentdata === null ? "Ei nimitietoa" : segmentdata.name}
           </Typography>
         </Grid>
       </Grid>
@@ -627,7 +627,7 @@ function SnowRecordView({
         </Grid>
 
         {/* Forest segment view */}
-        {segmentdata.Nimi === "Metsä" && (
+        {segmentdata.name === "Metsä" && (
           <Grid item xs={12} sm={12} container className={classes.addPadding}>
             <Grid item xs={12} sm={5} container className={classes.snowInfo}>
               <Grid item xs={4} sm={3}>
@@ -667,13 +667,13 @@ function SnowRecordView({
                 {isEnabled(1) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.Lumilaatu_ID1}
+                      Lumilaatu={segmentdata.update.snowTypeId1}
                       Nimi={
                         translations[
-                          getTranslationKey(segmentdata.update.Lumi1.Nimi)
+                          getTranslationKey(segmentdata.update.snow1.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.Lumi1.Hiihdettavyys}
+                      Hiihdettavyys={segmentdata.update.snow1.skiability}
                       Main={true}
                       Guide={true}
                     />
@@ -683,13 +683,13 @@ function SnowRecordView({
                 {isEnabled(2) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.Lumilaatu_ID2}
+                      Lumilaatu={segmentdata.update.snowTypeId2}
                       Nimi={
                         translations[
-                          getTranslationKey(segmentdata.update.Lumi2.Nimi)
+                          getTranslationKey(segmentdata.update.snow2.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.Lumi2.Hiihdettavyys}
+                      Hiihdettavyys={segmentdata.update.snow2.skiability}
                       Main={true}
                       Guide={true}
                     />
@@ -699,13 +699,13 @@ function SnowRecordView({
                 {isEnabled(3) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.Toissijainen_ID1}
+                      Lumilaatu={segmentdata.update.secondaryId1}
                       Nimi={
                         translations[
-                          getTranslationKey(segmentdata.update.Lumi3.Nimi)
+                          getTranslationKey(segmentdata.update.snow3.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.Lumi3.Hiihdettavyys}
+                      Hiihdettavyys={segmentdata.update.snow3.skiability}
                       Main={false}
                       Guide={true}
                     />
@@ -714,13 +714,13 @@ function SnowRecordView({
                 {isEnabled(4) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.Toissijainen_ID2}
+                      Lumilaatu={segmentdata.update.secondaryId2}
                       Nimi={
                         translations[
-                          getTranslationKey(segmentdata.update.Lumi4.Nimi)
+                          getTranslationKey(segmentdata.update.snow4.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.Lumi4.Hiihdettavyys}
+                      Hiihdettavyys={segmentdata.update.snow4.skiability}
                       Main={false}
                       Guide={true}
                     />
@@ -735,20 +735,20 @@ function SnowRecordView({
                 </Typography>
                 <Grid item xs={12} sm={6}>
                   <DisplaySnowType
-                    Lumilaatu={segmentdata.update.Lumi5.ID}
+                    Lumilaatu={segmentdata.update.snow5.id}
                     Nimi={
                       translations[
-                        getTranslationKey(segmentdata.update.Lumi5.Nimi)
+                        getTranslationKey(segmentdata.update.snow5.name)
                       ][language]
                     }
-                    Hiihdettavyys={segmentdata.update.Lumi5.Hiihdettavyys}
+                    Hiihdettavyys={segmentdata.update.snow5.skiability}
                     Main={true}
                     Guide={false}
                   />
                 </Grid>
 
                 <StonesAndBranchesWithHeader
-                  option={segmentdata.update.A1_Lisätiedot}
+                  option={segmentdata.update.a1Details}
                 />
 
                 <TimeStamp fromGuide={false} tag={true} index={0} />
@@ -832,16 +832,16 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.Lumi5.ID}
+                                Lumilaatu={segmentdata.update.snow5.id}
                                 Nimi={
                                   translations[
                                     getTranslationKey(
-                                      segmentdata.update.Lumi5.Nimi
+                                      segmentdata.update.snow5.name
                                     )
                                   ][language]
                                 }
                                 Hiihdettavyys={
-                                  segmentdata.update.Lumi5.Hiihdettavyys
+                                  segmentdata.update.snow5.skiability
                                 }
                                 Main={true}
                                 Guide={false}
@@ -856,14 +856,14 @@ function SnowRecordView({
                               style={{ alignContent: "center" }}
                             >
                               <StonesAndBranches
-                                option={segmentdata.update.A1_Lisätiedot}
+                                option={segmentdata.update.a1Details}
                               />
                             </Grid>
                             <TimeStamp fromGuide={false} index={0} />
                           </Grid>
                         )}
 
-                        {segmentdata.update.Lumi6 !== undefined && (
+                        {segmentdata.update.snow6 !== undefined && (
                           <Grid
                             item
                             xs={12}
@@ -873,16 +873,16 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.Lumi6.ID}
+                                Lumilaatu={segmentdata.update.snow6.id}
                                 Nimi={
                                   translations[
                                     getTranslationKey(
-                                      segmentdata.update.Lumi6.Nimi
+                                      segmentdata.update.snow6.name
                                     )
                                   ][language]
                                 }
                                 Hiihdettavyys={
-                                  segmentdata.update.Lumi6.Hiihdettavyys
+                                  segmentdata.update.snow6.skiability
                                 }
                                 Main={true}
                                 Guide={false}
@@ -897,7 +897,7 @@ function SnowRecordView({
                               style={{ alignContent: "center" }}
                             >
                               <StonesAndBranches
-                                option={segmentdata.update.A2_Lisätiedot}
+                                option={segmentdata.update.a2Details}
                               />
                             </Grid>
 
@@ -905,7 +905,7 @@ function SnowRecordView({
                           </Grid>
                         )}
 
-                        {segmentdata.update.Lumi7 !== undefined && (
+                        {segmentdata.update.snow7 !== undefined && (
                           <Grid
                             item
                             xs={12}
@@ -915,16 +915,16 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.Lumi7.ID}
+                                Lumilaatu={segmentdata.update.snow7.id}
                                 Nimi={
                                   translations[
                                     getTranslationKey(
-                                      segmentdata.update.Lumi7.Nimi
+                                      segmentdata.update.snow7.name
                                     )
                                   ][language]
                                 }
                                 Hiihdettavyys={
-                                  segmentdata.update.Lumi7.Hiihdettavyys
+                                  segmentdata.update.snow7.skiability
                                 }
                                 Main={true}
                                 Guide={false}
@@ -939,7 +939,7 @@ function SnowRecordView({
                               style={{ alignContent: "center" }}
                             >
                               <StonesAndBranches
-                                option={segmentdata.update.A3_Lisätiedot}
+                                option={segmentdata.update.a3Details}
                               />
                             </Grid>
                             <TimeStamp fromGuide={false} index={2} />
