@@ -27,7 +27,7 @@ const { body, validationResult } = require("express-validator");
 
 //kaikkien käyttäjien haku
 router.get("/all", function (req, res) {
-  database.query("SELECT * FROM Kayttajat", function (err, result) {
+  database.query("SELECT * FROM users", function (err, result) {
     if (err) throw err;
     res.json(result);
     res.status(200);
@@ -37,7 +37,7 @@ router.get("/all", function (req, res) {
 //yhden käyttäjän haku
 router.get("/", function (req, res) {
   database.query(
-    "SELECT * FROM Kayttajat WHERE ID = ?",
+    "SELECT * FROM users WHERE id = ?",
     [req.decoded.id],
     function (err, result) {
       if (err) throw err;
@@ -52,15 +52,15 @@ router.post(
   "/",
   [
     // tarkista sähköposti
-    body("Sähköposti").isEmail().withMessage("Ei toimiva shäköposti"),
+    body("email").isEmail().withMessage("Not a working email"),
 
-    body("Etunimi").exists().withMessage("Puuttuva etunimi"),
-    body("Sukunimi").exists().withMessage("Puuttuva sukunimi"),
+    body("firstName").exists().withMessage("Missing first name"),
+    body("surname").exists().withMessage("Missing surname"),
 
     // tarkista salasanan pituus
-    body("Salasana")
+    body("password")
       .isLength({ min: 7 })
-      .withMessage("Salasanan oltava vähintään 7 merkkiä"),
+      .withMessage("Password has to be atleast 7 characters long"),
   ],
   function (req, res) {
     const errors = validationResult(req);
@@ -73,13 +73,13 @@ router.post(
         if (err) throw err;
         bcrypt.hash(req.body.Salasana, saltRounds, function (err, hash) {
           database.query(
-            "INSERT INTO Kayttajat(Etunimi, Sukunimi, Sähköposti, Salasana, Rooli) VALUES(?, ?, ?, ?, ?)",
+            "INSERT INTO users(firstName, surname, email, password, role) VALUES(?, ?, ?, ?, ?)",
             [
-              req.body.Etunimi,
-              req.body.Sukunimi,
-              req.body.Sähköposti,
+              req.body.firstName,
+              req.body.surname,
+              req.body.email,
               hash,
-              req.body.Rooli ? req.body.Rooli : "operator",
+              req.body.role ? req.body.role : "operator",
             ],
             function (err) {
               if (err) {
@@ -105,21 +105,21 @@ router.post(
 );
 
 router.put("/:id", function (req, res) {
-  if (req.body.Salasana) {
-    bcrypt.hash(req.body.Salasana, saltRounds, function (err, hash) {
+  if (req.body.password) {
+    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
       database.query(
-        `UPDATE Kayttajat
+        `UPDATE users
        SET 
-       Etunimi=?,
-       Sukunimi=?,
-       Sähköposti=?,
-       Salasana=?
-       WHERE ID = ?
+       firstName=?,
+       surname=?,
+       email=?,
+       password=?
+       WHERE id = ?
       `,
         [
-          req.body.Etunimi,
-          req.body.Sukunimi,
-          req.body.Sähköposti,
+          req.body.firstName,
+          req.body.surname,
+          req.body.email,
           hash,
           req.params.id,
         ],
@@ -132,14 +132,14 @@ router.put("/:id", function (req, res) {
     });
   } else {
     database.query(
-      `UPDATE Kayttajat
+      `UPDATE users
       SET 
-      Etunimi=?,
-      Sukunimi=?,
-      Sähköposti=?
-      WHERE ID = ?
+      firstName=?,
+      surname=?,
+      email=?
+      WHERE id = ?
     `,
-      [req.body.Etunimi, req.body.Sukunimi, req.body.Sähköposti, req.params.id],
+      [req.body.firstName, req.body.surname, req.body.email, req.params.id],
       function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -151,23 +151,23 @@ router.put("/:id", function (req, res) {
 
 router.delete("/:id", function (req, res) {
   database.query(
-    `SELECT * FROM Kayttajat
-   WHERE ID = ?
+    `SELECT * FROM users
+   WHERE id = ?
   `,
     [req.params.id],
     function (err, result) {
       if (err) throw err;
       console.log(result.length);
       if (result.length < 1) {
-        res.end("Poistettavaa ei löytynyt");
+        res.end("Nothing to delete found");
         res.status(404);
       } else if (result[0].Rooli == "admin") {
-        res.end("adminia ei voi poistaa");
+        res.end("can't delete admin");
         res.status(401);
       } else {
         database.query(
-          `DELETE FROM Kayttajat
-         WHERE ID = ?
+          `DELETE FROM users
+         WHERE id = ?
         `,
           [req.params.id],
           function (err, result) {
