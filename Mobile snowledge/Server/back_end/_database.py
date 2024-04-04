@@ -274,63 +274,7 @@ def create_table(connection, create_table_sql):
 
 def init_tables(connection):
     
-    sql_table_users = """ CREATE TABLE IF NOT EXISTS users (
-                            dev_id text PRIMARY KEY,
-                            first_name text NOT NULL,
-                            last_name text NOT NULL,
-                            ip_address text NOT NULL,
-                            phone_number text,
-                            low_battery INTEGER DEFAULT '0',
-                            role TEXT,
-                            FOREIGN KEY (role) REFERENCES Role(name)
-                         ); """
-
-    sql_table_data = """CREATE TABLE IF NOT EXISTS data (
-                            dev_id text,
-                            timestamp integer,
-                            gpscoord text,
-                            PRIMARY KEY(dev_id, timestamp)
-                        );"""
-
-    sql_table_help = """ CREATE TABLE IF NOT EXISTS help (
-                            dev_id text PRIMARY KEY,
-                            timestamp integer,
-                            gpscoord text,
-                            help_type text,
-                            room_id text
-                        );"""
-
-    sql_table_accounts = """CREATE TABLE IF NOT EXISTS accounts (
-                            username text PRIMARY KEY,
-                            password text NOT NULL,
-                            role text NOT NULL
-                            );"""
-
-    sql_table_requests = """CREATE TABLE IF NOT EXISTS requests (
-                            help_giver text PRIMARY KEY,
-                            help_requester text NOT NULL,
-                            state INTEGER NOT NULL
-                            );"""
-
-    sql_table_rescue = """CREATE TABLE IF NOT EXISTS rescue (
-                            user_id INTEGER PRIMARY KEY,
-                            username text NOT NULL,
-                            password text NOT NULL,
-                            is_admin INTEGER NOT NULL
-                            );"""
     
-    sql_table_role = """CREATE TABLE IF NOT EXISTS role (
-                            name TEXT PRIMARY KEY,
-                            permissions TEXT NOT NULL
-                            );"""
-    
-    create_table(connection, sql_table_role)
-    create_table(connection, sql_table_users)
-    create_table(connection, sql_table_data)
-    create_table(connection, sql_table_help)
-    create_table(connection, sql_table_accounts)
-    create_table(connection, sql_table_requests)
-    create_table(connection, sql_table_rescue)
     sql = "DELETE FROM accounts WHERE role = 'Admin'"
     sql1 = "DELETE FROM rescue WHERE password = ?;"
     sql2 = "INSERT OR IGNORE INTO accounts(username,password,role) VALUES(?,?,?);"
@@ -342,6 +286,11 @@ def init_tables(connection):
     password = PASSWORD
     role = "Admin"
     cur = connection.cursor()
+
+    with open('./sql/rescue.sql', 'r') as f:
+        sql_commands = f.read()
+        cur.executescript(sql_commands)
+        
     cur.execute(sql)
     cur.execute(sql1, (password,))
     cur.execute(sql2, (username, password, role))
