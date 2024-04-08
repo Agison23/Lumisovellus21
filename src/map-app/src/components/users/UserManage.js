@@ -74,7 +74,7 @@ function UserManage(props) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
+  const [surname, setSurname] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -119,14 +119,14 @@ function UserManage(props) {
 
     // Alkuperäisten arvojen alustaminen muutosten perumista varten
     if (!editOpen) {
-      var initialName = item.Etunimi;
-      var initialLastname = item.Sukunimi;
-      var initialEmail = item.Sähköposti;
+      var initialName = item.firstName;
+      var initialSurname = item.surname;
+      var initialEmail = item.email;
 
       setInitials({
-        Etunimi: initialName,
-        Sukunimi: initialLastname,
-        Sähköposti: initialEmail,
+        firstName: initialName,
+        surname: initialSurname,
+        email: initialEmail,
       });
     }
     setAnchorElMenu(event.currentTarget);
@@ -142,7 +142,7 @@ function UserManage(props) {
   // Käyttäjän poiston api-kutsu
   const handleDelete = () => {
     const fetchDelete = async () => {
-      await fetch("api/user/" + selected.ID, {
+      await fetch("api/user/" + selected.id, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -177,10 +177,10 @@ function UserManage(props) {
     if (password === confirm) {
       // Tiedot  tulevat hookeista
       const data = {
-        Etunimi: firstName === null ? initials.Etunimi : firstName,
-        Sukunimi: lastName === null ? initials.Sukunimi : lastName,
-        Sähköposti: email === null ? initials.Sähköposti : email,
-        ID: selected.ID,
+        firstName: firstName === null ? initials.firstName : firstName,
+        surname: surname === null ? initials.surname : surname,
+        email: email === null ? initials.email : email,
+        id: selected.id,
       };
       if (password !== "") {
         data.Salasana = password;
@@ -188,7 +188,7 @@ function UserManage(props) {
 
       // Käyttäjän muokkaamisen api-kutsu
       const fetchEditUser = async () => {
-        const response = await fetch("api/user/" + selected.ID, {
+        const response = await fetch("api/user/" + selected.id, {
           method: "PUT",
           headers: {
             Accept: "application/json",
@@ -220,7 +220,7 @@ function UserManage(props) {
   // Kun muokkausdialogi suljetaan, nollataan valinnat ja suljetaan dialogi
   const closeEdit = () => {
     setFirstName(null);
-    setLastName(null);
+    setSurname(null);
     setEmail(null);
     setInitials(null);
     setAnchorElMenu(null);
@@ -234,7 +234,7 @@ function UserManage(props) {
   // etunimen päivitys
   const updateFirstName = (event) => {
     if (event.target.value === "") {
-      setFirstName(initials.Etunimi);
+      setFirstName(initials.firstName);
     } else {
       setFirstName(event.target.value);
     }
@@ -243,16 +243,16 @@ function UserManage(props) {
   // sukunimen päivitys
   const updateLastName = (event) => {
     if (event.target.value === "") {
-      setLastName(initials.Sukunimi);
+      setSurname(initials.surname);
     } else {
-      setLastName(event.target.value);
+      setSurname(event.target.value);
     }
   };
 
   // sähköpostin päivittäminen
   const updateEmail = (event) => {
     if (event.target.value === "") {
-      setEmail(initials.Email);
+      setEmail(initials.email);
     } else {
       setEmail(event.target.value);
     }
@@ -300,11 +300,11 @@ function UserManage(props) {
                   <Grid key={index} item xs={12} sm={4}>
                     <Card className={classes.userCard}>
                       <CardHeader
-                        title={item.Etunimi + " " + item.Sukunimi}
-                        subheader={item.Sähköposti}
+                        title={item.firstName + " " + item.surname}
+                        subheader={item.email}
                         action={
                           <IconButton
-                            id={item.ID}
+                            id={item.id}
                             aria-label="close"
                             onClick={(event) => handleMenu(event, item)}
                           >
@@ -344,8 +344,8 @@ function UserManage(props) {
                           align="left"
                           component="p"
                         >
-                          {item.Rooli !== null
-                            ? translations["role"][language] + item.Rooli
+                          {item.role !== null
+                            ? translations["role"][language] + item.role
                             : translations["noDefinedRole"][language]}
                         </Typography>
                       </CardContent>
@@ -400,7 +400,7 @@ function UserManage(props) {
               id="firstname"
               type="text"
               onChange={updateFirstName}
-              placeholder={selected !== null ? selected.Etunimi : ""}
+              placeholder={selected !== null ? selected.firstName : ""}
             />
           </FormControl>
           <FormControl>
@@ -411,7 +411,7 @@ function UserManage(props) {
               id="lastname"
               type="text"
               onChange={updateLastName}
-              placeholder={selected !== null ? selected.Sukunimi : ""}
+              placeholder={selected !== null ? selected.surname : ""}
             />
           </FormControl>
           <FormControl>
@@ -422,7 +422,7 @@ function UserManage(props) {
               id="email"
               type="text"
               onChange={updateEmail}
-              placeholder={selected !== null ? selected.Sähköposti : ""}
+              placeholder={selected !== null ? selected.email : ""}
             />
           </FormControl>
           <FormControl error={mismatch}>
