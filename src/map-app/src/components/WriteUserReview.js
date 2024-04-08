@@ -165,7 +165,7 @@ function WriteUserReview(props) {
   const [stones, setStones] = React.useState(false);
   const [branches, setBranches] = React.useState(false);
   const [text, setText] = React.useState("");
-  const [updateID, setUpdateID] = React.useState(null);
+  const [updateId, setUpdateId] = React.useState(null);
   const { language } = useContext(GlobalContext);
   //const [onlyFeedback, setOnlyFeedback] = React.useState(false);
 
@@ -187,31 +187,31 @@ function WriteUserReview(props) {
 
   // When a user reviews snow data, POST-method call is sent to api/review.
   // New snow review is added to the database.
-  // The call returns ID number to the new row in the database, so that feedback text can be
+  // The call returns id number to the new row in the database, so that feedback text can be
   // later added to it.
   const postSnowType = async () => {
-    let snowID = null;
+    let snowId = null;
     if (selectedType !== null) {
-      snowID = selectedType.ID;
+      snowId = selectedType.id;
     }
 
     let stonesOrBranches = getStonesOrBranches();
 
     const data = {
-      Segmentti: props.segmentdata.ID,
-      Lumilaatu: snowID,
-      Lisätiedot: stonesOrBranches,
-      Kommentti: null,
+      segment: props.segmentdata.id,
+      snowType: snowId,
+      details: stonesOrBranches,
+      comment: null,
     };
 
-    let res = postData("api/review/", data, props.segmentdata.ID);
+    let res = postData("api/review/", data, props.segmentdata.id);
 
-    // Parse the ID to our snow review
+    // Parse the id to our snow review
     res.then((item) => {
       let row = JSON.stringify(item[0]);
       JSON.parse(row, (key, value) => {
         if (Number.isInteger(value)) {
-          setUpdateID(value);
+          setUpdateId(value);
         }
       });
     });
@@ -220,20 +220,20 @@ function WriteUserReview(props) {
   };
 
   // Post the feedback text to the database. If continuing from the snow type selection,
-  // we update the existing row with ID. Otherwise, post new row to the database.
+  // we update the existing row with id. Otherwise, post new row to the database.
   const postFeedback = async () => {
     const data = {
-      Segmentti: props.segmentdata.ID,
-      Lumilaatu: null,
-      Lisätiedot: null,
-      Kommentti: text,
+      segment: props.segmentdata.id,
+      snowType: null,
+      details: null,
+      comment: text,
     };
 
-    if (updateID === null) {
-      let res = postData("api/review/", data, props.segmentdata.ID);
+    if (updateId === null) {
+      let res = postData("api/review/", data, props.segmentdata.id);
       console.log(res);
     } else {
-      let res = postData("api/updateReview/", data, updateID);
+      let res = postData("api/updateReview/", data, updateId);
       console.log(res);
     }
     clearState();
@@ -292,7 +292,7 @@ function WriteUserReview(props) {
     setStones(false);
     setBranches(false);
     setText("");
-    setUpdateID(null);
+    setUpdateId(null);
   };
 
   const goBack = () => {
@@ -444,14 +444,14 @@ function WriteUserReview(props) {
                       src={
                         process.env.PUBLIC_URL +
                         "/icons/snowtypes-and-harms/" +
-                        data.ID +
+                        data.id +
                         ".svg"
                       }
                       alt="lumityypin logo"
                       className={styles.snowInfo}
                     />
                     <Typography className={styles.mediumText}>
-                      {translations[getTranslationKey(data.Nimi)][language]}
+                      {translations[getTranslationKey(data.name)][language]}
                     </Typography>
                   </IconButton>
                 </Grid>
@@ -466,12 +466,12 @@ function WriteUserReview(props) {
                 className={styles.smallHeaders}
                 style={{ justifyContent: "left", marginBottom: "0px" }}
               >
-                {translations[getTranslationKey(selectedType.Nimi)][language]}
+                {translations[getTranslationKey(selectedType.name)][language]}
               </Typography>
               <p className={styles.mediumText} style={{ marginRight: "1px" }}>
                 {
                   translations[
-                    getTranslationKey(selectedType.Nimi) + "Description"
+                    getTranslationKey(selectedType.name) + "Description"
                   ][language]
                 }
               </p>
