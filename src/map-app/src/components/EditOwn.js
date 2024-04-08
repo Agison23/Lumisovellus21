@@ -42,27 +42,27 @@ import translations from "../translations/translations";
 
 function EditOwn(props) {
   const [firstName, setFirstName] = React.useState(null);
-  const [lastName, setLastName] = React.useState(null);
+  const [surname, setSurname] = React.useState(null);
   const [email, setEmail] = React.useState(null);
   const [showPassword, setShowPassword] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [confirm, setConfirm] = React.useState("");
   const [mismatch, setMismatch] = React.useState(false);
   const [message, setMessage] = React.useState("");
-  const { language } = useContext(GlobalContext);
+  const { language } = React.useContext(GlobalContext);
 
   // Määrittää, onko muokkauslomakkeen tallennuspainike aktiivinen (tyhjillä/muuttamattomilla syötteillä ei ole)
   const saveDisabled = Boolean(
-    (firstName === null || firstName === props.user.Etunimi) &&
-      (lastName === null || lastName === props.user.Sukunimi) &&
-      (email === null || email === props.user.Sähköposti) &&
+    (firstName === null || firstName === props.user.firstName) &&
+      (surname === null || surname === props.user.surname) &&
+      (email === null || email === props.user.email) &&
       password === ""
   );
 
   // etunimen päivitys
   const updateFirstName = (event) => {
     if (event.target.value === "") {
-      setFirstName(props.user.Etunimi);
+      setFirstName(props.user.firstName);
     } else {
       setFirstName(event.target.value);
     }
@@ -71,16 +71,16 @@ function EditOwn(props) {
   // sukunimen päivitys
   const updateLastName = (event) => {
     if (event.target.value === "") {
-      setLastName(props.user.Sukunimi);
+      setSurname(props.user.surname);
     } else {
-      setLastName(event.target.value);
+      setSurname(event.target.value);
     }
   };
 
   // sähköpostin päivittäminen
   const updateEmail = (event) => {
     if (event.target.value === "") {
-      setEmail(props.user.Sähköposti);
+      setEmail(props.user.email);
     } else {
       setEmail(event.target.value);
     }
@@ -108,7 +108,7 @@ function EditOwn(props) {
     props.closeEditOwn();
     setEmail(null);
     setFirstName(null);
-    setLastName(null);
+    setSurname(null);
     setConfirm("");
     setPassword("");
     setMismatch(false);
@@ -122,10 +122,10 @@ function EditOwn(props) {
       if (password.length >= 7 || password === "") {
         // Tiedot  tulevat hookeista
         const data = {
-          Etunimi: firstName === null ? props.user.Etunimi : firstName,
-          Sukunimi: lastName === null ? props.user.Sukunimi : lastName,
-          Sähköposti: email === null ? props.user.Sähköposti : email,
-          ID: props.user.ID,
+          firstName: firstName === null ? props.user.firstName : firstName,
+          surname: surname === null ? props.user.surname : surname,
+          email: email === null ? props.user.email : email,
+          id: props.user.id,
         };
         if (password !== "") {
           data.Salasana = password;
@@ -133,7 +133,7 @@ function EditOwn(props) {
 
         // Käyttäjän muokkaamisen api-kutsu
         const fetchEditUser = async () => {
-          const response = await fetch("api/user/" + props.user.ID, {
+          const response = await fetch("api/user/" + props.user.id, {
             method: "PUT",
             headers: {
               Accept: "application/json",
@@ -187,9 +187,9 @@ function EditOwn(props) {
           {translations["dataNow"][language]}
         </Typography>
         <Typography>
-          {props.user.Etunimi + " " + props.user.Sukunimi}
+          {props.user.firstName + " " + props.user.surname}
         </Typography>
-        <Typography>{props.user.Sähköposti}</Typography>
+        <Typography>{props.user.email}</Typography>
         <FormControl>
           <InputLabel htmlFor="firstname">
             {translations["changeName"][language]}
@@ -198,7 +198,7 @@ function EditOwn(props) {
             id="firstname"
             type="text"
             onChange={updateFirstName}
-            placeholder={props.user !== null ? props.user.Etunimi : ""}
+            placeholder={props.user !== null ? props.user.firstName : ""}
           />
         </FormControl>
         <br />
@@ -210,7 +210,7 @@ function EditOwn(props) {
             id="lastname"
             type="text"
             onChange={updateLastName}
-            placeholder={props.user !== null ? props.user.Sukunimi : ""}
+            placeholder={props.user !== null ? props.user.surname : ""}
           />
         </FormControl>
         <br />
@@ -222,7 +222,7 @@ function EditOwn(props) {
             id="email"
             type="text"
             onChange={updateEmail}
-            placeholder={props.user !== null ? props.user.Sähköposti : ""}
+            placeholder={props.user !== null ? props.user.email : ""}
           />
         </FormControl>
         <br />
