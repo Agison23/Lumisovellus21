@@ -74,8 +74,7 @@ function DisplaySnowType(props) {
 
   function isStonesOrBranches() {
     return (
-      props.Guide === false &&
-      (props.Lumilaatu === 21 || props.Lumilaatu === 22)
+      props.Guide === false && (props.snowType === 21 || props.snowType === 22)
     );
   }
 
@@ -97,7 +96,7 @@ function DisplaySnowType(props) {
             src={
               process.env.PUBLIC_URL +
               "/icons/snowtypes-and-harms/" +
-              props.Lumilaatu +
+              props.snowType +
               ".svg"
             }
             alt="lumityypin logo"
@@ -105,7 +104,7 @@ function DisplaySnowType(props) {
         }
       </Grid>
 
-      {props.Nimi !== undefined && (
+      {props.name !== undefined && (
         <Grid
           item
           container
@@ -121,11 +120,11 @@ function DisplaySnowType(props) {
               variant="body1"
               component="p"
             >
-              {props.Nimi}
+              {props.name}
             </Typography>
           </Grid>
 
-          {props.Hiihdettavyys !== null && (
+          {props.skiability !== null && (
             <Grid item xs={12} sm={12}>
               <Typography
                 xs={12}
@@ -146,7 +145,7 @@ function DisplaySnowType(props) {
                   src={
                     process.env.PUBLIC_URL +
                     "/icons/skiability/" +
-                    props.Hiihdettavyys +
+                    props.skiability +
                     ".svg"
                   }
                   alt="skiability"
