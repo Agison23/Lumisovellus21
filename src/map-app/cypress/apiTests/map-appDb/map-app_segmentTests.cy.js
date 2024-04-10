@@ -68,8 +68,8 @@ describe("Map-app database API test", () => {
             .each((segment) => {
               expect(segment).to.have.property("segment").to.be.a("number");
               expect(segment).to.have.property("time").to.be.a("string");
-              const aika = new Date(segment.Aika);
-              expect(aika instanceof Date).to.be.true;
+              const time = new Date(segment.time);
+              expect(time instanceof Date).to.be.true;
               expect(segment).to.have.property("description");
               expect(segment).to.have.property("snowTypeId1");
               expect(segment).to.have.property("snowTypeId2");
@@ -99,8 +99,8 @@ describe("Map-app database API test", () => {
 
           expect(response.body).to.have.property("segment").to.equal(5);
           expect(response.body).to.have.property("time").to.be.a("string");
-          const aika = new Date(response.body.Aika);
-          expect(aika instanceof Date).to.be.true;
+          const time = new Date(response.body.time);
+          expect(time instanceof Date).to.be.true;
           expect(response.body)
             .to.have.property("description")
             .to.equal("comment test");
