@@ -131,8 +131,8 @@ function ReviewManage(props) {
 
     await data.forEach((item) => {
       item.CurrentTime = new Date();
-      item.LatestUpdateTime = new Date(item.Aika);
-      item.TranslationsKey = getTranslationKey(item.Lumi);
+      item.LatestUpdateTime = new Date(item.time);
+      item.TranslationsKey = getTranslationKey(item.snow);
     });
     setReviewData(data);
   };
@@ -153,12 +153,12 @@ function ReviewManage(props) {
                 <Grid key={index} item xs={12} sm={12}>
                   <Card className={classes.userCard}>
                     <CardHeader
-                      title={item.Segmentti === null ? "" : item.Segmentti}
+                      title={item.segment === null ? "" : item.segment}
                       className={classes.normalText}
                     />
 
                     <CardContent>
-                      {item.Lumilaatu !== null && (
+                      {item.snowType !== null && (
                         <Grid item xs={10} sm={10} spacing={2} container>
                           <Grid item xs={6} sm={1}>
                             {
@@ -167,7 +167,7 @@ function ReviewManage(props) {
                                 src={
                                   process.env.PUBLIC_URL +
                                   "/icons/snowtypes-and-harms/" +
-                                  item.Lumilaatu +
+                                  item.snowType +
                                   ".svg"
                                 }
                                 alt="lumityypin logo"
@@ -195,7 +195,7 @@ function ReviewManage(props) {
                         </Grid>
                       )}
 
-                      {item.Kommentti !== null && <p>{item.Kommentti}</p>}
+                      {item.comment !== null && <p>{item.comment}</p>}
 
                       <Typography
                         className={classes.timeStamp}

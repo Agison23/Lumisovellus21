@@ -83,7 +83,7 @@ router.get("/segments", function (req, res) {
         return [item.segment, item.location];
       });
 
-      database.query("SELECT * FROM segment", function (err, result) {
+      database.query("SELECT * FROM segments", function (err, result) {
         let pointsDict = [];
         //create dictionary of arrays
         result.forEach((obj) => {

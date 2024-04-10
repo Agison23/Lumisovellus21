@@ -426,9 +426,9 @@ function SnowRecordView({
             style={{ display: "flex", padding: isXS ? "0px 15px" : "0px" }}
           >
             <DisplaySnowType
-              Lumilaatu={21}
-              Nimi={translations["stones"][language]}
-              Hiihdettavyys={null}
+              snowType={21}
+              name={translations["stones"][language]}
+              skiability={null}
               Main={false}
               Guide={false}
             />
@@ -441,9 +441,9 @@ function SnowRecordView({
             style={{ display: "flex", padding: isXS ? "0px 15px" : "0px" }}
           >
             <DisplaySnowType
-              Lumilaatu={22}
-              Nimi={translations["branches"][language]}
-              Hiihdettavyys={null}
+              snowType={22}
+              name={translations["branches"][language]}
+              skiability={null}
               Main={false}
               Guide={false}
             />
@@ -452,16 +452,16 @@ function SnowRecordView({
         {props.option === 3 && (
           <Grid style={{ display: "flex", padding: isXS ? "0px 15px" : "0px" }}>
             <DisplaySnowType
-              Lumilaatu={21}
-              Nimi={translations["stones"][language]}
-              Hiihdettavyys={null}
+              snowType={21}
+              name={translations["stones"][language]}
+              skiability={null}
               Main={false}
               Guide={false}
             />
             <DisplaySnowType
-              Lumilaatu={22}
-              Nimi={translations["branches"][language]}
-              Hiihdettavyys={null}
+              snowType={22}
+              name={translations["branches"][language]}
+              skiability={null}
               Main={false}
               Guide={false}
             />
@@ -667,13 +667,13 @@ function SnowRecordView({
                 {isEnabled(1) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.snowTypeId1}
-                      Nimi={
+                      snowType={segmentdata.update.snowTypeId1}
+                      name={
                         translations[
                           getTranslationKey(segmentdata.update.snow1.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.snow1.skiability}
+                      skiability={segmentdata.update.snow1.skiability}
                       Main={true}
                       Guide={true}
                     />
@@ -683,13 +683,13 @@ function SnowRecordView({
                 {isEnabled(2) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.snowTypeId2}
-                      Nimi={
+                      snowType={segmentdata.update.snowTypeId2}
+                      name={
                         translations[
                           getTranslationKey(segmentdata.update.snow2.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.snow2.skiability}
+                      skiability={segmentdata.update.snow2.skiability}
                       Main={true}
                       Guide={true}
                     />
@@ -699,13 +699,13 @@ function SnowRecordView({
                 {isEnabled(3) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.secondaryId1}
-                      Nimi={
+                      snowType={segmentdata.update.secondaryId1}
+                      name={
                         translations[
                           getTranslationKey(segmentdata.update.snow3.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.snow3.skiability}
+                      skiability={segmentdata.update.snow3.skiability}
                       Main={false}
                       Guide={true}
                     />
@@ -714,13 +714,13 @@ function SnowRecordView({
                 {isEnabled(4) && (
                   <Grid item xs={12} sm={6}>
                     <DisplaySnowType
-                      Lumilaatu={segmentdata.update.secondaryId2}
-                      Nimi={
+                      snowType={segmentdata.update.secondaryId2}
+                      name={
                         translations[
                           getTranslationKey(segmentdata.update.snow4.name)
                         ][language]
                       }
-                      Hiihdettavyys={segmentdata.update.snow4.skiability}
+                      skiability={segmentdata.update.snow4.skiability}
                       Main={false}
                       Guide={true}
                     />
@@ -735,13 +735,13 @@ function SnowRecordView({
                 </Typography>
                 <Grid item xs={12} sm={6}>
                   <DisplaySnowType
-                    Lumilaatu={segmentdata.update.snow5.id}
-                    Nimi={
+                    snowType={segmentdata.update.snow5.id}
+                    name={
                       translations[
                         getTranslationKey(segmentdata.update.snow5.name)
                       ][language]
                     }
-                    Hiihdettavyys={segmentdata.update.snow5.skiability}
+                    skiability={segmentdata.update.snow5.skiability}
                     Main={true}
                     Guide={false}
                   />
@@ -832,17 +832,15 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.snow5.id}
-                                Nimi={
+                                snowType={segmentdata.update.snow5.id}
+                                name={
                                   translations[
                                     getTranslationKey(
                                       segmentdata.update.snow5.name
                                     )
                                   ][language]
                                 }
-                                Hiihdettavyys={
-                                  segmentdata.update.snow5.skiability
-                                }
+                                skiability={segmentdata.update.snow5.skiability}
                                 Main={true}
                                 Guide={false}
                               />
@@ -873,17 +871,15 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.snow6.id}
-                                Nimi={
+                                snowType={segmentdata.update.snow6.id}
+                                name={
                                   translations[
                                     getTranslationKey(
                                       segmentdata.update.snow6.name
                                     )
                                   ][language]
                                 }
-                                Hiihdettavyys={
-                                  segmentdata.update.snow6.skiability
-                                }
+                                skiability={segmentdata.update.snow6.skiability}
                                 Main={true}
                                 Guide={false}
                               />
@@ -915,17 +911,15 @@ function SnowRecordView({
                           >
                             <Grid item xs={8} sm={6}>
                               <DisplaySnowType
-                                Lumilaatu={segmentdata.update.snow7.id}
-                                Nimi={
+                                snowType={segmentdata.update.snow7.id}
+                                name={
                                   translations[
                                     getTranslationKey(
                                       segmentdata.update.snow7.name
                                     )
                                   ][language]
                                 }
-                                Hiihdettavyys={
-                                  segmentdata.update.snow7.skiability
-                                }
+                                skiability={segmentdata.update.snow7.skiability}
                                 Main={true}
                                 Guide={false}
                               />

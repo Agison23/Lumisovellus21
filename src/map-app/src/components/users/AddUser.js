@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 function AddUser(props) {
   // Hooks
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [admin, setAdmin] = useState(false);
@@ -63,7 +63,7 @@ function AddUser(props) {
   const formOK = Boolean(
     !(
       firstName !== "" &&
-      lastName !== "" &&
+      surname !== "" &&
       email !== "" &&
       password.length >= 7
     )
@@ -82,7 +82,7 @@ function AddUser(props) {
   const closeAdd = () => {
     setAddOpen(false);
     setFirstName("");
-    setLastName("");
+    setSurname("");
     setEmail("");
     setPassword("");
     setAdmin(false);
@@ -92,11 +92,11 @@ function AddUser(props) {
   const handleAdd = () => {
     // Tiedot  tulevat hookeista
     const data = {
-      Etunimi: firstName,
-      Sukunimi: lastName,
-      Sähköposti: email,
-      Salasana: password,
-      Rooli: admin ? "admin" : "operator",
+      firstName: firstName,
+      surname: surname,
+      email: email,
+      password: password,
+      role: admin ? "admin" : "operator",
     };
 
     // Käyttäjän lisäämisen api-kutsu
@@ -125,7 +125,7 @@ function AddUser(props) {
 
   // Sukunimen päivittäminen
   const updateLastName = (event) => {
-    setLastName(event.target.value);
+    setSurname(event.target.value);
   };
 
   // Sähköpostin päivittäminen
@@ -188,7 +188,7 @@ function AddUser(props) {
         </FormControl>
         <FormControl>
           <InputLabel htmlFor="lastname">
-            {translations["lastName"][language]}
+            {translations["surname"][language]}
           </InputLabel>
           <Input id="lastname" type="text" onChange={updateLastName} />
         </FormControl>
