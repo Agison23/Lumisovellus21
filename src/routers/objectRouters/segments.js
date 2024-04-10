@@ -47,15 +47,15 @@ router.put("/:id", function (req, res) {
       database.query(
         `UPDATE Segmentit
        SET 
-       Nimi=?,
-       Maasto=?,
-       Lumivyöryvaara=?
-       WHERE ID = ?
+       name=?,
+       terrain=?,
+       avalancheDanger=?
+       WHERE id = ?
       `,
         [
-          req.body.Nimi,
-          req.body.Maasto,
-          req.body.Lumivyöryvaara,
+          req.body.name,
+          req.body.terrain,
+          req.body.avalancheDanger,
           req.params.id,
         ],
         function (err, result, fields) {
@@ -67,8 +67,8 @@ router.put("/:id", function (req, res) {
           //poistetaan vanhat pisteet
           if (req.body.Points != null) {
             database.query(
-              `DELETE FROM Koordinaatit
-             WHERE Segmentti = ?
+              `DELETE FROM coordinates
+             WHERE segment = ?
             `,
               [req.params.id],
               function (err, result, fields) {
@@ -108,7 +108,7 @@ router.put("/:id", function (req, res) {
                 var errorTable = [];
                 pointTable.forEach((obj, i) => {
                   database.query(
-                    "INSERT INTO Koordinaatit(Segmentti, Jarjestys, Sijainti) VALUES(?, ?, ST_GeomFromText('POINT(? ?)'))",
+                    "INSERT INTO coordinates(segment, order, location) VALUES(?, ?, ST_GeomFromText('POINT(? ?)'))",
                     [req.params.id, i, obj.lat, obj.lng],
                     function (err, result, fields) {
                       if (err) {
@@ -146,12 +146,12 @@ router.put("/:id", function (req, res) {
 router.post("/", function (req, res) {
   database.beginTransaction(function (err) {
     database.query(
-      "INSERT INTO Segmentit(Nimi, Maasto, Lumivyöryvaara, On_Alasegmentti) VALUES(?,?,?,?)",
+      "INSERT INTO segments(name, terrain, avalancheDanger, isLowerSegment) VALUES(?,?,?,?)",
       [
-        req.body.Nimi,
-        req.body.Maasto,
-        req.body.Lumivyöryvaara,
-        req.body.On_Alasegmentti,
+        req.body.name,
+        req.body.terrain,
+        req.body.avalancheDanger,
+        req.body.isLowerSegment,
       ],
       function (err, result, fields) {
         if (err) {
@@ -162,7 +162,7 @@ router.post("/", function (req, res) {
 
         var i = 0;
         var pointTable = req.body.Points;
-        var uusiID = result.insertId;
+        var newId = result.insertId;
         //tämä tehdään lopuksi
         function palautus(result, errorTable) {
           //tallennetaan muutokset, jos ei virheitä
@@ -189,8 +189,8 @@ router.post("/", function (req, res) {
         var errorTable = [];
         pointTable.forEach((obj, i) => {
           database.query(
-            "INSERT INTO Koordinaatit(Segmentti, Jarjestys, Sijainti) VALUES(?, ?, ST_GeomFromText('POINT(? ?)'))",
-            [uusiID, i, obj.lat, obj.lng],
+            "INSERT INTO coordinates(segment, order, location) VALUES(?, ?, ST_GeomFromText('POINT(? ?)'))",
+            [newId, i, obj.lat, obj.lng],
             function (err, result, fields) {
               if (err) {
                 errorTable.push(err);
