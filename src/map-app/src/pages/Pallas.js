@@ -111,32 +111,32 @@ function App() {
       // Mikäli muutetaan, muutettava myös siellä.
       // const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
       const snowcolors = snowdata.map((item) => {
-        return { colour: item.colour, name: item.name, ID: item.id };
+        return { colour: item.colour, name: item.name, id: item.id };
       });
       // Yhdistetään olemassa olevat värit ja "ei tietoa" (viimeiseksi)
       setSegmentColors(snowcolors);
 
       await updateData.forEach((update) => {
         snowdata.forEach((snow) => {
-          if (snow.ID === update.snowTypeId1) {
+          if (snow.id === update.snowTypeId1) {
             update.snow1 = snow;
           }
-          if (snow.ID === update.snowTypeId2) {
+          if (snow.id === update.snowTypeId2) {
             update.snow2 = snow;
           }
-          if (snow.ID === update.secondaryId1) {
+          if (snow.id === update.secondaryId1) {
             update.snow3 = snow;
           }
-          if (snow.ID === update.secondaryId2) {
+          if (snow.id === update.secondaryId2) {
             update.snow4 = snow;
           }
-          if (snow.ID === update.a1SnowType) {
+          if (snow.id === update.a1SnowType) {
             update.snow5 = snow;
           }
-          if (snow.ID === update.a2SnowType) {
+          if (snow.id === update.a2SnowType) {
             update.snow6 = snow;
           }
-          if (snow.ID === update.a3SnowType) {
+          if (snow.id === update.a3SnowType) {
             update.snow7 = snow;
           }
         });
@@ -180,11 +180,11 @@ function App() {
       let selectedId = selectedSegment - 1;
 
       if (selectedId >= 0 && selectedId < segments.length) {
-        if (selectedSegment === segments[selectedId].ID) {
+        if (selectedSegment === segments[selectedId].id) {
           setChoice(segments[selectedId]);
         } else {
           segments.forEach((segment) => {
-            if (segment.ID === selectedSegment) {
+            if (segment.id === selectedSegment) {
               setChoice(segment);
             }
           });

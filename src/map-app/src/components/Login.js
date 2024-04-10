@@ -134,8 +134,8 @@ function Login(props) {
   // Kun lomake lähetetään, tehdään POST-kutsu api/user/login
   const sendForm = () => {
     const data = {
-      Sähköposti: email,
-      Salasana: password,
+      email: email,
+      password: password,
     };
     const fetchLogin = async () => {
       setLoading(true);
@@ -174,10 +174,13 @@ function Login(props) {
           data-testid={"languageDropDown"}
           value={language}
           onChange={handleChange}
-
         >
-          <MenuItem data-testid="enButton" value="en">English</MenuItem>
-          <MenuItem data-testid="fiButton" value="fi">Suomi</MenuItem>
+          <MenuItem data-testid="enButton" value="en">
+            English
+          </MenuItem>
+          <MenuItem data-testid="fiButton" value="fi">
+            Suomi
+          </MenuItem>
         </Select>
         {loading ? (
           <CircularProgress color="secondary" size={20} />

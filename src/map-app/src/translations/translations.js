@@ -719,7 +719,7 @@ const translations = {
 
   lastName: {
     fi: "Sukunimi",
-    en: "Lastst name",
+    en: "Surname",
   },
 
   write: {
