@@ -25,20 +25,20 @@ const secret = "Lumihiriv0";
 const { body, validationResult } = require("express-validator");
 
 router.post("/:id", function (req, res) {
-  if (req.body.Segmentti != req.params.id) {
+  if (req.body.segment != req.params.id) {
     res.json("Segmentti numerot eivät täsmää");
     res.status(400);
   }
   database.query(
-    "INSERT INTO Paivitykset(Tekija, Segmentti, Aika, Kuvaus, Lumilaatu_ID1, Lumilaatu_ID2, Toissijainen_ID1, Toissijainen_ID2) VALUES(?, ?, NOW(), ?, ?, ?, ?, ?)",
+    "INSERT INTO updates(creator, segment, time, description, snowTypeId1, snowTypeId2, secondaryId1, secondaryId2) VALUES(?, ?, NOW(), ?, ?, ?, ?, ?)",
     [
       req.decoded.id,
-      req.body.Segmentti,
-      req.body.Kuvaus,
-      req.body.Lumilaatu_ID1,
-      req.body.Lumilaatu_ID2,
-      req.body.Toissijainen_ID1,
-      req.body.Toissijainen_ID2,
+      req.body.segment,
+      req.body.description,
+      req.body.snowTypeId1,
+      req.body.snowTypeId2,
+      req.body.secondaryId1,
+      req.body.secondaryId2,
     ],
     function (err) {
       if (err) throw err;

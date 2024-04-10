@@ -1,4 +1,4 @@
-INSERT INTO Lumilaadut(ID, Nimi, Vari, Hiihdettavyys, Kategoria_ID, Lumityyppi_selite)
+INSERT INTO snowTypes(id, name, colour, skiability, categoryId, explanation)
 VALUES  (1,'Korppu','#3838a0',3,NULL,'Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.'),
         (2,'Sohjo','#919394',2,NULL,'Vesipitoinen ja osittain sulanut lumi suojasäällä.'),
         (3,'Jää','#34929A',2,NULL,'Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.'),

@@ -109,20 +109,20 @@ function SegmentManage(props) {
 
     await updateData.forEach((update) => {
       snowdata.forEach((snow) => {
-        if (snow.ID === update.Lumilaatu_ID1) {
-          update.Lumi1 = snow;
+        if (snow.id === update.snowTypeId1) {
+          update.snow1 = snow;
         }
-        if (snow.ID === update.Lumilaatu_ID2) {
-          update.Lumi2 = snow;
+        if (snow.id === update.snowTypeId2) {
+          update.snow2 = snow;
         }
-        if (snow.ID === update.Toissijainen_ID1) {
-          update.Lumi3 = snow;
+        if (snow.id === update.secondaryId1) {
+          update.snow3 = snow;
         }
-        if (snow.ID === update.Toissijainen_ID2) {
-          update.Lumi4 = snow;
+        if (snow.id === update.secondaryId2) {
+          update.snow4 = snow;
         }
-        if (snow.ID === update.A1_Lumilaatu) {
-          update.Lumi5 = snow;
+        if (snow.id === update.a1SnowType) {
+          update.snow5 = snow;
         }
       });
     });
@@ -130,7 +130,7 @@ function SegmentManage(props) {
     data.forEach((segment) => {
       segment.update = null;
       updateData.forEach((update) => {
-        if (update.Segmentti === segment.ID) {
+        if (update.segment === segment.id) {
           segment.update = update;
         }
       });
@@ -141,25 +141,25 @@ function SegmentManage(props) {
 
   // Segmentin valikon avaaminen, tarkentaa samalla valitun segmentin
   const handleMenu = (event, item) => {
-    props.onUpdate(item.ID);
+    props.onUpdate(item.id);
     setSelected(item);
     setPoints(item.Points);
-    setName(item.Nimi);
-    setDanger(item.Lumivyöryvaara);
-    setTerrain(item.Maasto);
+    setName(item.name);
+    setDanger(item.avalancheDanger);
+    setTerrain(item.terrain);
 
     // Alkuperäisten arvojen alustaminen muutosten perumista varten
     if (!editOpen) {
-      var initialName = item.Nimi;
-      var initialTerrain = item.Maasto;
-      var initialDanger = item.Lumivyöryvaara;
+      var initialName = item.name;
+      var initialTerrain = item.terrain;
+      var initialDanger = item.avalancheDanger;
       var initialPoints = item.Points.map((i) => {
         return { lat: i.lat, lng: i.lng };
       });
       setInitials({
-        Nimi: initialName,
-        Maasto: initialTerrain,
-        Lumivyöryvaara: initialDanger,
+        name: initialName,
+        terrain: initialTerrain,
+        avalancheDanger: initialDanger,
         Points: initialPoints,
       });
     }
@@ -178,7 +178,7 @@ function SegmentManage(props) {
   // Segmentin poiston api-kutsu
   const handleDelete = () => {
     const fetchDelete = async () => {
-      await fetch("api/segment/" + selected.ID, {
+      await fetch("api/segment/" + selected.id, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -188,7 +188,7 @@ function SegmentManage(props) {
       });
 
       // Tieto metsäsegmentin poistosta huomioidaan
-      if (selected.Nimi === "Metsä") {
+      if (selected.name === "Metsä") {
         props.updateWoods(null);
       }
     };
@@ -219,16 +219,16 @@ function SegmentManage(props) {
   const handleEdit = () => {
     // Tiedot  tulevat hookeista
     const data = {
-      Nimi: name,
-      Maasto: terrain,
-      Lumivyöryvaara: danger,
+      name: name,
+      terrain: terrain,
+      avalancheDanger: danger,
       Points: points,
-      ID: selected.ID,
+      id: selected.id,
     };
 
     // Segmentin muokkaamisen api-kutsu
     const fetchEditSegment = async () => {
-      const response = await fetch("api/segment/" + selected.ID, {
+      const response = await fetch("api/segment/" + selected.id, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -264,7 +264,7 @@ function SegmentManage(props) {
 
   const updateName = (event) => {
     if (event.target.value === "") {
-      setName(initials.Nimi);
+      setName(initials.name);
     } else {
       setName(event.target.value);
     }
@@ -273,7 +273,7 @@ function SegmentManage(props) {
   // Segmentin maastopohjan kuvauksen päivittäminen
   const updateTerrain = (event) => {
     if (event.target.value === "") {
-      setTerrain(initials.Maasto);
+      setTerrain(initials.terrain);
     } else {
       setTerrain(event.target.value);
     }
@@ -282,7 +282,7 @@ function SegmentManage(props) {
   // Lumivyöryvaaran vaihtamienn
   const updateDanger = () => {
     if (danger === null) {
-      setDanger(!initials.Lumivyöryvaara);
+      setDanger(!initials.avalancheDanger);
     } else {
       setDanger(!danger);
     }
@@ -348,15 +348,15 @@ function SegmentManage(props) {
               <Grid key={index} item xs={12} sm={4}>
                 <Card className={classes.segmentCard}>
                   <CardHeader
-                    title={item.Nimi}
+                    title={item.name}
                     subheader={
                       translations["terrainBase"][language] +
                       ": " +
-                      translations[getTranslationKey(item.Maasto)][language]
+                      translations[getTranslationKey(item.terrain)][language]
                     }
                     action={
                       <IconButton
-                        id={item.ID}
+                        id={item.id}
                         aria-label="close"
                         onClick={(event) => handleMenu(event, item)}
                       >
@@ -392,7 +392,7 @@ function SegmentManage(props) {
                   {/* Segmenttikortti sisältää mahdollisen teidon lumivyöryvaarasta,
                     mahdollisen segmentin lisäysnapin tai tiedon siitä, että kyseessä on alasegmentti */}
                   <CardContent>
-                    {item.Lumivyöryvaara ? (
+                    {item.avalancheDanger ? (
                       <Typography
                         variant="body1"
                         color="textSecondary"
@@ -409,17 +409,17 @@ function SegmentManage(props) {
                       align="left"
                       component="p"
                     >
-                      {item.On_Alasegmentti !== null
+                      {item.isLowerSegment !== null
                         ? translations["subsegmentOf"][language] +
-                          item.On_Alasegmentti +
+                          item.isLowerSegment +
                           translations["subsegmentOfEnd"][language]
                         : ""}
                     </Typography>
 
                     {/* Alasegmentin lisäys mahdollinen, jos kyseessä yläsegmentti */}
-                    {item.On_Alasegmentti === null ? (
+                    {item.isLowerSegment === null ? (
                       <AddSegment
-                        id={item.ID}
+                        id={item.id}
                         addSubSegment={true}
                         token={props.token}
                         segments={props.segments}
@@ -478,7 +478,7 @@ function SegmentManage(props) {
             type="text"
             onChange={updateName}
             placeholder={
-              props.shownSegment !== null ? props.shownSegment.Nimi : ""
+              props.shownSegment !== null ? props.shownSegment.name : ""
             }
           />
         </FormControl>
@@ -491,7 +491,7 @@ function SegmentManage(props) {
             type="text"
             onChange={updateTerrain}
             placeholder={
-              props.shownSegment !== null ? props.shownSegment.Maasto : ""
+              props.shownSegment !== null ? props.shownSegment.terrain : ""
             }
           />
         </FormControl>
