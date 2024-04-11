@@ -70,7 +70,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   List<BubbleSlide> buildBubbleSlides(AppState appState) {
-    List<BubbleSlide> normalSlides = [
+    /*List<BubbleSlide> normalSlides = [
       BubbleSlides().getRelativeBubbleSlide(
           appState,
           translations['menuNavigationTutorial']['showLocationArea']
@@ -106,7 +106,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           translations['menuNavigationTutorial']['changeLanguage']
               [appState.language],
           _languageDropdownKey)
-    ];
+    ];*/
     List<BubbleSlide> premiumSlides = [
       BubbleSlides().getRelativeBubbleSlide(
           appState,
