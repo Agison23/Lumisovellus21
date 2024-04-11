@@ -154,9 +154,13 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
               [appState.language],
           _languageDropdownKey)
     ];
-    return appState.isPremiumSidebar || appState.userRole == premiumRole
+    return premiumSlides;
+
+    /* TODO:
+    appState.isPremiumSidebar || appState.userRole == premiumRole
         ? premiumSlides
         : normalSlides;
+        */
   }
 
   Widget buildNavigationDrawer(BuildContext context) {
@@ -174,8 +178,14 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   buildHeader(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    return appState.userRole == premiumRole
+    // var appState = Provider.of<AppState>(context, listen: false);
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+      ),
+    );
+
+    /*appState.userRole == premiumRole
         ? Container(
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
@@ -192,6 +202,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                   })
             ],
           );
+          */
   }
 
   // creating hamburger bar contents

@@ -3,13 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppState extends ChangeNotifier {
   String _appEnv = 'development';
-  int _pageIndex = 1;
+  int _pageIndex = 0;
 
   String _language = 'fi'; //Default language is Finnish
   String _languageName = 'SUOMI';
   String _chatRoomId = '';
   bool _hasUnreadMessages = false; // For unread message notifications
-  bool _isPremiumSidebar = false;
+  bool _isPremiumSidebar = true;
 
   String _userRole = 'premium';
 
