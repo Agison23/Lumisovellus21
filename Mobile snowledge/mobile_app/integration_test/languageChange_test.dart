@@ -139,7 +139,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Check that the user has reached the main page
-      expect(find.text('Ask for\nhelp'), findsOneWidget);
+      expect(find.text('Location'), findsOneWidget);
 
       // Open the side bar
       final ScaffoldState scaffoldState = tester.state(find.byType(Scaffold));
