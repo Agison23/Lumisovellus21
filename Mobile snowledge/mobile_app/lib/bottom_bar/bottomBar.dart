@@ -5,7 +5,6 @@ import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../state/appState.dart';
 import '../translations/translations.dart';
