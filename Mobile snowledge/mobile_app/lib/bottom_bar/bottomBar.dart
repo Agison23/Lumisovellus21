@@ -5,6 +5,7 @@ import 'package:mobile_app/widgets_binding_observer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:speech_bubble/speech_bubble.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../state/appState.dart';
 import '../translations/translations.dart';
@@ -104,33 +105,28 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
   }
 
   Widget buildAskForHelpButton(AppState appState) {
+    String pngFile =
+        appState.language == 'en' ? 'askForHelpEn.png' : 'askForHelpFi.png';
+
+    String pngPath = 'assets/images/$pngFile';
+
     return InkWell(
-      key: _askForHelpButtonKey,
-      onTap: () {
-        Dialogs().showHelpNeededDialog(context);
-        if (appState.showTutorial &&
-            appState.currentTutorialStep ==
-                appState.tutorialSteps['ASK_FOR_HELP']) {
-          print("Advance to next tutorial step!");
-          appState.nextTutorialStep();
-        }
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20.0),
-        height: 90.0,
-        width: 90.0,
-        decoration: BoxDecoration(
-            color: const Color(0xffd99222),
-            borderRadius: BorderRadius.circular(50.0)),
-        child: Center(
-          child: Text(
-            translations['askHelp'][appState.language],
-            style: const TextStyle(color: Colors.white, fontSize: 15),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
+        key: _askForHelpButtonKey,
+        onTap: () {
+          Dialogs().showHelpNeededDialog(context);
+          if (appState.showTutorial &&
+              appState.currentTutorialStep ==
+                  appState.tutorialSteps['ASK_FOR_HELP']) {
+            print("Advance to next tutorial step!");
+            appState.nextTutorialStep();
+          }
+        },
+        child: Container(
+            margin: const EdgeInsets.only(bottom: 20.0),
+            alignment: Alignment.center,
+            width: 90.0,
+            height: 90.0,
+            child: Image.asset(pngPath, fit: BoxFit.contain)));
   }
 
   Widget buildShareLocationButton(AppState appState) {

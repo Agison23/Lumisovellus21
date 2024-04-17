@@ -54,6 +54,7 @@ dependencies:
   bubble_showcase: ^1.1.0
   speech_bubble: ^0.0.9
   flutter_compass: ^0.8.0
+  flutter_svg: ^2.0.0
 
 dev_dependencies:
   integration_test:
@@ -90,6 +91,8 @@ flutter:
     - assets/images/north_button.png
     - assets/images/location_marker.png
     - assets/images/location_marker_direction.png
+    - assets/images/askForHelpFi.png
+    - assets/images/askForHelpEn.png
     - .env
   #   - images/a_dot_ham.jpeg
 
