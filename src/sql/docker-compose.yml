@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: yes
-      MARIADB_USER: user
-      MARIADB_PASSWORD: user
+      MARIADB_USER: pallas
+      MARIADB_PASSWORD: u9szFQcsGV
       MARIADB_DATABASE: pallas
     volumes:
       - ./conf.d/:/etc/mysql/conf.d
