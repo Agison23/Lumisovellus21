@@ -1,0 +1,28 @@
+services:
+
+  db:
+    container_name: mariadb
+    image: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_USER: user
+      MARIADB_PASSWORD: user
+      MARIADB_DATABASE: pallas
+    volumes:
+      - ./conf.d/:/etc/mysql/conf.d
+      - ./test_sql_files:/docker-entrypoint-initdb.d
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    ports:
+      - 3306:3306
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - 8080:8080
