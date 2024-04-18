@@ -11,11 +11,12 @@ export function createMarkersForMonitors(map, monitorData) {
     currentMonitor.style.height = "40px";
 
     const currentPopup = new maplibregl.Popup({
+      className: "monitor-popup",
       offset: 25,
       closeOnClick: true,
       closeButton: false,
     }).setHTML(`
-      <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large' class='snow-monitor-data-dialog'>
+      <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>
         <p>❄️ ${monitor.snowDepth} </p>
         <p>🌡️ ${monitor.temperature} </p>
       </div>
