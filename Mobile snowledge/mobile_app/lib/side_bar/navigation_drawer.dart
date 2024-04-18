@@ -304,7 +304,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
               if (appState.premiumFeatureMenuItems.contains(index) &&
                   appState.isPremiumSidebar &&
                   appState.userRole != premiumRole) {
-                _showPremiumDialog(context);
+                // _showPremiumDialog(context);
                 return;
               }
               setState(() {
@@ -373,23 +373,23 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   Color _getMenuIconColor(int index, AppState appState) {
-    if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != premiumRole) {
-      return Colors.grey;
+    // if (appState.premiumFeatureMenuItems.contains(index) &&
+    //     appState.userRole != premiumRole) {
+    //   return Colors.grey;
+    // } else {
+    if (index == appState.pageIndex) {
+      return const Color(0xff5A97EE);
     } else {
-      if (index == appState.pageIndex) {
-        return const Color(0xff5A97EE);
-      } else {
-        return Colors.black;
-      }
+      return Colors.black;
     }
+    // }
   }
 
   Widget? _showMenuItemIcon(int index, AppState appState) {
-    if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != premiumRole) {
-      return const Icon(Icons.lock_outline);
-    }
+    //if (appState.premiumFeatureMenuItems.contains(index) &&
+    //    appState.userRole != premiumRole) {
+    //  return const Icon(Icons.lock_outline);
+    //}
     if (index == 6 || index == 7) {
       return const Icon(Icons.launch);
     }
