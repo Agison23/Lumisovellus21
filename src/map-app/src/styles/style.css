@@ -176,7 +176,9 @@ body {
   }
 }
 .monitor-popup > .maplibregl-popup-content {
-    background: blue;
+    background: rgba(255,255,255,0.8);
+    line-height: 0.2;
+    padding: 1px
 }
 
 /*

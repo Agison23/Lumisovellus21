@@ -102,6 +102,7 @@ function PallasMap(props) {
     async function fetchData() {
       await snowerService.fetchDataAndStore();
       const data = snowerService.getData();
+        console.log(data);
       setMonitorData(data);
       setDataFetched(true);
     }
