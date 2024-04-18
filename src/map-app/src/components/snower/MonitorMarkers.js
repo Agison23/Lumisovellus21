@@ -3,7 +3,7 @@ import maplibregl from "maplibre-gl";
 export function createMarkersForMonitors(map, monitorData) {
   let markers = [];
   monitorData.forEach((monitor) => {
-    if (monitor.temperature === 'No Data' || monitor.snowDepth === 'No Data') {
+    if (monitor.temperature === "No Data" || monitor.snowDepth === "No Data") {
       return;
     }
     const currentMonitor = document.createElement("img");
