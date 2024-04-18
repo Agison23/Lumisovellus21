@@ -9,10 +9,10 @@ CREATE TABLE segments (
 
 CREATE TABLE coordinates(
     segment BIGINT UNSIGNED,
-    order BIGINT UNSIGNED,
-    location Point,
+    `order` BIGINT UNSIGNED,
+    `location` Point,
     FOREIGN KEY(segment) references segments(id) ON DELETE CASCADE,
-    CONSTRAINT tag PRIMARY KEY(order, segment)
+    CONSTRAINT tag PRIMARY KEY(`order`, segment)
 );
 
 CREATE TABLE users (

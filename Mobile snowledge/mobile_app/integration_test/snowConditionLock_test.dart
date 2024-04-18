@@ -61,8 +61,8 @@ void main() {
       await tester.tap(find.text('Continue'));
       await tester.pumpAndSettle();
 
-      // Check that the user has reached the main page of the app e.g., there is a Ask for help button
-      expect(find.text('Ask for\nhelp'), findsOneWidget);
+      // Check that the user has reached the main page of the app e.g., there is a Location icon
+      expect(find.text('Location'), findsOneWidget);
 
       // Open the side bar
       final ScaffoldState scaffoldState = tester.state(find.byType(Scaffold));

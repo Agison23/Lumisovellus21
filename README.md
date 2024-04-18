@@ -54,18 +54,30 @@ This is a repository for the Snowledge application. See [Wiki](https://gitlab.co
 This instruction is written for setting up the environment in Windows. First, we setup `Flutter` and make sure that it works on our machine.
 
 1. Install [Flutter](https://docs.flutter.dev/get-started/install) using the link. Select your OS. Let's choose Windows here.
-2. Unzip the files. This gonna take quite a while since it's big. If you prefer cloning, then open your terminal, and use `git clone https://github.com/flutter/flutter.git -b stable` into your prefered directory.
+2. Unzip the files. This gonna take quite a while since it's big. If you prefer cloning, then open your terminal, and use `git clone https://github.com/flutter/flutter.git -b stable` into your prefered directory. Path to flutter can not contain any non-ASCII characters.
 3. Update your `PATH` environment variable based on their instruction (in the install page). We should be able to run `flutter` in our terminal now. Run `flutter doctor` and see what it says. Most likely it will say that you haven't install **Android Studio**, have no Virtual Machine, nor have **Visual Studio** installed.
-4. Since I work on Windows, I need to install [Android Studio](https://developer.android.com/studio/install) and configure some virtual machine (I use the **Pixel 3** and **Pixel 4**). Follow the rest of the Flutter instruction if you want to use **Visual Studio** as your IDE (I personally don't and use VSCode)
-5. Download the **Java SE Dev kit 11**. **DON'T USE THE LATEST VERSION** (v19). For some reason, Graddle doesn't work with the latest version of Java so install [this version](https://www.oracle.com/java/technologies/downloads/#java11) (you will need to register for a Oracle account for this. Won't take long, just a basic email auth).
+4. Since I work on Windows, I need to install [Android Studio](https://developer.android.com/studio/install) and configure some virtual machine (For example **Pixel 7**). Follow the rest of the Flutter instruction if you want to use **Visual Studio** as your IDE.
+5. Download the **Java SE Dev kit** here: https://www.oracle.com/java/technologies/downloads/. Project runs on atleast java version 22 and below.
 6. Add `JAVA_HOME` to your environment variable. Follow [this StackOverflow thread](https://stackoverflow.com/questions/64359564/error-java-home-is-not-set-and-no-java-command-could-be-found-in-your-flutter).
-7. Restart your machine for the change to take place now.
+7. Restart your machine for the change to take place.
 8. Then just follow [this tutorial](https://www.youtube.com/watch?v=1xipg02Wu8s&t=375s). After this, you should be able to run an `Android simulation` for `Flutter` while using `VSCode` as your IDE.
 
 Some trouble you might (still) run into:
 
 - When running flutter run on the project, Graddle might encounter a problem related to the build tools. To solve this, in `Android Studio -> Tools -> SDK Manager`. In there, select the tools they say that are missing and choose `Apply` to download and install them.
-- Some problem about your license. Check out [this](https://stackoverflow.com/questions/54273412/failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not).
+
+- Some problem about your license. Check out [this](https://stackoverflow.com/questions/54273412/
+failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not).
+
+- Android Emulator hypervisor driver installation might fail on AMD processors. Follow this [guide] (https://www.youtube.com/watch?v=Y1WhS2yuF8I&ab_channel=GamerTweak) to fix the issue
+
+Issues that can appear in the future and some help in fixing them:
+
+- Mobile app not compiling due to flutter SDK file pinning issues. This happens because a newer version of Flutter has pinned the given dependency to a higher version. This can be fixed by either [downgrading] (https://karthikponnam.medium.com/flutter-downgrade-any-version-57927705b9e8) Flutter or by upgrading the dependency by running `flutter pub upgrade --major-versions`. 
+
+- Gradle or Kotlin version can be too low. To fix this go to `/Mobile snowledge/mobile_app/android/build.gradle` and upgrade `ext.kotlin_version` and `com.android.tools.build:gradle:` to higher versions. You may also need to upgrade `location` in `Mobile snowledge/mobile_app/pubspec.yaml`
+
+
 
 After all that, run `flutter doctor` in your terminal again. You should see that now your have `Android Studio` running, with an Android emulator.
 
@@ -82,7 +94,7 @@ To run the application locally:
 
 ## Setting up the Database with MySQL
 
-This application runs with MySQL database. You would need `MySQL` to run the backend code.
+This application runs with MySQL database. You need `MySQL` to run web app backend code.
 
 1. Let's install [MySQL](https://dev.mysql.com/downloads/installer/), following [this tutorial](https://www.youtube.com/watch?v=2c2fUOgZMmY). At [3:48](https://youtu.be/2c2fUOgZMmY?t=228), you can choose a `Root Password` of your liking. This will grant us administrator access to the database. You don't need to create a `MySQL User`. We can operate on the database using the `root` user.
 2. After adding `MySQL` into your environment variable `Path` at [5:16](https://youtu.be/2c2fUOgZMmY?t=316), you can check that `MySQL` is working on your computer by running `mysql --version` in your terminal.
@@ -154,12 +166,12 @@ This application runs with MySQL database. You would need `MySQL` to run the bac
    +------------------+
    | Tables_in_pallas |
    +------------------+
-   | kayttajaarviot   |
-   | kayttajat        |
-   | koordinaatit     |
-   | lumilaadut       |
-   | paivitykset      |
-   | segmentit        |
+   | userReviews      |
+   | users            |
+   | coordinates      |
+   | snowTypes        |
+   | updates          |
+   | segments         |
    +------------------+
    ```
 
@@ -169,9 +181,11 @@ Done! Our database is up and running now.
 
 ## Setting up the React web version and build to run on `localhost:3000`
 
-Let's setup our `React` page now.
+Let's setup our `React` page now. NOTE: web version will not run without the database.
 
-1. Navigate to the `./src/map-app/` directory. You should see a `package.json` file there. Run:
+1. Install `Node.js` using this tutorial https://nodejs.org/en/learn/getting-started/how-to-install-nodejs.
+
+2. Navigate to the `./src/map-app/` directory. You should see a `package.json` file there. Run:
 
    ```
    npm install
@@ -179,23 +193,24 @@ Let's setup our `React` page now.
    npm audit --force
    ```
 
-   These commands will install and audit our dependencies so that the app can build properly (well not really, but at least it works).
+   These commands will install and audit our dependencies so that the app can build
 
-2. Check that the app can build by running:
+3. Check that the app can build by running:
 
    ```
    npm start
    ```
 
    If every works, you should see that the app is up and running in [http://localhost:3000/](http://localhost:3000/).
-
-3. Stop the app by `Ctrl + C` in the terminal. We will now build the app to run with the server using:
+   NOTE: the app will not wrok correctly yet. As long as it builds move to the next step.
+   
+4. Stop the app by `Ctrl + C` in the terminal. We will now build the app to run with the server using:
 
    ```
-   npm build
+   npm run build
    ```
 
-4. That's it! Now navigate to `./src/` (you should see an [`app.js`](./src/app.js) file here) and run the `Express` server with:
+5. That's it! Now navigate to `./src/` (you should see an [`app.js`](./src/app.js) file here) and run the `Express` server with:
 
    ```
    node app.js
@@ -210,7 +225,7 @@ Let's setup our `React` page now.
 
    On your browser, navigate to [http://localhost:3000/](http://localhost:3000/) to see that the app is running there.
 
-## Setting up the Python Virtual Environment to run the backend Flask code
+## Setting up the Python Virtual Environment to run the mobile app backend Flask code
 
 We need to install a [virtual environment](https://docs.python.org/3/library/venv.html) for our Python code to keep every dependencies in an isolated folder. We will run our backend code in this virtual environment.
 
