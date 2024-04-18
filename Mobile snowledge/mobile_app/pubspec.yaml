@@ -90,6 +90,8 @@ flutter:
     - assets/images/north_button.png
     - assets/images/location_marker.png
     - assets/images/location_marker_direction.png
+    - assets/images/askForHelpFi.png
+    - assets/images/askForHelpEn.png
     - .env
   #   - images/a_dot_ham.jpeg
 
