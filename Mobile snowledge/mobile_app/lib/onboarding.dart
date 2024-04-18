@@ -59,8 +59,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: SizedBox(
-                  width: _controller.value.size?.width ?? 0,
-                  height: _controller.value.size?.height ?? 0,
+                  width: _controller.value.size.width ?? 0,
+                  height: _controller.value.size.height ?? 0,
                   child: VideoPlayer(_controller),
                 ),
               ),
@@ -79,11 +79,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     }
 
     return Container(
-      /* decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/images/TAUSTAKUVA_SOVELLUS.jpg"),
-            fit: BoxFit.cover),
-      ), */
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
