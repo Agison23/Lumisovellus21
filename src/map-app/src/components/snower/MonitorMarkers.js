@@ -3,6 +3,10 @@ import maplibregl from "maplibre-gl";
 export function createMarkersForMonitors(map, monitorData) {
   let markers = [];
   monitorData.forEach((monitor) => {
+    if (monitorData.temperature === '"No Data' || monitorData.snowDepth === 'No Data') {
+      return;
+    }
+    
     const currentMonitor = document.createElement("img");
     currentMonitor.className = "monitor";
     currentMonitor.src = "icons/fmd_bad.svg";
