@@ -186,7 +186,7 @@ def modify_user():
         if password is not None:
             query += 'password = ?,'
             values.append(password)
-        if is_ admin is not None:
+        if is_admin is not None:
             query += 'is_admin = ?,'
             values.append(is_admin)
 

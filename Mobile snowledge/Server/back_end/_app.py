@@ -78,6 +78,7 @@ def register_user():
             cur = connection.cursor()
             cur.execute(query, (username, password, is_admin))
             connection.commit()
+            cur.close()
     else:
         response = jsonify({"message": "ERROR: Unauthorized, not registered"}), 401
         return response
@@ -130,7 +131,7 @@ def modify_user():
             print("Käyttäjänimi varattuna")
             return response
 
-         if username is not None:
+        if username is not None:
             query += 'username = ?,'
             values.append(username)
 
@@ -157,7 +158,7 @@ def modify_user():
         if password is not None:
             query += 'password = ?,'
             values.append(password)
-        if is_ admin is not None:
+        if is_admin is not None:
             query += 'is_admin = ?,'
             values.append(is_admin)
 
@@ -196,7 +197,7 @@ def delete_user():
     print(user_id)
     query = f"DELETE FROM rescue WHERE user_id = ?;"
     cur = connection.cursor()
-    cur.execute(query,(user_id))
+    cur.execute(query,(user_id,))
     connection.commit()
 
     return jsonify({"message": "OK"}), 200
