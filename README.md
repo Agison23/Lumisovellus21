@@ -92,90 +92,29 @@ To run the application locally:
 
 ---
 
-## Setting up the Database with MySQL
+## Setting up the Databse using Docker
 
-This application runs with MySQL database. You need `MySQL` to run web app backend code.
+The production db is a MySQL db, but for local testing purposes we use MariaDB since it has better support for chars like 'äöå' when running in a container.
 
-1. Let's install [MySQL](https://dev.mysql.com/downloads/installer/), following [this tutorial](https://www.youtube.com/watch?v=2c2fUOgZMmY). At [3:48](https://youtu.be/2c2fUOgZMmY?t=228), you can choose a `Root Password` of your liking. This will grant us administrator access to the database. You don't need to create a `MySQL User`. We can operate on the database using the `root` user.
-2. After adding `MySQL` into your environment variable `Path` at [5:16](https://youtu.be/2c2fUOgZMmY?t=316), you can check that `MySQL` is working on your computer by running `mysql --version` in your terminal.
-3. We can now populate the database with our data. First, login to the database with the `root` user by running this in the terminal.
+For local testing the database should be run in a Docker container. Follow the steps below to get it up and running:
 
-   ```
-    mysql -u root -p
-   ```
+1. Install or make sure you have the Docker Engine installed. The Docker Engine is installed through Docker Desktop by default or if you use Linux and don't want the desktop app you can use your preferred package manager to download the engine or follow the instructions [here](https://docs.docker.com/engine/install/). 
 
-   The `-u` flag the user `root`, `-p` flag for password. `MySQL` will now prompt you to endter the password for `root` user:
+2. Docker Compose is installed alongside Docker Desktop by default, but **for linux users**  if you only installed Docker Engine make sure to follow instructions [here](https://docs.docker.com/compose/install/linux/).
 
-   ```
-   Enter password:
-   ```
+3. At last we can check that both are installed by running the following commands in the terminal:
+   + `docker --version`
+   + `docker-compose --version`
 
-   Enter the password you created earlier in Step 1. We should have access to our database now.
+3. Now that Docker is all setup we can locate ourselves to `<project root>/src/sql`.
 
-   ```
-   Welcome to the MySQL monitor...
-   ...
-   mysql>
-   ```
+4. We can start the database by running `docker compose up (-d)`. After it tells you the containers have started you can check that they are still running using `docker ps`. It should show the images `mariadb` and `adminer` up and running. If they don't show up try using compose without the '-d' (detached mode) flag. It should output if something goes wrong.
 
-4. In the `MySQL Shell`, we create a new database called `pallas`:
+5. We use adminer to view data easily in the db. You can access adminer in the port 8080 and the credentials for the db are found in the compose file. If everything went accordingly you should see six tables present in the first view after logging in. 
 
-   ```
-   mysql> create database pallas;
-   ```
+6. Before running the map-app locally make sure to change your `APP_ENVIRONMENT` variables to `DEVELOPMENT`.
 
-   Mind the `;` at the end of the command! We can check that the database is correctly created by using:
-
-   ```
-   mysql> show databases;
-   ```
-
-   Which should result in something like:
-
-   ```
-   +--------------------+
-   | Database           |
-   +--------------------+
-   | information_schema |
-   | mysql              |
-   | pallas             |   <--- This one!
-   | performance_schema |
-   | sys                |
-   +--------------------+
-   ```
-
-5. Select the database we just created with:
-
-   ```
-   mysql> use pallas;
-   ```
-
-   Now we can populate our database with the data in [our SQL files at ./src/sql/](./src/sql/).
-
-6. Copy and paste the content of the file [luonnit.sql](./src/sql/luonnit.sql) into our terminal. `Enter` to create the tables of this database. After that, keep copy and paste the content of [Lumilaadut.sql](./src/sql/Lumilaadut.sql), then [Segmentit.sql](./src/sql/Segmentit.sql), and [Koordinaatit.sql](./src/sql/Koordinaatit.sql) - in that order - into our terminal and run those commands.
-
-7. We can check that the table are properly populated by running:
-
-   ```
-   mysql> show tables;
-   ```
-
-   Which should show us all the populated tables:
-
-   ```
-   +------------------+
-   | Tables_in_pallas |
-   +------------------+
-   | userReviews      |
-   | users            |
-   | coordinates      |
-   | snowTypes        |
-   | updates          |
-   | segments         |
-   +------------------+
-   ```
-
-Done! Our database is up and running now.
+Done! Our database is up and running now. Next step is running the map app.
 
 ---
 
@@ -190,7 +129,7 @@ Let's setup our `React` page now. NOTE: web version will not run without the dat
    ```
    npm install
    npm audit
-   npm audit --force
+   npm audit fix --force
    ```
 
    These commands will install and audit our dependencies so that the app can build
