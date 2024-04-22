@@ -108,7 +108,7 @@ For local testing the database should be run in a Docker container. Follow the s
 
 3. Now that Docker is all setup we can locate ourselves to `<project root>/src/sql`.
 
-4. We can start the database by running `docker compose up (-d)`. After it tells you the containers have started you can check that they are still running using `docker ps`. It should show the images `mariadb` and `adminer` up and running. If they don't show up try using compose without the '-d' (detached mode) flag. It should output if something goes wrong.
+4. We can start the database by running `docker compose up -d`. After it tells you the containers have started you can check that they are still running using `docker ps`. It should show the images `mariadb` and `adminer` up and running. If they don't show up try using compose without the '-d' (detached mode) flag. It should output if something goes wrong.
 
 5. We use adminer to view data easily in the db. You can access adminer in the port 8080 and the credentials for the db are found in the compose file. If everything went accordingly you should see six tables present in the first view after logging in. 
 
