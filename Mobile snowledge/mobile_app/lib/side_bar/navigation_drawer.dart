@@ -70,7 +70,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   List<BubbleSlide> buildBubbleSlides(AppState appState) {
-    List<BubbleSlide> normalSlides = [
+    /*List<BubbleSlide> normalSlides = [
       BubbleSlides().getRelativeBubbleSlide(
           appState,
           translations['menuNavigationTutorial']['showLocationArea']
@@ -106,7 +106,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           translations['menuNavigationTutorial']['changeLanguage']
               [appState.language],
           _languageDropdownKey)
-    ];
+    ];*/
     List<BubbleSlide> premiumSlides = [
       BubbleSlides().getRelativeBubbleSlide(
           appState,
@@ -154,9 +154,13 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
               [appState.language],
           _languageDropdownKey)
     ];
-    return appState.isPremiumSidebar || appState.userRole == premiumRole
+    return premiumSlides;
+
+    /* TODO:
+    appState.isPremiumSidebar || appState.userRole == premiumRole
         ? premiumSlides
         : normalSlides;
+        */
   }
 
   Widget buildNavigationDrawer(BuildContext context) {
@@ -174,8 +178,14 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   buildHeader(BuildContext context) {
-    var appState = Provider.of<AppState>(context, listen: false);
-    return appState.userRole == premiumRole
+    // var appState = Provider.of<AppState>(context, listen: false);
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+      ),
+    );
+
+    /*appState.userRole == premiumRole
         ? Container(
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
@@ -192,6 +202,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                   })
             ],
           );
+          */
   }
 
   // creating hamburger bar contents
@@ -293,7 +304,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
               if (appState.premiumFeatureMenuItems.contains(index) &&
                   appState.isPremiumSidebar &&
                   appState.userRole != premiumRole) {
-                _showPremiumDialog(context);
+                // _showPremiumDialog(context);
                 return;
               }
               setState(() {
@@ -362,23 +373,23 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
   }
 
   Color _getMenuIconColor(int index, AppState appState) {
-    if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != premiumRole) {
-      return Colors.grey;
+    // if (appState.premiumFeatureMenuItems.contains(index) &&
+    //     appState.userRole != premiumRole) {
+    //   return Colors.grey;
+    // } else {
+    if (index == appState.pageIndex) {
+      return const Color(0xff5A97EE);
     } else {
-      if (index == appState.pageIndex) {
-        return const Color(0xff5A97EE);
-      } else {
-        return Colors.black;
-      }
+      return Colors.black;
     }
+    // }
   }
 
   Widget? _showMenuItemIcon(int index, AppState appState) {
-    if (appState.premiumFeatureMenuItems.contains(index) &&
-        appState.userRole != premiumRole) {
-      return const Icon(Icons.lock_outline);
-    }
+    //if (appState.premiumFeatureMenuItems.contains(index) &&
+    //    appState.userRole != premiumRole) {
+    //  return const Icon(Icons.lock_outline);
+    //}
     if (index == 6 || index == 7) {
       return const Icon(Icons.launch);
     }

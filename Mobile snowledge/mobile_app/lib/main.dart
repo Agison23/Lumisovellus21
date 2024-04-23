@@ -78,9 +78,9 @@ Future<void> fetchUserRole(AppState appState) async {
   }
 
   // navigate to Snowmap if user is normal
-  if (appState.userRole == premiumRole) {
-    appState.setPageIndex = 0;
-  }
+  // if (appState.userRole == premiumRole) {
+  appState.setPageIndex = 0;
+  // }
 }
 
 void initiateTutorial(AppState appState) {
