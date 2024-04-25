@@ -7,7 +7,7 @@ import 'package:mobile_app/state/appState.dart';
 import 'package:mobile_app/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:video_player/video_player.dart';
 import 'translations/translations.dart';
 
 class OnBoardingPage extends StatefulWidget {
@@ -25,9 +25,25 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   final page4ScrollController = ScrollController();
   final page5ScrollController = ScrollController();
 
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller =
+        VideoPlayerController.asset('assets/videos/background_video.mp4')
+          ..initialize().then((_) {
+            setState(() {});
+          });
+    _controller.setLooping(true);
+    _controller.play();
+  }
+
   @override
   void dispose() {
     pageViewController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -35,7 +51,25 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
 
-    Widget onboardingPage = buildOnboardingPage(context, appState);
+    Widget onboardingPage = MaterialApp(
+      home: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: VideoPlayer(_controller),
+                ),
+              ),
+            ),
+            buildOnboardingPage(context, appState)
+          ],
+        ),
+      ),
+    );
     return onboardingPage;
   }
 
@@ -45,11 +79,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     }
 
     return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/images/TAUSTAKUVA_SOVELLUS.jpg"),
-            fit: BoxFit.cover),
-      ),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
