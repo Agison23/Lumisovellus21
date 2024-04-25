@@ -54,7 +54,7 @@ build-flutter-apk-manual:
 
 # Define a job template for Python job
 .python-template: &python-job
-  image: python:3.7
+  image: python:3.9
   before_script:
     - cd 'Mobile snowledge/Server/back_end'
     - python --version && pip --version
