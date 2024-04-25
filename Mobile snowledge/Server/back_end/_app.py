@@ -32,11 +32,7 @@ def rescue_get_users():
         user = db.get_user(connection, user_id)
         return jsonify([{"user_id": user[0], "username": user[1], "is_admin": user[3]}])
 
-    query = f"SELECT * FROM rescue;"
-    cur = connection.cursor()
-    cur.execute(query)
-    response = cur.fetchall()
-
+    response = db.get_rescue_users(connection)
     result_table = []
     for i in response:
         result_table.append({"user_id": i[0], "username": i[1], "is_admin": i[3]})
@@ -72,13 +68,7 @@ def register_user():
         else:
             print("käyttäjänimeä ei ole varattu")
             response = jsonify({"message": "OK: Authorized, User registered"}), 200
-            query = f'INSERT INTO rescue (username, password, is_admin)\
-                        VALUES (?, ?, ?);'
-
-            cur = connection.cursor()
-            cur.execute(query, (username, password, is_admin))
-            connection.commit()
-            cur.close()
+            db.create_rescue_user(connection, username, password, is_admin)
     else:
         response = jsonify({"message": "ERROR: Unauthorized, not registered"}), 401
         return response
@@ -116,8 +106,6 @@ def modify_user():
     # check if username is already reserved for another user
     is_username_reserved = db.check_if_username_exists(connection, username)
 
-    query = "UPDATE rescue SET "
-    values = []
     
     if is_username_changed == None or username == None:
         print("KÄYTTÄJÄNIMI HALUTAAN VAIHTAA")
@@ -132,16 +120,11 @@ def modify_user():
             return response
 
         if username is not None:
-            query += 'username = ?,'
-            values.append(username)
-
+            db.set_rescue_user_username(connection, username, user_id)
         if password is not None:
-            query += 'password = ?,'
-            values.append(password)
-            
+            db.set_rescue_user_password(connection, password, user_id)
         if is_admin is not None:
-            query += 'is_admin = ?,'
-            values.append(is_admin)
+            db.set_rescue_user_role(connection, is_admin, user_id)
 
     else:
         print("KÄYTTÄJÄNIMEÄ EI HALUTA VAIHTAA")
@@ -153,25 +136,11 @@ def modify_user():
             return response
 
         if username is not None:
-            query += 'username = ?,'
-            values.append(username)
+            db.set_rescue_user_username(connection ,username, user_id)
         if password is not None:
-            query += 'password = ?,'
-            values.append(password)
+            db.set_rescue_user_password(connection, password, user_id)
         if is_admin is not None:
-            query += 'is_admin = ?,'
-            values.append(is_admin)
-
-    # viimenen pilkku pois
-
-    query = query[:-1]
-    query += f"WHERE user_id = ?"
-    values.append(user_id)
-
-    #print(query)
-    cur = connection.cursor()
-    cur.execute(query, tuple(values))
-    connection.commit()
+            db.set_rescue_user_role(connection, is_admin, user_id)
 
     return jsonify({"message": "OK"}), 200
 
@@ -195,11 +164,7 @@ def delete_user():
         return 401  # "user_id parameter not provided"
 
     print(user_id)
-    query = f"DELETE FROM rescue WHERE user_id = ?;"
-    cur = connection.cursor()
-    cur.execute(query,(user_id,))
-    connection.commit()
-
+    db.delete_rescue_user(connection, user_id)
     return jsonify({"message": "OK"}), 200
 
 
@@ -226,8 +191,8 @@ def get_users():
 
     auth = db.user_authentication(connection, username, password)
 
-    users = get_list_from_database("dev_id,first_name,last_name", "users")
-    locations = get_latest_locations(time3DaysAgo)
+    users = db.get_list_from_database(connection, "dev_id,first_name,last_name", "users")
+    locations = db.get_latest_locations(connection, time3DaysAgo)
     result_table = []
 
     for user in users:
@@ -256,8 +221,8 @@ def get_help():
 
     auth = db.user_authentication(connection, username, password)
 
-    help_requesters = get_list_from_database("dev_id,timestamp,gpscoord", "help")
-    users = get_list_from_database("dev_id,first_name,last_name", "users")
+    help_requesters = db.get_list_from_database(connection, "dev_id, timestamp, gpscoord", "help_requests")
+    users = db.get_list_from_database(connection, "dev_id, first_name, last_name", "users")
     result_table = []
 
     for data in help_requesters:
@@ -285,7 +250,7 @@ def post_locations():
     header = request.headers
     username, password = header.get("Authorization").split(":")
     data = json.loads(request.data.decode())
-    result = get_last_x_locations(data["num_locations"], data["dev_id"])
+    result = db.get_last_x_locations(connection, data["num_locations"], data["dev_id"])
 
     result_table = []
 
@@ -314,36 +279,6 @@ def after_request(response):
     header["Access-Control-Allow-Headers"] = "*"
     # Other headers can be added here if required
     return response
-
-
-def get_list_from_database(data, source):
-    sql = """SELECT {} FROM {};""".format(data, source)
-
-    cur = connection.cursor()
-    cur.execute(sql)
-    _list = cur.fetchall()
-
-    return _list
-
-
-def get_latest_locations(time3DaysAgo):
-    sql = """SELECT dev_id, max(timestamp), gpscoord
-             FROM data WHERE timestamp > ? GROUP BY dev_id;"""
-
-    cur = connection.cursor()
-    cur.execute(sql, (time3DaysAgo,))
-    users = cur.fetchall()
-    return users
-
-
-def get_last_x_locations(num_locations, dev_id):
-    sql = """SELECT * FROM data WHERE dev_id=? ORDER BY timestamp DESC;"""
-
-    cur = connection.cursor()
-    cur.execute(sql, (dev_id,))
-    locations = cur.fetchall()
-
-    return locations[:num_locations]
 
 
 if __name__ == "__main__":

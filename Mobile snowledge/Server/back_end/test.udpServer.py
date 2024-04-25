@@ -55,7 +55,7 @@ class TestUdpServer(unittest.TestCase):
         self.assertEqual(resultUser[5], 0)
 
         self.cur.execute(
-            f"SELECT * FROM data WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
+            f"SELECT * FROM location_data WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
         )
         resultData = self.cur.fetchone()
         self.assertEqual(resultData[0], devId)
@@ -88,7 +88,7 @@ class TestUdpServer(unittest.TestCase):
 
         self.assertGreater(self.connection.total_changes, 0)
         self.cur.execute(
-            f"SELECT * FROM help WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
+            f"SELECT * FROM help_requests WHERE dev_id='{devId}' AND timestamp='{secondsSinceEpoch}'"
         )
     
 
@@ -104,7 +104,7 @@ class TestUdpServer(unittest.TestCase):
         self.server.udp.sendto(bytes(message, "utf-8"), ("127.0.0.1", 50943))
         time.sleep(1)
 
-        self.cur.execute(f"SELECT * FROM help WHERE dev_id='{devId}'")
+        self.cur.execute(f"SELECT * FROM help_requests WHERE dev_id='{devId}'")
 
         resultHelp = self.cur.fetchone()
         self.assertIsNone(resultHelp)

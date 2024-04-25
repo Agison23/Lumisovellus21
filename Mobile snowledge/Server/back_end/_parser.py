@@ -25,8 +25,8 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     if not exists:
         return
 
-    help = (user_id, timestamp, gpscoord, helptype, chatRoomId)
-    db.create_help_entry(connection, help)
+    help_request = (user_id, timestamp, gpscoord, helptype, chatRoomId)
+    db.create_help_request(connection, help_request)
     if helptype == 'seriousEmerg':
         max_distance = 1
     else:
@@ -45,7 +45,7 @@ def parse_help_request(connection, message, max_time_from_closest_users, s):
     for user in users:
         if user[0] == dev_id:
             continue
-        if not db.create_request_entry(connection, dev_id, user[0]):
+        if not db.create_nearby_user(connection, dev_id, user[0]):
             continue
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
@@ -100,12 +100,12 @@ def parse_database_entry(connection, message, addr, max_entry_age):
 def parse_database_help_delete(connection, message, s):
     dev_id = message[0]
     _, exists = db.check_if_entry_exists(
-        connection, "help", "dev_id", "dev_id", dev_id, False
+        connection, "help_requests", "dev_id", "dev_id", dev_id, False
     )
     if not exists:
         return
 
-    users = db.select_request_entry(connection, dev_id, "help_requester")
+    users = db.select_nearby_user(connection, dev_id, "help_requester")
     for user in users:
         ip_address, _ = db.check_if_entry_exists(
             connection, "users", "ip_address", "dev_id", user[0], False
@@ -113,9 +113,9 @@ def parse_database_help_delete(connection, message, s):
         message = "HELP_OVER:{}".format(user[0])
         ip_address, port = ip_address.split(",")
         s.sendto(bytes(message, "UTF-8"), (ip_address, int(port)))
-        db.delete_request_entry(connection, user[0], "help_giver")
-    db.delete_help_entry(connection, dev_id)
-    db.delete_request_entry(connection, dev_id, "help_requester")
+        db.delete_nearby_user(connection, user[0], "help_giver")
+    db.delete_help_request(connection, dev_id)
+    db.delete_nearby_user(connection, dev_id, "help_requester")
 
 
 def calculate_distance(lat1, lon1, lat2, lon2):
@@ -168,24 +168,24 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
     helper = message[0]
     state = message[1]
     _, exists = db.check_if_entry_exists(
-        connection, "requests", "state", "help_giver", helper, False
+        connection, "nearby_users", "state", "help_giver", helper, False
     )
     if not exists:
         return
 
     requester, _ = db.check_if_entry_exists(
-        connection, "requests", "help_requester", "help_giver", helper, False
+        connection, "nearby_users", "help_requester", "help_giver", helper, False
     )
 
     if state == "0":
-        db.delete_request_entry(connection, helper, "help_giver")
+        db.delete_nearby_user(connection, helper, "help_giver")
         return
 
-    db.update_request_state(connection, state, helper)
+    db.update_nearby_user_state(connection, state, helper)
 
     count = db.get_helper_count(connection, requester)
 
-    entry = db.select_request_entry(connection, helper, "help_giver")
+    entry = db.select_nearby_user(connection, helper, "help_giver")
     ip_address, _ = db.check_if_entry_exists(
         connection, "users", "ip_address", "dev_id", entry[0][1], False
     )
@@ -220,7 +220,7 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
             message = "HELP_OVER:{}".format(_helper[0])
             addr = address.split(",")
             s.sendto(bytes(message, "UTF-8"), (addr[0], int(addr[1])))
-            db.delete_request_entry(connection, _helper[0], "help_giver")
+            db.delete_nearby_user(connection, _helper[0], "help_giver")
 
     return
 
@@ -228,14 +228,14 @@ def parse_help_response(connection, message, max_time_from_closest_users, s):
 def parse_help_decline(connection, message, s):
     helper = message[0]
     _, exists = db.check_if_entry_exists(
-        connection, "requests", "state", "help_giver", helper, False
+        connection, "nearby_users", "state", "help_giver", helper, False
     )
 
     if not exists:
         return
 
-    entry = db.select_request_entry(connection, helper, "help_giver")
-    db.delete_request_entry(connection, helper, "help_giver")
+    entry = db.select_nearby_user(connection, helper, "help_giver")
+    db.delete_nearby_user(connection, helper, "help_giver")
 
     ip_address, _ = db.check_if_entry_exists(
         connection, "users", "ip_address", "dev_id", entry[0][1], False
@@ -276,21 +276,21 @@ def do_work(giver, requester, coordinates):
 
 
 def send_location_updates(connection, timestamp, s):
-    requests = db.get_all_requests(connection)
+    nearby_users = db.get_all_nearby_users(connection)
     coordinates = db.get_latest_locations(connection, timestamp)
     
     messages = []
     help_requesters_auto_end = []
-    for request in requests:
-        message = do_work(request[0], request[1], coordinates)
-        past_requester_gps = db.get_2_latest_location_dev_id(connection,request[1])
+    for user in nearby_users:
+        message = do_work(user[0], user[1], coordinates)
+        past_requester_gps = db.get_2_latest_location_dev_id(connection,user[1])
         if len(past_requester_gps) < 2:
             messages.append(message)
         else:
             two_latest_requester_gps = [past_requester_gps[0][0], past_requester_gps[1][0]]
             if (points_not_in_range(two_latest_requester_gps[0],two_latest_requester_gps[1], DISTANCE_HELP_RESOLVED)):
-                helper_dev_id = request[0]
-                help_requesters_dev_id = request[1]
+                helper_dev_id = user[0]
+                help_requesters_dev_id = user[1]
                 ip_address, _ = db.check_if_entry_exists(
                         connection, "users", "ip_address", "dev_id", helper_dev_id, False
                     )
@@ -308,8 +308,8 @@ def send_location_updates(connection, timestamp, s):
             )
         requester_ip_addr, requester_p = requester_ip.split(",")
         s.sendto(bytes(requester_message_distance_cancel, "UTF-8"), (requester_ip_addr, int(requester_p)))
-        db.delete_help_entry(connection, help_requester_dev_id)
-        db.delete_request_entry(connection, help_requester_dev_id, "help_requester")
+        db.delete_help_request(connection, help_requester_dev_id)
+        db.delete_nearby_user(connection, help_requester_dev_id, "help_requester")
 
     for message in messages:       
         requester_message, requester_addr = message[0][0], message[0][1]
@@ -348,7 +348,7 @@ def parse_get_user_role(connection, message, s, addr):
 
 def send_low_battery_current_requests(connection, dev_id, s):
     # Send when help requester have low battery to helper
-    _, isHelpee = db.check_if_entry_exists(connection, "help", "dev_id", "dev_id", dev_id, False)
+    _, isHelpee = db.check_if_entry_exists(connection, "help_requests", "dev_id", "dev_id", dev_id, False)
 
     if (isHelpee):
         helpers = db.get_helpers(connection, dev_id)
@@ -360,7 +360,7 @@ def send_low_battery_current_requests(connection, dev_id, s):
 
     # Send to help requester when helper have low battery
     else:
-        helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "requests", "help_requester", "help_giver", dev_id, False)
+        helpee_dev_id, helper_exists = db.check_if_entry_exists(connection, "nearby_users", "help_requester", "help_giver", dev_id, False)
         if (helper_exists):
             helpee_ip = db.get_user_ip_by_dev_id(connection, helpee_dev_id)
             helper_phone_num, _ = db.check_if_entry_exists(connection,"users","phone_number","dev_id", dev_id, False)
@@ -394,20 +394,20 @@ def send_existing_requests(connection, message, addr, s):
     except:
         print("INFO:Entry already exists")
 
-    helps = db.get_all_help_requests(connection)
-    for help in helps:
-        req_dev_id = help[0]
+    help_requests = db.get_all_help_requests(connection)
+    for request in help_requests:
+        req_dev_id = request[0]
         if (req_dev_id == dev_id):
-            db.delete_request_entry(connection, "help_giver", dev_id)
-        req_gpscoord = help[2]
-        helptype = help[3]
-        chatRoomId = help[4]
+            db.delete_nearby_user(connection, "help_giver", dev_id)
+        req_gpscoord = request[2]
+        helptype = request[3]
+        chatRoomId = request[4]
         if helptype == 'seriousEmerg':
             max_distance = 1
         else:
             max_distance = 3
         if not points_not_in_range(gpscoord, req_gpscoord, max_distance):
-            db.create_request_entry(connection, req_dev_id, dev_id)
+            db.create_nearby_user(connection, req_dev_id, dev_id)
             gps1 = gpscoord.split(",")
             gps2 = req_gpscoord.split(",")
             dist = calculate_distance(float(gps1[0]),float(gps1[1]),float(gps2[0]),float(gps2[1]))
