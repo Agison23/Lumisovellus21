@@ -296,7 +296,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           leading: Icon(iconData),
           iconColor: _getMenuIconColor(index, appState),
           textColor: _getMenuIconColor(index, appState),
-          title: Text(title),
+          title: Text(title, style: const TextStyle(fontFamily: 'Frontage', fontSize: 12)),
           trailing: _showMenuItemIcon(index, appState),
           onTap: () async {
             if (index == appState.pageIndex) {

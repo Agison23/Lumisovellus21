@@ -83,7 +83,8 @@ class Buttons {
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 15,
+          fontSize: 10,
+          fontFamily: 'Frontage',
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -126,7 +127,8 @@ class Buttons {
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 15,
+          fontSize: 10,
+          fontFamily: 'Frontage',
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -151,7 +153,8 @@ class Buttons {
           translations['help'][appState.language],
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: 10,
+            fontFamily: 'Frontage',
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -193,7 +196,8 @@ class Buttons {
         textAlign: TextAlign.center,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 15,
+          fontSize: 10,
+          fontFamily: 'Frontage',
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -213,7 +217,8 @@ class Buttons {
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 15,
+          fontSize: 10,
+          fontFamily: 'Frontage',
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -239,6 +244,7 @@ class Buttons {
         style: const TextStyle(
           color: Colors.white,
           fontSize: 20,
+          fontFamily: 'Frontage',
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -266,6 +272,7 @@ class Buttons {
         style: const TextStyle(
           color: Colors.white,
           fontSize: 17,
+          fontFamily: 'Baskerville',
         ),
       ),
     );

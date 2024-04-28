@@ -280,7 +280,7 @@ class HelpNeededState extends State<HelpNeeded> {
                   translations['peopleAccepted2'][appState.language],
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
+                fontFamily: 'Baskerville',
                 color: Colors.white,
               ),
             ),
@@ -322,15 +322,27 @@ class HelpNeededState extends State<HelpNeeded> {
                         builder: (context) {
                           return AlertDialog(
                             title: Text(
-                                translations['endRequest'][appState.language]),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child:
-                                    Text(translations['no'][appState.language]),
+                                translations['endRequest'][appState.language],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: 'Baskerville'
+                                )
                               ),
-                              ElevatedButton(
+                            content: Container(
+                              width: double.maxFinite,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.of(context).pop(false),
+                                    child: Text(
+                                        translations['no'][appState.language],
+                                        style: const TextStyle(
+                                          fontFamily: 'Frontage'
+                                        )
+                                    ),
+                                  ),
+                                  ElevatedButton(
                                   onPressed: () async {
                                     _markers.clear();
                                     _helpers.clear();
@@ -352,8 +364,14 @@ class HelpNeededState extends State<HelpNeeded> {
                                     Navigator.pop(context);
                                   },
                                   child: Text(
-                                      translations['yes'][appState.language])),
-                            ],
+                                      translations['yes'][appState.language],
+                                      style: const TextStyle(
+                                        fontFamily: 'Frontage'
+                                      )
+                                  )),
+                                ],
+                              ),
+                            ),
                           );
                         });
                     if (value != null) {
@@ -368,7 +386,7 @@ class HelpNeededState extends State<HelpNeeded> {
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Baskerville'
                     ),
                   ),
                   style: ElevatedButton.styleFrom(

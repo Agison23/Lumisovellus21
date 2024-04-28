@@ -214,7 +214,8 @@ class _UserInfoPageState extends WidgetsBindingObserverState<UserInfoPage> {
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 20,
+                                fontSize: 15,
+                                fontFamily: 'Frontage'
                               ),
                             ),
                             style: ElevatedButton.styleFrom(

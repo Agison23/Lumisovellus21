@@ -89,14 +89,25 @@ class Dialogs {
 
   Widget buildMinorHelpQuestionsDialog(AppState appState) {
     return AlertDialog(
-      title: Text(translations['helpQuery'][appState.language]),
+      title: Text(
+        translations['helpQuery'][appState.language],
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontFamily: 'Baskerville'
+        )
+      ),
       content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return Container(
           key: _continueHelpRequestButtonKey,
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             RadioListTile(
-              title: Text(translations['eqptProblem'][appState.language]),
+              title: Text(
+                translations['eqptProblem'][appState.language],
+                style: const TextStyle(
+                  fontFamily: 'Baskerville'
+                )
+              ),
               value: 1,
               groupValue: _selectedRadio,
               onChanged: (value) {
@@ -104,7 +115,12 @@ class Dialogs {
               },
             ),
             RadioListTile(
-              title: Text(translations['healthIssue'][appState.language]),
+              title: Text(
+                translations['healthIssue'][appState.language],
+                style: const TextStyle(
+                  fontFamily: 'Baskerville'
+                )
+              ),
               value: 2,
               groupValue: _selectedRadio,
               onChanged: (value) {
@@ -112,7 +128,12 @@ class Dialogs {
               },
             ),
             RadioListTile(
-              title: Text(translations['lost'][appState.language]),
+              title: Text(
+                translations['lost'][appState.language],
+                style: const TextStyle(
+                  fontFamily: 'Baskerville'
+                )  
+              ),
               value: 3,
               groupValue: _selectedRadio,
               onChanged: (value) {
@@ -127,13 +148,23 @@ class Dialogs {
                       resetRadioSelection();
                       Navigator.pop(context);
                     }),
-                    child: Text(translations['cancel'][appState.language])),
+                    child: Text(
+                      translations['cancel'][appState.language],
+                      style: const TextStyle(
+                        fontFamily: 'Baskerville'
+                      )  
+                    )),
                 ElevatedButton(
                     onPressed: (() {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (contx) => const HelpNeeded(true)));
                     }),
-                    child: Text(translations['continue'][appState.language]))
+                    child: Text(
+                      translations['continue'][appState.language],
+                      style: const TextStyle(
+                        fontFamily: 'Baskerville'
+                      )
+                    ))
               ],
             )
           ]),
@@ -190,7 +221,8 @@ class Dialogs {
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 30,
+                  fontSize: 20,
+                  fontFamily: 'Frontage',
                   fontWeight: FontWeight.bold),
             ),
             Padding(
@@ -201,6 +233,7 @@ class Dialogs {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
+                  fontFamily: 'Baskerville'
                 ),
               ),
             ),
@@ -212,6 +245,7 @@ class Dialogs {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
+                  fontFamily: 'Baskerville'
                 ),
               ),
             ),
@@ -317,8 +351,8 @@ class Dialogs {
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold),
+                  fontSize: 20,
+                  fontFamily: 'Frontage'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -328,6 +362,7 @@ class Dialogs {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
+                  fontFamily: 'Baskerville',
                 ),
               ),
             ),
@@ -343,7 +378,8 @@ class Dialogs {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 15,
+                      fontFamily: 'Baskerville',
                     ),
                   ),
                 ),
@@ -361,7 +397,11 @@ class Dialogs {
                             prefs.getString('lastLocationTime')) +
                         translations['lastShare2'][appState.language],
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style: const TextStyle(
+                      color: Colors.white, 
+                      fontSize: 18,
+                      fontFamily: 'Baskerville',
+                      ),
                   )
                 : const SizedBox(),
             const SizedBox(height: 80),
@@ -399,7 +439,8 @@ class Dialogs {
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'Baskerville',
+                    ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -409,6 +450,7 @@ class Dialogs {
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
+                      fontFamily: 'Baskerville',
                     ),
                   ),
                 ),
@@ -459,7 +501,8 @@ class Dialogs {
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'Baskerville',
+                    ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
@@ -469,6 +512,7 @@ class Dialogs {
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
+                      fontFamily: 'Baskerville',
                     ),
                   ),
                 ),
@@ -523,7 +567,8 @@ class Dialogs {
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
-                          fontWeight: FontWeight.bold),
+                          fontFamily: 'Baskerville',
+                        ),
                     ),
                     const SizedBox(height: 50),
                     Column(
@@ -565,7 +610,8 @@ class Dialogs {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 30,
+                      fontSize: 20,
+                      fontFamily: 'Frontage',
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
@@ -605,7 +651,8 @@ class Dialogs {
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'Baskerville',
+                    ),
                 ),
                 const SizedBox(height: 20),
                 Padding(
@@ -652,7 +699,8 @@ class Dialogs {
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'Baskerville',
+                    ),
                 ),
                 const SizedBox(height: 20),
                 Padding(
@@ -701,7 +749,7 @@ class Dialogs {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Baskerville',
                       ),
                     ),
                     Padding(
@@ -715,6 +763,7 @@ class Dialogs {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
+                          fontFamily: 'Baskerville',
                         ),
                       ),
                     ),
@@ -727,6 +776,7 @@ class Dialogs {
                           text: TextSpan(
                             style: const TextStyle(
                               fontSize: 18,
+                              fontFamily: 'Baskerville',
                               color: Colors.white,
                             ),
                             children: <TextSpan>[
@@ -749,6 +799,7 @@ class Dialogs {
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 18,
+                          fontFamily: 'Baskerville',
                         ),
                       ),
                     const SizedBox(height: 20),
