@@ -114,6 +114,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         [appState.language],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
+                                        fontFamily: 'Baskerville',
                                         height: 1,
                                         fontSize: 20,
                                         color: Colors.white)),
@@ -142,6 +143,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                               const SizedBox(height: 15),
                               Center(
                                 child: DropdownButton<String>(
+                                  style: const TextStyle(
+                                    fontFamily: 'Baskerville',
+                                    color: Colors.black
+                                    ),
                                   key: const ValueKey('languageStartDropdown'),
                                   value: appState.languageName,
                                   onChanged: (String? value) {
@@ -181,6 +186,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   style: const TextStyle(
                                       height: 1,
                                       fontSize: 20,
+                                      fontFamily: 'Frontage',
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white)),
                               const SizedBox(height: 30.0),
@@ -191,6 +197,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   style: const TextStyle(
                                       height: 1,
                                       fontSize: 20,
+                                      fontFamily: 'Baskerville',
                                       color: Colors.white)),
                               const SizedBox(height: 30),
                               Buttons.onboardingButton(
@@ -245,6 +252,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   style: const TextStyle(
                                       height: 1,
                                       fontSize: 20,
+                                      fontFamily: 'Frontage',
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white)),
                               const SizedBox(height: 30.0),
@@ -255,6 +263,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   style: const TextStyle(
                                       height: 1,
                                       fontSize: 20,
+                                      fontFamily: 'Baskerville',
                                       color: Colors.white)),
                               const SizedBox(height: 20),
                               const SetSharingLocation(),
@@ -291,8 +300,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         [appState.language],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
-                                        height: 1,
-                                        fontSize: 20,
+                                        height: 1.5,
+                                        fontSize: 18,
+                                        fontFamily: 'Frontage',
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 const SizedBox(height: 15),
@@ -303,6 +313,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                     style: const TextStyle(
                                         height: 1,
                                         fontSize: 20,
+                                        fontFamily: 'Baskerville',
                                         color: Colors.white)),
                                 const SizedBox(height: 10),
                                 SingleChildScrollView(
@@ -336,6 +347,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   style: const TextStyle(
                                       height: 1,
                                       fontSize: 20,
+                                      fontFamily: 'Baskerville',
                                       color: Colors.white)),
                               const SizedBox(height: 50),
                               Buttons.onboardingButton(context,
@@ -391,7 +403,11 @@ class UserInfoFormState extends State<UserInfoForm> {
         children: [
           TextFormField(
             key: const ValueKey('fName'),
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style: const TextStyle(
+              color: Colors.white, 
+              fontSize: 20, 
+              fontFamily: 'Baskerville'
+              ),
             textAlign: TextAlign.center,
             controller: fNameController,
             validator: (value) {
@@ -414,13 +430,21 @@ class UserInfoFormState extends State<UserInfoForm> {
                     child: Text(
                   translations['fName'][appState.language],
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                      color: Colors.white.withOpacity(0.5), 
+                      fontSize: 20,
+                      fontFamily: 'Frontage',
+                      fontWeight: FontWeight.bold
+                      ),
                 ))),
           ),
           const SizedBox(height: 5.0),
           TextFormField(
             key: const ValueKey('sName'),
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style: const TextStyle(
+              color: Colors.white, 
+              fontSize: 20,
+              fontFamily: 'Baskerville'
+              ),
             textAlign: TextAlign.center,
             controller: lNameController,
             validator: (value) {
@@ -443,13 +467,21 @@ class UserInfoFormState extends State<UserInfoForm> {
                     child: Text(
                   translations['surname'][appState.language],
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                      color: Colors.white.withOpacity(0.5), 
+                      fontSize: 20,
+                      fontFamily: 'Frontage',
+                      fontWeight: FontWeight.bold
+                      ),
                 ))),
           ),
           const SizedBox(height: 5.0),
           TextFormField(
             key: const ValueKey('phone'),
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style: const TextStyle(
+              color: Colors.white, 
+              fontSize: 20,
+              fontFamily: 'Baskerville'
+              ),
             textAlign: TextAlign.center,
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -472,7 +504,11 @@ class UserInfoFormState extends State<UserInfoForm> {
                     child: Text(
                   translations['phoneNum'][appState.language],
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.5), fontSize: 20),
+                      color: Colors.white.withOpacity(0.5), 
+                      fontSize: 20,
+                      fontFamily: 'Frontage',
+                      fontWeight: FontWeight.bold
+                      ),
                 ))),
           ),
           const SizedBox(height: 30.0),

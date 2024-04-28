@@ -179,7 +179,8 @@ class HelpOfferedState extends State<HelpOffered> {
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
-                  fontSize: 15),
+                  fontSize: 15,
+                  fontFamily: 'Frontage'),
             ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.red[200],
@@ -321,26 +322,47 @@ class HelpOfferedState extends State<HelpOffered> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text(translations['stopHelpQuery'][appState.language]),
-                  actions: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      child: Text(translations['no'][appState.language]),
+                  title: Text(translations['stopHelpQuery'][appState.language],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Baskerville'
+                    )
+                  ),
+                  content: Container(
+                    width: double.maxFinite,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: Text(
+                            translations['no'][appState.language],
+                            style: const TextStyle(
+                              fontFamily: 'Frontage'
+                            )
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _streamSubscription?.cancel();
+                            appState.setChatRoomId = '';
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainPage()),
+                                (route) => false);
+                          },
+                          child: Text(
+                            translations['yes'][appState.language],
+                            style: const TextStyle(
+                              fontFamily: 'Frontage'
+                            )  
+                          )),
+                      ],
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          _streamSubscription?.cancel();
-                          appState.setChatRoomId = '';
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MainPage()),
-                              (route) => false);
-                        },
-                        child: Text(translations['yes'][appState.language])),
-                  ],
+                  ),
                 );
               });
           if (value != null) {
@@ -354,8 +376,8 @@ class HelpOfferedState extends State<HelpOffered> {
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            fontFamily: 'Baskerville'
           ),
         ),
         style: ElevatedButton.styleFrom(

@@ -122,3 +122,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: Frontage
+      fonts:
+        - asset: assets/fonts/Frontage-Regular.otf
+        - asset: assets/fonts/Frontage-Bold.otf
+          weight: 700
+    - family: Baskerville
+      fonts:
+        - asset: assets/fonts/LibreBaskerville-Regular.ttf

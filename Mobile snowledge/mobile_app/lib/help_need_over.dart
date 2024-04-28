@@ -30,6 +30,7 @@ class HelpOver extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     height: 3,
                     fontSize: 30,
+                    fontFamily: 'Frontage',
                   )),
               Padding(
                 padding: const EdgeInsets.only(top: 100.0),

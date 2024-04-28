@@ -147,7 +147,10 @@ class _BottomBarState extends WidgetsBindingObserverState<BottomBar> {
           const SizedBox(width: 10),
           Text(
             translations['location'][appState.language],
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(
+              color: Colors.white,
+              fontFamily: 'Baskerville'
+              ),
           )
         ],
       ),
