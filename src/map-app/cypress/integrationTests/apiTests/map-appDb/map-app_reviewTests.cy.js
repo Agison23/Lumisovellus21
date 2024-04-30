@@ -57,14 +57,14 @@ describe("Map-app database API test", () => {
 
     // doesn't work yet because bad error handling in api.js, only throw js error, didn't send back response cause server to crash
     describe.skip("Test invalid request params/body", () => {
-      it(`POST ${userReviewPath}/10000 should return segment numerot eivät täsmää`, () => {
+      it(`POST ${userReviewPath}/10000 should return Segmentti numerot eivät täsmää`, () => {
         cy.request({
           method: "POST",
           url: `${userReviewPath}/10000`,
           headers: headers,
         }).then((response) => {
           expect(response.status).to.equal(200);
-          expect(response.body).to.equal("segment numerot eivät täsmää");
+          expect(response.body).to.equal("Segmentti numerot eivät täsmää");
         });
       });
 
@@ -88,18 +88,18 @@ describe("Map-app database API test", () => {
         });
       });
 
-      it(`POST ${adminReviewUpdatePath}/10000 should return segment numerot eivät täsmää`, () => {
+      it(`POST ${adminReviewUpdatePath}/10000 should return Segmentti numerot eivät täsmää`, () => {
         cy.request({
           method: "POST",
           url: `${adminReviewUpdatePath}/10000`,
           headers: headers,
         }).then((response) => {
-          expect(response.body).to.equal("segment numerot eivät täsmää");
+          expect(response.body).to.equal("Segmentti numerot eivät täsmää");
           expect(response.status).to.equal(200);
         });
       });
 
-      it(`POST ${adminReviewUpdatePath}/1 should return segment numerot eivät täsmää because request param and body segment id mismatch`, () => {
+      it(`POST ${adminReviewUpdatePath}/1 should return Segmentti numerot eivät täsmää because request param and body segment id mismatch`, () => {
         cy.request({
           method: "POST",
           url: `${adminReviewUpdatePath}/1`,
@@ -108,7 +108,7 @@ describe("Map-app database API test", () => {
             segment: 2,
           },
         }).then((response) => {
-          expect(response.body).to.equal("segment numerot eivät täsmää");
+          expect(response.body).to.equal("Segmentti numerot eivät täsmää");
           expect(response.status).to.equal(200);
         });
       });

@@ -120,7 +120,7 @@ describe("Map-app database API test", () => {
           const passwordError = errors[3];
           expect(passwordError)
             .to.have.property("msg")
-            .to.equal("salasanan oltava vähintään 7 merkkiä");
+            .to.equal("Salasanan oltava vähintään 7 merkkiä");
           expect(passwordError).to.have.property("param").to.equal("password");
           expect(passwordError).to.have.property("location").to.equal("body");
         });
