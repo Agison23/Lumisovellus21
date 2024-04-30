@@ -11,18 +11,15 @@ SQL_CONST = {
                             VALUES  ('test','test','0','127.0.0.1,54503','358000', '0', 'normal'),
                                     ('test1','test1','1','127.0.0.1,54505','358111', '1', 'premium'),
                                     ('test2','test2','2','127.0.0.1,54504','358222', '0', 'normal');""",
-        "sql_table_data":  """ INSERT INTO data(dev_id, timestamp, gpscoord)
+        "sql_table_location_data":  """ INSERT INTO location_data(dev_id, timestamp, gpscoord)
                             VALUES  ('test',1676051700,'68.2861,23.0780'),
                                     ('test1',1675965300,'67.0826,25.0381'),
                                     ('test1',1675865300,'68.0826,24.0381'),
                                     ('test2',1675878900,'68.0769,24.0806'),
                                     ('test2',1675778900,'68.0769,24.0806');""",
-        "sql_table_help": """ INSERT INTO help(dev_id, timestamp, gpscoord, help_type, room_id)
+        "sql_table_help_requests": """ INSERT INTO help_requests(dev_id, timestamp, gpscoord, help_type, room_id)
                                 VALUES  ('test',1676102100,'68.0826,24.038','emergency', 'test');""",
-        "sql_table_accounts": """INSERT INTO accounts(username, password, role)
-                                VALUES  ('admin1','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','admin'),
-                                    ('operator','06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23','operator'); """,
-        "sql_table_requests": """INSERT INTO requests(help_giver, help_requester, state)
+        "sql_table_nearby_users": """INSERT INTO nearby_users(help_giver, help_requester, state)
                                 VALUES ('test','test1',1),
                                        ('test2','test1',0);""",
         "sql_table_rescue": """INSERT INTO rescue(username, password, is_admin)
@@ -36,10 +33,11 @@ def insert_data(connection):
     print("Inserting test data")
     cur = connection.cursor()
     cur.execute(SQL_CONST["insert_data"]["sql_table_users"])
-    cur.execute(SQL_CONST["insert_data"]["sql_table_data"])
-    cur.execute(SQL_CONST["insert_data"]["sql_table_help"])
-    cur.execute(SQL_CONST["insert_data"]["sql_table_accounts"])
-    cur.execute(SQL_CONST["insert_data"]["sql_table_requests"])
+    cur.execute(SQL_CONST["insert_data"]["sql_table_location_data"])
+    cur.execute(SQL_CONST["insert_data"]["sql_table_help_requests"])
+    #removed table because it does not seem to do anything
+    #cur.execute(SQL_CONST["insert_data"]["sql_table_accounts"])
+    cur.execute(SQL_CONST["insert_data"]["sql_table_nearby_users"])
     cur.execute(SQL_CONST["insert_data"]["sql_table_rescue"])
     connection.commit()
 
@@ -57,11 +55,11 @@ class TestDatabaseFunctions(unittest.TestCase):
     def tearDown(self):
         # Reset the database.
         cur = self.connection.cursor()
-        cur.execute("DROP TABLE IF EXISTS data")
-        cur.execute("DROP TABLE IF EXISTS help")
+        cur.execute("DROP TABLE IF EXISTS location_data")
+        cur.execute("DROP TABLE IF EXISTS help_requests")
         cur.execute("DROP TABLE IF EXISTS users")
-        cur.execute("DROP TABLE IF EXISTS accounts")
-        cur.execute("DROP TABLE IF EXISTS requests")
+        #cur.execute("DROP TABLE IF EXISTS accounts")
+        cur.execute("DROP TABLE IF EXISTS nearby_users")
         cur.execute("DROP TABLE IF EXISTS rescue")
         cur.execute("DROP TABLE IF EXISTS role")
         self.connection.commit()
@@ -105,7 +103,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(users_data, expected_users_data)
 
         # Check the 'data' table
-        cursor.execute("SELECT * FROM data")
+        cursor.execute("SELECT * FROM location_data")
         data_data = cursor.fetchall()
         expected_data_data = [
             ('test', 1676051700, '68.2861,23.0780'),
@@ -117,7 +115,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(data_data, expected_data_data)
 
         # Check the 'help' table
-        cursor.execute("SELECT * FROM help")
+        cursor.execute("SELECT * FROM help_requests")
         help_data = cursor.fetchall()
         expected_help_data = [
             ('test', 1676102100, '68.0826,24.038', 'emergency', 'test')
@@ -125,18 +123,18 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(help_data, expected_help_data)
 
         # Check the 'accounts' table
-        cursor.execute("SELECT * FROM accounts")
-        accounts_data = cursor.fetchall()
+        #cursor.execute("SELECT * FROM accounts")
+        #accounts_data = cursor.fetchall()
         expected_accounts_data = [
             ('admin1', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin'),
             ('operator', '06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23', 'operator')
         ]
          # Check if each element in expected data is present in actual data
-        for expected_entry in expected_accounts_data:
-            self.assertIn(expected_entry, accounts_data)
+        #for expected_entry in expected_accounts_data:
+            #self.assertIn(expected_entry, accounts_data)
 
         # Check the 'requests' table
-        cursor.execute("SELECT * FROM requests")
+        cursor.execute("SELECT * FROM nearby_users")
         requests_data = cursor.fetchall()
         expected_requests_data = [
             ('test', 'test1', 1),
@@ -249,10 +247,10 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertFalse(success)
         self.assertIsNone(exists)
 
-    # Test the rescue_users_from_db() function.
+    # Test the get_rescue_users() function.
 
-    # def test_rescue_users_from_db(self):
-    #     result = db.rescue_users_from_db(self.connection)
+    # def test_get_rescue_users(self):
+    #     result = db.get_rescue_users(self.connection)
 
     #     self.assertIsNotNone(result)
 
@@ -509,47 +507,47 @@ class TestDatabaseFunctions(unittest.TestCase):
 
         db.create_data_entry(self.connection, data)
         # Check if the data entry exists in the database.
-        _, res = db.check_if_entry_exists(self.connection, 'data', 'dev_id', 'dev_id' ,'test1', False)
+        _, res = db.check_if_entry_exists(self.connection, 'location_data', 'dev_id', 'dev_id' ,'test1', False)
 
         self.assertTrue(res)
 
-    # Test the create_help_entry() function.
+    # Test the create_help_request() function.
 
-    def test_create_help_entry_with_valid_help_data(self):
-        help = ['test5', 1676102100, '68.0826,24.038', 'emergency', '1']
+    def test_create_help_request_with_valid_help_data(self):
+        help_request = ['test5', 1676102100, '68.0826,24.038', 'emergency', '1']
 
-        db.create_help_entry(self.connection, help)
+        db.create_help_request(self.connection, help_request)
                 # Check if the data entry exists in the database.
-        _, res = db.check_if_entry_exists(self.connection, 'data', 'dev_id', 'dev_id' , 'test1', False)
+        _, res = db.check_if_entry_exists(self.connection, 'location_data', 'dev_id', 'dev_id' , 'test1', False)
 
         self.assertTrue(res)
 
-    # Test the create_request_entry() function.
+    # Test the create_nearby_user() function.
 
-    def test_create_request_entry_with_valid_request_data(self):
+    def test_create_nearby_user_with_valid_request_data(self):
         requester = 'test2'
         helper = 'test5'
 
-        created = db.create_request_entry(self.connection, requester, helper)
+        created = db.create_nearby_user(self.connection, requester, helper)
 
         self.assertTrue(created)
 
-    def test_create_request_entry_with_existing_request_data(self):
+    def test_create_nearby_user_with_existing_request_data(self):
         requester = 'test2'
         helper = 'test5'
 
-        create_1 = db.create_request_entry(self.connection, requester, helper)
+        create_1 = db.create_nearby_user(self.connection, requester, helper)
         self.assertTrue(create_1)
-        create_2 = db.create_request_entry(self.connection, requester, helper)
+        create_2 = db.create_nearby_user(self.connection, requester, helper)
         self.assertFalse(create_2)
 
-#     # Test the update_request_state() function.
+#     # Test the update_nearby_user_state() function.
 
-#     def test_update_request_state_with_valid_state(self):
+#     def test_update_nearby_user_state_with_valid_state(self):
 #         helper = 'test5'
 #         state = 1
 
-#         db.update_request_state(self.connection, state, helper)
+#         db.update_nearby_user_state(self.connection, state, helper)
 
 #         self.assertTrue(True)
 
@@ -568,48 +566,48 @@ class TestDatabaseFunctions(unittest.TestCase):
 
 #         self.assertEqual(updated_ip_address, ip_address)
 
-#     # Test the select_request_entry() function.
+#     # Test the select_nearby_user() function.
 
-#     def test_select_request_entry_with_valid_entry(self):
+#     def test_select_nearby_user_with_valid_entry(self):
 #         entry = 'test'
 #         ID = 'help_giver'
 
-#         request_entry = db.select_request_entry(self.connection, entry, ID)
+#         request_entry = db.select_nearby_user(self.connection, entry, ID)
 
 #         self.assertIsNotNone(request_entry)
 
-    # Test the get_all_requests() function.
+    # Test the get_all_nearby_users() function.
 
-    def test_get_all_requests_with_valid_data(self):
-        requests = db.get_all_requests(self.connection)
+    def test_get_all_nearby_users_with_valid_data(self):
+        nearby_users = db.get_all_nearby_users(self.connection)
 
-        self.assertIsNotNone(requests)
+        self.assertIsNotNone(nearby_users)
 
-# Test the delete_request_entry() function.
+# Test the delete_nearby_user() function.
 
-    def test_delete_request_entry_with_valid_entry(self):
+    def test_delete_nearby_user_with_valid_entry(self):
         entry = 'test1'
         ID = 'help_giver'
 
-        db.delete_request_entry(self.connection, entry, ID)
+        db.delete_nearby_user(self.connection, entry, ID)
 
         # Check if the request entry was deleted from the database.
         cur = self.connection.cursor()
-        cur.execute('SELECT * FROM requests WHERE help_giver = ?', (entry,))
+        cur.execute('SELECT * FROM nearby_users WHERE help_giver = ?', (entry,))
         request_entries = cur.fetchall()
 
         self.assertEqual(len(request_entries), 0)
 
-    # Test the delete_help_entry() function.
+    # Test the delete_help_request() function.
 
-    def test_delete_help_entry_with_valid_dev_id(self):
+    def test_delete_help_request_with_valid_dev_id(self):
         dev_id = 'test'
 
-        db.delete_help_entry(self.connection, dev_id)
+        db.delete_help_request(self.connection, dev_id)
 
         # Check if the help entry was deleted from the database.
         cur = self.connection.cursor()
-        cur.execute('SELECT * FROM help WHERE dev_id = ?', (dev_id,))
+        cur.execute('SELECT * FROM help_requests WHERE dev_id = ?', (dev_id,))
         help_entries = cur.fetchall()
 
         self.assertEqual(len(help_entries), 0)
@@ -636,7 +634,7 @@ class TestDatabaseFunctions(unittest.TestCase):
 
         # Check if the old entries were deleted from the database.
         cur = self.connection.cursor()
-        cur.execute('SELECT * FROM data WHERE (dev_id = ? AND timestamp = ?) OR (dev_id = ? AND timestamp = ?)', (entries[0][0], entries[0][1], entries[1][0], entries[1][1]))
+        cur.execute('SELECT * FROM location_data WHERE (dev_id = ? AND timestamp = ?) OR (dev_id = ? AND timestamp = ?)', (entries[0][0], entries[0][1], entries[1][0], entries[1][1]))
         old_entries = cur.fetchall()
 
         self.assertEqual(len(old_entries), 0)
