@@ -10,15 +10,15 @@ describe("Map-app database API test", () => {
       }).then((response) => {
         expect(response.body).to.be.an("array").to.have.lengthOf(21);
         cy.wrap(response.body).each(($element) => {
-          cy.wrap($element).should("have.property", "ID").and("be.a", "number");
+          cy.wrap($element).should("have.property", "id").and("be.a", "number");
           cy.wrap($element)
-            .should("have.property", "Nimi")
+            .should("have.property", "name")
             .and("be.a", "string");
           cy.wrap($element)
-            .should("have.property", "Vari")
+            .should("have.property", "colour")
             .and("be.a", "string");
           cy.wrap($element)
-            .should("have.property", "Hiihdettavyys")
+            .should("have.property", "skiability")
             .should((value) => {
               expect(value).to.satisfy(
                 (val) => val === null || !isNaN(val),
@@ -26,7 +26,7 @@ describe("Map-app database API test", () => {
               );
             });
           cy.wrap($element)
-            .should("have.property", "Kategoria_ID")
+            .should("have.property", "categoryId")
             .should((value) => {
               expect(value).to.satisfy(
                 (val) => val === null || !isNaN(val),
@@ -34,7 +34,7 @@ describe("Map-app database API test", () => {
               );
             });
           cy.wrap($element)
-            .should("have.property", "Lumityyppi_selite")
+            .should("have.property", "explanation")
             .and("be.a", "string");
         });
       });
