@@ -252,8 +252,8 @@ describe("Map-app database API test", () => {
         const body = {
           segment: 1,
           description: "testing",
-          snowType_ID1: 1,
-          snowType_ID2: 2,
+          snowTypeId1: 1,
+          snowTypeId2: 2,
           secondaryId1: 3,
           secondaryId2: 4,
         };
@@ -286,31 +286,31 @@ describe("Map-app database API test", () => {
             .to.have.property("description")
             .to.equal(body.description);
           expect(currentSegmentUpdate)
-            .to.have.property("snowType_ID1")
-            .to.equal(body.snowType_ID1);
+            .to.have.property("snowTypeId1")
+            .to.equal(body.snowTypeId1);
           expect(currentSegmentUpdate)
-            .to.have.property("snowType_ID2")
-            .to.equal(body.snowType_ID2);
+            .to.have.property("snowTypeId2")
+            .to.equal(body.snowTypeId2);
           expect(currentSegmentUpdate)
             .to.have.property("secondaryId1")
             .to.equal(body.secondaryId1);
           expect(currentSegmentUpdate)
             .to.have.property("secondaryId2")
             .to.equal(body.secondaryId2);
-          expect(currentSegmentUpdate).to.have.property("A1_time").to.be.null;
-          expect(currentSegmentUpdate).to.have.property("A1_snowType").to.be
+          expect(currentSegmentUpdate).to.have.property("a1Time").to.be.null;
+          expect(currentSegmentUpdate).to.have.property("a1SnowType").to.be
             .null;
-          expect(currentSegmentUpdate).to.have.property("A1_details").to.be
+          expect(currentSegmentUpdate).to.have.property("a1Details").to.be
             .null;
-          expect(currentSegmentUpdate).to.have.property("A2_time").to.be.null;
-          expect(currentSegmentUpdate).to.have.property("A2_snowType").to.be
+          expect(currentSegmentUpdate).to.have.property("a2Time").to.be.null;
+          expect(currentSegmentUpdate).to.have.property("a2SnowType").to.be
             .null;
-          expect(currentSegmentUpdate).to.have.property("A2_details").to.be
+          expect(currentSegmentUpdate).to.have.property("a2Details").to.be
             .null;
-          expect(currentSegmentUpdate).to.have.property("A3_time").to.be.null;
-          expect(currentSegmentUpdate).to.have.property("A3_snowType").to.be
+          expect(currentSegmentUpdate).to.have.property("a3Time").to.be.null;
+          expect(currentSegmentUpdate).to.have.property("a3SnowType").to.be
             .null;
-          expect(currentSegmentUpdate).to.have.property("A3_details").to.be
+          expect(currentSegmentUpdate).to.have.property("a3Details").to.be
             .null;
         });
       });
