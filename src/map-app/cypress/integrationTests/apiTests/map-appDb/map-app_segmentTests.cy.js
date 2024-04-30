@@ -66,24 +66,24 @@ describe("Map-app database API test", () => {
             .should("be.an", "array")
             .and("to.have.lengthOf.at.least", 2)
             .each((segment) => {
-              expect(segment).to.have.property("Segmentti").to.be.a("number");
-              expect(segment).to.have.property("Aika").to.be.a("string");
-              const aika = new Date(segment.Aika);
-              expect(aika instanceof Date).to.be.true;
-              expect(segment).to.have.property("Kuvaus");
-              expect(segment).to.have.property("Lumilaatu_ID1");
-              expect(segment).to.have.property("Lumilaatu_ID2");
-              expect(segment).to.have.property("Toissijainen_ID1");
-              expect(segment).to.have.property("Toissijainen_ID2");
-              expect(segment).to.have.property("A1_Aika");
-              expect(segment).to.have.property("A1_Lumilaatu");
-              expect(segment).to.have.property("A1_Lisätiedot");
-              expect(segment).to.have.property("A2_Aika");
-              expect(segment).to.have.property("A2_Lumilaatu");
-              expect(segment).to.have.property("A2_Lisätiedot");
-              expect(segment).to.have.property("A3_Aika");
-              expect(segment).to.have.property("A3_Lumilaatu");
-              expect(segment).to.have.property("A3_Lisätiedot");
+              expect(segment).to.have.property("segment").to.be.a("number");
+              expect(segment).to.have.property("time").to.be.a("string");
+              const time = new Date(segment.time);
+              expect(time instanceof Date).to.be.true;
+              expect(segment).to.have.property("description");
+              expect(segment).to.have.property("snowTypeId1");
+              expect(segment).to.have.property("snowTypeId2");
+              expect(segment).to.have.property("secondaryId1");
+              expect(segment).to.have.property("secondaryId2");
+              expect(segment).to.have.property("a1Time");
+              expect(segment).to.have.property("a1SnowType");
+              expect(segment).to.have.property("a1Details");
+              expect(segment).to.have.property("a2Time");
+              expect(segment).to.have.property("a2SnowType");
+              expect(segment).to.have.property("a2Details");
+              expect(segment).to.have.property("a3Time");
+              expect(segment).to.have.property("a3SnowType");
+              expect(segment).to.have.property("a3Details");
             });
         });
       });
@@ -97,31 +97,27 @@ describe("Map-app database API test", () => {
           expect(response.status).to.equal(200);
           expect(response.body).to.be.an("array").to.have.lengthOf(1);
 
-          expect(response.body).to.have.property("Segmentti").to.equal(5);
-          expect(response.body).to.have.property("Aika").to.be.a("string");
-          const aika = new Date(response.body.Aika);
-          expect(aika instanceof Date).to.be.true;
+          expect(response.body).to.have.property("segment").to.equal(5);
+          expect(response.body).to.have.property("time").to.be.a("string");
+          const time = new Date(response.body.time);
+          expect(time instanceof Date).to.be.true;
           expect(response.body)
-            .to.have.property("Kuvaus")
+            .to.have.property("description")
             .to.equal("comment test");
-          expect(response.body).to.have.property("Tekija").to.be.a("number");
-          expect(response.body).to.have.property("Lumilaatu_ID1").to.equal(1);
-          expect(response.body).to.have.property("Lumilaatu_ID2").to.equal(2);
-          expect(response.body)
-            .to.have.property("Toissijainen_ID1")
-            .to.equal(3);
-          expect(response.body)
-            .to.have.property("Toissijainen_ID2")
-            .to.equal(4);
-          expect(response.body).to.have.property("A1_Aika");
-          expect(response.body).to.have.property("A1_Lumilaatu");
-          expect(response.body).to.have.property("A1_Lisätiedot");
-          expect(response.body).to.have.property("A2_Aika");
-          expect(response.body).to.have.property("A2_Lumilaatu");
-          expect(response.body).to.have.property("A2_Lisätiedot");
-          expect(response.body).to.have.property("A3_Aika");
-          expect(response.body).to.have.property("A3_Lumilaatu");
-          expect(response.body).to.have.property("A3_Lisätiedot");
+          expect(response.body).to.have.property("creator").to.be.a("number");
+          expect(response.body).to.have.property("snowTypeId1").to.equal(1);
+          expect(response.body).to.have.property("snowTypeId2").to.equal(2);
+          expect(response.body).to.have.property("secondaryId1").to.equal(3);
+          expect(response.body).to.have.property("secondaryId2").to.equal(4);
+          expect(response.body).to.have.property("a1Time");
+          expect(response.body).to.have.property("a1SnowType");
+          expect(response.body).to.have.property("a1Details");
+          expect(response.body).to.have.property("a2Time");
+          expect(response.body).to.have.property("a2SnowType");
+          expect(response.body).to.have.property("a2Details");
+          expect(response.body).to.have.property("a3Time");
+          expect(response.body).to.have.property("a3SnowType");
+          expect(response.body).to.have.property("a3Details");
         });
       });
 
