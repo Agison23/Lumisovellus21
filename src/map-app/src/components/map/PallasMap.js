@@ -102,7 +102,6 @@ function PallasMap(props) {
     async function fetchData() {
       await snowerService.fetchDataAndStore();
       const data = snowerService.getData();
-        console.log(data);
       setMonitorData(data);
       setDataFetched(true);
     }
@@ -497,7 +496,7 @@ function PallasMap(props) {
             props.chosenSegment(
               segmentArray.find((item) => item.id === e.features[0].id)
             );
-            console.log(e.features[0].properties.snowType);
+            //console.log(e.features[0].properties.snowType);
             map.setFilter("segments-selected", [
               "==",
               ["get", "segmentId"],

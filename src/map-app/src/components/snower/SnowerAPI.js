@@ -37,11 +37,9 @@ function formatValue(value, unit) {
   if (isNaN(num)) {
     return "Not available";
   }
-    console.log(unit);
   if (unit === "Celsius") {
       unit = "°C";
   }
-    console.log(unit);
   return `${num.toFixed(2)} ${unit}`;
 }
 
