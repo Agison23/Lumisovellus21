@@ -37,6 +37,9 @@ function formatValue(value, unit) {
   if (isNaN(num)) {
     return "Not available";
   }
+  if (unit === "Celsius") {
+      unit = "°C";
+  }
   return `${num.toFixed(2)} ${unit}`;
 }
 
@@ -276,6 +279,8 @@ export class SnowerAPI {
     if (!this.monitorData || !this.monitorData.length) {
       return defaultMonitors;
     }
+    // TODO(Oskari): tässä kohtaa palautetaan formatoimaton "Celsius" PallasMap.js riville 104.
+    // aja tässä jotain seuraavaa: foreach(this.monitorData) 
     return mergeArrays(defaultMonitors, this.monitorData);
   }
 
