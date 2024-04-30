@@ -25,8 +25,8 @@ const { body, validationResult } = require("express-validator");
 
 router.delete("/:id", function (req, res) {
   database.query(
-    `DELETE FROM Segmentit
-   WHERE ID = ?
+    `DELETE FROM segments
+   WHERE id = ?
   `,
     [req.params.id],
     function (err, result, fields) {
@@ -45,7 +45,7 @@ router.put("/:id", function (req, res) {
   } else {
     database.beginTransaction(function (err) {
       database.query(
-        `UPDATE Segmentit
+        `UPDATE segments
        SET 
        name=?,
        terrain=?,
