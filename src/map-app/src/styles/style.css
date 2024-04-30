@@ -175,9 +175,6 @@ body {
     z-index: 6;
   }
 }
-.monitor-popup > .maplibregl-popup-content {
-    background: blue;
-}
 
 /*
 * Style for scrollbars
