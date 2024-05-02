@@ -16,7 +16,7 @@ export function createMarkersForMonitors(map, monitorData) {
     const currentPopup = new maplibregl.Popup({
       className: "monitor-popup",
       offset: 25,
-      closeOnClick: true,
+      closeOnClick: false,
       closeButton: false,
     }).setHTML(`
       <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>

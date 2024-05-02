@@ -175,10 +175,12 @@ body {
     z-index: 6;
   }
 }
+
 .monitor-popup > .maplibregl-popup-content {
     background: rgba(255,255,255,0.8);
     line-height: 0.2;
-    padding: 1px
+    padding: 1px;
+    border: 1px solid black;
 }
 
 /*

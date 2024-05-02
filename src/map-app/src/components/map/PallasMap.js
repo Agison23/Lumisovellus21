@@ -586,16 +586,6 @@ function PallasMap(props) {
 
   useEffect(() => {
     if (map !== undefined && monitorMarkers.length > 0) {
-      // Following code toggle the markers pop up
-      // monitorMarkers.forEach((marker) => {
-      //   const popup = marker.getPopup();
-      //   if (props.openMonitorData === true) {
-      //     popup.remove();
-      //   } else {
-      //     popup.addTo(map);
-      //   }
-      // });
-
       // Following code toggle the markers visibility
       monitorMarkers.forEach((marker) => {
         const markerElement = marker.getElement();
@@ -605,6 +595,7 @@ function PallasMap(props) {
           popup.remove();
         } else {
           markerElement.style.display = "block";
+          marker.togglePopup();
         }
       });
     }
