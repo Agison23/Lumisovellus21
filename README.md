@@ -92,7 +92,7 @@ To run the application locally:
 
 ---
 
-## Setting up the Databse using Docker
+## Setting up the Database using Docker
 
 The production db is a MySQL db, but for local testing purposes we use MariaDB since it has better support for chars like 'äöå' when running in a container.
 
