@@ -12,13 +12,30 @@ export function createMarkersForMonitors(map, monitorData) {
     currentMonitor.alt = "monitor_icon";
     currentMonitor.style.width = "40px";
     currentMonitor.style.height = "40px";
+    
+    let currentPopup;
+    const popupFields = {
+            className: "monitor-popup",
+            offset: 20,
+            closeOnClick: false,
+            closeButton: false,
+    };
+    // set the orientation of popups so that they don't overlap.
+    if (monitor.name.includes("Lehmäkero")) {
+        currentPopup = new maplibregl.Popup({
+            ...popupFields,
+            anchor: "right",
+    });
+    } else if (monitor.name.includes("Pyhäkero") || monitor.name.includes("Metsä")) {
+        currentPopup = new maplibregl.Popup({
+            ...popupFields,
+            anchor: "left",
+    });
+    } else {
+        currentPopup = new maplibregl.Popup(popupFields);
+    }
 
-    const currentPopup = new maplibregl.Popup({
-      className: "monitor-popup",
-      offset: 25,
-      closeOnClick: false,
-      closeButton: false,
-    }).setHTML(`
+    currentPopup.setHTML(`
       <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>
         <p>❄️ ${monitor.snowDepth} </p>
         <p>🌡️ ${monitor.temperature.split(" ")[0]} °C </p>

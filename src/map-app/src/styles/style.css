@@ -182,13 +182,20 @@ body {
     padding: 1px;
     border: 1px solid black;
 }
-/*
-.monitor-popup > .maplibregl-popup-tip {
-        border-left: 3px solid black;
-        height: 15px;
-        position: static;
+
+/* set the popup tip black */
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+    border-top-color: black !important;
 }
-*/
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+    border-bottom-color: black !important;
+}
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+    border-left-color: black !important;
+}
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+    border-right-color: black !important;
+}
 
 /*
 * Style for scrollbars

@@ -340,7 +340,6 @@ function PallasMap(props) {
             //fillColor.push(item.ID);
             fillColor.push(item.colour);
           });
-          //console.log(JSON.stringify(fillColor));
           // Layer for segment highlights
           if (map.getLayer("segments-highlights") === undefined) {
             map.addLayer({
@@ -601,7 +600,6 @@ function PallasMap(props) {
     }
   }, [props.openMonitorData, map, monitorMarkers]);
 
-  //console.log(JSON.stringify(data));
   return <div className={styledClasses.mapContainer} ref={mapContainerRef} />;
 }
 
