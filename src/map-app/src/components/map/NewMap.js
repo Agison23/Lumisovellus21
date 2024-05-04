@@ -137,7 +137,7 @@ function Map(props) {
   // An array of snow types that are currently applied to a segment on the map
   const [currentSnowTypes, setCurrentSnowTypes] = useState([]);
   const [open, setOpen] = useState(false);
-  const [openMonitorData, setOpenMonitorData] = useState(false);
+  const [openMonitorData, setOpenMonitorData] = useState(true);
   const [buttonText, setButtonText] = useState("Näytä ainoastaan...");
   const { language } = useContext(GlobalContext);
 

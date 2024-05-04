@@ -338,7 +338,7 @@ function PallasMap(props) {
           fillColor.push("#000000");
           props.segmentColors.forEach((item) => {
             //fillColor.push(item.ID);
-            fillColor.push(item.color);
+            fillColor.push(item.colour);
           });
           //console.log(JSON.stringify(fillColor));
           // Layer for segment highlights

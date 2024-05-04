@@ -21,7 +21,7 @@ export function createMarkersForMonitors(map, monitorData) {
     }).setHTML(`
       <div style='text-align: center; font-family: Donau; letter-spacing: 2px; font-size: large'>
         <p>❄️ ${monitor.snowDepth} </p>
-        <p>🌡️ ${monitor.temperature} </p>
+        <p>🌡️ ${monitor.temperature.split(" ")[0]} °C </p>
       </div>
     `);
 

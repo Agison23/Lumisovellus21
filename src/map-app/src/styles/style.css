@@ -182,6 +182,13 @@ body {
     padding: 1px;
     border: 1px solid black;
 }
+/*
+.monitor-popup > .maplibregl-popup-tip {
+        border-left: 3px solid black;
+        height: 15px;
+        position: static;
+}
+*/
 
 /*
 * Style for scrollbars
