@@ -338,9 +338,8 @@ function PallasMap(props) {
           fillColor.push("#000000");
           props.segmentColors.forEach((item) => {
             //fillColor.push(item.ID);
-            fillColor.push(item.color);
+            fillColor.push(item.colour);
           });
-          //console.log(JSON.stringify(fillColor));
           // Layer for segment highlights
           if (map.getLayer("segments-highlights") === undefined) {
             map.addLayer({
@@ -586,16 +585,6 @@ function PallasMap(props) {
 
   useEffect(() => {
     if (map !== undefined && monitorMarkers.length > 0) {
-      // Following code toggle the markers pop up
-      // monitorMarkers.forEach((marker) => {
-      //   const popup = marker.getPopup();
-      //   if (props.openMonitorData === true) {
-      //     popup.remove();
-      //   } else {
-      //     popup.addTo(map);
-      //   }
-      // });
-
       // Following code toggle the markers visibility
       monitorMarkers.forEach((marker) => {
         const markerElement = marker.getElement();
@@ -605,12 +594,12 @@ function PallasMap(props) {
           popup.remove();
         } else {
           markerElement.style.display = "block";
+          marker.togglePopup();
         }
       });
     }
   }, [props.openMonitorData, map, monitorMarkers]);
 
-  //console.log(JSON.stringify(data));
   return <div className={styledClasses.mapContainer} ref={mapContainerRef} />;
 }
 
