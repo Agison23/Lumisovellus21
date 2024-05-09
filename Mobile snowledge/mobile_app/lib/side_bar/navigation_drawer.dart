@@ -379,7 +379,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
     //    appState.userRole != premiumRole) {
     //  return const Icon(Icons.lock_outline);
     //}
-    if (index= 6 || index == 7) {
+    if (index == 6 || index == 7) {
       return const Icon(Icons.launch);
     }
     return null;
