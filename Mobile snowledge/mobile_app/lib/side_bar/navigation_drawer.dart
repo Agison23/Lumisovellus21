@@ -231,6 +231,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 Icons.area_chart_outlined,
                 translations['conditions'][appState.language],
                 _snowConditionKey),
+            visible: true,
           ),
           Visibility(
             child: _item(1, Icons.map_outlined,
