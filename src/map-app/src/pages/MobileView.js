@@ -55,7 +55,7 @@ function App() {
       // Mikäli muutetaan, muutettava myös siellä.
       // const emptyColor = [{color: "#000000", name: "Ei tietoa"}];
       const snowcolors = snowdata.map((item) => {
-        return { color: item.colour, name: item.name, id: item.id };
+        return { colour: item.colour, name: item.name, id: item.id };
       });
       // Yhdistetään olemassa olevat värit ja "ei tietoa" (viimeiseksi)
       setSegmentColors(snowcolors);
