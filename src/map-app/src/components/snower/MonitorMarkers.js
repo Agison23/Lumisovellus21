@@ -46,6 +46,9 @@ export function createMarkersForMonitors(map, monitorData) {
       .setLngLat([monitor.lng, monitor.lat])
       .setPopup(currentPopup)
       .addTo(map);
+    currentMarker.getElement().addEventListener("click", function(e) {
+      e.stopPropagation(); // Prevent click event from bubbling up
+    });
     markers.push(currentMarker);
   });
 
