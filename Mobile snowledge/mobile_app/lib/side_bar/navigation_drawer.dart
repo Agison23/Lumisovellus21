@@ -231,14 +231,12 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 Icons.area_chart_outlined,
                 translations['conditions'][appState.language],
                 _snowConditionKey),
-            visible:
-                appState.isPremiumSidebar || appState.userRole == premiumRole,
+            visible: true,
           ),
           Visibility(
             child: _item(1, Icons.map_outlined,
                 translations['mapView'][appState.language], _mapViewKey),
-            visible:
-                true, // replace with winter (line 22) if you want to hide during summertime
+            visible: true, // replace with winter (line 22) if you want to hide during summertime
             key: const ValueKey('snowCondition'),
           ),
           _item(2, Icons.sunny_snowing,
@@ -249,9 +247,7 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
                 Icons.ac_unit,
                 translations['snowDescription'][appState.language],
                 _snowTypeKey),
-            visible:
-                appState.isPremiumSidebar || appState.userRole == premiumRole,
-            // replace with winter (line 22) if you want to hide during summertime
+            visible: true, // replace with winter (line 22) if you want to hide during summertime
           ),
           _item(4, Icons.person_outline,
               translations['userInfo'][appState.language], _userInfoKey),
@@ -301,12 +297,6 @@ class _MyNavigationDrawerState extends State<MyNavigationDrawer> {
           onTap: () async {
             if (index == appState.pageIndex) {
             } else {
-              if (appState.premiumFeatureMenuItems.contains(index) &&
-                  appState.isPremiumSidebar &&
-                  appState.userRole != premiumRole) {
-                // _showPremiumDialog(context);
-                return;
-              }
               setState(() {
                 appState.setPageIndex = index;
               });
