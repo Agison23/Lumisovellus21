@@ -1,0 +1,1 @@
+typedef UpdateCredentials = void Function(String, String); 

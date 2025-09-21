@@ -1,19 +1,17 @@
 import 'dart:convert';
-import 'package:Snowledge/main_page.dart';
+import 'package:snowledge/main_page.dart';
 import 'package:http/http.dart';
-import 'package:Snowledge/dashboard_page_funcs.dart';
+import 'package:snowledge/dashboard_page_funcs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-typedef UpdateCredentials = void Function(String, String);
+import 'package:snowledge/common/app_types.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage(
-      {Key? key,
+      {super.key,
       required this.username,
       required this.password,
-      required this.updateMainPageCredentials})
-      : super(key: key);
+      required this.updateMainPageCredentials});
   final String username;
   final String password;
   final UpdateCredentials updateMainPageCredentials;
@@ -25,7 +23,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int selectedIndex = 1;
   bool loading = false;
-  int user_id = -1;
+  int userId = -1;
   List<dynamic> users = [];
   dynamic thisUser;
   bool isAdmin = false;
@@ -37,7 +35,7 @@ class _DashboardPageState extends State<DashboardPage> {
       loading = true;
     });
 
-    if (user_id == -1) {
+    if (userId == -1) {
       Response response = await get(
         Uri.parse('https://pallas.lumisovellus.fi/data/api/login'),
         headers: {
@@ -45,11 +43,11 @@ class _DashboardPageState extends State<DashboardPage> {
           'Content-Type': 'application/json',
         },
       );
-      List<dynamic> result = json.decode("[" + response.body + "]");
+      List<dynamic> result = json.decode("[${response.body}]");
       //print('$loginUsername:$loginPassword');
       //print(result);
       setState(() {
-        user_id = result[0]["user_id"];
+        userId = result[0]["user_id"];
       });
     }
 
@@ -61,16 +59,16 @@ class _DashboardPageState extends State<DashboardPage> {
       },
     );
     //print(json.decode(response.body));
-    List<dynamic> _users = json.decode(response.body);
+    List<dynamic> usersData = json.decode(response.body);
 
-    for (var i = 0; i < _users.length; i++) {
-      if (_users[i]["user_id"] == user_id) {
-        isAdmin = _users[i]["is_admin"] == 1;
+    for (var i = 0; i < usersData.length; i++) {
+      if (usersData[i]["user_id"] == userId) {
+        isAdmin = usersData[i]["is_admin"] == 1;
       }
     }
-    _users = _users.where((user) => user["user_id"] != user_id).toList();
+    usersData = usersData.where((user) => user["user_id"] != userId).toList();
     setState(() {
-      users = _users;
+      users = usersData;
       loading = false;
     });
   }
@@ -177,7 +175,7 @@ class _DashboardPageState extends State<DashboardPage> {
         return OwnDetails(
             username: loginUsername,
             password: loginPassword,
-            userId: user_id,
+            userId: userId,
             loading: loading,
             updateCredentials: updateCredentials);
       case 1:

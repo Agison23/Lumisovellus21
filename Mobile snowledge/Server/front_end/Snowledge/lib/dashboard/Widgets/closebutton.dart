@@ -1,7 +1,7 @@
-import 'package:Snowledge/main_page.dart';
+import 'package:snowledge/main_page.dart';
 import 'package:flutter/material.dart';
 
-Padding closeButton(BuildContext context, String _username, String _password) {
+Padding closeButton(BuildContext context, String username, String password) {
   return Padding(
     padding: const EdgeInsets.all(10),
     child: Align(
@@ -14,7 +14,7 @@ Padding closeButton(BuildContext context, String _username, String _password) {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    Mainpage(username: _username, password: _password),
+                    Mainpage(username: username, password: password),
               ));
         },
       ),

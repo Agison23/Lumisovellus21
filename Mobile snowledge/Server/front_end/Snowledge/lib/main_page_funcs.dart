@@ -1,12 +1,12 @@
-import 'package:Snowledge/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart';
 import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:snowledge/common/app_types.dart';
+import 'package:snowledge/dashboard_page.dart';
 
 PaginatedDataTable createDataTable(List<dynamic> users, String searchValue) {
   return PaginatedDataTable(
@@ -52,19 +52,19 @@ class MyData extends DataTableSource {
       selected: list[index].last,
       cells: [
         DataCell(
-          Container(
+          SizedBox(
             width: 90,
             child: Text(list[index][1]),
           ),
         ),
         DataCell(
-          Container(
+          SizedBox(
             width: 90,
             child: Text(list[index][2]),
           ),
         ),
         DataCell(
-          Container(
+          SizedBox(
             width: 90,
             child: Text(
                 '${double.parse(list[index][list[index].length - 3]).toStringAsFixed(5)},\n${double.parse(list[index][list[index].length - 2]).toStringAsFixed(5)}'),
@@ -95,8 +95,8 @@ class MyData extends DataTableSource {
 
 Future<List> callHttp(
     String api, String username, String password, Map? body) async {
-  String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
-  //String url = 'https://pallas.lumisovellus.fi/data/api/${api}';
+  String url = 'https://pallas.lumisovellus.fi/data/api/$api';
+  //String url = 'https://pallas.lumisovellus.fi/data/api/$api';
 
   Response response;
 
@@ -123,9 +123,7 @@ Future<List> callHttp(
     );
   }
 
-  List<dynamic> result = json.decode(response.body);
-
-  return result;
+  return json.decode(response.body);
 }
 
 SizedBox createMap(
@@ -134,31 +132,32 @@ SizedBox createMap(
     List<Marker> markers,
     List<TaggedPolyline> polylines,
     String mapTemplate,
-    String _username,
-    String _password,
-    UpdateCredentials _updateCredentials) {
+    String username,
+    String password,
+    UpdateCredentials updateCredentials) {
   return SizedBox(
     width: MediaQuery.of(context).size.width - width,
     child: Stack(
       children: [
         FlutterMap(
           options: MapOptions(
-            plugins: [
-              TappablePolylineMapPlugin(),
-            ],
-            center: LatLng(68.07, 24.02),
-            zoom: 13.0,
+            initialCenter: LatLng(68.07, 24.02),
+            initialZoom: 13.0,
             maxZoom: 17.0,
           ),
-          layers: [
-            TileLayerOptions(
-              // Pöllöille oma API avain!
+          children: [
+            TileLayer(
               urlTemplate: mapTemplate,
+              tileProvider: NetworkTileProvider(),
             ),
-            TappablePolylineLayerOptions(
+            TappablePolylineLayer(
               polylines: polylines,
+              onTap: (poly, tapPosition) {
+                // Placeholder for tap event, can be removed if not needed
+                // print("Tapped on polyline: ${poly.tag}");
+              },
             ),
-            MarkerLayerOptions(
+            MarkerLayer(
               markers: markers,
             ),
           ],
@@ -197,9 +196,9 @@ SizedBox createMap(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DashboardPage(
-                      username: _username,
-                      password: _password,
-                      updateMainPageCredentials: _updateCredentials,
+                      username: username,
+                      password: password,
+                      updateMainPageCredentials: updateCredentials,
                     ),
                   ));
             },

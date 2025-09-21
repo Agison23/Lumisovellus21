@@ -1,20 +1,20 @@
 import 'dart:convert';
-import 'package:Snowledge/dashboard_page.dart';
+// import 'package:Snowledge/dashboard_page.dart'; // This line will be removed
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:snowledge/common/app_types.dart';
 
 ///
 
 class OwnDetails extends StatefulWidget {
-  OwnDetails(
-      {Key? key,
+  const OwnDetails(
+      {super.key,
       required this.username,
       required this.password,
       required this.userId,
       required this.loading,
-      required this.updateCredentials})
-      : super(key: key);
+      required this.updateCredentials});
   final String username;
   final String password;
   final int userId;
@@ -26,7 +26,7 @@ class OwnDetails extends StatefulWidget {
 }
 
 class OwnDetailsState extends State<OwnDetails> {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   String editedUsername = "";
   String editedpassword1 = "";
   String editedpassword2 = "";
@@ -55,13 +55,14 @@ class OwnDetailsState extends State<OwnDetails> {
         'Content-Type': 'application/json',
       },
     );
-    List<dynamic> result = json.decode("[" + response.body + "]");
+    json.decode("[${response.body}]"); // result was unused
     widget.updateCredentials(editedUsername, hashedPassword);
   }
 
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +163,7 @@ class OwnDetailsState extends State<OwnDetails> {
               child: ElevatedButton(
                 onPressed: () {
                   // Validate returns true if the form is valid, or false otherwise.
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     submitClicked();
                   }
                 },
@@ -179,7 +180,7 @@ class OwnDetailsState extends State<OwnDetails> {
 /// TABLE TO DISPLAY ALL USERS
 Widget userTable(BuildContext context, List<dynamic> users,
     String loginUsername, String loginPassword, Function updateTable) {
-  List<DataRow> _createRows() {
+  List<DataRow> createRows() {
     return users
         .map((user) => DataRow(
               cells: [
@@ -209,7 +210,7 @@ Widget userTable(BuildContext context, List<dynamic> users,
             DataTable(
                 showCheckboxColumn: false,
                 dataRowColor:
-                    MaterialStateProperty.resolveWith(_getDataRowColor),
+                    WidgetStateProperty.resolveWith(getDataRowColor),
                 columns: const <DataColumn>[
                   DataColumn(
                     label: Text(
@@ -224,7 +225,7 @@ Widget userTable(BuildContext context, List<dynamic> users,
                     ),
                   ),
                 ],
-                rows: _createRows()),
+                rows: createRows()),
           ],
         ),
       ),
@@ -247,23 +248,21 @@ Widget userTable(BuildContext context, List<dynamic> users,
   );
 }
 
-Color _getDataRowColor(Set<MaterialState> states) {
-  const Set<MaterialState> interactiveStates = <MaterialState>{
-    MaterialState.pressed,
-    MaterialState.hovered,
-    MaterialState.focused,
+Color getDataRowColor(Set<WidgetState> states) {
+  const Set<WidgetState> interactiveStates = <WidgetState>{
+    WidgetState.pressed,
+    WidgetState.hovered,
+    WidgetState.focused,
   };
-
   if (states.any(interactiveStates.contains)) {
-    return Colors.grey;
+    return Colors.blue;
   }
-  //return Colors.green; // Use the default value.
-  return const Color.fromARGB(0, 255, 255, 255);
+  return Colors.transparent;
 }
 
 StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
     String loginUsername, String loginPassword, Function updateTable) {
-  final _formKey = GlobalKey<FormState>();
+  final formKeyPopup = GlobalKey<FormState>();
   bool isnewUser = user.isEmpty;
   bool isChecked = isnewUser ? false : user["is_admin"] == 1;
   String username = isnewUser ? "" : user["username"];
@@ -286,7 +285,8 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
         'Content-Type': 'application/json',
       },
     );
-    List<dynamic> result = json.decode("[" + response.body + "]");
+    json.decode("[${response.body}]"); // result was unused
+    if (!context.mounted) return AlertDialog(title: Text("Error"));
     Navigator.pop(context);
     updateTable();
   }
@@ -312,7 +312,8 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
         'Content-Type': 'application/json',
       },
     );
-    List<dynamic> result = json.decode("[" + response.body + "]");
+    json.decode("[${response.body}]"); // result was unused
+    if (!context.mounted) return AlertDialog(title: Text("Error"));
     Navigator.pop(context);
     updateTable();
   }
@@ -320,8 +321,8 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
   Future deleteClicked() async {
     int userID = int.parse(user["user_id"].toString());
     String url =
-        'https://pallas.lumisovellus.fi/data/api/delete?user_id=${userID}';
-    http.Response response = await http.delete(
+        'https://pallas.lumisovellus.fi/data/api/delete?user_id=$userID';
+    await http.delete(
       Uri.parse(url),
       headers: {
         'Authorization': '$loginUsername:$loginPassword',
@@ -329,6 +330,7 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
         "Access-Control-Allow-Origin": "*",
       },
     );
+    if (!context.mounted) return;
     Navigator.pop(context);
     updateTable();
   }
@@ -336,7 +338,7 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
   return StatefulBuilder(builder: (context, setState) {
     return AlertDialog(
         content: Form(
-      key: _formKey,
+      key: formKeyPopup,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +466,7 @@ StatefulBuilder showPopup(BuildContext context, Map<dynamic, dynamic> user,
                   child: ElevatedButton(
                     onPressed: () {
                       // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
+                      if (formKeyPopup.currentState!.validate()) {
                         if (isnewUser) {
                           registerClicked();
                         } else {

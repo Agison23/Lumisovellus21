@@ -5,7 +5,7 @@ import 'main_page.dart';
 import 'package:http/http.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +78,7 @@ void navigateToMainScreen(
     BuildContext context, String username, String password) async {
   String hashedPassword = sha256.convert(utf8.encode(password)).toString();
   bool correct = await checkUserCredentials(username, hashedPassword);
+  if (!context.mounted) return;
   if (correct) {
     Navigator.push(
       context,

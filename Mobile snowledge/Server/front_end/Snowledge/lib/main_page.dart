@@ -1,4 +1,3 @@
-import 'package:Snowledge/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'dart:async';
@@ -8,8 +7,7 @@ import 'package:flutter_map_tappable_polyline/flutter_map_tappable_polyline.dart
 import 'package:intl/intl.dart';
 
 class Mainpage extends StatefulWidget {
-  const Mainpage({Key? key, required this.username, required this.password})
-      : super(key: key);
+  const Mainpage({super.key, required this.username, required this.password});
   final String username;
   final String password;
 
@@ -71,36 +69,34 @@ class _MainpageState extends State<Mainpage> {
         if (i == 0) {
           int a = i + 1;
           marker = Marker(
-            builder: (context) => PhysicalModel(
-              color: Colors.transparent,
-              child: Tooltip(
-                message: '$a | $name | $formattedTime',
-                child: const Center(
-                  child: Text('⚫',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                      )),
-                ),
+            point: point, 
+            width: 30.0,
+            height: 30.0,
+            child: Tooltip(
+              message: '$a | $name | $formattedTime',
+              child: const Center(
+                child: Text('⚫',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                    )),
               ),
             ),
-            point: point,
           );
         } else {
           int a = i + 1;
           marker = Marker(
-            builder: (context) => PhysicalModel(
-              color: Colors.transparent,
-              child: Tooltip(
-                message: '$a | $name | $formattedTime',
-                child: const Center(
-                  child: Text('⬛',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                      )),
-                ),
+            point: point,
+            width: 30.0,
+            height: 30.0,
+            child: Tooltip(
+              message: '$a | $name | $formattedTime',
+              child: const Center(
+                child: Text('⬛',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                    )),
               ),
             ),
-            point: point,
           );
         }
         i += 1;
@@ -114,7 +110,10 @@ class _MainpageState extends State<Mainpage> {
         strokeWidth: 3.0,
       ));
     }
-    setState(() => {myMarkers = markers, myMarkerLines = myLines});
+    setState(() {
+      myMarkers = markers;
+      myMarkerLines = myLines;
+    });
   }
 
   Future<void> updateData() async {
@@ -126,11 +125,11 @@ class _MainpageState extends State<Mainpage> {
         await callHttp('get/users', widget.username, widget.password, null);
     List<dynamic> helpUsers =
         await callHttp('get/help', widget.username, widget.password, null);
-    for (var _ in allUsers) {
-      _.add(false);
+    for (var user in allUsers) {
+      user.add(false);
     }
-    for (var _ in helpUsers) {
-      _.add(false);
+    for (var user in helpUsers) {
+      user.add(false);
     }
     setState(() {
       allData = allUsers;
@@ -215,11 +214,11 @@ class _MainpageState extends State<Mainpage> {
                     ElevatedButton(
                       onPressed: datatableState
                           ? null
-                          : () => {
+                          : () {
                                 setState(() {
                                   myRawData = allData;
                                   datatableState = true;
-                                }),
+                                });
                               },
                       child: const SizedBox(
                         width: 150,
@@ -232,11 +231,11 @@ class _MainpageState extends State<Mainpage> {
                     ElevatedButton(
                       onPressed: !datatableState
                           ? null
-                          : () => {
+                          : () {
                                 setState(() {
                                   myRawData = helpData;
                                   datatableState = false;
-                                }),
+                                });
                               },
                       child: const SizedBox(
                         width: 150,
@@ -256,11 +255,9 @@ class _MainpageState extends State<Mainpage> {
                     DropdownButton(
                       value: dropdownValue,
                       onChanged: (int? newValue) {
-                        setState(
-                          () => {
-                            dropdownValue = newValue!,
-                          },
-                        );
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
                       },
                       items: const [
                         DropdownMenuItem(value: 1, child: Text('1')),
@@ -292,8 +289,10 @@ class _MainpageState extends State<Mainpage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(
-                                () => {myMarkers = [], myMarkerLines = []});
+                            setState(() {
+                              myMarkers = [];
+                              myMarkerLines = [];
+                            });
                           },
                           child: const SizedBox(
                             width: 130,
