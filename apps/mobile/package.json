@@ -1,0 +1,13 @@
+{
+  "name": "mobile",
+  "private": true,
+  "scripts": {
+    "dev": "flutter run",
+    "format": "dart format --set-exit-if-changed .",
+    "lint": "dart analyze --fatal-infos",
+    "typecheck": "dart analyze --fatal-infos",
+    "test": "flutter test --coverage",
+    "build": "flutter build apk --release",
+    "openapi:client:mobile": "openapi-generator-cli generate -g dart-dio -i ../../.openapi/openapi.json -o ./lib/api --additional-properties=pubName=lumisovellus_api,nullableFields=true"
+  }
+}
