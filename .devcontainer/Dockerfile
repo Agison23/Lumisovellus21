@@ -1,0 +1,49 @@
+FROM node:20.10.0
+
+# Create non-root user
+# RUN useradd -ms /bin/bash vscode
+# USER vscode
+
+# Install dependencies and tools
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+    watchman \
+    openjdk-17-jdk \
+    android-sdk \
+    wget \
+    unzip \
+    zip \
+    curl \
+    git-all \
+    xz-utils \
+    libglu1-mesa \
+    libc6:amd64 libstdc++6:amd64 lib32z1 libbz2-1.0:amd64 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Flutter CLI
+RUN git clone https://github.com/flutter/flutter.git -b stable /opt/flutter \
+    && git config --global --add safe.directory /opt/flutter \
+    && echo 'export PATH="$PATH:/opt/flutter/bin"' >> /etc/profile \
+    && /opt/flutter/bin/flutter doctor
+
+ENV PATH="/opt/flutter/bin:$PATH"
+
+# Install Android SDK
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
+
+RUN mkdir -p $ANDROID_HOME/cmdline-tools \
+    && cd $ANDROID_HOME \
+    && wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip \
+    && unzip cmdline-tools.zip -d cmdline-tools \
+    && mv cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest \
+    && rm cmdline-tools.zip \
+    && yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses \
+    && sdkmanager --sdk_root=$ANDROID_HOME \
+        "platform-tools" \
+        "platforms;android-33" \
+        "build-tools;33.0.2"
+        
+WORKDIR /workspace
+
+CMD ["sleep", "infinity"]
