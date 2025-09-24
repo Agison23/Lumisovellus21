@@ -4,3 +4,6 @@ dist
 
 # TurboRepo cache
 .turbo
+
+.devcontainer
+docker-compose.yml
