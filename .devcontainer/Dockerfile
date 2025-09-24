@@ -9,7 +9,6 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
     watchman \
     openjdk-17-jdk \
-    android-sdk \
     wget \
     unzip \
     zip \
@@ -21,7 +20,7 @@ RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Flutter CLI
-RUN git clone https://github.com/flutter/flutter.git -b stable /opt/flutter \
+RUN git clone https://github.com/flutter/flutter.git -b 3.19.6 /opt/flutter \
     && git config --global --add safe.directory /opt/flutter \
     && echo 'export PATH="$PATH:/opt/flutter/bin"' >> /etc/profile \
     && /opt/flutter/bin/flutter doctor
@@ -41,8 +40,8 @@ RUN mkdir -p $ANDROID_HOME/cmdline-tools \
     && yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses \
     && sdkmanager --sdk_root=$ANDROID_HOME \
         "platform-tools" \
-        "platforms;android-33" \
-        "build-tools;33.0.2"
+        "platforms;android-36" \
+        "build-tools;36.1.0"
         
 WORKDIR /workspace
 

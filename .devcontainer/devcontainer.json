@@ -3,14 +3,6 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "dev",
   "workspaceFolder": "/workspace",
-  // "features": {
-  //   "ghcr.io/devcontainers/features/node:1": {
-  //     "version": "20"
-  //   },
-  //   "ghcr.io/devcontainers/features/flutter:1": {
-  //     "version": "3.10.5"
-  //   }
-  // },
   "customizations": {
     "vscode": {
       "extensions": [
