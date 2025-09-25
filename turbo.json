@@ -10,7 +10,15 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "dependsOn": ["^build"]
     },
-    "test": {},
+    "e2e": {
+      "passThroughEnv": ["PLAYWRIGHT_*"]
+    },
+   "test": {
+      "dependsOn": ["transit"]
+    },
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
     "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] }
   }
