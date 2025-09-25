@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx turbo run dev --parallel",
-    "test": "npx turbo run test",
-    "build": "npx turbo run build",
-    "lint": "npx turbo run lint",
-    "lint:fix": "npx turbo run lint:fix",
-    "typecheck": "npx turbo run typecheck"
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "lint:heavy": "turbo run lint:heavy",
+    "typecheck": "turbo run typecheck",
+    "verify": "turbo run openapi:check lint typecheck test build"
   },
   "keywords": [],
   "author": "",
