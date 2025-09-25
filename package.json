@@ -9,7 +9,8 @@
     "build": "npx turbo run build",
     "lint": "npx turbo run lint",
     "lint:fix": "npx turbo run lint:fix",
-    "typecheck": "npx turbo run typecheck"
+    "typecheck": "npx turbo run typecheck",
+    "postinstall": "npx turbo run pubget"
   },
   "keywords": [],
   "author": "",

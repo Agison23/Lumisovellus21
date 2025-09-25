@@ -37,6 +37,25 @@ adb tcpip 5555
 
 **Note:** If you start the emulator after the container is already running, you need to connect manually by running `adb connect host.docker.internal:5555`  
 
+### 4. Install dependencies and run the app
+
+Install dependencies (including mobile) and run the app:
+
+```
+npm install
+npm run dev
+```
+
+In order to use hot module reloading for mobile, open another terminal and navigate to apps/mobile inside container:
+
+```
+cd apps/mobile
+flutter run
+```
+
+Pressing "r" in the terminal will trigger a hot reload and update the app on the emulator with the latest changes.
+
+
 ## Potential issues
 
 Known issues and how to resolve them:
