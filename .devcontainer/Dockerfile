@@ -1,9 +1,5 @@
 FROM node:20.10.0
 
-# Create non-root user
-# RUN useradd -ms /bin/bash vscode
-# USER vscode
-
 # Install dependencies and tools
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
