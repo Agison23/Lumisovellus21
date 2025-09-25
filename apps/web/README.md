@@ -34,3 +34,39 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Running tests
+
+The web abblication has both unit tests and end-to-end (e2e) tests. You can run them using the following commands:
+
+- To run all tests (both unit and e2e):
+
+  ```bash
+  npm run test
+  ```
+
+- To run only unit tests:
+
+  ```bash
+  npm run test:unit
+  ```
+
+- To run only e2e tests:
+
+  ```bash
+  npm run test:e2e
+  ```
+
+Running tests from the monorepo root:
+
+- Using Turbo:
+
+  ```bash
+  turbo run test --filter web
+  ```
+
+- Using npm:
+
+  ```bash
+  npm run test -w web
+  ```
