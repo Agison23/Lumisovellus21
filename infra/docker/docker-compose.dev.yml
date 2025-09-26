@@ -1,0 +1,15 @@
+version: '3.8'
+
+# In the future database will be added and connected to backend
+services:
+  dev: 
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../..:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
+    ports:
+      - "3000:3000"
+      - "8080:8080"

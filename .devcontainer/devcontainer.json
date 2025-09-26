@@ -1,6 +1,6 @@
 {
   "name": "Lumisovellus Dev",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../infra/docker/docker-compose.dev.yml",
   "service": "dev",
   "workspaceFolder": "/workspace",
   "customizations": {
@@ -13,6 +13,6 @@
       ]
     }
   },
-  "postCreateCommand": "adb connect host.docker.internal:5555 && cd apps/mobile && flutter clean && flutter pub get",
+  "postCreateCommand": "adb connect host.docker.internal:5555 && cd apps/mobile && flutter pub get",
   "forwardPorts": [3000, 8080]
 }
