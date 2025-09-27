@@ -12,6 +12,7 @@
     },
     "test": {},
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
-    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] }
+    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
+    "pubget": { "cache": false }
   }
 }
