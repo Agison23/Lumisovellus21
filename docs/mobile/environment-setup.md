@@ -34,6 +34,7 @@ adb tcpip 5555
 - Use **Dev Containers: Reopen in Container** command from the Command Palette (`F1`, `Ctrl+Shift+P`).
 - VS Code will build and start the Dev Container with Flutter + Node.js preinstalled.
 - The container will automatically attempt to connect to the host emulator using: `adb connect host.docker.internal:5555` via `postCreateCommand` in devcontainer.json
+- On the emulator screen, accept the authentication pop-up: Allow USB Debugging. Once accepted, the container should detect the device automatically. You can verify with `adb devices`
 
 **Note:** If you start the emulator after the container is already running, you need to connect manually by running `adb connect host.docker.internal:5555`  
 
@@ -59,11 +60,6 @@ Pressing "r" in the terminal will trigger a hot reload and update the app on the
 ## Potential issues
 
 Known issues and how to resolve them:
-
-- ADB authentication failed (unauthorized)
-  - Accept the ADB prompt on the emulator screen.
-  - Once accepted, the container should detect the device automatically.
-  - You can verify with `adb devices`
 
 - ADB not found on host
   - Normally Android SDK Platform-Tools would be installed automatically while setting up Android Studio. Check if you have the `platform-tools` directory, then add it to your system’s PATH.
