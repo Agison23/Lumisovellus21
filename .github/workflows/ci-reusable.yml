@@ -60,6 +60,7 @@ jobs:
       - name: Generate OpenAPI & clients
         run: npm run openapi:check
 
+      # TODO: return exit 1 once better way for checking this is implemented
       - name: Verify generated OpenAPI clients are committed
         run: |
           if [ -n "$(git status --porcelain)" ]; then
