@@ -12,7 +12,9 @@
     "lint:heavy": "turbo run lint:heavy",
     "typecheck": "turbo run typecheck",
     "openapi:check": "turbo run openapi:check",
-    "verify": "turbo run openapi:check lint typecheck test build"
+    "verify": "turbo run openapi:check lint typecheck test build",
+    "act:pr:release": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-release.yml -e .github/events/pr-to-release.json -j integration -n pull_request",
+    "act:pr:master":  "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-master.yml  -e .github/events/pr-to-master.json  -j rc -n pull_request"
   },
   "keywords": [],
   "author": "",

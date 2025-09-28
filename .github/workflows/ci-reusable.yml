@@ -88,6 +88,10 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Build
+        if: ${{ inputs.run-build }}
+        run: npm run build
+
       # Split tests in some way?
       # Add db seeding etc?
       - name: Test
@@ -96,10 +100,6 @@ jobs:
       # TODO: Implement once coverage reports available from backend and frontend
       - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
         run: echo "Check test coverage"
-
-      - name: Build
-        if: ${{ inputs.run-build }}
-        run: npm run build
 
       - name: npm audit (>= ${{ inputs.audit-level }})
         if: ${{ inputs.run-security-checks }}
@@ -117,10 +117,33 @@ jobs:
         if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
         uses: zricethezav/gitleaks-action@v2
         with:
-          args: detect --no-banner --redact
-        continue-on-error: false
+          args: > 
+            dir .
+            --config .gitleaks.toml
+            --no-banner 
+            --redact 
+            --report-path gitleaks.sarif 
+            --report-format sarif
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: gitleaks (local via act)
+        if: ${{ inputs.run-security-checks && env.ACT == 'true' }}
+        uses: gitleaks/gitleaks@v8.28.0
+        with:
+          args: > 
+            dir .
+            --config .gitleaks.toml
+            --no-banner 
+            --redact 
+            --report-path gitleaks.sarif 
+            --report-format sarif
+
+      # - name: Upload SARIF to GitHub Security tab
+      #   if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: gitleaks.sarif
 
       # TODO: Add a command to run once somke tests exist
       - name: Smoke E2E (placeholder)

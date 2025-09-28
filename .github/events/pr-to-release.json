@@ -1,7 +1,25 @@
 {
+    "action": "opened",
+    "number": 123,
     "pull_request": {
-      "number": 123,
-      "head": { "ref": "feature/xx-yy/some-change" },
-      "base": { "ref": "release/x.y.z" }
+        "number": 123,
+        "head": {
+            "ref": "feature/xx-yy/some-change",
+            "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "base": {
+            "ref": "release/vx.y.z",
+            "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+    },
+    "repository": {
+        "full_name": "youruser/Lumisovellus",
+        "name": "Lumisovellus",
+        "owner": {
+            "login": "youruser"
+        }
+    },
+    "sender": {
+        "login": "youruser"
     }
-  }
+}
