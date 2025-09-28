@@ -1,0 +1,17 @@
+name: PR -> release (Integration)
+
+on:
+  pull_request:
+    branches:
+      - 'release/**'
+
+jobs:
+  integration:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      node-version: '20.10.0'
+      coverage-threshold: 70
+      run-build: true
+      run-security-checks: true
+      audit-level: "critical"
+    secrets: inherit

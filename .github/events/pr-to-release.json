@@ -1,0 +1,7 @@
+{
+    "pull_request": {
+      "number": 123,
+      "head": { "ref": "feature/xx-yy/some-change" },
+      "base": { "ref": "release/x.y.z" }
+    }
+  }

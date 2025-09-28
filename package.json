@@ -11,6 +11,7 @@
     "lint:fix": "turbo run lint:fix",
     "lint:heavy": "turbo run lint:heavy",
     "typecheck": "turbo run typecheck",
+    "openapi:check": "turbo run openapi:check",
     "verify": "turbo run openapi:check lint typecheck test build"
   },
   "keywords": [],
