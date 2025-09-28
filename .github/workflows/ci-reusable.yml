@@ -1,3 +1,4 @@
+# TODO: Most likely this needs to be split into multiple files
 name: Reusable CI
 
 on:
@@ -57,6 +58,7 @@ jobs:
       - name: Install
         run: npm ci
 
+      # TODO: Needs to be defined
       - name: Generate OpenAPI & clients
         run: npm run openapi:check
 
@@ -72,6 +74,7 @@ jobs:
       - name: Lint (fast)
         run: npm run lint
 
+      # TODO: Needs to be defined in packages/shared/package.json
       - name: Lint (heavy)
         if: ${{ inputs.run-heavy-lint }}
         run: npm run lint:heavy
@@ -88,12 +91,14 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # TODO: Split into building web and backend one at a time
+      # TODO: Use docker containers?
       - name: Build
         if: ${{ inputs.run-build }}
         run: npm run build
 
-      # Split tests in some way?
-      # Add db seeding etc?
+      # TODO: Split into different tests for different targets mobile/web/backend
+      # TODO: SPlit into different levels of tests unit/integration
       - name: Test
         run: npm run test
 
@@ -139,6 +144,7 @@ jobs:
             --report-path gitleaks.sarif 
             --report-format sarif
 
+      # TODO: Add once archive process is resolved
       # - name: Upload SARIF to GitHub Security tab
       #   if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
       #   uses: github/codeql-action/upload-sarif@v3
