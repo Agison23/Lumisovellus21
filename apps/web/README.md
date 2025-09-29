@@ -70,3 +70,5 @@ Running tests from the monorepo root:
   ```bash
   npm run test -w web
   ```
+
+Tests can be found in the `__tests__` directory. End-to-end tests can be found in the `__tests__/e2e/` directory. End-to-end tests use [Playwright](https://playwright.dev/) and require a running backend and web application. Otherwise [Vitest](https://vitest.dev/) is used for the unit tests. End-to-end tests have a file structure of `{test-name}.e2e.ts`.
