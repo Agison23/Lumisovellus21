@@ -11,15 +11,5 @@
             "ref": "master",
             "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
         }
-    },
-    "repository": {
-        "full_name": "youruser/Lumisovellus",
-        "name": "Lumisovellus",
-        "owner": {
-            "login": "youruser"
-        }
-    },
-    "sender": {
-        "login": "youruser"
     }
 }

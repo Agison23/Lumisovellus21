@@ -47,7 +47,7 @@ jobs:
             infra
             turbo.json
             package.json
-            package-lock.yaml
+            package-lock.json
             .nvmrc
             .turboignore
             .gitleaks.toml
@@ -55,6 +55,7 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install
         run: npm ci
@@ -135,14 +136,16 @@ jobs:
 
       - name: gitleaks (local via act)
         if: ${{ inputs.run-security-checks && env.ACT == 'true' }}
-        uses: gitleaks/gitleaks@v8.28.0
-        with:
-          args: >
-            dir .
-            --config .gitleaks.toml
-            --no-banner
-            --redact
-            --report-path gitleaks.sarif
+        run: |
+          set -euo pipefail
+          V=8.28.0
+          curl -sSL -o /tmp/g.tgz https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz
+          tar -xzf /tmp/g.tgz -C /tmp
+          /tmp/gitleaks dir . \
+            --config .gitleaks.toml \
+            --no-banner \
+            --redact \
+            --report-path gitleaks.sarif \
             --report-format sarif
 
       # TODO: Add once archive process is resolved
