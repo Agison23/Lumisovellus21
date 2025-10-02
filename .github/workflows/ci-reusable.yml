@@ -228,7 +228,7 @@ jobs:
 
   smoke:
     runs-on: ubuntu-22.04
-    needs: security
+    needs: [validate, build, test, security]
     if: ${{ inputs.run-smoke-e2e }}
     steps:
       - uses: actions/checkout@v4
