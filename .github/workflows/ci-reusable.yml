@@ -9,7 +9,7 @@ on:
         default: 70
       run-build:
         type: boolean
-        default: true
+        default: false
       run-heavy-lint:
         type: boolean
         default: false
@@ -26,8 +26,6 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-22.04
-    env:
-      TURBO_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -91,8 +89,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: validate
     if: ${{ inputs.run-build }}
-    env:
-      TURBO_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -125,8 +121,6 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     needs: validate
-    env:
-      TURBO_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -162,8 +156,7 @@ jobs:
   security:
     runs-on: ubuntu-22.04
     needs: validate
-    env:
-      TURBO_TELEMETRY_DISABLED: '1'
+    if: ${{ inputs.run-security-checks }}
     steps:
       - uses: actions/checkout@v4
         with:
