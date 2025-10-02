@@ -12,8 +12,9 @@
     "lint:heavy": { "outputs": [], "dependsOn": ["^lint:heavy"] },
 
     "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
-
     "test": {},
+    "test:unit": {},
+    "test:integration": {},
 
     "build": {
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],

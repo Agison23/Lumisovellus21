@@ -1,18 +1,19 @@
-name: PR -> release (Integration)
+name: PR -> release
 
 on:
   pull_request:
+    types: [opened, reopened, ready_for_review]
     branches:
       - 'release/**'
-      # TODO: Split backend and frontend development ci into own workflows
-      # Can be done once npm run has separate test scripts for backend and frontend
-      - 'frontend'
+      
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   integration:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      node-version: '20.10.0'
       coverage-threshold: 70
       run-build: true
       run-security-checks: true

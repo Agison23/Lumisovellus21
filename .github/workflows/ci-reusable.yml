@@ -1,38 +1,31 @@
-# TODO: Most likely this needs to be split into multiple files
+# TODO: Most likely this needs to be split into multiple files for backend and frontend etc
 name: Reusable CI
 
 on:
   workflow_call:
     inputs:
-        node-version:
-            type: string
-            default: '20.10.0'
-        coverage-threshold:
-            type: number
-            default: 70
-        run-build:
-            type: boolean
-            default: true
-        run-heavy-lint:
-            type: boolean
-            default: false
-        audit-level:
-            type: string
-            default: 'critical'
-        run-security-checks:
-            type: boolean
-            default: true
-        run-gitleaks:
-            type: boolean
-            default: false
-        run-smoke-e2e:
-            type: boolean
-            default: false
+      coverage-threshold:
+        type: number
+        default: 70
+      run-build:
+        type: boolean
+        default: true
+      run-heavy-lint:
+        type: boolean
+        default: false
+      audit-level:
+        type: string
+        default: 'critical'
+      run-security-checks:
+        type: boolean
+        default: true
+      run-smoke-e2e:
+        type: boolean
+        default: false
 
 jobs:
-  gates:
+  validate:
     runs-on: ubuntu-22.04
-    timeout-minutes: 15
     env:
       TURBO_TELEMETRY_DISABLED: '1'
     steps:
@@ -51,14 +44,15 @@ jobs:
             .nvmrc
             .turboignore
             .gitleaks.toml
+
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
 
       - name: Install
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit --fund=false
 
       # TODO: Needs to be defined
       - name: Generate OpenAPI & clients
@@ -81,7 +75,7 @@ jobs:
         if: ${{ inputs.run-heavy-lint }}
         run: npm run lint:heavy
 
-        # https://github.com/vercel/next.js/discussions/47010
+      # https://github.com/vercel/next.js/discussions/47010
       - name: Create Next type shim for typecheck
         run: |
           set -eu
@@ -93,11 +87,68 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+  build:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ inputs.run-build }}
+    env:
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
       # TODO: Split into building web and backend one at a time
       # TODO: Use docker containers?
       - name: Build
-        if: ${{ inputs.run-build }}
         run: npm run build
+      #  upload build artifacts for tests/e2e?
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: validate
+    env:
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
 
       # TODO: Split into different tests for different targets mobile/web/backend
       # TODO: SPlit into different levels of tests unit/integration
@@ -108,8 +159,35 @@ jobs:
       - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
         run: echo "Check test coverage"
 
+  security:
+    runs-on: ubuntu-22.04
+    needs: validate
+    env:
+      TURBO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
       - name: npm audit (>= ${{ inputs.audit-level }})
-        if: ${{ inputs.run-security-checks }}
         run: |
           level='${{ inputs.audit-level }}'
           case "$level" in
@@ -121,7 +199,7 @@ jobs:
           }
 
       - name: gitleaks
-        if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
+        if: ${{ env.ACT != 'true' }}
         uses: zricethezav/gitleaks-action@v2
         with:
           args: >
@@ -135,7 +213,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: gitleaks (local via act)
-        if: ${{ inputs.run-security-checks && env.ACT == 'true' }}
+        if: ${{ env.ACT == 'true' }}
         run: |
           set -euo pipefail
           V=8.28.0
@@ -150,12 +228,17 @@ jobs:
 
       # TODO: Add once archive process is resolved
       # - name: Upload SARIF to GitHub Security tab
-      #   if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
+      #   if: ${{ env.ACT != 'true' }}
       #   uses: github/codeql-action/upload-sarif@v3
       #   with:
       #     sarif_file: gitleaks.sarif
 
+  smoke:
+    runs-on: ubuntu-22.04
+    needs: security
+    if: ${{ inputs.run-smoke-e2e }}
+    steps:
+      - uses: actions/checkout@v4
       # TODO: Add a command to run once somke tests exist
       - name: Smoke E2E (placeholder)
-        if: ${{ inputs.run-smoke-e2e }}
         run: echo "Run smoke/e2e tests"
