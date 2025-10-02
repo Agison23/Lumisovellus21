@@ -49,7 +49,8 @@ jobs:
             package.json
             package-lock.yaml
             .nvmrc
-          sparse-checkout-cone: true
+            .turboignore
+            .gitleaks.toml
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}

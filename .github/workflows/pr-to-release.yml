@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - 'release/**'
+      # TODO: Split backend and frontend development ci into own workflows
+      # Can be done once npm run has separate test scripts for backend and frontend
+      - 'frontend'
 
 jobs:
   integration:
