@@ -123,12 +123,12 @@ jobs:
         if: ${{ inputs.run-security-checks && env.ACT != 'true' }}
         uses: zricethezav/gitleaks-action@v2
         with:
-          args: > 
+          args: >
             dir .
             --config .gitleaks.toml
-            --no-banner 
-            --redact 
-            --report-path gitleaks.sarif 
+            --no-banner
+            --redact
+            --report-path gitleaks.sarif
             --report-format sarif
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -137,12 +137,12 @@ jobs:
         if: ${{ inputs.run-security-checks && env.ACT == 'true' }}
         uses: gitleaks/gitleaks@v8.28.0
         with:
-          args: > 
+          args: >
             dir .
             --config .gitleaks.toml
-            --no-banner 
-            --redact 
-            --report-path gitleaks.sarif 
+            --no-banner
+            --redact
+            --report-path gitleaks.sarif
             --report-format sarif
 
       # TODO: Add once archive process is resolved
