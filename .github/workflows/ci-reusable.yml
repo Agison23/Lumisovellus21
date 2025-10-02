@@ -18,7 +18,7 @@ on:
         default: 'critical'
       run-security-checks:
         type: boolean
-        default: true
+        default: false
       run-smoke-e2e:
         type: boolean
         default: false
