@@ -12,6 +12,12 @@ export default [
     }
   }),
   {
+    files: ["apps/web/**/*.{ts,tsx,js,jsx}"],
+    rules: {
+      "unused-imports/no-unused-imports": ["error", { "ignoreTypeImports": true }]
+    }
+  },
+  {
     files: ["**/*.d.ts"],
     rules: { "@typescript-eslint/triple-slash-reference": "off" }
   }
