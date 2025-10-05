@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: ${NODE_ENV}
+    volumes:
+      - ./app/db:/app/db
+    container_name: backend
+    env_file:
+      - ./app/.env
+    ports:
+      - 8000:8000
