@@ -1,0 +1,20 @@
+name: PR -> frontend
+
+on:
+  push:
+    branches:
+      - 'frontend'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 70
+      run-heavy-lint: true
+      run-security-checks: true
+      audit-level: "high"
+    secrets: inherit
