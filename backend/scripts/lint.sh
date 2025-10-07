@@ -27,9 +27,9 @@ print_error() {
 
 main() {
     print_status "Checking code formatting "
-    npx prettier --check ../app/**/*.ts
+    npx prettier --check app/**/*.ts
     print_status "Running ESLint..."
-    npx eslint ../app/**/*.ts
+    npx eslint app/**/*.ts
     print_success "All linting and formatting checks passed!"
 }
 

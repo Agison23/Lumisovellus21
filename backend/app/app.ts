@@ -26,8 +26,8 @@ const dbManager = DatabaseManager.getInstance({
 
 // Run database migrations
 dbManager.runMigrations().catch((error) => {
-  console.error('Database migration failed:', error);
-  if (process.env.NODE_ENV !== 'test') {
+  console.error("Database migration failed:", error);
+  if (process.env.NODE_ENV !== "test") {
     process.exit(1);
   }
 });
@@ -38,13 +38,21 @@ export const db = dbManager.getPool();
 const app = express();
 const router = express.Router();
 
-app.use(cors({
-  origin: '*', // Allow all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  credentials: false, // Set to true if you need cookies/credentials
-  optionsSuccessStatus: 200 // For legacy browser support
-}));
+app.use(
+  cors({
+    origin: "*", // Allow all origins
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    credentials: false, // Set to true if you need cookies/credentials
+    optionsSuccessStatus: 200, // For legacy browser support
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,12 +60,15 @@ app.use(express.urlencoded({ extended: true }));
 // Serve latest Swagger JSON each request via a static endpoint
 const swaggerJsonAbsolutePath = path.resolve(
   process.cwd(),
-  "app/docs/swagger-output.json"
+  "app/docs/swagger-output.json",
 );
 
 // Expose the JSON so Swagger UI can fetch latest contents without server restart
 router.get("/swagger.json", (_req: Request, res: Response) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.sendFile(swaggerJsonAbsolutePath);
@@ -71,7 +82,7 @@ router.get("/", (req: Request, res: Response) => {
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(undefined, { swaggerUrl: "/swagger.json" })
+  swaggerUi.setup(undefined, { swaggerUrl: "/swagger.json" }),
 );
 
 app.use(databaseMiddleware);

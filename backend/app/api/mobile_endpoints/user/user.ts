@@ -19,5 +19,4 @@ router.get("/check-db-user", async (req: Request, res: Response) => {
   }
 });
 
-
 export default router;

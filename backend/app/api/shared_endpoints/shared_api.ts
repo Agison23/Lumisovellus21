@@ -1,5 +1,5 @@
 import express from "express";
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
 import authRouter from "./auth/auth.js";
 import usersRouter from "./users/users.js";
 
@@ -10,6 +10,6 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 router.use("/auth", authRouter);
-router.use("/users", usersRouter);    
+router.use("/users", usersRouter);
 
 export default router;

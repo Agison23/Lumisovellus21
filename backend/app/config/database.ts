@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 export interface DatabaseConfig {
   host: string;
@@ -24,7 +24,9 @@ class DatabaseManager {
   public static getInstance(config?: DatabaseConfig): DatabaseManager {
     if (!DatabaseManager.instance) {
       if (!config) {
-        throw new Error('Database configuration required for first initialization');
+        throw new Error(
+          "Database configuration required for first initialization",
+        );
       }
       DatabaseManager.instance = new DatabaseManager(config);
     }
@@ -46,14 +48,14 @@ class DatabaseManager {
         dateStrings: true,
       });
     } catch (error) {
-      console.error('MySQL pool initialization failed:', error);
+      console.error("MySQL pool initialization failed:", error);
       throw error;
     }
   }
 
   public getPool(): mysql.Pool {
     if (!this.pool) {
-      throw new Error('Database pool not initialized');
+      throw new Error("Database pool not initialized");
     }
     return this.pool;
   }
@@ -78,14 +80,20 @@ class DatabaseManager {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
     // Backfill columns on older installations: split into two ALTERs (MySQL lacks IF NOT EXISTS for ADD COLUMN)
     try {
-      await pool.query(`ALTER TABLE users ADD COLUMN createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+      await pool.query(
+        `ALTER TABLE users ADD COLUMN createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+      );
     } catch (e) {
       // ignore duplicate column error
+      console.error("Duplicate column error:", e);
     }
     try {
-      await pool.query(`ALTER TABLE users ADD COLUMN updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
+      await pool.query(
+        `ALTER TABLE users ADD COLUMN updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`,
+      );
     } catch (e) {
       // ignore duplicate column error
+      console.error("Duplicate column error:", e);
     }
   }
 }
