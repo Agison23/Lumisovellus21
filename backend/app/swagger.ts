@@ -12,7 +12,7 @@ const doc = {
   schemes: ["http", "https"],
 };
 
-const outputFile = "./docs/swagger-output.json";
+const outputFile = "app/docs/swagger-output.json";
 const endpointsFiles = ["app/app.ts"];
 
 const swaggerAutogenInstance = swaggerAutogen();

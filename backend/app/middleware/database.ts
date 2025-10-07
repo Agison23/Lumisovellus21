@@ -6,6 +6,9 @@ export interface DatabaseRequest extends Request {
 }
 
 export const databaseMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  if (db === null) {
+    return res.status(500).json({ error: 'Database not initialized' });
+  }
   (req as DatabaseRequest).db = db;
   next();
 };

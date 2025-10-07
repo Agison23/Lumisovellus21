@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "app/app.ts",
+    "app/index.ts",
+    "app/swagger.ts",
+    "app/api/**/*.ts",
+    "app/config/**/*.ts",
+    "app/middleware/**/*.ts",
+    "app/docs/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test",
+    "**/test/**",
+    "**/__tests__/**",
+    "app/fixtures",
+    "**/app/fixtures/**"
+  ]
+}

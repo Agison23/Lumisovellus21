@@ -1,13 +1,40 @@
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${DB_NAME:-northstar}
+      - MYSQL_USER=${DB_USER:-app}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-app_password}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root_password}
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   backend:
     build:
       context: .
       dockerfile: app/Dockerfile
       target: ${NODE_ENV}
-    volumes:
-      - ./app/db:/app/db
     container_name: backend
     env_file:
       - ./app/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=300
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - 8000:8000
+    volumes:
+      - ./:/backend
+      - /backend/node_modules
+volumes:
+  mysql-data:

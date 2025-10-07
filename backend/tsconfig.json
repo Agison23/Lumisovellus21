@@ -12,9 +12,9 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "outDir": "./dist",
-    "rootDir": "app",
+    "rootDir": ".",
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -47,5 +47,22 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
 
-  }
+  },
+  "include": [
+    "app/app.ts",
+    "app/index.ts",
+    "app/swagger.ts",
+    "app/api/**/*.ts",
+    "app/config/**/*.ts",
+    "app/middleware/**/*.ts",
+    "app/docs/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test",
+    "**/test/**",
+    "app/fixtures",
+    "**/app/fixtures/**"
+  ]
 }

@@ -1,21 +1,24 @@
-import sqlite3 from 'sqlite3';
-import { mkdirSync, existsSync } from 'fs';
-import path from 'path';
+import mysql from 'mysql2/promise';
 
 export interface DatabaseConfig {
-  path: string;
-  timeout: number;
-  verbose?: boolean;
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+  connectionLimit?: number;
+  queueLimit?: number;
+  waitForConnections?: boolean;
 }
 
 class DatabaseManager {
   private static instance: DatabaseManager;
-  private db: sqlite3.Database | null = null;
+  private pool: mysql.Pool | null = null;
   private config: DatabaseConfig;
 
   private constructor(config: DatabaseConfig) {
     this.config = config;
-    this.initializeDatabase();
+    this.initializePool();
   }
 
   public static getInstance(config?: DatabaseConfig): DatabaseManager {
@@ -28,72 +31,62 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
-  private initializeDatabase(): void {
+  private initializePool(): void {
     try {
-      // Ensure directory exists
-      const dbDir = path.dirname(this.config.path);
-      if (!existsSync(dbDir)) {
-        mkdirSync(dbDir, { recursive: true });
-      }
-
-      // Create database connection with proper configuration
-      this.db = new sqlite3.Database(this.config.path, (err) => {
-        if (err) {
-          console.error('Failed to connect to database:', err.message);
-          throw err;
-        }
-        console.log('Connected to SQLite database');
+      this.pool = mysql.createPool({
+        host: this.config.host,
+        port: this.config.port,
+        user: this.config.user,
+        password: this.config.password,
+        database: this.config.database,
+        connectionLimit: this.config.connectionLimit ?? 10,
+        queueLimit: this.config.queueLimit ?? 0,
+        waitForConnections: this.config.waitForConnections ?? true,
+        namedPlaceholders: true,
+        dateStrings: true,
       });
-
-      // Enable foreign keys and other SQLite settings
-      this.db.serialize(() => {
-        this.db!.run('PRAGMA foreign_keys = ON');
-        this.db!.run('PRAGMA journal_mode = WAL');
-        this.db!.run('PRAGMA synchronous = NORMAL');
-      });
-
     } catch (error) {
-      console.error('Database initialization failed:', error);
+      console.error('MySQL pool initialization failed:', error);
       throw error;
     }
   }
 
-  public getDatabase(): sqlite3.Database {
-    if (!this.db) {
-      throw new Error('Database not initialized');
+  public getPool(): mysql.Pool {
+    if (!this.pool) {
+      throw new Error('Database pool not initialized');
     }
-    return this.db;
+    return this.pool;
   }
 
   public async close(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (this.db) {
-        this.db.close((err) => {
-          if (err) {
-            console.error('Error closing database:', err);
-            reject(err);
-          } else {
-            console.log('Database connection closed');
-            this.db = null;
-            resolve();
-          }
-        });
-      } else {
-        resolve();
-      }
-    });
+    if (this.pool) {
+      await this.pool.end();
+      this.pool = null;
+    }
   }
 
   public async runMigrations(): Promise<void> {
-    const db = this.getDatabase();
-    
-    return new Promise((resolve, reject) => {
-      db.serialize(() => {
-        // Database is ready - no specific tables needed at this moment
-        console.log('Database connection established and ready for use');
-        resolve();
-      });
-    });
+    const pool = this.getPool();
+    // Minimal schema with timestamps
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+    // Backfill columns on older installations: split into two ALTERs (MySQL lacks IF NOT EXISTS for ADD COLUMN)
+    try {
+      await pool.query(`ALTER TABLE users ADD COLUMN createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+    } catch (e) {
+      // ignore duplicate column error
+    }
+    try {
+      await pool.query(`ALTER TABLE users ADD COLUMN updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
+    } catch (e) {
+      // ignore duplicate column error
+    }
   }
 }
 
