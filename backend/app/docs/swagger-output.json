@@ -2,8 +2,8 @@
   "swagger": "2.0",
   "info": {
     "version": "v1.0.0",
-    "title": "NorthStar",
-    "description": "NorthStar API Documentation"
+    "title": "North Star",
+    "description": "North Star API Documentation"
   },
   "host": "localhost:8000",
   "basePath": "/",

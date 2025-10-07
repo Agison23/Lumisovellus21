@@ -14,13 +14,6 @@ beforeAll(async () => {
   // Use dedicated test database; do NOT override DB_NAME here
   process.env.TEST_DB_NAME = process.env.TEST_DB_NAME || 'northstar_test';
 
-  console.log('Test DB Config:', {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    database: process.env.TEST_DB_NAME,
-  });
-
   dbManager = DatabaseManager.getInstance({
     host: process.env.DB_HOST!,
     port: parseInt(process.env.DB_PORT!, 10),

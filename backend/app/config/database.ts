@@ -78,23 +78,7 @@ class DatabaseManager {
       createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
-    // Backfill columns on older installations: split into two ALTERs (MySQL lacks IF NOT EXISTS for ADD COLUMN)
-    try {
-      await pool.query(
-        `ALTER TABLE users ADD COLUMN createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`,
-      );
-    } catch (e) {
-      // ignore duplicate column error
-      console.error("Duplicate column error:", e);
-    }
-    try {
-      await pool.query(
-        `ALTER TABLE users ADD COLUMN updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`,
-      );
-    } catch (e) {
-      // ignore duplicate column error
-      console.error("Duplicate column error:", e);
-    }
+    
   }
 }
 
