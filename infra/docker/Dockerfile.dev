@@ -16,7 +16,7 @@ RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Flutter CLI
-RUN git clone https://github.com/flutter/flutter.git -b 3.19.6 /opt/flutter \
+RUN git clone https://github.com/flutter/flutter.git -b 3.35.0 /opt/flutter \
     && git config --global --add safe.directory /opt/flutter \
     && echo 'export PATH="$PATH:/opt/flutter/bin"' >> /etc/profile \
     && /opt/flutter/bin/flutter doctor
