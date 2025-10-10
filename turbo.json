@@ -1,25 +1,32 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "dev": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["^dev"]
-    },
+    "dev": {"cache": false, "persistent": true, "dependsOn": ["^dev"]},
+
+    "openapi:emit": {},
+    "openapi:client:web": {},
+    "openapi:client:mobile": {},
+    "openapi:check": { "dependsOn": ["openapi:client:web", "openapi:client:mobile"], "outputs": [] },
+
+    "lint": { "outputs": [], "dependsOn": ["^lint"] },
+    "lint:heavy": { "outputs": [], "dependsOn": ["^lint:heavy"] },
+
+    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
+    "test": {},
+    "test:unit": {},
+    "test:integration": {},
+
     "build": {
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "^openapi:check", "^typecheck", "^lint", "^test"]
     },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"]
     },
-   "test": {
+    "test": {
       "dependsOn": ["transit"]
     },
     "transit": {
       "dependsOn": ["^transit"]
-    },
-    "lint": { "outputs": [], "dependsOn": ["^lint"] },
-    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] }
   }
 }
