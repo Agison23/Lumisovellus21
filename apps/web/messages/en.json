@@ -1,0 +1,16 @@
+{
+  "AppLayout": {
+    "map": "Map",
+    "definitions": "Definitions",
+    "Weather": "Weather"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "fi": "Suomi"
+  },
+  "MapPage": {
+    "title": "Map",
+    "loading": "Loading map..."
+  }
+}
