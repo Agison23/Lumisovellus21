@@ -1,0 +1,14 @@
+{
+  "@@locale": "fi",
+  "snowAppInfo": "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.",
+  "next": "Seuraava",
+  "sharingLocation": "SIJAINTITIEDON JAKAMINEN",
+  "rescueFeatureInfo": "Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.",
+  "allowSharing": "SALLI JAKO",
+  "noLocationShare": "Älä salli sijaintia",
+  "correctInfo": "Syötäthän oikeat tietosi",
+  "infoUsage": "Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.",
+  "fName": "Etunimi",
+  "surname": "Sukunimi",
+  "phoneNum": "Puhelinnumero"
+}
