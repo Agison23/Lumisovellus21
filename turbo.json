@@ -28,5 +28,6 @@
     },
     "transit": {
       "dependsOn": ["^transit"]
+    }
   }
 }

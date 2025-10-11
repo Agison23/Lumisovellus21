@@ -14,7 +14,7 @@
     "lint:heavy": "turbo run lint:heavy",
     "typecheck": "turbo run typecheck",
     "openapi:check": "turbo run openapi:check",
-    "openapi:client:web": "openapi-typescript apps/backend/api/openapi.json --output packages/api-client-web/index.ts"
+    "openapi:client:web": "openapi-typescript apps/backend/api/openapi.json --output packages/api-client-web/index.ts",
     "verify": "turbo run openapi:check lint typecheck test build",
     "act:push:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/push-to-frontend.yml -n push",
     "act:pr:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-frontend.yml -n pull_request",
