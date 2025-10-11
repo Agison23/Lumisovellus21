@@ -15,9 +15,15 @@
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "dependsOn": ["^build", "^openapi:check", "^typecheck", "^lint", "^test"]
     },
+    "e2e": {
+      "passThroughEnv": ["PLAYWRIGHT_*"]
+    },
     "test": {
       "outputs": ["apps/mobile/coverage/**"],
-      "dependsOn": ["^test", "openapi:client:mobile"]
+      "dependsOn": ["^test", "openapi:client:mobile", "transit"]
+    },
+    "transit": {
+      "dependsOn": ["^transit"]
     },
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
     "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
