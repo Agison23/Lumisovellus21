@@ -3,7 +3,7 @@ import { Locale } from "@/i18n/config";
 import { setUserLocale } from "@/i18n/locale";
 import { useTransition } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Check, Language } from "iconoir-react";
+import { Language } from "iconoir-react";
 
 type Props = {
   defaultValue: string;
@@ -22,7 +22,7 @@ export function LocaleSwitcherSelect({defaultValue, items, label}: Props) {
   }
   return (
     <div className="relative">
-      <Select defaultValue={defaultValue} onValueChange={onChange}>
+      <Select defaultValue={defaultValue} onValueChange={onChange} disabled={isPending}>
         <SelectTrigger>
           <Language />
           <SelectValue placeholder={label} />
