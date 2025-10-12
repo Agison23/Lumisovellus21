@@ -7,7 +7,7 @@
     "dev": "turbo run dev --parallel",
     "test": "turbo run test",
     "test:unit": "turbo run test:unit",
-    "test:integration" : "turbo run test:integration",
+    "test:integration": "turbo run test:integration",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
@@ -22,7 +22,7 @@
     "act:push:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/push-to-frontend.yml -n push",
     "act:pr:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-frontend.yml -n pull_request",
     "act:pr:release": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-release.yml -n pull_request",
-    "act:pr:master":  "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-master.yml -n pull_request"
+    "act:pr:master": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-master.yml -n pull_request"
   },
   "keywords": [],
   "author": "",
@@ -49,5 +49,8 @@
     "typescript": "5.9.2",
     "typescript-eslint": "^8.44.0"
   },
-  "packageManager": "npm@10.2.3"
+  "packageManager": "npm@10.2.3",
+  "dependencies": {
+    "@radix-ui/react-navigation-menu": "^1.2.14"
+  }
 }
