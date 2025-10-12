@@ -1,12 +1,12 @@
+import Map3d from "@/components/map-3d"
+import { mapAreas } from "@/lib/map/mock-data"
 import { useTranslations } from "next-intl"
 
 export default function Page() {
   const t = useTranslations('MapPage')
   return (
-    <div>
-
-      <h1>{t('title')}</h1>
-      <p>{t('loading')}</p>
+    <div className="w-full h-full">
+      <Map3d areas={mapAreas} />
     </div>
   )
 }
