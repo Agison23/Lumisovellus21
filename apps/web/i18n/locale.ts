@@ -1,5 +1,6 @@
 'use server'
 import { cookies } from "next/headers";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-imports
 import { defaultLocale, Locale } from "./config";
 
 const COOKIE_NAME = 'NEXT_LOCALE';
