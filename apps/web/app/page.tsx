@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useTranslations } from "next-intl"
 
 export default function Page() {
@@ -8,7 +7,6 @@ export default function Page() {
 
       <h1>{t('title')}</h1>
       <p>{t('loading')}</p>
-      <Link href="/about">About</Link>
     </div>
   )
 }
