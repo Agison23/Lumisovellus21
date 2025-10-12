@@ -19,6 +19,8 @@ Before we start, here are some best practices to follow when working on the web 
 3. `useEffect` is a great footgun. You should avoid it unless absolutely necessary. Prefer async server components and fetching data with `fetch` or using React Query. There are most likely better ways to do what you want without `useEffect`.
 4. Ensure all interactions are responsive. i.e. use spinners, loading states, and optimistic updates where necessary.
 
+For a great introduction to React, see the [React tutorial](https://react.dev/learn).
+
 ## Overview
 
 Lumisovellus uses [Next.js](https://nextjs.org/docs) as the web framework, which is built on top of React.
@@ -102,8 +104,6 @@ app/
 
 More about structure can be found at [Project structure and organization](https://nextjs.org/docs/app/getting-started/project-structure). More documentation about routing and layouts can be found at [Layouts and Pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages).
 
-For a great introduction to React, see the [React tutorial](https://react.dev/learn).
-
 ## Technologies
 
 ### Testing
@@ -121,7 +121,7 @@ For a great introduction to React, see the [React tutorial](https://react.dev/le
 
 ## Localization
 
-We use `[next-intl](https://next-intl.dev/)` for localization.
+We use [next-intl](https://next-intl.dev/) for localization.
 
 Files for configuring and initializing localization can be found in the `i18n/` folder. The context for localization is provided in the root layout (`app/layout.tsx`).
 
@@ -161,6 +161,10 @@ export default async function HomePage() {
 
 - Global styles are defined in `app/globals.css`.
 - We use Tailwind CSS for styling. See [Tailwind documentation](https://tailwindcss.com/docs) for more information.
+
+## Components
+
+- We use [shadcn/ui](https://ui.shadcn.com/docs) as our component library.
 
 ## Data fetching
 
