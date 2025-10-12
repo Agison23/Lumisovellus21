@@ -1,0 +1,37 @@
+
+import { useTranslations } from "next-intl";
+import LocaleSwitcher from "./locale-switcher";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarGroupContent } from "./ui/sidebar";
+
+export default function AppSidebar() {
+  const t = useTranslations("Sidebar");
+  return (
+    <Sidebar side="left" variant="inset">
+      <SidebarHeader>
+            <LocaleSwitcher />
+
+        <h1>{t('title')}</h1>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <div className="flex flex-col gap-4">
+          <p>
+            {t('p1')}
+          </p>
+          <p>
+            {t('p2')}
+          </p>
+          <p>
+            {t('p3')}
+          </p>
+          <p>
+            {t('p4')}
+          </p>
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  )
+}
