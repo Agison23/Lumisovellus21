@@ -1,7 +1,6 @@
 
 import { render, screen } from '@testing-library/react'
 import { describe, expect, test, vi } from 'vitest'
-import { useTranslations } from 'next-intl'
 
 vi.mock('next-intl', () => ({
   useTranslations: (namespace: string) => {
