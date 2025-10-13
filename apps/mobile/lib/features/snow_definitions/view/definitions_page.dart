@@ -10,10 +10,15 @@ class DefinitionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    
+
     return Scaffold(
-      backgroundColor: Colors.white, // Updated background for better contrast
+      backgroundColor: Colors.transparent,
+      extendBody: true,
+      // allow the page content to extend under the bottom nav so the nav's
+      // translucency can show the actual page content beneath it
       body: SafeArea(
+        top: true,
+        bottom: false,
         child: Column(
           children: [
             // Header
@@ -42,6 +47,9 @@ class DefinitionsPage extends StatelessWidget {
                     const SizedBox(height: 32),
                     // Snow types section
                     _buildSnowTypesSection(context, t),
+                    // add spacing equal to the bottom navigation bar height so content
+                    // isn't overlapped by the translucent nav
+                    const SizedBox(height: kBottomNavigationBarHeight + 16),
                   ],
                 ),
               ),
@@ -52,7 +60,10 @@ class DefinitionsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAvalancheWarningSection(BuildContext context, AppLocalizations t) {
+  Widget _buildAvalancheWarningSection(
+    BuildContext context,
+    AppLocalizations t,
+  ) {
     return Container(
       padding: const EdgeInsets.all(50),
       child: Column(
@@ -79,9 +90,9 @@ class DefinitionsPage extends StatelessWidget {
           // Description
           Text(
             t.avalancheWarningDesc,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.black,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.black),
             textAlign: TextAlign.center,
           ),
         ],
@@ -106,7 +117,9 @@ class DefinitionsPage extends StatelessWidget {
             alignment: WrapAlignment.spaceEvenly,
             runSpacing: 16,
             children: [
-              ...SnowDefinitionsData.snowTypes.map((s) => SnowTypeCard(snowType: s)),
+              ...SnowDefinitionsData.snowTypes.map(
+                (s) => SnowTypeCard(snowType: s),
+              ),
             ],
           ),
         ],
