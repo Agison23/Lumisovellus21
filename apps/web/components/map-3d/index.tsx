@@ -1,7 +1,7 @@
 "use client"
 import { FeatureCollection, Polygon } from "geojson";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import maplibregl, { FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, ResourceType, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
+import maplibregl, { Feature, FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, ResourceType, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
 import { useCallback, useMemo, useRef, useState } from "react";
 import Map, {
 	Layer,
@@ -206,12 +206,7 @@ export default function Map3d({ areas }: MapProps) {
 					</Popup>
 				)}
 			</Map>
-			<div className="absolute top-4 left-4 bg-white p-4 rounded shadow-lg text-sm">
-				<p>
-					Right-click and drag to rotate the map
-					<br />
-					Ctrl + Left-click and drag (or Cmd on Mac) to rotate
-				</p>
+			<div className="absolute top-12 left-2 bg-white p-4 rounded shadow-lg text-sm">
 				<h3>
 					Selected: {selectedArea === null ? "nothing" : selectedArea}
 				</h3>
