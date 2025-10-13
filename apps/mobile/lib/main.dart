@@ -4,6 +4,7 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'core/i18n/locale_provider.dart';
 import 'features/onboarding/view/onboarding_page.dart';
 import 'features/map/views/map_screen.dart';
+import 'features/snow_definitions/view/snow_definitions_page.dart';
 
 void main() => runApp(const ProviderScope(child: App()));
 
@@ -17,6 +18,9 @@ class App extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const MapScreen(),
+      routes: {
+        '/snow-definitions': (context) => const SnowDefinitionsPage(),
+      },
     );
   }
 }

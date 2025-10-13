@@ -37,6 +37,32 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0, // Map is selected
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'Definitions',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.cloud_outlined),
+            label: 'Weather',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/snow-definitions');
+          } else if (index == 2) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Weather is coming soon')),
+            );
+          }
+        },
+      ),
     );
   }
 }
