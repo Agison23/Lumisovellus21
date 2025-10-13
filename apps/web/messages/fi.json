@@ -1,0 +1,17 @@
+{
+  "AppLayout": {
+    "map": "Kartta",
+    "definitions": "Selitteet",
+    "Weather": "Sää"
+  },
+  "LocaleSwitcher": {
+    "label": "Kieli",
+    "en": "English",
+    "fi": "Suomi"
+  },
+  "MapPage": {
+    "title": "Kartta",
+    "loading": "Ladataan karttaa..."
+  }
+
+}
