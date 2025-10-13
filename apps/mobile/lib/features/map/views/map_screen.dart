@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import '../providers.dart';
+import '../viewmodel/map_notifier.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -14,12 +14,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final style = ref.watch(mapStyleProvider);
+    final style = ref.watch(mapStyleNotifierProvider);
 
     return Scaffold(
       body: style.when(
         data: (s) => MapLibreMap(
+          key: ValueKey(s.hashCode),
           styleString: s,
+          onMapCreated: (c) {
+            _controller = c;
+          },
           initialCameraPosition: const CameraPosition(
             target: LatLng(68.06, 24.07),
             zoom: 12,
@@ -30,8 +34,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               northeast: const LatLng(68.162, 24.334),
             ),
           ),
-          rotateGesturesEnabled: true,
           minMaxZoomPreference: const MinMaxZoomPreference(7, 18),
+          rotateGesturesEnabled: true,
           tiltGesturesEnabled: false,
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
