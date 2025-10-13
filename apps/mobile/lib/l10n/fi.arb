@@ -10,5 +10,6 @@
   "infoUsage": "Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.",
   "fName": "Etunimi",
   "surname": "Sukunimi",
-  "phoneNum": "Puhelinnumero"
+  "phoneNum": "Puhelinnumero",
+  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja"
 }

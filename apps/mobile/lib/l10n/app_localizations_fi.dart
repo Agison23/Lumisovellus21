@@ -43,4 +43,8 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get phoneNum => 'Puhelinnumero';
+
+  @override
+  String get mapOfflineModeMessage =>
+      'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
 }

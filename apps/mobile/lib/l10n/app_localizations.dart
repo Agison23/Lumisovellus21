@@ -162,6 +162,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone number'**
   String get phoneNum;
+
+  /// No description provided for @mapOfflineModeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'\'re offline - showing saved map data'**
+  String get mapOfflineModeMessage;
 }
 
 class _AppLocalizationsDelegate

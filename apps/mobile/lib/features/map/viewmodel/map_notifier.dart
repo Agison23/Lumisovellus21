@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import '../../../core/network/connectivity_provider.dart';
 import '../data/persistence/tile_db.dart';
 import '../data/services/tile_proxy_server.dart';
 import '../data/repositories/map_style_repository.dart';
@@ -9,9 +10,6 @@ import '../data/repositories/tile_cache_repository.dart';
 
 final appDbProvider = Provider<AppDb>((_) => AppDb());
 final tileCacheRepoProvider = Provider((ref) => TileCacheRepository(ref.watch(appDbProvider)));
-
-// TODO: Add real connectivity check
-final isOnlineProvider = StateProvider<bool>((_) => true);
 
 final _proxyBaseProvider = FutureProvider<Uri>((ref) async {
   final repo = ref.watch(tileCacheRepoProvider);
@@ -37,7 +35,7 @@ final cacheResetProvider = FutureProvider<void>((ref) async {
 
 final styleBaseProvider = FutureProvider<Uri>((ref) async {
   // await ref.watch(cacheResetProvider.future);
-  final online = ref.watch(isOnlineProvider);
+  final online = ref.watch(connectivityProvider);
   if (online) return await ref.watch(_proxyBaseProvider.future);
   return await ref.watch(_fileBaseProvider.future);
 });

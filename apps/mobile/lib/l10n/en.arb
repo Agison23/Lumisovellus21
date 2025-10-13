@@ -10,5 +10,6 @@
   "infoUsage": "Your information will be used for the application''s rescue function.\nThe function allows the rescue service to find you more easily in the event of an emergency.",
   "fName": "First name",
   "surname": "Last name",
-  "phoneNum": "Phone number"
+  "phoneNum": "Phone number",
+  "mapOfflineModeMessage": "You''re offline - showing saved map data"
 }

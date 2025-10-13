@@ -43,4 +43,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phoneNum => 'Phone number';
+
+  @override
+  String get mapOfflineModeMessage =>
+      'You\'re offline - showing saved map data';
 }
