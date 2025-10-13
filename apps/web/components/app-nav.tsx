@@ -13,7 +13,7 @@ export default function Nav() {
 
   return (
       <NavigationMenu>
-        <NavigationMenuList className='bg-background rounded-md p-1'>
+        <NavigationMenuList className='bg-accent rounded-md p-1'>
           {routes.routeDefinitions.map((route) => (
             <NavigationMenuItem key={route.path} className={path === route.path ? 'underline underline-offset-4' : ''}>
               <NavigationMenuLink asChild>

@@ -200,13 +200,13 @@ export default function Map3d({ areas }: MapProps) {
 						closeOnClick={false}
 						closeOnMove
 					>
-						<div className="text-black">
+						<div className="text-primary">
 							<h3 className="font-semibold">{popupInfo.name}</h3>
 						</div>
 					</Popup>
 				)}
 			</Map>
-			<div className="absolute top-12 left-2 bg-white p-4 rounded shadow-lg text-sm">
+			<div className="absolute top-12 left-2 bg-accent p-2 rounded-lg shadow-lg text-sm">
 				<h3>
 					Selected: {selectedArea === null ? "nothing" : selectedArea}
 				</h3>

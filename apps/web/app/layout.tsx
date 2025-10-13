@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from "next-intl";
 import Nav from "@/components/app-nav";
 import AppSidebar from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +33,10 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SidebarProvider defaultOpen={defaultOpen}>
               <div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
             <AppSidebar />
@@ -45,12 +47,13 @@ export default async function RootLayout({
               <div className="flex-1 w-full h-full rounded-xl overflow-clip">
                 {children}
               </div>
-              <div className="w-full flex justify-center absolute bottom-1 p-2 z-9999">
+              <div className="w-full flex justify-center absolute bottom-1 p-2 z-9999 pointer-events-none">
                 <Nav />
               </div>
             </SidebarInset>
               </div>
             </SidebarProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
