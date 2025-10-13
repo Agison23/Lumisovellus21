@@ -206,7 +206,7 @@ export default function Map3d({ areas }: MapProps) {
 					</Popup>
 				)}
 			</Map>
-			<div className="absolute top-12 left-2 bg-accent p-2 rounded-lg shadow-lg text-sm">
+			<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm">
 				<h3>
 					Selected: {selectedArea === null ? "nothing" : selectedArea}
 				</h3>
