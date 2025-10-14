@@ -4,16 +4,17 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'tables/tiles.dart';
+import 'tables/jobs.dart';
 
 part 'app_db.g.dart';
 
 LazyDatabase _open() => LazyDatabase(() async {
   final dir = await getApplicationDocumentsDirectory();
-  final file = File(p.join(dir.path, 'tiles.sqlite'));
-  return NativeDatabase(file);
+  final file = File(p.join(dir.path, 'app.sqlite'));
+  return NativeDatabase.createInBackground(file);
 });
 
-@DriftDatabase(tables: [Tiles])
+@DriftDatabase(tables: [Tiles, Jobs])
 class AppDb extends _$AppDb {
   AppDb() : super(_open());
   @override
@@ -31,7 +32,6 @@ class AppDb extends _$AppDb {
             .getSingleOrNull();
     if (r == null) return null;
     final now = DateTime.now().toUtc();
-    // TODO: Delete expired entries from DB & disk?
     if (r.expiresAt != null && r.expiresAt!.isBefore(now)) return null;
     return r;
   }
@@ -55,12 +55,8 @@ class AppDb extends _$AppDb {
       path: Value(path),
       size: Value(size),
       etag: Value(etag),
-      lastModified: Value(lastModified),
-      expiresAt: Value(expiresAt),
+      lastModified: Value(lastModified?.toUtc()),
+      expiresAt: Value(expiresAt?.toUtc()),
     ),
   );
-
-  Future<void> clearAllTiles() async {
-    await delete(tiles).go();
-  }
 }

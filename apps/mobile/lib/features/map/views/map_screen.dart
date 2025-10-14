@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
-import '../../../core/network/connectivity_provider.dart';
+import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../viewmodel/map_notifier.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
