@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import '../persistence/tile_db.dart';
+import '../../../../core/data/persistence/app_db.dart';
 
 // Handles storing, retrieving, and clearing map tile data.
 // Tiles are saved as files on disk with related metadata kept in the database.
@@ -11,7 +11,7 @@ class TileCacheRepository {
   final AppDb db;
 
   Future<Uint8List?> get(String s, int z, int x, int y) async {
-    final meta = await db.getMeta(s, z, x, y);
+    final meta = await db.getTileMeta(s, z, x, y);
     if (meta == null) return null;
     final f = File(meta.path);
     if (!await f.exists()) return null;
@@ -31,7 +31,7 @@ class TileCacheRepository {
     final f = await _fileFor(s, z, x, y);
     await f.create(recursive: true);
     await f.writeAsBytes(bytes, flush: true);
-    await db.upsertMeta(
+    await db.upsertTileMeta(
       source: s,
       z: z,
       x: x,

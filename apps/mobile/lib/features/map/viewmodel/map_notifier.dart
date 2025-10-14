@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../../../core/network/connectivity_provider.dart';
-import '../data/persistence/tile_db.dart';
+import '../../../core/data/persistence/app_db.dart';
 import '../data/services/tile_proxy_server.dart';
 import '../data/repositories/map_style_repository.dart';
 import '../data/repositories/tile_cache_repository.dart';

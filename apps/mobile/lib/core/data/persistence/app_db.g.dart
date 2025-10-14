@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tile_db.dart';
+part of 'app_db.dart';
 
 // ignore_for_file: type=lint
 class $TilesTable extends Tiles with TableInfo<$TilesTable, Tile> {
