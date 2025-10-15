@@ -9,6 +9,12 @@
     "en": "English",
     "fi": "Suomi"
   },
+  "ThemeSwitcher": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "MapPage": {
     "title": "Map",
     "loading": "Loading map..."

@@ -9,6 +9,12 @@
     "en": "English",
     "fi": "Suomi"
   },
+  "ThemeSwitcher": {
+    "label": "Teema",
+    "light": "Vaalea",
+    "dark": "Tumma",
+    "system": "Laite"
+  },
   "MapPage": {
     "title": "Kartta",
     "loading": "Ladataan karttaa..."
