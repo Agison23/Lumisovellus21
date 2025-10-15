@@ -1,39 +1,147 @@
-export const mapAreas = [
+
+import { Feature, Polygon } from "geojson";
+export type InteractiveAreaProperties = {
+  name: string;
+  terrain: string;
+  avalancheDanger: boolean,
+  isLowerSegment: number | null;
+  id: string;
+}
+
+
+export type InteractiveAreaFeature = Feature<Polygon, InteractiveAreaProperties>;
+
+
+export const mapAreas: InteractiveAreaFeature[] = [
   {
-    type: "Feature" as const,
-    properties: { name: "Ski Area 1", id: "area-1" },
-    geometry: {
-      type: "Polygon" as const,
-      coordinates: [
-        [
-          [24.05, 68.045], // bottom left
-          [24.06, 68.048], // bottom right
-          [24.045, 68.055], // top right
-          [24.04, 68.055], // top left
-          [24.05, 68.045], // closing the polygon
-        ],
-      ],
+    "type": "Feature",
+    "properties": {
+      "name": "Laukukero Pohjoisseinä",
+      "terrain": "Tuulikangas",
+      "avalancheDanger": false,
+      "isLowerSegment": null,
+      "id": "area-2"
     },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            24.0316,
+            68.0613
+          ],
+          [
+            24.0333,
+            68.0639
+          ],
+          [
+            24.0398,
+            68.067
+          ],
+          [
+            24.021,
+            68.0702
+          ],
+          [
+            24.0042,
+            68.0655
+          ],
+          [
+            24.0102,
+            68.0625
+          ],
+          [
+            24.0316,
+            68.0613
+          ]
+        ]
+      ]
+    }
   },
   {
-    type: "Feature" as const,
-    properties: { name: "Hiking Trail", id: "area-2" },
-    geometry: {
-      type: "Polygon" as const,
-      coordinates: [
-        [
-          [24.04, 68.03],
-          [24.07, 68.03],
-          [24.07, 68.045],
-          [24.04, 68.045],
-          [24.04, 68.03],
-        ],
-      ],
+    "type": "Feature",
+    "properties": {
+      "name": "Lehmäkero länsiseinä ja laakso",
+      "terrain": "Tuulikangas ja varvikko",
+      "avalancheDanger": false,
+      "isLowerSegment": null,
+      "id": "area-3"
     },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            24.0381,
+            68.0826
+          ],
+          [
+            24.0425,
+            68.0844
+          ],
+          [
+            24.0359,
+            68.0883
+          ],
+          [
+            24.0258,
+            68.0979
+          ],
+          [
+            24.0358,
+            68.1046
+          ],
+          [
+            24.0499,
+            68.1081
+          ],
+          [
+            24.0562,
+            68.0937
+          ],
+          [
+            24.0628,
+            68.0874
+          ],
+          [
+            24.0666,
+            68.0846
+          ],
+          [
+            24.0633,
+            68.0807
+          ],
+          [
+            24.0652,
+            68.0793
+          ],
+          [
+            24.0667,
+            68.0737
+          ],
+          [
+            24.061,
+            68.0752
+          ],
+          [
+            24.0576,
+            68.0759
+          ],
+          [
+            24.0498,
+            68.0806
+          ],
+          [
+            24.0381,
+            68.0826
+          ]
+        ]
+      ]
+    }
   },
 ];
 
-export const mapAreas2 = [
+export const mapAreas2: InteractiveAreaFeature[] = [
 /*   {
     "type": "Feature",
     "properties": {

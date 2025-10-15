@@ -1,7 +1,7 @@
 "use client"
 import { FeatureCollection, Polygon } from "geojson";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import maplibregl, { Feature, FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, ResourceType, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
+ 
+import maplibregl, { FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
 import { useCallback, useMemo, useRef, useState } from "react";
 import Map, {
 	Layer,
@@ -11,19 +11,14 @@ import Map, {
 	TerrainControl,
 
 } from "react-map-gl/maplibre";
-import { MAP_STYLE, MAP_STYLE_NO_HILLSIDE } from "@/lib/map/map-style";
+import { MAP_STYLE } from "@/lib/map/map-style";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-type InteractiveAreaProperties = {
-  name: string;
-  id: string;
-}
-
-type InteractiveAreaFeature = Feature<Polygon, InteractiveAreaProperties>;
+import { InteractiveAreaFeature, InteractiveAreaProperties } from "@/lib/map/mock-data";
 
 type MapProps = {
   areas: InteractiveAreaFeature[];
 }
+
 
 const areaFillLayer: FillLayerSpecification = {
   id: "areas-fill",
