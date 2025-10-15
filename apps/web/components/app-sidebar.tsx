@@ -1,8 +1,8 @@
 
 import { useTranslations } from "next-intl";
 import LocaleSwitcher from "./locale-switcher";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarGroupContent } from "./ui/sidebar";
 import { ThemeToggle } from "./theme/theme-toggle";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarGroupContent } from "./ui/sidebar";
 
 export default function AppSidebar() {
   const t = useTranslations("Sidebar");
