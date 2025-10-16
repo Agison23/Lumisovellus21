@@ -36,7 +36,7 @@ const areaHoverLayer: FillLayerSpecification = {
 	source: "areas",
 	paint: {
 		"fill-color": "#ff4500",
-		"fill-opacity": 0.6,
+		"fill-opacity": 0.2,
 	},
 	filter: ["==", ["get", "id"], ""],
 };
@@ -67,9 +67,31 @@ const areaLabelLayer: SymbolLayerSpecification = {
 	},
 };
 
+const areaSelectedLayer: FillLayerSpecification = {
+    id: "areas-selected",
+    type: "fill",
+    source: "areas",
+    paint: {
+        "fill-color": "#ffd700",
+        "fill-opacity": 0.4,
+    },
+    filter: ["==", ["get", "id"], ""],
+};
+
+const areaAvalancheDangerOutlineLayer: LineLayerSpecification = {
+    id: "areas-avalanche-danger-outline",
+    type: "line",
+    source: "areas",
+    paint: {
+        "line-color": "#ff0000",
+        "line-width": 3,
+    },
+    filter: ["==", ["get", "avalancheDanger"], true],
+};
+
 export default function Map3d({ areas }: MapProps) {
   const [hoveredAreaId, setHoveredAreaId] = useState<string | null>(null)
-  const [selectedArea, setSelectedArea] = useState<string | null>(null)
+  const [selectedArea, setSelectedArea] = useState<InteractiveAreaProperties | null>(null)
   const [isLoading, setIsLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
   const hasLoadedRef = useRef(false);
@@ -93,6 +115,11 @@ export default function Map3d({ areas }: MapProps) {
   const hoverFilter = useMemo<FilterSpecification>(
     () => ["==", ["get", "id"], hoveredAreaId ?? ""] as FilterSpecification,
     [hoveredAreaId]
+  )
+
+  const selectedFilter = useMemo<FilterSpecification>(
+    () => ["==", ["get", "id"], selectedArea?.id ?? ""] as FilterSpecification,
+    [selectedArea]
   )
 
   const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
@@ -121,7 +148,7 @@ export default function Map3d({ areas }: MapProps) {
     }
 
     const properties = feature.properties as InteractiveAreaProperties;
-    setSelectedArea(properties.name);
+    setSelectedArea(properties);
     setPopupInfo({
       longtitude: event.lngLat.lng,
       latitude: event.lngLat.lat,
@@ -184,27 +211,27 @@ export default function Map3d({ areas }: MapProps) {
 				<Source id="areas" type="geojson" data={areasGeoJson} promoteId="id">
 					<Layer {...areaFillLayer} />
 					<Layer {...areaOutlineLayer} />
+          <Layer {...areaAvalancheDangerOutlineLayer} />
 					<Layer {...areaHoverLayer} filter={hoverFilter} />
+          <Layer {...areaSelectedLayer} filter={selectedFilter} />
 					<Layer {...areaLabelLayer} />
 				</Source>
-				{popupInfo && (
-					<Popup
-						longitude={popupInfo.longtitude}
-						latitude={popupInfo.latitude}
-						onClose={() => setPopupInfo(null)}
-						closeOnClick={false}
-						closeOnMove
-					>
-						<div className="text-primary">
-							<h3 className="font-semibold">{popupInfo.name}</h3>
-						</div>
-					</Popup>
-				)}
+
 			</Map>
 			<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm">
 				<h3>
-					Selected: {selectedArea === null ? "nothing" : selectedArea}
+					Selected: {selectedArea === null ? "nothing" : selectedArea.name}
 				</h3>
+        {selectedArea && (
+          <div className="flex gap-2 flex-col">
+            <p>
+              Terrain: {selectedArea.terrain}
+            </p>
+            <p>
+              {selectedArea.avalancheDanger ? "Has avalanche danger" : "No avalanche danger"}
+            </p>
+            </div>
+        )}
 			</div>
 		</div>
   )
