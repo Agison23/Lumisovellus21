@@ -1,19 +1,19 @@
 "use client"
+import { useQuery } from "@tanstack/react-query";
 import { FeatureCollection, Polygon } from "geojson";
- 
+
 import maplibregl, { FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
 import { useCallback, useMemo, useRef, useState } from "react";
 import Map, {
 	Layer,
 	NavigationControl,
-	Popup,
 	Source,
 	TerrainControl,
 
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/map/map-style";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { InteractiveAreaFeature, InteractiveAreaProperties } from "@/lib/map/mock-data";
+import { InteractiveAreaFeature, InteractiveAreaProperties, mapAreas2 } from "@/lib/map/mock-data";
 
 type MapProps = {
   areas: InteractiveAreaFeature[];
@@ -89,6 +89,11 @@ const areaAvalancheDangerOutlineLayer: LineLayerSpecification = {
     filter: ["==", ["get", "avalancheDanger"], true],
 };
 
+// for now, mock fetching areas from the API
+const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return mapAreas2
+}
 
 function calculatePolygonArea(coordinates: number[][]): number {
   // Shoelace formula for polygon area
@@ -105,7 +110,7 @@ function calculatePolygonArea(coordinates: number[][]): number {
   return Math.abs(area) / 2;
 }
 
-export default function Map3d({ areas }: MapProps) {
+export default function Map3d() {
   const [hoveredAreaId, setHoveredAreaId] = useState<string | null>(null)
   const [selectedArea, setSelectedArea] = useState<InteractiveAreaProperties | null>(null)
   const [isLoading, setIsLoading] = useState(true);
@@ -119,6 +124,13 @@ export default function Map3d({ areas }: MapProps) {
     }
     | null
   >(null);
+
+  const { data: areas = [] } = useQuery({
+    queryKey: ['mapaAreas'],
+    queryFn: fetchAreas,
+    refetchInterval: 10000,
+    staleTime: 5000
+  })
 
   const areasGeoJson = useMemo<FeatureCollection<Polygon, InteractiveAreaProperties>>(
     () => ({
