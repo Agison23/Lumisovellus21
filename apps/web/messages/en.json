@@ -2,15 +2,35 @@
   "AppLayout": {
     "map": "Map",
     "definitions": "Definitions",
-    "Weather": "Weather"
+    "weather": "Weather"
   },
   "LocaleSwitcher": {
     "label": "Language",
     "en": "English",
     "fi": "Suomi"
   },
+  "ThemeSwitcher": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "MapPage": {
     "title": "Map",
     "loading": "Loading map..."
+  },
+  "WeatherPage": {
+    "title": "Weather",
+    "loading": "Loading weather data..."
+  },
+  "DefinitionsPage": {
+    "title": "Definitions"
+  },
+  "Sidebar": {
+    "title": "Pallaksen Pöllöt",
+    "p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
+    "p2": "The information in the application is the subjective observations of the guides and the conditions can change quickly. When using snow data, it is worth taking into account the time stamp of the observation, as well as what additional information has been given about the segment and what the weather data about the area says. In the fells, the traveler is responsible for applying the observations, and the application does not in any way reduce his own responsibility.",
+    "p3": "More detailed snow information for each segment opens by clicking on it. You can find information about the weather for the last few days and the entire season behind the weather button.",
+    "p4": "Please remember to share your location with someone, for example on Whatsapp. Let's take care of ourselves, the fell and its beauty."
   }
 }

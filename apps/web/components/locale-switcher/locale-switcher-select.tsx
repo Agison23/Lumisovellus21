@@ -1,9 +1,9 @@
 "use client"
-import { Locale } from "@/i18n/config";
-import { setUserLocale } from "@/i18n/locale";
+import { Language } from "iconoir-react";
 import { useTransition } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Language } from "iconoir-react";
+import { Locale } from "@/i18n/config";
+import { setUserLocale } from "@/i18n/locale";
 
 type Props = {
   defaultValue: string;
