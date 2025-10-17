@@ -49,5 +49,6 @@
   "wettingSnowDesc": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.",
   "saturatedSnow": "Saturoitunut lumi",
   "saturatedSnowDesc": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.",
-  "littleSnow": "Vähäinen lumi"
+  "littleSnow": "Vähäinen lumi",
+  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja"
 }

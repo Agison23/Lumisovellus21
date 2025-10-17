@@ -176,4 +176,8 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get littleSnow => 'Vähäinen lumi';
+  
+  @override
+  String get mapOfflineModeMessage =>
+      'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
 }

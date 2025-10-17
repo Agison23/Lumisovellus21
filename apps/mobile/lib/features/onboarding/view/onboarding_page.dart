@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/i18n/locale_provider.dart';
+import 'package:lumisovellus/core/i18n/locale_provider.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/onboarding/providers.dart';
 import 'widgets/intro_step.dart';

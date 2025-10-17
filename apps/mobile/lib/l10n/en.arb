@@ -49,5 +49,6 @@
   "wettingSnowDesc": "Wet or moist snow resulting from warm weather or rainfall.",
   "saturatedSnow": "Saturated snow",
   "saturatedSnowDesc": "Completely wet , slushing and whipped cream like snow.",
-  "littleSnow": "Little snow"
+  "littleSnow": "Little snow",
+  "mapOfflineModeMessage": "You''re offline - showing saved map data"
 }

@@ -43,12 +43,22 @@ dependencies:
   intl: ^0.20.2
   maplibre_gl: ^0.24.0
   flutter_svg: ^2.0.10+1
+  drift: ^2.28.2
+  sqlite3_flutter_libs: ^0.5.40
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  http: ^1.5.0
+  shelf: ^1.4.2
+  connectivity_plus: ^7.0.0
+  internet_connection_checker_plus: ^2.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   
   riverpod_lint: ^2.3.10
+  drift_dev: ^2.18.0
+  build_runner: ^2.4.11
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
