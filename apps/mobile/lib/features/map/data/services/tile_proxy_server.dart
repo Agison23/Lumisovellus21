@@ -6,7 +6,6 @@ import 'package:shelf/shelf_io.dart' as io;
 
 import '../repositories/tile_cache_repository.dart';
 
-// TODO: Queue the cache writes instead of doing them here.
 // Local proxy for raster & dem tiles:
 //   - GET /tiles/{osm|dem}/{z}/{x}/{y}.png
 //   - serves cached bytes if present & not expired
@@ -140,14 +139,15 @@ class TileProxyServer {
     }
   }
 
-  DateTime? _parseMaxAgeToExpiry(String? cacheControl) {
-    if (cacheControl == null) return null;
+  // One week by default
+  DateTime _parseMaxAgeToExpiry(String? cacheControl) {
+    final now = DateTime.now().toUtc();
+    if (cacheControl == null) return now.add(const Duration(days: 7));
     final m = RegExp(r'max-age=(\d+)').firstMatch(cacheControl);
-    if (m == null) return null;
+    if (m == null) return now.add(const Duration(days: 7));
     final secs = int.tryParse(m.group(1)!);
-    if (secs == null) return null;
-    return DateTime.now().toUtc().add(Duration(seconds: secs));
-    // (We deliberately ignore stale-while-revalidate/if-error on write.)
+    if (secs == null) return now.add(const Duration(days: 7));
+    return now.add(Duration(seconds: secs));
   }
 
   Response _notFound({String body = '404'}) => Response.notFound(body);
