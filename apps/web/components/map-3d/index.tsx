@@ -13,7 +13,11 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/map/map-style";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { InteractiveAreaFeature, InteractiveAreaProperties, mapAreas2 } from "@/lib/map/mock-data";
+import { InteractiveAreaFeature, InteractiveAreaProperties, mapAreas2, mockSnowData, SnowType } from "@/lib/map/mock-data";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { useMultiStepForm } from "@/hooks/use-multi-step-form";
+import { useTranslations } from "next-intl";
 
 type MapProps = {
   areas: InteractiveAreaFeature[];
@@ -95,6 +99,12 @@ const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
   return mapAreas2
 }
 
+
+const fetchSnowTypes = async (): Promise<SnowType[]> => {
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return mockSnowData
+}
+
 function calculatePolygonArea(coordinates: number[][]): number {
   // Shoelace formula for polygon area
   // Note: This gives area in "degree squares" - only useful for comparison
@@ -124,12 +134,22 @@ export default function Map3d() {
     }
     | null
   >(null);
+  const [selectedSnowTypeId, setSelectedSnowTypeId] = useState<number | null>(null);
+  const [selectedSnowTypeDetailsId, setSelectedSnowTypeDetailsId] = useState<number[] | null>(null);
+
+  const t = useTranslations("MapPage")
 
   const { data: areas = [] } = useQuery({
-    queryKey: ['mapaAreas'],
+    queryKey: ['mapAreas'],
     queryFn: fetchAreas,
     refetchInterval: 10000,
     staleTime: 5000
+  })
+
+  const { data: snowTypes = [] } = useQuery({
+    queryKey: ['snowTypes'],
+    queryFn: fetchSnowTypes,
+    staleTime: Infinity
   })
 
   const areasGeoJson = useMemo<FeatureCollection<Polygon, InteractiveAreaProperties>>(
@@ -173,6 +193,7 @@ export default function Map3d() {
 
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     const feature = event.features && event.features[0];
+    form.reset();
     if (!feature) {
       setSelectedArea(null);
       setPopupInfo(null);
@@ -181,6 +202,7 @@ export default function Map3d() {
 
     const properties = feature.properties as InteractiveAreaProperties;
     setSelectedArea(properties);
+
     setPopupInfo({
       longtitude: event.lngLat.lng,
       latitude: event.lngLat.lat,
@@ -199,6 +221,12 @@ export default function Map3d() {
     }
   }, []);
 
+  const form = useMultiStepForm({
+    areaId: selectedArea?.id || null,
+    timestamp: new Date(),
+    selectedSnowTypeId: selectedSnowTypeId,
+  }, 3)
+
   return (
     <div className="relative w-full h-full">
 			{showLoading && (
@@ -208,7 +236,7 @@ export default function Map3d() {
 					}`}
 				>
 					<div className="flex flex-col items-center gap-4">
-						<p className="text-primary text-lg font-medium animate-pulse">Loading map...</p>
+						<p className="text-primary text-lg font-medium animate-pulse">{t('loading')}</p>
 					</div>
 				</div>
 			)}
@@ -250,21 +278,103 @@ export default function Map3d() {
 				</Source>
 
 			</Map>
-			<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm">
-				<h3>
-					Selected: {selectedArea === null ? "nothing" : selectedArea.name}
-				</h3>
-        {selectedArea && (
+
+			{selectedArea && (
+			<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2">
+			  <div className="flex flex-col">
+  				<h3 className="font-medium">
+  				  {selectedArea.name}
+  				</h3>
+  				<p>
+            {selectedArea.terrain}
+          </p>
+				</div>
+				<Separator />
           <div className="flex gap-2 flex-col">
+            {form.currentStep === 0 && (
+              <>
             <p>
-              Terrain: {selectedArea.terrain}
+              {selectedArea.avalancheDanger ? t('warnings.avalanche.danger') : t('warnings.avalance.noDanger')}
             </p>
-            <p>
-              {selectedArea.avalancheDanger ? "Has avalanche danger" : "No avalanche danger"}
-            </p>
+            <div className="flex gap-2">
+              <Button onClick={() => form.goToStep(1)}>
+                {t('reportForm.buttons.addObservation')}
+              </Button>
+              <Button variant="secondary" onClick={() => setSelectedArea(null)}>
+                {t('reportForm.buttons.close')}
+              </Button>
             </div>
-        )}
+              </>
+            )}
+            {form.currentStep === 1 && (
+              <>
+
+                <div className="flex gap-4 flex-col items-center">
+                  <p>{t('reportForm.steps.selectSnowType')}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                  {snowTypes.filter(st => st.categoryId === null).map(snowType => (
+                    <Button
+                      key={snowType.id}
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedSnowTypeId(snowType.id);
+                        form.updateFormData({ selectedSnowTypeId: snowType.id });
+                        form.nextStep();
+                      }}
+                    >
+                      {snowType.name}
+                    </Button>
+                  ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" onClick={() => form.goToStep(0)}>
+                      {t('reportForm.buttons.back')}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+            {form.currentStep === 2 && (
+              <>
+
+                <div className="flex gap-4 flex-col items-center">
+                  <p>{t('reportForm.steps.specifySnowType')}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                  {snowTypes.filter(st => (st.categoryId === form.formData.selectedSnowTypeId || st.id === selectedSnowTypeId)).map(snowType => (
+                    <Button
+                      key={snowType.id}
+                      variant="outline"
+                      onClick={() => {
+                        // append to selectedSnowTypeDetailsId
+                        // or remove if already selected
+                        if (selectedSnowTypeDetailsId?.includes(snowType.id)) {
+                          setSelectedSnowTypeDetailsId(selectedSnowTypeDetailsId.filter(id => id !== snowType.id));
+                        } else {
+                          setSelectedSnowTypeDetailsId([...(selectedSnowTypeDetailsId || []), snowType.id]);
+                        }
+                      }}
+                      className={selectedSnowTypeDetailsId?.includes(snowType.id) ? 'ring-green-500 ring-2' : ''}
+                    >
+                      {snowType.name}
+                    </Button>
+                  ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" onClick={() => {
+                      setSelectedSnowTypeDetailsId(null);
+                      form.goToStep(1)}}>
+                      {t('reportForm.buttons.back')}
+                    </Button>
+                    <Button>
+                      {t('reportForm.buttons.submit')}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+            </div>
 			</div>
+			)}
 		</div>
   )
 }

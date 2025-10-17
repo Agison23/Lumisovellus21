@@ -17,7 +17,59 @@
   },
   "MapPage": {
     "title": "Map",
-    "loading": "Loading map..."
+    "loading": "Loading map...",
+    "warnings": {
+      "avalance": {
+        "noDanger": "No avalanche warning",
+        "danger": "Avalanche warning"
+      }
+    },
+    "reportForm": {
+      "steps": {
+        "selectSnowType": "Select snow type",
+        "specifySnowType": "Specify snow type"
+      },
+      "generalSnowTypes": {
+        "fresh": "new/freshly fallen snow",
+        "windblown": "windblown",
+        "icy": "icy",
+        "wet": "wet",
+        "crust": "crust",
+        "minor": "minor"
+      },
+      "specificSnowTypes": {
+        "newSnow": {
+          "name": "New snow",
+          "description": "Freshly rained soft snow."
+        },
+        "freshWetSnow": {
+          "name": "Fresh wet snow",
+          "description": "Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point"
+        },
+        "powderSnow": {
+          "name": "Powder snow",
+          "description": "Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather."
+        },
+        "freshSnow": {
+          "name": "Fresh snow",
+          "description": "Fresh, light, soft and slightly packed snow."
+        },
+        "crust": {
+          "name": "crust"
+        }
+      },
+      "buttons": {
+        "addObservation": "Add observation",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "close": "Close"
+      },
+      "obstacles": {
+        "rocks": "rocks",
+        "branches": "branches"
+      }
+    }
   },
   "WeatherPage": {
     "title": "Weather",
