@@ -17,6 +17,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final style = ref.watch(mapStyleProvider);
 
     return Scaffold(
+      // keep only the map content here; navigation is handled by RootScaffold
       body: style.when(
         data: (s) => MapLibreMap(
           styleString: s,
