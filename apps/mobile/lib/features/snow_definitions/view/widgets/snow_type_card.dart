@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
-import '../models/snow_type.dart';
+import '../../models/snow_type.dart';
 
 class SnowTypeCard extends StatelessWidget {
   final SnowType snowType;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import '../data/snow_definitions_data.dart';
-import '../widgets/snow_type_card.dart';
+import 'widgets/snow_type_card.dart';
 
 class DefinitionsPage extends StatelessWidget {
   const DefinitionsPage({super.key});
