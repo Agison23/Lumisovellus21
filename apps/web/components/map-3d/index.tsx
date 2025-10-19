@@ -138,14 +138,17 @@ function calculatePolygonArea(coordinates: number[][]): number {
 const submitObservation = async (data: {
 	areaId: string | null;
 	selectedSnowTypeId: number | null;
-	snowTypeDetails: number[] | null;
+	snowTypeDetails: number | null;
+	obstacleIds?: number[] | null;
 	timestamp: Date | null;
 }) => {
 	if (
 		!data.areaId ||
 		!data.selectedSnowTypeId ||
 		!data.timestamp ||
-		data.snowTypeDetails?.length === 0
+		data.snowTypeDetails === null ||
+		data.snowTypeDetails === undefined ||
+		(data.obstacleIds && !Array.isArray(data.obstacleIds))
 	) {
 		throw new Error("Invalid observation data");
 	}
@@ -175,6 +178,9 @@ export default function Map3d() {
 		null
 	);
 	const [selectedSnowTypeDetailsId, setSelectedSnowTypeDetailsId] = useState<
+		number | null
+	>(null);
+	const [selectedObstacleIds, setSelectedObstacleIds] = useState<
 		number[] | null
 	>(null);
 
@@ -284,6 +290,19 @@ export default function Map3d() {
 		3
 	);
 
+	const getUpdateDataForArea = (
+		areaId: string
+	): (typeof mockUpdateData)[0] | undefined => {
+		const segmentNumber = parseInt(areaId.split("-")[1]);
+		return mockUpdateData.find((update) => update.segment === segmentNumber);
+	};
+
+	const getSnowTypeDetails = (
+		snowTypeId: number | null
+	): SnowType | undefined => {
+		return snowTypes.find((st) => st.id === snowTypeId);
+	};
+
 	return (
 		<div className="relative w-full h-full">
 			{showLoading && (
@@ -349,6 +368,27 @@ export default function Map3d() {
 										? t("warnings.avalanche.danger")
 										: t("warnings.avalance.noDanger")}
 								</p>
+								{(() => {
+									const updateData = getUpdateDataForArea(selectedArea.id);
+									if (!updateData) return null;
+
+									const snowType = getSnowTypeDetails(updateData.a1SnowType);
+
+									return (
+										<div className="text-xs text-muted-foreground">
+											<p>
+												Last update:{" "}
+												{new Date(updateData.time).toLocaleString()}
+											</p>
+											{snowType && (
+												<>
+													<p className="font-medium">{snowType.name}</p>
+													<p className="text-xs">{snowType.explanation}</p>
+												</>
+											)}
+										</div>
+									);
+								})()}
 								<div className="flex gap-2">
 									<Button onClick={() => form.goToStep(1)}>
 										{t("reportForm.buttons.addObservation")}
@@ -412,25 +452,13 @@ export default function Map3d() {
 													key={snowType.id}
 													variant="outline"
 													onClick={() => {
-														// append to selectedSnowTypeDetailsId
-														// or remove if already selected
-														if (
-															selectedSnowTypeDetailsId?.includes(snowType.id)
-														) {
-															setSelectedSnowTypeDetailsId(
-																selectedSnowTypeDetailsId.filter(
-																	(id) => id !== snowType.id
-																)
-															);
-														} else {
-															setSelectedSnowTypeDetailsId([
-																...(selectedSnowTypeDetailsId || []),
-																snowType.id,
-															]);
-														}
+														// set selectedSnowTypeDetailsId
+														selectedSnowTypeDetailsId === snowType.id
+															? setSelectedSnowTypeDetailsId(null)
+															: setSelectedSnowTypeDetailsId(snowType.id);
 													}}
 													className={
-														selectedSnowTypeDetailsId?.includes(snowType.id)
+														selectedSnowTypeDetailsId === snowType.id
 															? "ring-green-500 ring-2"
 															: ""
 													}
@@ -443,35 +471,35 @@ export default function Map3d() {
 									<div className="grid grid-cols-2 gap-2">
 										{snowTypes
 											.filter((st) => st.categoryId === 7)
-											.map((snowType) => (
+											.map((obstacleType) => (
 												<Button
-													key={snowType.id}
+													key={obstacleType.id}
 													variant="outline"
 													onClick={() => {
-														// append to selectedSnowTypeDetailsId
-														// or remove if already selected
+														// if already selected, remove it from the array
 														if (
-															selectedSnowTypeDetailsId?.includes(snowType.id)
+															selectedObstacleIds?.includes(obstacleType.id)
 														) {
-															setSelectedSnowTypeDetailsId(
-																selectedSnowTypeDetailsId.filter(
-																	(id) => id !== snowType.id
+															setSelectedObstacleIds(
+																selectedObstacleIds.filter(
+																	(id) => id !== obstacleType.id
 																)
 															);
 														} else {
-															setSelectedSnowTypeDetailsId([
-																...(selectedSnowTypeDetailsId || []),
-																snowType.id,
-															]);
+															setSelectedObstacleIds(
+																selectedObstacleIds
+																	? [...selectedObstacleIds, obstacleType.id]
+																	: [obstacleType.id]
+															);
 														}
 													}}
 													className={
-														selectedSnowTypeDetailsId?.includes(snowType.id)
+														selectedObstacleIds?.includes(obstacleType.id)
 															? "ring-green-500 ring-2"
 															: ""
 													}
 												>
-													{t(`reportForm.snowTypes.${snowType.id}.name`)}
+													{t(`reportForm.snowTypes.${obstacleType.id}.name`)}
 												</Button>
 											))}
 									</div>
@@ -498,7 +526,7 @@ export default function Map3d() {
 											disabled={
 												submitMutation.isPending ||
 												!selectedSnowTypeDetailsId ||
-												selectedSnowTypeDetailsId.length === 0
+												selectedSnowTypeDetailsId === null
 											}
 										>
 											{submitMutation.isPending
@@ -508,7 +536,10 @@ export default function Map3d() {
 									</div>
 									{submitMutation.isError && (
 										<p className="text-red-500 text-sm">
-											{t("reportForm.errors.submitFailed")}
+											{t("reportForm.errors.submitFailed")}:{" "}
+											{submitMutation.error instanceof Error
+												? submitMutation.error.message
+												: String(submitMutation.error)}
 										</p>
 									)}
 								</div>
