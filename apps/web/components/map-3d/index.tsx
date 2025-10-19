@@ -393,6 +393,24 @@ export default function Map3d() {
                       {snowType.name}
                     </Button>
                   ))}
+                  {snowTypes.filter(st => st.categoryId === 7).map(snowType => (
+                    <Button
+                      key={snowType.id}
+                      variant="outline"
+                      onClick={() => {
+                        // append to selectedSnowTypeDetailsId
+                        // or remove if already selected
+                        if (selectedSnowTypeDetailsId?.includes(snowType.id)) {
+                          setSelectedSnowTypeDetailsId(selectedSnowTypeDetailsId.filter(id => id !== snowType.id));
+                        } else {
+                          setSelectedSnowTypeDetailsId([...(selectedSnowTypeDetailsId || []), snowType.id]);
+                        }
+                      }}
+                      className={selectedSnowTypeDetailsId?.includes(snowType.id) ? 'ring-green-500 ring-2' : ''}
+                    >
+                      {snowType.name}
+                    </Button>
+                  ))}
                   </div>
                   <div className="flex gap-2">
                     <Button variant="secondary" onClick={() => {
