@@ -458,7 +458,7 @@ export default function Map3d() {
       </Map>
 
       {selectedArea && (
-        <div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 ">
+        <div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-100px)] w-80 max-w-[90vw]">
           <div className="flex flex-col">
             <h3 className="font-medium">{selectedArea.name}</h3>
             <p>{selectedArea.terrain}</p>
@@ -577,6 +577,7 @@ export default function Map3d() {
                           </Button>
                         ))}
                     </div>
+                    <p className="text-center">{getSnowTypeDetails(selectedSnowTypeId)?.explanation}</p>
                   </div>
                   <div className="flex flex-col gap-2 items-center">
                     <p>{t("reportForm.obstacles.description")}</p>
