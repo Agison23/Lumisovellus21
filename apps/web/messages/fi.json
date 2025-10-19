@@ -19,7 +19,7 @@
     "title": "Kartta",
     "loading": "Ladataan karttaa...",
     "warnings": {
-      "avalance": {
+      "avalanche": {
         "noDanger": "Ei lumivyöryvaroitusta",
         "danger": "Lumivyöryvaroitus"
       }
@@ -134,8 +134,9 @@
       "obstacles": {
         "description": "Esteet"
       },
-      "errors": {
-        "submitFailed": "Havaintoa ei voitu lähettää. Yritä uudelleen."
+      "messages": {
+        "submitError": "Havaintoa ei voitu lähettää. Yritä uudelleen.",
+        "submitSuccess": "Havainto lähetetty onnistuneesti. Kiitos!"
     }
   }
   },

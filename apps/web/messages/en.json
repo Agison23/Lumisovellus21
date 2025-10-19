@@ -134,8 +134,9 @@
       "obstacles": {
         "description": "Obstacles"
       },
-      "errors": {
-        "submitFailed": "Failed to submit observation. Please try again."
+      "messages": {
+        "submitError": "Failed to submit observation. Please try again.",
+        "submitSuccess": "Observation submitted successfully. Thank you!"
       }
     }
   },
