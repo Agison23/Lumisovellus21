@@ -19,7 +19,7 @@
     "title": "Map",
     "loading": "Loading map...",
     "warnings": {
-      "avalance": {
+      "avalanche": {
         "noDanger": "No avalanche warning",
         "danger": "Avalanche warning"
       }
