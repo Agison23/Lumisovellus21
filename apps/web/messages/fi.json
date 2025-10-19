@@ -37,26 +37,91 @@
         "crust": "korppu",
         "minor": "vähäistä"
       },
-      "specificSnowTypes": {
-        "newSnow": {
-          "name": "New snow",
-          "description": "Freshly rained soft snow."
-        },
-        "freshWetSnow": {
-          "name": "Fresh wet snow",
-          "description": "Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point"
-        },
-        "powderSnow": {
-          "name": "Powder snow",
-          "description": "Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather."
-        },
-        "freshSnow": {
-          "name": "Fresh snow",
-          "description": "Fresh, light, soft and slightly packed snow."
-        },
-        "crust": {
-          "name": "crust"
-        }
+      "snowTypes": {
+    "1": {
+      "name": "Korppu",
+      "description": "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista."
+    },
+    "2": {
+      "name": "Sohjo",
+      "description": "Vesipitoinen ja osittain sulanut lumi suojasäällä."
+    },
+    "3": {
+      "name": "Jää",
+      "description": "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena."
+    },
+    "4": {
+      "name": "Uusi lumi",
+      "description": "Vastasatanut pehmeä lumi."
+    },
+    "5": {
+      "name": "Tuulen pieksemä lumi",
+      "description": "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi."
+    },
+    "6": {
+      "name": "Vähäinen lumi",
+      "description": ""
+    },
+    "8": {
+      "name": "Lumeton maa",
+      "description": ""
+    },
+    "9": {
+      "name": "Vitilumi",
+      "description": "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta."
+    },
+    "10": {
+      "name": "Puuterilumi",
+      "description": "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella."
+    },
+    "11": {
+      "name": "Märkä uusi lumi",
+      "description": "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella."
+    },
+    "12": {
+      "name": "Sastrugi",
+      "description": "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista."
+    },
+    "13": {
+      "name": "Aaltoileva lumi",
+      "description": "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa."
+    },
+    "14": {
+      "name": "Tuiskulumi",
+      "description": "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle."
+    },
+    "15": {
+      "name": "Ohut korppu",
+      "description": "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa."
+    },
+    "16": {
+      "name": "Rikkoutuva korppu",
+      "description": "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta."
+    },
+    "17": {
+      "name": "Kantava korppu",
+      "description": "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä."
+    },
+    "18": {
+      "name": "Rikkoutuva jää",
+      "description": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros."
+    },
+    "19": {
+      "name": "Kastuva lumi",
+      "description": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi."
+    },
+    "20": {
+      "name": "Saturoitunut lumi",
+      "description": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi"
+    },
+    "21": {
+      "name": "Kiviä",
+      "description": ""
+    },
+    "22": {
+      "name": "Oksia",
+      "description": ""
+    }
       },
       "buttons": {
         "addObservation": "Lisää havainto",
@@ -67,8 +132,7 @@
         "close": "Sulje"
       },
       "obstacles": {
-        "rocks": "rocks",
-        "branches": "branches"
+        "description": "Esteet"
       },
       "errors": {
         "submitFailed": "Havaintoa ei voitu lähettää. Yritä uudelleen."
