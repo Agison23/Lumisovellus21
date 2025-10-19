@@ -247,17 +247,24 @@ export default function Map3d() {
 
   const t = useTranslations("MapPage");
 
-  const { data: areas = [] } = useQuery({
+  const { data: areas = [], isError: areasError, error: areasErrorMessage } = useQuery({
     queryKey: ["mapAreas"],
     queryFn: fetchAreas,
     refetchInterval: 10000,
     staleTime: 5000,
   });
 
-  const { data: snowTypes = [] } = useQuery({
+  const { data: snowTypes = [], isError: snowTypesError } = useQuery({
     queryKey: ["snowTypes"],
     queryFn: fetchSnowTypes,
     staleTime: Infinity,
+  });
+
+  const { data: updateData = [], isError: updateError } = useQuery({
+    queryKey: ["updateData"],
+    queryFn: fetchUpdateData,
+    refetchInterval: 10000,
+    staleTime: 5000,
   });
 
   const submitMutation = useMutation({
@@ -373,7 +380,7 @@ export default function Map3d() {
     areaId: string,
   ): (typeof mockUpdateData)[0] | undefined => {
     const segmentNumber = parseInt(areaId.split("-")[1]);
-    return mockUpdateData.find((update) => update.segment === segmentNumber);
+    return updateData.find((update) => update.segment === segmentNumber);
   };
 
   const getSnowTypeDetails = (
@@ -382,6 +389,18 @@ export default function Map3d() {
     return snowTypes.find((st) => st.id === snowTypeId);
   };
 
+    if (areasError || snowTypesError || updateError) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <p className="text-red-500">
+            {t("errors.loadingData") +
+              (areasErrorMessage instanceof Error
+                ? ` ${areasErrorMessage.message}`
+                : "")}
+          </p>
+        </div>
+      );
+    }
   return (
     <div className="relative w-full h-full">
       {showLoading && (
