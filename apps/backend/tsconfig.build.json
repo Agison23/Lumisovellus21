@@ -1,0 +1,11 @@
+
+{
+    "extends": "@lumisovellus/tsconfig/tsconfig.base.json",
+    "compilerOptions": {
+      "noEmit": false,
+      "outDir": "dist",
+      "rootDir": "src"
+    },
+    "include": ["src"]
+  }
+  

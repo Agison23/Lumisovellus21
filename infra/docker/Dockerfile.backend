@@ -1,0 +1,55 @@
+FROM node:20-alpine AS base
+
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY apps/backend/package*.json ./apps/backend/
+COPY packages/shared/package*.json ./packages/shared/
+COPY packages/tsconfig/package*.json ./packages/tsconfig/
+
+# Install dependencies
+RUN npm ci --include=dev
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+
+# Build shared package first
+RUN cd packages/shared && npm run build
+
+# Build backend
+RUN cd apps/backend && npm run build
+
+# Generate Swagger documentation
+RUN cd apps/backend && npm run build:swagger:clean
+
+# Production image, copy all the files and run the app
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 backend
+
+# Copy built application
+COPY --from=builder --chown=backend:nodejs /app/apps/backend/dist ./dist
+COPY --from=builder --chown=backend:nodejs /app/apps/backend/package*.json ./
+COPY --from=builder --chown=backend:nodejs /app/apps/backend/swagger-output.json ./swagger-output.json
+COPY --from=builder --chown=backend:nodejs /app/packages/shared/dist ./packages/shared/dist
+COPY --from=deps --chown=backend:nodejs /app/node_modules ./node_modules
+
+USER backend
+
+EXPOSE 3001
+
+ENV PORT 3001
+
+CMD ["node", "dist/server.js"]
