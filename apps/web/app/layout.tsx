@@ -44,7 +44,7 @@ export default async function RootLayout({
               <div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
             <AppSidebar />
             <SidebarInset className="relative flex flex-col gap-2 flex-1">
-              <div className="w-full flex justify-start items-center absolute z-999 p-2">
+              <div className="w-full flex justify-start items-center absolute z-10 p-2">
                 <SidebarTrigger className="bg-background" />
               </div>
               <div className="flex-1 w-full h-full rounded-xl overflow-clip">
