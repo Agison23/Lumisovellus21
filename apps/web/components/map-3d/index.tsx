@@ -105,6 +105,11 @@ const fetchSnowTypes = async (): Promise<SnowType[]> => {
   return mockSnowData
 }
 
+const fetchUpdateData = async () => {
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return mockUpdateData
+}
+
 function calculatePolygonArea(coordinates: number[][]): number {
   // Shoelace formula for polygon area
   // Note: This gives area in "degree squares" - only useful for comparison
@@ -392,6 +397,7 @@ export default function Map3d() {
                   <div className="flex gap-2">
                     <Button variant="secondary" onClick={() => {
                       setSelectedSnowTypeDetailsId(null);
+                      submitMutation.reset();
                       form.goToStep(1)}}>
                       {t('reportForm.buttons.back')}
                     </Button>
