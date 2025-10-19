@@ -17,12 +17,20 @@
   },
   "MapPage": {
     "title": "Map",
-    "loading": "Loading map...",
+    "loading": {
+      "map": "Loading map...",
+      "snowData": "Loading snow data...",
+      "segments": "Loading segments...",
+      "segmentData": "Loading segment data..."
+    },
     "warnings": {
       "avalanche": {
         "noDanger": "No avalanche warning",
         "danger": "Avalanche warning"
       }
+    },
+    "errors": {
+      "loadingData": "Error loading data. Please try again later."
     },
     "reportForm": {
       "steps": {

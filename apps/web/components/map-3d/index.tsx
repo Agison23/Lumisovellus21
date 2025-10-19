@@ -34,7 +34,7 @@ import {
 
 // Add this at the top with other imports/helpers
 
-const CAMERA_STATE_KEY = 'map3d_camera_state';
+const CAMERA_STATE_KEY = "map3d_camera_state";
 
 interface CameraState {
   longitude: number;
@@ -48,7 +48,7 @@ const saveCameraState = (state: CameraState) => {
   try {
     localStorage.setItem(CAMERA_STATE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error('Failed to save camera state:', error);
+    console.error("Failed to save camera state:", error);
   }
 };
 
@@ -57,7 +57,7 @@ const loadCameraState = (): CameraState | null => {
     const stored = localStorage.getItem(CAMERA_STATE_KEY);
     return stored ? JSON.parse(stored) : null;
   } catch (error) {
-    console.error('Failed to load camera state:', error);
+    console.error("Failed to load camera state:", error);
     return null;
   }
 };
@@ -69,7 +69,6 @@ const DEFAULT_VIEW_STATE: CameraState = {
   pitch: 60,
   bearing: 0,
 };
-
 
 type MapProps = {
   areas: InteractiveAreaFeature[];
@@ -247,20 +246,31 @@ export default function Map3d() {
 
   const t = useTranslations("MapPage");
 
-  const { data: areas = [], isError: areasError, error: areasErrorMessage } = useQuery({
+  const {
+    data: areas = [],
+    isError: areasError,
+    error: areasErrorMessage,
+  } = useQuery({
     queryKey: ["mapAreas"],
     queryFn: fetchAreas,
-    refetchInterval: 10000,
-    staleTime: 5000,
+    staleTime: Infinity,
   });
 
-  const { data: snowTypes = [], isError: snowTypesError } = useQuery({
+  const {
+    data: snowTypes = [],
+    isError: snowTypesError,
+    isLoading: snowTypesLoading,
+  } = useQuery({
     queryKey: ["snowTypes"],
     queryFn: fetchSnowTypes,
     staleTime: Infinity,
   });
 
-  const { data: updateData = [], isError: updateError } = useQuery({
+  const {
+    data: updateData = [],
+    isError: updateError,
+    isLoading: updateDataLoading,
+  } = useQuery({
     queryKey: ["updateData"],
     queryFn: fetchUpdateData,
     refetchInterval: 10000,
@@ -282,7 +292,7 @@ export default function Map3d() {
         t("reportForm.messages.submitError") +
           (error instanceof Error ? ` ${error.message}` : ""),
       );
-    }
+    },
   });
 
   const areasGeoJson = useMemo<
@@ -389,18 +399,18 @@ export default function Map3d() {
     return snowTypes.find((st) => st.id === snowTypeId);
   };
 
-    if (areasError || snowTypesError || updateError) {
-      return (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-red-500">
-            {t("errors.loadingData") +
-              (areasErrorMessage instanceof Error
-                ? ` ${areasErrorMessage.message}`
-                : "")}
-          </p>
-        </div>
-      );
-    }
+  if (areasError || snowTypesError || updateError) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-red-500">
+          {t("errors.loadingData") +
+            (areasErrorMessage instanceof Error
+              ? ` ${areasErrorMessage.message}`
+              : "")}
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="relative w-full h-full">
       {showLoading && (
@@ -411,7 +421,7 @@ export default function Map3d() {
         >
           <div className="flex flex-col items-center gap-4">
             <p className="text-primary text-lg font-medium animate-pulse">
-              {t("loading")}
+              {t("loading.map")}
             </p>
           </div>
         </div>
@@ -427,17 +437,17 @@ export default function Map3d() {
         onClick={handleClick}
         onLoad={handleMapLoad}
         onMove={(evt) => {
-             // Save camera state whenever user moves/zooms/rotates the map
-             const newState = {
-               longitude: evt.viewState.longitude,
-               latitude: evt.viewState.latitude,
-               zoom: evt.viewState.zoom,
-               pitch: evt.viewState.pitch,
-               bearing: evt.viewState.bearing,
-             };
-             setViewState(newState);
-             saveCameraState(newState);
-           }}
+          // Save camera state whenever user moves/zooms/rotates the map
+          const newState = {
+            longitude: evt.viewState.longitude,
+            latitude: evt.viewState.latitude,
+            zoom: evt.viewState.zoom,
+            pitch: evt.viewState.pitch,
+            bearing: evt.viewState.bearing,
+          };
+          setViewState(newState);
+          saveCameraState(newState);
+        }}
         interactiveLayerIds={["areas-fill"]}
       >
         <NavigationControl
@@ -467,32 +477,38 @@ export default function Map3d() {
           <div className="flex gap-2 flex-col">
             {form.currentStep === 0 && (
               <>
-                <p>
-                  {selectedArea.avalancheDanger
-                    ? t("warnings.avalanche.danger")
-                    : t("warnings.avalanche.noDanger")}
-                </p>
-                {(() => {
-                  const updateData = getUpdateDataForArea(selectedArea.id);
-                  if (!updateData) return null;
+                {updateDataLoading ? (
+                  <p>{t("loading.segmentData")}</p>
+                ) : (
+                  <>
+                    <p>
+                      {selectedArea.avalancheDanger
+                        ? t("warnings.avalanche.danger")
+                        : t("warnings.avalanche.noDanger")}
+                    </p>
+                    {(() => {
+                      const updateData = getUpdateDataForArea(selectedArea.id);
+                      if (!updateData) return null;
 
-                  const snowType = getSnowTypeDetails(updateData.a1SnowType);
+                      const snowType = getSnowTypeDetails(
+                        updateData.a1SnowType,
+                      );
 
-                  return (
-                    <div className="text-xs text-muted-foreground">
-                      <p>
-                        Last update:{" "}
-                        {new Date(updateData.time).toLocaleString()}
-                      </p>
-                      {snowType && (
-                        <>
-                          <p className="font-medium">{snowType.name}</p>
-                          <p className="text-xs">{snowType.explanation}</p>
-                        </>
-                      )}
-                    </div>
-                  );
-                })()}
+                      return (
+                        <div className="text-xs text-muted-foreground">
+                          <p>
+                            Last update:{" "}
+                            {new Date(updateData.time).toLocaleString()}
+                          </p>
+                          {snowType && (
+                            <>
+                              <p className="font-medium">{snowType.name}</p>
+                              <p className="text-xs">{snowType.explanation}</p>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })()}
                 <div className="flex gap-2">
                   <Button onClick={() => form.goToStep(1)}>
                     {t("reportForm.buttons.addObservation")}
@@ -504,6 +520,8 @@ export default function Map3d() {
                     {t("reportForm.buttons.close")}
                   </Button>
                 </div>
+                  </>
+                )}
               </>
             )}
             {form.currentStep === 1 && (
@@ -511,6 +529,7 @@ export default function Map3d() {
                 <div className="flex gap-4 flex-col items-center">
                   <div className="flex flex-col gap-2 items-center">
                     <p>{t("reportForm.steps.selectSnowType")}</p>
+                    {snowTypesLoading && <p>{t("loading.snowData")}</p>}
                     <div className="grid grid-cols-2 gap-2">
                       {snowTypes
                         .filter((st) => st.categoryId === null)
@@ -577,7 +596,9 @@ export default function Map3d() {
                           </Button>
                         ))}
                     </div>
-                    <p className="text-center">{getSnowTypeDetails(selectedSnowTypeId)?.explanation}</p>
+                    <p className="text-center">
+                      {getSnowTypeDetails(selectedSnowTypeId)?.explanation}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-2 items-center">
                     <p>{t("reportForm.obstacles.description")}</p>

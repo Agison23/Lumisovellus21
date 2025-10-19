@@ -17,12 +17,21 @@
   },
   "MapPage": {
     "title": "Kartta",
-    "loading": "Ladataan karttaa...",
+    "loading": {
+      "map": "Ladataan karttaa...",
+      "snowData": "Ladataan lumitietoja...",
+      "segments": "Ladataan segmenttejä...",
+        "segmentData": "Ladataan segmenttitietoja..."
+    },
     "warnings": {
       "avalanche": {
         "noDanger": "Ei lumivyöryvaroitusta",
         "danger": "Lumivyöryvaroitus"
       }
+    },
+
+    "errors": {
+      "loadingData": "Lumitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
     },
     "reportForm": {
       "steps": {
