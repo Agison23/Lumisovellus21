@@ -63,11 +63,15 @@
         "back": "Back",
         "next": "Next",
         "submit": "Submit",
+        "submitting": "Submitting...",
         "close": "Close"
       },
       "obstacles": {
         "rocks": "rocks",
         "branches": "branches"
+      },
+      "errors": {
+        "submitFailed": "Failed to submit observation. Please try again."
       }
     }
   },

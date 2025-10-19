@@ -63,13 +63,17 @@
         "back": "Takaisin",
         "next": "Seuraava",
         "submit": "Lähetä",
+        "submitting": "Lähetetään...",
         "close": "Sulje"
       },
       "obstacles": {
         "rocks": "rocks",
         "branches": "branches"
-      }
+      },
+      "errors": {
+        "submitFailed": "Havaintoa ei voitu lähettää. Yritä uudelleen."
     }
+  }
   },
   "WeatherPage": {
     "title": "Sää",

@@ -1,5 +1,5 @@
 "use client"
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FeatureCollection, Polygon } from "geojson";
 
 import maplibregl, { FillLayerSpecification, LineLayerSpecification, MapLayerMouseEvent, SymbolLayerSpecification, type FilterSpecification } from "maplibre-gl";
@@ -13,7 +13,7 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/map/map-style";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { InteractiveAreaFeature, InteractiveAreaProperties, mapAreas2, mockSnowData, SnowType } from "@/lib/map/mock-data";
+import { InteractiveAreaFeature, InteractiveAreaProperties, mapAreas2, mockSnowData, mockUpdateData, SnowType } from "@/lib/map/mock-data";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
@@ -120,6 +120,25 @@ function calculatePolygonArea(coordinates: number[][]): number {
   return Math.abs(area) / 2;
 }
 
+const submitObservation = async (data: {
+  areaId: string | null;
+  selectedSnowTypeId: number | null;
+  snowTypeDetails: number[] | null;
+  timestamp: Date | null;
+}) => {
+  if (!data.areaId || !data.selectedSnowTypeId || !data.timestamp || data.snowTypeDetails?.length === 0) {
+    throw new Error('Invalid observation data');
+  }
+  const response = await fetch('/api/observations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  
+  if (!response.ok) throw new Error('Failed to submit observation');
+  return response.json();
+};
+
 export default function Map3d() {
   const [hoveredAreaId, setHoveredAreaId] = useState<string | null>(null)
   const [selectedArea, setSelectedArea] = useState<InteractiveAreaProperties | null>(null)
@@ -150,6 +169,16 @@ export default function Map3d() {
     queryKey: ['snowTypes'],
     queryFn: fetchSnowTypes,
     staleTime: Infinity
+  })
+
+  const submitMutation = useMutation({
+    mutationFn: submitObservation,
+    onSuccess: () => {
+      setSelectedArea(null);
+      form.reset();
+      setSelectedSnowTypeDetailsId(null);
+      setSelectedSnowTypeId(null);
+    }
   })
 
   const areasGeoJson = useMemo<FeatureCollection<Polygon, InteractiveAreaProperties>>(
@@ -194,6 +223,7 @@ export default function Map3d() {
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     const feature = event.features && event.features[0];
     form.reset();
+    submitMutation.reset();
     if (!feature) {
       setSelectedArea(null);
       setPopupInfo(null);
@@ -365,10 +395,25 @@ export default function Map3d() {
                       form.goToStep(1)}}>
                       {t('reportForm.buttons.back')}
                     </Button>
-                    <Button>
-                      {t('reportForm.buttons.submit')}
+                    <Button
+                                      onClick={() => submitMutation.mutate({
+                  areaId: form.formData.areaId,
+                  selectedSnowTypeId: form.formData.selectedSnowTypeId,
+                  snowTypeDetails: selectedSnowTypeDetailsId,
+                  timestamp: form.formData.timestamp,
+                })}
+                disabled={submitMutation.isPending || !selectedSnowTypeDetailsId || selectedSnowTypeDetailsId.length === 0}
+                    >
+                      {submitMutation.isPending ? t('reportForm.buttons.submitting') : t('reportForm.buttons.submit')}
                     </Button>
                   </div>
+                  {
+                    submitMutation.isError && (
+                      <p className="text-red-500 text-sm">
+                        {t('reportForm.errors.submitFailed')}
+                      </p>
+                    )
+                  }
                 </div>
               </>
             )}
