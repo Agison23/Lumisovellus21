@@ -23,6 +23,7 @@ const doc = {
   produces: ['application/json'],
   tags: [
     { name: 'Health', description: 'Health check endpoints' },
+    { name: 'Authentication', description: 'User authentication and account management' },
     { name: 'Segments', description: 'Ski segment management' },
     { name: 'Updates', description: 'Snow condition updates' },
     { name: 'Reviews', description: 'User reviews and ratings' },
@@ -31,7 +32,12 @@ const doc = {
     { name: 'Help Requests', description: 'Emergency and assistance requests' },
   ],
   securityDefinitions: {
-    // No auth in development
+    BearerAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization',
+      description: 'JWT token for authentication. Format: Bearer <token>'
+    }
   },
   security: [],
   definitions: {
@@ -70,6 +76,35 @@ const doc = {
         }
       }
     },
+    RegisterRequest: {
+      type: 'object',
+      required: ['firstName', 'email', 'password'],
+      properties: {
+        firstName: {
+          type: 'string',
+          example: 'John'
+        },
+        lastName: {
+          type: 'string',
+          example: 'Doe'
+        },
+        email: {
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com'
+        },
+        password: {
+          type: 'string',
+          minLength: 6,
+          example: 'password123'
+        },
+        role: {
+          type: 'string',
+          enum: ['NORMAL', 'PREMIUM', 'ADMIN', 'RESCUE'],
+          example: 'NORMAL'
+        }
+      }
+    },
     LoginRequest: {
       type: 'object',
       required: ['email', 'password'],
@@ -85,16 +120,16 @@ const doc = {
         }
       }
     },
-    LoginResponse: {
+    AuthResponse: {
       type: 'object',
       properties: {
+        success: {
+          type: 'boolean',
+          example: true
+        },
         data: {
           type: 'object',
           properties: {
-            token: {
-              type: 'string',
-              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-            },
             user: {
               type: 'object',
               properties: {
@@ -102,10 +137,83 @@ const doc = {
                 firstName: { type: 'string', example: 'John' },
                 lastName: { type: 'string', example: 'Doe' },
                 email: { type: 'string', example: 'user@example.com' },
-                role: { type: 'string', example: 'user' }
+                role: { type: 'string', enum: ['NORMAL', 'PREMIUM', 'ADMIN', 'RESCUE'], example: 'NORMAL' }
               }
+            },
+            accessToken: {
+              type: 'string',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+            },
+            refreshToken: {
+              type: 'string',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
             }
           }
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Login successful' },
+            timestamp: { type: 'string', example: '2024-01-15T10:30:00.000Z' }
+          }
+        }
+      }
+    },
+    RefreshTokenRequest: {
+      type: 'object',
+      required: ['refreshToken'],
+      properties: {
+        refreshToken: {
+          type: 'string',
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        }
+      }
+    },
+    ChangePasswordRequest: {
+      type: 'object',
+      required: ['currentPassword', 'newPassword'],
+      properties: {
+        currentPassword: {
+          type: 'string',
+          example: 'oldpassword'
+        },
+        newPassword: {
+          type: 'string',
+          minLength: 6,
+          example: 'newpassword123'
+        }
+      }
+    },
+    UpdateProfileRequest: {
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string',
+          example: 'John'
+        },
+        lastName: {
+          type: 'string',
+          example: 'Smith'
+        },
+        email: {
+          type: 'string',
+          format: 'email',
+          example: 'johnsmith@example.com'
+        },
+        phoneNumber: {
+          type: 'string',
+          example: '+1234567890'
+        }
+      }
+    },
+    ResetPasswordRequest: {
+      type: 'object',
+      required: ['email'],
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com'
         }
       }
     },
@@ -168,6 +276,12 @@ const outputFile = './swagger-output.json';
 const endpointsFiles = [
   './server.ts',
   './api/routes/index.ts',
+  './api/routes/auth/authRoutes.ts',
+  './api/routes/users/usersRoutes.ts',
+  './api/routes/help/helpRoutes.ts',
+  './api/routes/reviews/reviewsRoutes.ts',
+  './api/routes/segments/segmentsRoutes.ts',
+  './api/routes/health/healthRoutes.ts',
 ];
 
 const swaggerAutogenInstance = swaggerAutogen();

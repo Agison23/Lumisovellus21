@@ -2,21 +2,14 @@ import { BaseService } from '../BaseService';
 import { HelpRequestCreate, HelpRequest, HelpResponseUpdate } from '../../types';
 
 export class HelpService extends BaseService {
-  async createHelpRequest(helpData: HelpRequestCreate): Promise<{ nearbyUsers: number }> {
+  async createHelpRequest(helpData: HelpRequestCreate & { userId: string }): Promise<{ nearbyUsers: number }> {
     try {
-      // Get user to get their UUID
-      const user = await this.prisma.user.findUnique({
-        where: { devId: helpData.deviceId },
-        select: { id: true }
-      });
-
-      if (!user) {
-        throw new Error('User not found');
-      }
+      // Use the authenticated user's ID directly
+      const userId = helpData.userId;
 
       // Create or update help request
       await this.prisma.helpRequest.upsert({
-        where: { userId: user.id },
+        where: { userId: userId },
         update: {
           timestamp: parseInt(helpData.timestamp.toString()),
           gpsCoord: helpData.gpsCoord,
@@ -26,7 +19,7 @@ export class HelpService extends BaseService {
         },
         create: {
           id: crypto.randomUUID(),
-          userId: user.id,
+          userId: userId,
           timestamp: parseInt(helpData.timestamp.toString()),
           gpsCoord: helpData.gpsCoord,
           helpType: helpData.helpType,
@@ -42,7 +35,7 @@ export class HelpService extends BaseService {
       const nearbyUsers = await this.prisma.locationData.findMany({
         where: {
           timestamp: { gte: twoHoursAgo },
-          userId: { not: user.id }
+          userId: { not: userId }
         },
         include: {
           user: true
@@ -56,7 +49,7 @@ export class HelpService extends BaseService {
             data: {
               id: crypto.randomUUID(),
               helpGiver: nearbyUser.userId,
-              helpRequester: user.id,
+              helpRequester: userId,
               state: 0, // Pending
             }
           });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ReviewsController } from '../../controllers/reviews/ReviewsController';
 import { reviewSchema, segmentIdSchema, querySchema } from '../../middleware/validation';
+import { authenticateToken } from '../../middleware/auth';
 
 const router = Router();
 const reviewsController = new ReviewsController();
@@ -175,6 +176,6 @@ router.get('/api/v1/reviews/all', reviewsController.getAllReviews);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.post('/api/v1/segments/:id/reviews', reviewsController.createReview);
+router.post('/api/v1/segments/:id/reviews', authenticateToken, reviewsController.createReview);
 
 export default router;

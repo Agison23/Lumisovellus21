@@ -13,10 +13,10 @@ export class UsersService extends BaseService {
         },
         create: {
           devId: deviceId,
-          firstName: locationData.firstName,
-          lastName: locationData.lastName,
+          firstName: locationData.firstName || 'Mobile User',
+          lastName: locationData.lastName || null,
           ipAddress,
-          phoneNumber: locationData.phoneNumber,
+          phoneNumber: locationData.phoneNumber || null,
           role: 'NORMAL'
         }
       });

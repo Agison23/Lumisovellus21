@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UsersController } from '../../controllers/users/UsersController';
 import { deviceIdSchema, locationUpdateSchema, batteryUpdateSchema, roleUpdateSchema } from '../../middleware/validation';
+import { authenticateToken, requireRole } from '../../middleware/auth';
 
 const router = Router();
 const usersController = new UsersController();
@@ -54,7 +55,7 @@ const usersController = new UsersController();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/api/v1/users/:deviceId/location', usersController.updateLocation);
+router.post('/api/v1/users/:deviceId/location', authenticateToken, usersController.updateLocation);
 
 /**
  * @swagger
@@ -105,7 +106,7 @@ router.post('/api/v1/users/:deviceId/location', usersController.updateLocation);
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/users/:deviceId/battery', usersController.updateBattery);
+router.post('/api/v1/users/:deviceId/battery', authenticateToken, usersController.updateBattery);
 
 /**
  * @swagger
@@ -156,7 +157,7 @@ router.post('/api/v1/users/:deviceId/battery', usersController.updateBattery);
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/users/:deviceId/role', usersController.updateRole);
+router.post('/api/v1/users/:deviceId/role', authenticateToken, requireRole(['ADMIN']), usersController.updateRole);
 
 /**
  * @swagger
@@ -200,6 +201,6 @@ router.post('/api/v1/users/:deviceId/role', usersController.updateRole);
  *       500:
  *         description: Internal server error
  */
-router.get('/api/v1/users/:deviceId/role', usersController.getUserRole);
+router.get('/api/v1/users/:deviceId/role', authenticateToken, usersController.getUserRole);
 
 export default router;
