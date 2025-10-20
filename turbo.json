@@ -12,6 +12,9 @@
     },
     "test": {},
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
-    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] }
+    "lint:fix": { "outputs": [], "dependsOn": ["^lint:fix"] },
+    "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
+    "format": { "outputs": [] },
+    "format:check": { "outputs": [] }
   }
 }

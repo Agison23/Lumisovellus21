@@ -1,0 +1,104 @@
+name: Lint and Format
+
+on:
+  pull_request:
+    branches: [ main, develop, backend-branch ]
+  push:
+    branches: [ main, develop, backend-branch ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    name: Format Code
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.10.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Format code with Prettier
+        run: |
+          # Format all code in the monorepo
+          npm run format
+          
+          # Check if there are any formatting changes
+          if ! git diff --quiet; then
+            echo "Code formatting changes detected"
+            git add .
+            git -c user.name="GitHub Actions" -c user.email="actions@github.com" commit -m "Auto-format code with Prettier"
+            git push
+          else
+            echo "No formatting changes needed"
+          fi
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Code
+    needs: format
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.10.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript type checking
+        run: npm run typecheck
+
+  format-check:
+    runs-on: ubuntu-latest
+    name: Check Formatting
+    needs: format
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.10.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: |
+          # Check if code is properly formatted
+          npm run format:check
+          
+          # Check for any uncommitted changes
+          if ! git diff --quiet; then
+            echo "❌ Code formatting issues detected. Please run 'npm run format' locally and commit the changes."
+            exit 1
+          else
+            echo "✅ All code is properly formatted"
+          fi
