@@ -17,30 +17,39 @@
   "basePath": "/",
   "tags": [
     {
-      "name": "Auth",
-      "description": "Authentication related endpoints"
-    },
-    {
-      "name": "User",
-      "description": "User management endpoints"
+      "name": "Health",
+      "description": "Health check endpoints"
     },
     {
       "name": "Segments",
-      "description": "Segment and condition data"
+      "description": "Ski segment management"
+    },
+    {
+      "name": "Updates",
+      "description": "Snow condition updates"
+    },
+    {
+      "name": "Reviews",
+      "description": "User reviews and ratings"
+    },
+    {
+      "name": "Snow Types",
+      "description": "Snow type classifications"
+    },
+    {
+      "name": "Users",
+      "description": "User management and mobile features"
+    },
+    {
+      "name": "Help Requests",
+      "description": "Emergency and assistance requests"
     }
   ],
   "schemes": [
     "http",
     "https"
   ],
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization",
-      "description": "Use format: Bearer <JWT>. Obtain token from /api/v1/auth/login"
-    }
-  },
+  "securityDefinitions": {},
   "consumes": [
     "application/json"
   ],
@@ -65,13 +74,73 @@
       "get": {
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/v1/auth/login": {
+    "/api/v1/segments": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/segments/{id}/updates": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/updates": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/snow-types": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/reviews": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/all": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/segments/{id}/reviews": {
       "post": {
         "description": "",
         "responses": {
@@ -81,319 +150,65 @@
         }
       }
     },
-    "/web-api/v1/segments": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/segments/{id}/updates": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/updates": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/reviews": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/allReviews": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/snow-types": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/web-api/v1/segments/{id}/reviews": {
+    "/api/v1/users/{deviceId}/location": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
-          "401": {
-            "description": "Unauthorized"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/mobile-api/v1/location": {
+    "/api/v1/users/{deviceId}/battery": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "timestamp": {
-                  "example": "any"
-                },
-                "devId": {
-                  "example": "any"
-                },
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                },
-                "gpsCoord": {
-                  "example": "any"
-                },
-                "phoneNumber": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/mobile-api/v1/help": {
+    "/api/v1/users/{deviceId}/role": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "timestamp": {
-                  "example": "any"
-                },
-                "devId": {
-                  "example": "any"
-                },
-                "gpsCoord": {
-                  "example": "any"
-                },
-                "helpType": {
-                  "example": "any"
-                },
-                "chatRoomId": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
-      }
-    },
-    "/mobile-api/v1/help-requests": {
+      },
       "get": {
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/mobile-api/v1/help-response": {
+    "/api/v1/help-requests": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "helpGiver": {
-                  "example": "any"
-                },
-                "helpRequester": {
-                  "example": "any"
-                },
-                "state": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
-      }
-    },
-    "/mobile-api/v1/battery": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "devId": {
-                  "example": "any"
-                },
-                "batteryStatus": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/mobile-api/v1/role": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "devId": {
-                  "example": "any"
-                },
-                "role": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/mobile-api/v1/role/{devId}": {
+      },
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "devId",
-            "in": "path",
-            "required": true,
-            "type": "string"
+        "responses": {
+          "default": {
+            "description": ""
           }
-        ],
+        }
+      }
+    },
+    "/api/v1/help-responses": {
+      "post": {
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -413,6 +228,19 @@
         "properties": {
           "type": "object",
           "properties": {
+            "success": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                },
+                "example": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
             "error": {
               "type": "object",
               "properties": {
@@ -446,6 +274,46 @@
                         "example": {
                           "type": "string",
                           "example": "Access token required"
+                        }
+                      }
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "object"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Additional error details"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "example": {
+                          "type": "string",
+                          "example": "2024-01-15T10:30:00.000Z"
                         }
                       }
                     }
@@ -646,11 +514,15 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "example": "number"
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
                 },
                 "example": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
               }
             },
@@ -685,11 +557,11 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "example": "string"
+                  "example": "boolean"
                 },
                 "example": {
-                  "type": "string",
-                  "example": "Moderate"
+                  "type": "boolean",
+                  "example": false
                 }
               }
             },
@@ -786,11 +658,15 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "example": "number"
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
                 },
                 "example": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
               }
             },
@@ -799,11 +675,15 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "example": "number"
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "uuid"
                 },
                 "example": {
-                  "type": "number",
-                  "example": 2
+                  "type": "string",
+                  "example": "550e8400-e29b-41d4-a716-446655440001"
                 }
               }
             },
@@ -860,7 +740,6 @@
           "type": "array",
           "example": [
             "timestamp",
-            "devId",
             "firstName",
             "lastName",
             "gpsCoord"
@@ -882,19 +761,6 @@
                 "example": {
                   "type": "number",
                   "example": 1640995200
-                }
-              }
-            },
-            "devId": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "string"
-                },
-                "example": {
-                  "type": "string",
-                  "example": "device123"
                 }
               }
             },
@@ -965,7 +831,7 @@
           "type": "array",
           "example": [
             "timestamp",
-            "devId",
+            "deviceId",
             "gpsCoord",
             "helpType"
           ],
@@ -989,7 +855,7 @@
                 }
               }
             },
-            "devId": {
+            "deviceId": {
               "type": "object",
               "properties": {
                 "type": {
@@ -1056,9 +922,5 @@
       }
     }
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+  "security": []
 }

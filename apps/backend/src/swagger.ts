@@ -22,23 +22,26 @@ const doc = {
   consumes: ['application/json'],
   produces: ['application/json'],
   tags: [
-    { name: 'Auth', description: 'Authentication related endpoints' },
-    { name: 'User', description: 'User management endpoints' },
-    { name: 'Segments', description: 'Segment and condition data' },
+    { name: 'Health', description: 'Health check endpoints' },
+    { name: 'Segments', description: 'Ski segment management' },
+    { name: 'Updates', description: 'Snow condition updates' },
+    { name: 'Reviews', description: 'User reviews and ratings' },
+    { name: 'Snow Types', description: 'Snow type classifications' },
+    { name: 'Users', description: 'User management and mobile features' },
+    { name: 'Help Requests', description: 'Emergency and assistance requests' },
   ],
   securityDefinitions: {
-    bearerAuth: {
-      type: 'apiKey',
-      in: 'header',
-      name: 'Authorization',
-      description: 'Use format: Bearer <JWT>. Obtain token from /api/v1/auth/login'
-    }
+    // No auth in development
   },
-  security: [{ bearerAuth: [] }],
+  security: [],
   definitions: {
     Error: {
       type: 'object',
       properties: {
+        success: {
+          type: 'boolean',
+          example: false
+        },
         error: {
           type: 'object',
           properties: {
@@ -49,6 +52,19 @@ const doc = {
             message: {
               type: 'string',
               example: 'Access token required'
+            },
+            details: {
+              type: 'object',
+              description: 'Additional error details'
+            }
+          }
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            timestamp: {
+              type: 'string',
+              example: '2024-01-15T10:30:00.000Z'
             }
           }
         }
@@ -96,10 +112,10 @@ const doc = {
     Segment: {
       type: 'object',
       properties: {
-        id: { type: 'number', example: 1 },
+        id: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' },
         name: { type: 'string', example: 'Segment A' },
         terrain: { type: 'string', example: 'Alpine' },
-        avalancheDanger: { type: 'string', example: 'Moderate' },
+        avalancheDanger: { type: 'boolean', example: false },
         isLowerSegment: { type: 'boolean', example: false },
         Points: {
           type: 'array',
@@ -117,18 +133,17 @@ const doc = {
       type: 'object',
       required: ['segment', 'snowType', 'details', 'comment'],
       properties: {
-        segment: { type: 'number', example: 1 },
-        snowType: { type: 'number', example: 2 },
+        segment: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' },
+        snowType: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440001' },
         details: { type: 'number', minimum: 1, maximum: 5, example: 4 },
         comment: { type: 'string', maxLength: 1000, example: 'Good snow conditions' }
       }
     },
     LocationUpdate: {
       type: 'object',
-      required: ['timestamp', 'devId', 'firstName', 'lastName', 'gpsCoord'],
+      required: ['timestamp', 'firstName', 'lastName', 'gpsCoord'],
       properties: {
         timestamp: { type: 'number', example: 1640995200 },
-        devId: { type: 'string', example: 'device123' },
         firstName: { type: 'string', example: 'John' },
         lastName: { type: 'string', example: 'Doe' },
         gpsCoord: { type: 'string', example: '65.0121,25.4651' },
@@ -137,10 +152,10 @@ const doc = {
     },
     HelpRequest: {
       type: 'object',
-      required: ['timestamp', 'devId', 'gpsCoord', 'helpType'],
+      required: ['timestamp', 'deviceId', 'gpsCoord', 'helpType'],
       properties: {
         timestamp: { type: 'number', example: 1640995200 },
-        devId: { type: 'string', example: 'device123' },
+        deviceId: { type: 'string', example: 'device123' },
         gpsCoord: { type: 'string', example: '65.0121,25.4651' },
         helpType: { type: 'string', enum: ['seriousEmerg', 'help'], example: 'help' },
         chatRoomId: { type: 'string', example: 'room123' }
@@ -152,9 +167,7 @@ const doc = {
 const outputFile = './swagger-output.json';
 const endpointsFiles = [
   './server.ts',
-  './api/shared_api/index.ts',
-  './api/web_api/index.ts',
-  './api/mobile_api/index.ts',
+  './api/routes/index.ts',
 ];
 
 const swaggerAutogenInstance = swaggerAutogen();

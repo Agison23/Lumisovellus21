@@ -89,6 +89,7 @@ async function main() {
     where: { username: 'admin' },
     update: {},
     create: {
+      id: crypto.randomUUID(),
       username: 'admin',
       password: 'admin123',
       isAdmin: true,
@@ -99,6 +100,7 @@ async function main() {
     where: { username: 'rescue' },
     update: {},
     create: {
+      id: crypto.randomUUID(),
       username: 'rescue',
       password: 'rescue123',
       isAdmin: false,
@@ -110,6 +112,7 @@ async function main() {
     where: { name: 'normal' },
     update: {},
     create: {
+      id: crypto.randomUUID(),
       name: 'normal',
       permissions: 'rescue',
     },
@@ -119,6 +122,7 @@ async function main() {
     where: { name: 'premium' },
     update: {},
     create: {
+      id: crypto.randomUUID(),
       name: 'premium',
       permissions: 'rescue,snow condition',
     },
@@ -140,7 +144,10 @@ async function main() {
     await prisma.snowType.upsert({
       where: { name: snowType.name },
       update: {},
-      create: snowType,
+      create: {
+        id: crypto.randomUUID(),
+        ...snowType,
+      },
     });
   }
 
@@ -211,6 +218,7 @@ async function main() {
       where: { name: segmentData.name },
       update: {},
       create: {
+        id: crypto.randomUUID(),
         name: segmentData.name,
         terrain: segmentData.terrain,
         avalancheDanger: segmentData.avalancheDanger,
@@ -228,6 +236,7 @@ async function main() {
         },
         update: {},
         create: {
+          id: crypto.randomUUID(),
           segment: segment.id,
           order: coord.order,
           latitude: coord.latitude,
@@ -251,6 +260,7 @@ async function main() {
     if (randomSegment && randomSnowType) {
       await prisma.userReview.create({
         data: {
+          id: crypto.randomUUID(),
           segment: randomSegment.id,
           snowType: randomSnowType.id,
           details: Math.floor(Math.random() * 5) + 1,
@@ -270,14 +280,32 @@ async function main() {
     const randomSnowType = snowTypes_list[Math.floor(Math.random() * snowTypes_list.length)];
     
     if (randomSegment && randomSnowType) {
-      await prisma.update.create({
+      await prisma.snowUpdate.create({
         data: {
+          id: crypto.randomUUID(),
           creator: adminUser.id,
           segment: randomSegment.id,
-          description: `Official update ${i + 1} for ${randomSegment.name}. Current conditions updated.`,
-          snowTypeId1: randomSnowType.id,
-          time: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000), // Random time in last 3 days
-        },
+          description: `Official snow update ${i + 1} for ${randomSegment.name}. Current conditions updated.`,
+          weather: 'Clear',
+          temperature: Math.random() * 10 - 5, // Random temp between -5 and 5
+          windSpeed: Math.random() * 20, // Random wind speed 0-20 km/h
+          visibility: Math.floor(Math.random() * 5000) + 1000, // Random visibility 1-6km
+          status: 'ACTIVE',
+          priority: Math.floor(Math.random() * 3) + 1, // Random priority 1-3
+          snowConditions: {
+            create: {
+              id: crypto.randomUUID(),
+              snowType: randomSnowType.id,
+              layer: 'SURFACE',
+              depth: Math.random() * 50 + 10, // Random depth 10-60cm
+              coverage: Math.floor(Math.random() * 40) + 60, // Random coverage 60-100%
+              quality: Math.floor(Math.random() * 5) + 1, // Random quality 1-5
+              hardness: Math.floor(Math.random() * 5) + 1, // Random hardness 1-5
+              moisture: Math.floor(Math.random() * 5) + 1, // Random moisture 1-5
+              notes: `Surface conditions: ${randomSnowType.name.toLowerCase()}`
+            }
+          }
+        }
       });
     }
   }
@@ -318,6 +346,7 @@ async function main() {
     const currentTime = Math.floor(Date.now() / 1000);
     await prisma.locationData.create({
       data: {
+        id: crypto.randomUUID(),
         userId: createdUser.id,
         timestamp: currentTime,
         gpsCoord: `68.${Math.floor(Math.random() * 1000)},24.${Math.floor(Math.random() * 1000)}`,

@@ -7,10 +7,9 @@ import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 
-// Import API routers
-import mobileApiRouter from './api/mobile_api';
-import webApiRouter from './api/web_api';
-import sharedApiRouter from './api/shared_api';
+// Import new API router
+import apiRouter from './api/routes';
+import { errorHandler, notFoundHandler } from './api/middleware/errorHandler';
 
 // Load swagger file
 let swaggerFile;
@@ -25,54 +24,16 @@ try {
   };
 }
 
-// Function to get swagger options with auto-login
+// Function to get swagger options without auth
 async function getSwaggerOptions() {
   const baseOptions = {
     explorer: true,
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'Lumisovellus API Documentation',
     swaggerOptions: {
-      persistAuthorization: true,
-      authAction: {} as any
+      persistAuthorization: false
     }
   };
-
-  // Auto-login for development
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      const devEmail = process.env.DEV_LOGIN_EMAIL || 'user@example.com';
-      const devPassword = process.env.DEV_LOGIN_PASSWORD || 'password123';
-      const port = process.env.PORT || 3001;
-      
-      // Perform auto-login
-      const loginResponse = await fetch(`http://localhost:${port}/api/v1/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: devEmail, password: devPassword })
-      });
-      
-      if (loginResponse.ok) {
-        const loginData = await loginResponse.json();
-        if (loginData.data && loginData.data.token) {
-          baseOptions.swaggerOptions.authAction = {
-            'bearerAuth': {
-              name: 'bearerAuth',
-              schema: {
-                type: 'apiKey',
-                in: 'header',
-                name: 'Authorization'
-              },
-              value: `Bearer ${loginData.data.token}`
-            }
-          };
-          console.log(`✅ Swagger auto-login successful for ${devEmail}`);
-        }
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.log('❌ Swagger auto-login failed:', errorMessage);
-    }
-  }
 
   return baseOptions;
 }
@@ -113,32 +74,14 @@ app.get('/api-docs.json', (req, res) => {
   res.send(swaggerFile);
 });
 
-// Use API routers
-app.use('/', sharedApiRouter); // Health check and auth
-app.use('/', webApiRouter);    // Web API endpoints
-app.use('/', mobileApiRouter); // Mobile API endpoints with mobile-api prefix
-
+// Use new API router
+app.use('/', apiRouter);
 
 // 404 handler
-app.use((req, res) => {
-  res.status(404).json({ 
-    error: { 
-      code: 'NOT_FOUND', 
-      message: 'Endpoint not found' 
-    } 
-  });
-});
+app.use(notFoundHandler);
 
 // Error handler
-app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Unhandled error:', error);
-  res.status(500).json({ 
-    error: { 
-      code: 'INTERNAL_SERVER_ERROR', 
-      message: 'An unexpected error occurred' 
-    } 
-  });
-});
+app.use(errorHandler);
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {

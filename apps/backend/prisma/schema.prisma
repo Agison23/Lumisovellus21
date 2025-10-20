@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,40 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Unified user table for both web and mobile applications
 model User {
-  id          String   @id @default(uuid())
-  firstName   String   @map("firstName") @db.VarChar(255)
-  lastName    String?  @map("lastName") @db.VarChar(255)
-  email       String?  @unique @db.VarChar(255) // Optional for mobile users
-  password    String?  @db.VarChar(255) // Optional for mobile users
-  role        UserRole @default(NORMAL)
-  
-  // Mobile-specific fields
-  devId       String?  @unique @map("dev_id") @db.VarChar(255) // Device ID for mobile users
-  ipAddress   String?  @map("ip_address") @db.VarChar(255)
-  phoneNumber String?  @map("phone_number") @db.VarChar(255)
-  lowBattery  Int      @default(0) @map("low_battery")
-  
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  userReviews UserReview[]
-  updates     Update[]
-  
-  // Mobile-specific relations
+  id           String         @id @default(uuid())
+  firstName    String         @map("firstName") @db.VarChar(255)
+  lastName     String?        @map("lastName") @db.VarChar(255)
+  email        String?        @unique @db.VarChar(255)
+  password     String?        @db.VarChar(255)
+  role         UserRole       @default(NORMAL)
+  devId        String?        @unique @map("dev_id") @db.VarChar(255)
+  ipAddress    String?        @map("ip_address") @db.VarChar(255)
+  phoneNumber  String?        @map("phone_number") @db.VarChar(255)
+  lowBattery   Int            @default(0) @map("low_battery")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  helpRequests HelpRequest?
   locationData LocationData[]
-  helpRequests HelpRequest[]
-  helpGiven    NearbyUser[]  @relation("HelpGiver")
-  helpReceived NearbyUser[]  @relation("HelpReceiver")
+  helpGiven    NearbyUser[]   @relation("HelpGiver")
+  helpReceived NearbyUser[]   @relation("HelpReceiver")
+  snowUpdates  SnowUpdate[]
+  userReviews  UserReview[]
 
   @@map("users")
 }
 
-// Rescue system users (from legacy mobile backend)
 model RescueUser {
-  userId    Int      @id @default(autoincrement()) @map("user_id")
+  id        String   @id
   username  String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   isAdmin   Boolean  @map("is_admin")
@@ -53,9 +41,9 @@ model RescueUser {
   @@map("rescue")
 }
 
-// User roles for mobile app
 model Role {
-  name        String   @id @db.VarChar(50)
+  id          String   @id
+  name        String   @unique @db.VarChar(50)
   permissions String   @db.VarChar(255)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -63,167 +51,218 @@ model Role {
   @@map("role")
 }
 
-// Snow monitoring segments (from legacy web backend)
 model Segment {
-  id               Int     @id @default(autoincrement())
-  name             String  @unique @db.VarChar(100)
-  terrain          String  @db.VarChar(100)
-  avalancheDanger  Boolean @default(false) @map("avalancheDanger")
-  isLowerSegment   Int?    @map("isLowerSegment")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  coordinates  Coordinate[]
-  userReviews  UserReview[]
-  updates      Update[]
+  id              String       @id
+  name            String       @unique @db.VarChar(100)
+  terrain         String       @db.VarChar(100)
+  avalancheDanger Boolean      @default(false) @map("avalancheDanger")
+  isLowerSegment  Int?         @map("isLowerSegment")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  coordinates     Coordinate[]
+  snowUpdates     SnowUpdate[]
+  userReviews     UserReview[]
 
   @@map("segments")
 }
 
-// Segment coordinates (from legacy web backend)
 model Coordinate {
-  segment   Int      @map("segment")
-  order     Int      @map("order")
-  latitude  Float    @map("latitude") @db.Double
-  longitude Float    @map("longitude") @db.Double
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         String   @id
+  segment    String   @map("segment")
+  order      Int      @map("order")
+  latitude   Float    @map("latitude")
+  longitude  Float    @map("longitude")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  segmentRel Segment  @relation(fields: [segment], references: [id], onDelete: Cascade)
 
-  // Relations
-  segmentRel Segment @relation(fields: [segment], references: [id], onDelete: Cascade)
-
-  @@id([order, segment])
+  @@unique([order, segment])
+  @@index([segment], map: "coordinates_segment_fkey")
   @@map("coordinates")
 }
 
-// Snow types (from legacy web backend)
 model SnowType {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique @db.VarChar(50)
-  colour      String   @db.VarChar(15)
-  skiability  Int?     @db.Int
-  categoryId  Int?     @map("categoryId")
-  explanation String?  @db.Text
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  userReviews        UserReview[]
-  updatesPrimary     Update[] @relation("UpdatePrimarySnowType")
-  updatesSecondary   Update[] @relation("UpdateSecondarySnowType")
-  updatesSecondary1  Update[] @relation("UpdateSecondarySnowType1")
-  updatesSecondary2  Update[] @relation("UpdateSecondarySnowType2")
+  id                   String                @id
+  name                 String                @unique @db.VarChar(50)
+  colour               String                @db.VarChar(15)
+  skiability           Int?
+  categoryId           Int?                  @map("categoryId")
+  explanation          String?               @db.Text
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+  snowUpdateConditions SnowUpdateCondition[]
+  userReviews          UserReview[]
 
   @@map("snowTypes")
 }
 
-// User reviews (from legacy web backend)
 model UserReview {
-  id        Int      @id @default(autoincrement())
-  time      DateTime @default(now())
-  segment   Int      @map("segment")
-  snowType  Int?     @map("snowType")
-  details   Int?     @db.Int
-  comment   String?  @db.Text
-  userId    String?  @map("user_id") @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                   String                      @id
+  time                 DateTime                    @default(now())
+  segment              String                      @map("segment")
+  snowType             String?                     @map("snowType")
+  details              Int?
+  comment              String?                     @db.Text
+  userId               String?                     @map("user_id") @db.VarChar(255)
+  createdAt            DateTime                    @default(now()) @map("created_at")
+  updatedAt            DateTime                    @updatedAt @map("updated_at")
+  snowUpdateReferences SnowUpdateReviewReference[]
+  segmentRel           Segment                     @relation(fields: [segment], references: [id], onDelete: Cascade)
+  snowTypeRel          SnowType?                   @relation(fields: [snowType], references: [id])
+  user                 User?                       @relation(fields: [userId], references: [id])
 
-  // Relations
-  segmentRel  Segment   @relation(fields: [segment], references: [id], onDelete: Cascade)
-  snowTypeRel SnowType? @relation(fields: [snowType], references: [id])
-  user        User?     @relation(fields: [userId], references: [id])
-  
-  // Updates that reference this review
-  updatesAsReview1 Update[] @relation("UpdateReview1")
-  updatesAsReview2 Update[] @relation("UpdateReview2")
-  updatesAsReview3 Update[] @relation("UpdateReview3")
-
+  @@index([segment], map: "userReviews_segment_fkey")
+  @@index([snowType], map: "userReviews_snowType_fkey")
+  @@index([userId], map: "userReviews_user_id_fkey")
   @@map("userReviews")
 }
 
-// Snow condition updates (from legacy web backend)
-model Update {
-  creator       String   @map("creator") @db.VarChar(255)
-  segment       Int      @map("segment")
-  time          DateTime @default(now())
-  description   String?  @db.Text
-  snowTypeId1   Int?     @map("snowTypeId1")
-  snowTypeId2   Int?     @map("snowTypeId2")
-  secondaryId1  Int?     @map("secondaryId1")
-  secondaryId2  Int?     @map("secondaryId2")
-  reviewId1     Int?     @map("reviewId1")
-  reviewId2     Int?     @map("reviewId2")
-  reviewId3     Int?     @map("reviewId3")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+model SnowUpdate {
+  id               String                      @id @default(uuid())
+  creator          String                      @map("creator") @db.VarChar(255)
+  segment          String                      @map("segment")
+  time             DateTime                    @default(now())
+  description      String?                     @db.Text
+  status           SnowUpdateStatus            @default(ACTIVE)
+  priority         Int                         @default(1)
+  weather          String?                     @db.VarChar(100)
+  temperature      Float?
+  windSpeed        Float?
+  visibility       Int?
+  createdAt        DateTime                    @default(now()) @map("created_at")
+  updatedAt        DateTime                    @updatedAt @map("updated_at")
+  attachments      SnowUpdateAttachment[]
+  snowConditions   SnowUpdateCondition[]
+  reviewReferences SnowUpdateReviewReference[]
+  creatorRel       User                        @relation(fields: [creator], references: [id], onDelete: Cascade)
+  segmentRel       Segment                     @relation(fields: [segment], references: [id], onDelete: Cascade)
 
-  // Relations
-  creatorRel         User        @relation(fields: [creator], references: [id], onDelete: Cascade)
-  segmentRel         Segment     @relation(fields: [segment], references: [id], onDelete: Cascade)
-  primarySnowType    SnowType?   @relation("UpdatePrimarySnowType", fields: [snowTypeId1], references: [id])
-  secondarySnowType  SnowType?   @relation("UpdateSecondarySnowType", fields: [snowTypeId2], references: [id])
-  secondarySnowType1 SnowType?   @relation("UpdateSecondarySnowType1", fields: [secondaryId1], references: [id])
-  secondarySnowType2 SnowType?   @relation("UpdateSecondarySnowType2", fields: [secondaryId2], references: [id])
-  review1            UserReview? @relation("UpdateReview1", fields: [reviewId1], references: [id])
-  review2            UserReview? @relation("UpdateReview2", fields: [reviewId2], references: [id])
-  review3            UserReview? @relation("UpdateReview3", fields: [reviewId3], references: [id])
-
-  @@id([time, segment])
-  @@map("updates")
+  @@index([creator], map: "snow_updates_creator_fkey")
+  @@index([segment], map: "snow_updates_segment_fkey")
+  @@index([status], map: "snow_updates_status_fkey")
+  @@index([time], map: "snow_updates_time_fkey")
+  @@index([priority], map: "snow_updates_priority_fkey")
+  @@map("snow_updates")
 }
 
-// Mobile location tracking (from legacy mobile backend)
+model SnowUpdateCondition {
+  id          String     @id @default(uuid())
+  updateId    String     @map("update_id")
+  snowType    String     @map("snow_type")
+  layer       SnowLayer  @default(SURFACE)
+  depth       Float?
+  coverage    Int?
+  quality     Int?
+  hardness    Int?
+  moisture    Int?
+  notes       String?    @db.Text
+  createdAt   DateTime   @default(now()) @map("created_at")
+  snowTypeRel SnowType   @relation(fields: [snowType], references: [id])
+  updateRel   SnowUpdate @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@unique([updateId, layer, snowType])
+  @@index([updateId], map: "snow_update_conditions_update_fkey")
+  @@index([snowType], map: "snow_update_conditions_snow_type_fkey")
+  @@index([layer], map: "snow_update_conditions_layer_fkey")
+  @@map("snow_update_conditions")
+}
+
+model SnowUpdateReviewReference {
+  id        String     @id @default(uuid())
+  updateId  String     @map("update_id")
+  reviewId  String     @map("review_id")
+  relevance Int        @default(1)
+  notes     String?    @db.Text
+  createdAt DateTime   @default(now()) @map("created_at")
+  reviewRel UserReview @relation(fields: [reviewId], references: [id])
+  updateRel SnowUpdate @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@unique([updateId, reviewId])
+  @@index([updateId], map: "snow_update_review_refs_update_fkey")
+  @@index([reviewId], map: "snow_update_review_refs_review_fkey")
+  @@map("snow_update_review_references")
+}
+
+model SnowUpdateAttachment {
+  id        String             @id @default(uuid())
+  updateId  String             @map("update_id")
+  filename  String             @db.VarChar(255)
+  fileType  SnowUpdateFileType @map("file_type")
+  fileSize  Int                @map("file_size")
+  filePath  String             @map("file_path") @db.VarChar(500)
+  caption   String?            @db.VarChar(500)
+  createdAt DateTime           @default(now()) @map("created_at")
+  updateRel SnowUpdate         @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@index([updateId], map: "snow_update_attachments_update_fkey")
+  @@index([fileType], map: "snow_update_attachments_file_type_fkey")
+  @@map("snow_update_attachments")
+}
+
 model LocationData {
+  id        String   @id
   userId    String   @map("user_id") @db.VarChar(255)
-  timestamp Int      @db.Int
+  timestamp Int
   gpsCoord  String   @map("gpscoord") @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
 
-  // Relations
-  user User @relation(fields: [userId], references: [id])
-
-  @@id([userId, timestamp])
+  @@unique([userId, timestamp])
   @@map("location_data")
 }
 
-// Help requests (from legacy mobile backend)
 model HelpRequest {
-  userId    String   @id @map("user_id") @db.VarChar(255)
-  timestamp Int      @db.Int
-  gpsCoord  String   @map("gpscoord") @db.VarChar(255)
-  helpType  String   @map("help_type") @db.VarChar(100)
-  roomId    String   @map("room_id") @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  user        User          @relation(fields: [userId], references: [id])
-  nearbyUsers NearbyUser[]
+  id           String       @id
+  userId       String       @unique @map("user_id") @db.VarChar(255)
+  timestamp    Int
+  gpsCoord     String       @map("gpscoord") @db.VarChar(255)
+  helpType     String       @map("help_type") @db.VarChar(100)
+  roomId       String       @map("room_id") @db.VarChar(255)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  user         User         @relation(fields: [userId], references: [id])
+  helpReceived NearbyUser[] @relation("HelpReceiver")
 
   @@map("help_requests")
 }
 
-// Nearby users for help coordination (from legacy mobile backend)
 model NearbyUser {
-  helpGiver     String   @map("help_giver") @db.VarChar(255)
-  helpRequester String   @map("help_requester") @db.VarChar(255)
-  state         Int      @db.Int
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id            String      @id
+  helpGiver     String      @map("help_giver") @db.VarChar(255)
+  helpRequester String      @map("help_requester") @db.VarChar(255)
+  state         Int
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  giver         User        @relation("HelpGiver", fields: [helpGiver], references: [id], map: "nearby_users_help_giver_fkey")
+  requester     User        @relation("HelpReceiver", fields: [helpRequester], references: [id], map: "nearby_users_help_receiver_fkey")
+  helpReq       HelpRequest @relation("HelpReceiver", fields: [helpRequester], references: [userId], map: "nearby_users_help_request_fkey")
 
-  // Relations
-  giver     User        @relation("HelpGiver", fields: [helpGiver], references: [id], map: "nearby_users_help_giver_fkey")
-  requester User        @relation("HelpReceiver", fields: [helpRequester], references: [id], map: "nearby_users_help_receiver_fkey")
-  helpReq   HelpRequest @relation(fields: [helpRequester], references: [userId], map: "nearby_users_help_request_fkey")
-
-  @@id([helpGiver, helpRequester])
+  @@unique([helpGiver, helpRequester])
+  @@index([helpRequester], map: "nearby_users_help_request_fkey")
   @@map("nearby_users")
 }
 
-// Enums
+enum SnowUpdateStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum SnowLayer {
+  SURFACE
+  MIDDLE
+  BASE
+}
+
+enum SnowUpdateFileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+}
+
 enum UserRole {
   NORMAL
   PREMIUM
@@ -231,21 +270,4 @@ enum UserRole {
   RESCUE
 
   @@map("user_role")
-}
-
-enum HelpRequestType {
-  EMERGENCY
-  ASSISTANCE
-  INFORMATION
-
-  @@map("help_request_type")
-}
-
-enum HelpRequestStatus {
-  PENDING
-  ACCEPTED
-  COMPLETED
-  CANCELLED
-
-  @@map("help_request_status")
 }
