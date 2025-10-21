@@ -101,7 +101,7 @@ export const areaFillLayer: FillLayerSpecification = {
 	source: "areas",
 	paint: {
 		"fill-color": "#4ecdc4",
-		"fill-opacity": 0.4,
+		"fill-opacity": 0.1,
 	},
 };
 
@@ -110,8 +110,8 @@ export const areaHoverLayer: FillLayerSpecification = {
 	type: "fill",
 	source: "areas",
 	paint: {
-		"fill-color": "#ff4500",
-		"fill-opacity": 0.2,
+		"fill-color": "#ffffff",
+		"fill-opacity": 0.3,
 	},
 	filter: ["==", ["get", "id"], ""],
 };
@@ -123,6 +123,7 @@ export const areaOutlineLayer: LineLayerSpecification = {
 	paint: {
 		"line-color": "#2c3e50",
 		"line-width": 2,
+		"line-opacity": 0.5,
 	},
 };
 
@@ -147,8 +148,8 @@ export const areaSelectedLayer: FillLayerSpecification = {
 	type: "fill",
 	source: "areas",
 	paint: {
-		"fill-color": "#ffd700",
-		"fill-opacity": 0.4,
+		"fill-color": "#000000",
+		"fill-opacity": 0.2,
 	},
 	filter: ["==", ["get", "id"], ""],
 };
