@@ -47,7 +47,7 @@ import {
 // for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
-	throw new Error("Mock error fetching area types");
+	// throw new Error("Mock error fetching area types");
 	return mapAreas2;
 };
 
@@ -301,6 +301,37 @@ export default function Map3d() {
 		return updateData.find((update) => update.segment === segmentNumber);
 	};
 
+	const getLatestUserUpdateForArea = (updateData: UpdateData) => {
+		// return the latest update from users (a1 fields)
+		if (!updateData.a1Details || !updateData.a1SnowType) {
+			return null;
+		}
+		return {
+			details: updateData.a1Details,
+			snowTypeId: updateData.a1SnowType,
+			time: updateData.time,
+		};
+	};
+
+	const getLatestGuideUpdateForArea = (updateData: UpdateData) => {
+		// return the latest update from experts (a2 fields)
+		if (!updateData.secondaryId1 || !updateData.secondaryId2) {
+			return null;
+		}
+
+		if (!updateData.snowTypeId1 && !updateData.snowTypeId2) {
+			return null;
+		}
+		return {
+			description: updateData.description ?? null,
+			snowTypeId1: updateData.snowTypeId1 ?? null,
+			snowTypeId2: updateData.snowTypeId2 ?? null,
+			time: updateData.time,
+			secondaryId1: updateData.secondaryId1,
+			secondaryId2: updateData.secondaryId2,
+		};
+	};
+
 	const getSnowTypeDetails = (
 		snowTypeId: number | null
 	): SnowType | undefined => {
@@ -392,38 +423,65 @@ export default function Map3d() {
 												{t("errors.loadingSegmentData")}
 											</p>
 										)}
-										<p>
-											{selectedArea.avalancheDanger
-												? t("warnings.avalanche.danger")
-												: t("warnings.avalanche.noDanger")}
-										</p>
+										{selectedArea.avalancheDanger && (
+											<p>{t("warnings.avalanche.danger")}</p>
+										)}
 										{(() => {
 											const updateData = getUpdateDataForArea(selectedArea.id);
 											if (!updateData) return null;
 
-											const snowType = getSnowTypeDetails(
-												updateData.a1SnowType
-											);
+											const userUpdate = getLatestUserUpdateForArea(updateData);
+											const guideUpdate =
+												getLatestGuideUpdateForArea(updateData);
 
 											return (
-												<div className="text-xs text-muted-foreground">
-													<p>
-														Last update:{" "}
-														{new Date(updateData.time).toLocaleString()}
-													</p>
-													{snowType && (
-														<>
+												<>
+													{guideUpdate && (
+														<div className="text-sm text-muted-foreground mb-2">
+															<p>
+																{t("reportForm.lastUpdate.guide", {
+																	time: new Date(
+																		guideUpdate.time
+																	).toLocaleString(),
+																})}
+															</p>
 															<p className="font-medium">
-																{t(`reportForm.snowTypes.${snowType.id}.name`)}
+																{t(
+																	`reportForm.snowTypes.${guideUpdate.snowTypeId1}.name`
+																)}
 															</p>
 															<p className="text-xs">
 																{t(
-																	`reportForm.snowTypes.${snowType.id}.description`
+																	`reportForm.snowTypes.${guideUpdate.snowTypeId1}.description`
 																)}
 															</p>
-														</>
+														</div>
 													)}
-												</div>
+													{userUpdate && (
+														<div className="text-xs text-muted-foreground">
+															<p>{t("reportForm.observationType.visitor")}</p>
+															<div className="text-primary flex flex-col">
+																<p>
+																	{t("reportForm.lastUpdate.visitor", {
+																		time: new Date(
+																			userUpdate.time
+																		).toLocaleString(),
+																	})}
+																</p>
+																<p className="font-medium">
+																	{t(
+																		`reportForm.snowTypes.${userUpdate.snowTypeId}.name`
+																	)}
+																</p>
+																<p className="text-xs">
+																	{t(
+																		`reportForm.snowTypes.${userUpdate.snowTypeId}.description`
+																	)}
+																</p>
+															</div>
+														</div>
+													)}
+												</>
 											);
 										})()}
 									</>

@@ -147,6 +147,14 @@
 			"messages": {
 				"submitError": "Failed to submit observation. Please try again.",
 				"submitSuccess": "Observation submitted successfully. Thank you!"
+			},
+			"observationType": {
+				"visitor": "The information below is based on observations from other users.",
+				"guide": "The information below is based on observations made by guides."
+			},
+			"lastUpdate": {
+				"visitor": "Latest update: {time}",
+				"guide": "Latest guide update: {time}"
 			}
 		}
 	},

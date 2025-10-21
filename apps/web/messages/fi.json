@@ -148,7 +148,12 @@
 			"messages": {
 				"submitError": "Havaintoa ei voitu lähettää. Yritä uudelleen.",
 				"submitSuccess": "Havainto lähetetty onnistuneesti. Kiitos!"
-			}
+			},
+			"observationType": {
+				"visitor": "Alla oleva tieto perustuu muiden käyttäjien havaintoihin.",
+				"guide": "Alla oleva tieto perustuu oppaiden tekemiin havaintoihin."
+			},
+			"lastUpdate": "Viimeisin päivitys: {time}"
 		}
 	},
 	"WeatherPage": {
