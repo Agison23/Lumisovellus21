@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
-import { ApiResponseHandler } from "./responseHandler";
-import { AuthenticatedRequest } from "../types";
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
+import { ApiResponseHandler } from './responseHandler';
+import { AuthenticatedRequest } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -17,21 +17,21 @@ export interface JWTPayload {
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
     if (!token) {
-      ApiResponseHandler.unauthorized(res, "Access token required");
+      ApiResponseHandler.unauthorized(res, 'Access token required');
       return;
     }
 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      console.error("JWT_SECRET not configured");
-      ApiResponseHandler.internalError(res, "Server configuration error");
+      console.error('JWT_SECRET not configured');
+      ApiResponseHandler.internalError(res, 'Server configuration error');
       return;
     }
 
@@ -51,7 +51,7 @@ export const authenticateToken = async (
     });
 
     if (!user) {
-      ApiResponseHandler.unauthorized(res, "User not found");
+      ApiResponseHandler.unauthorized(res, 'User not found');
       return;
     }
 
@@ -67,17 +67,17 @@ export const authenticateToken = async (
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      ApiResponseHandler.unauthorized(res, "Invalid token");
+      ApiResponseHandler.unauthorized(res, 'Invalid token');
       return;
     }
 
     if (error instanceof jwt.TokenExpiredError) {
-      ApiResponseHandler.unauthorized(res, "Token expired");
+      ApiResponseHandler.unauthorized(res, 'Token expired');
       return;
     }
 
-    console.error("Authentication error:", error);
-    ApiResponseHandler.internalError(res, "Authentication failed");
+    console.error('Authentication error:', error);
+    ApiResponseHandler.internalError(res, 'Authentication failed');
   }
 };
 
@@ -85,15 +85,15 @@ export const requireRole = (allowedRoles: string[]) => {
   return (
     req: AuthenticatedRequest,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): void => {
     if (!req.user) {
-      ApiResponseHandler.unauthorized(res, "Authentication required");
+      ApiResponseHandler.unauthorized(res, 'Authentication required');
       return;
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      ApiResponseHandler.forbidden(res, "Insufficient permissions");
+      ApiResponseHandler.forbidden(res, 'Insufficient permissions');
       return;
     }
 
@@ -104,15 +104,15 @@ export const requireRole = (allowedRoles: string[]) => {
 export const requireAdmin = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   if (!req.user) {
-    ApiResponseHandler.unauthorized(res, "Authentication required");
+    ApiResponseHandler.unauthorized(res, 'Authentication required');
     return;
   }
 
-  if (req.user.role !== "ADMIN") {
-    ApiResponseHandler.forbidden(res, "Admin access required");
+  if (req.user.role !== 'ADMIN') {
+    ApiResponseHandler.forbidden(res, 'Admin access required');
     return;
   }
 
@@ -122,11 +122,11 @@ export const requireAdmin = (
 export const optionalAuth = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
       // No token provided, continue without authentication

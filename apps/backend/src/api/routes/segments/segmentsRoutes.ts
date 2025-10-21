@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { SegmentsController } from "../../controllers/segments/SegmentsController";
+import { Router } from 'express';
+import { SegmentsController } from '../../controllers/segments/SegmentsController';
 
 const router = Router();
 const segmentsController = new SegmentsController();
@@ -36,7 +36,7 @@ const segmentsController = new SegmentsController();
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get("/api/v1/segments", segmentsController.getAllSegments);
+router.get('/api/v1/segments', segmentsController.getAllSegments);
 
 /**
  * @swagger
@@ -79,8 +79,8 @@ router.get("/api/v1/segments", segmentsController.getAllSegments);
  *           $ref: '#/definitions/Error'
  */
 router.get(
-  "/api/v1/segments/:id/updates",
-  segmentsController.getSegmentUpdates,
+  '/api/v1/segments/:id/updates',
+  segmentsController.getSegmentUpdates
 );
 
 /**
@@ -124,6 +124,6 @@ router.get(
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get("/api/v1/updates", segmentsController.getAllUpdates);
+router.get('/api/v1/updates', segmentsController.getAllUpdates);
 
 export default router;

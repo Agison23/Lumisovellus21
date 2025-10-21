@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { HelpController } from "../../controllers/help/HelpController";
-import { authenticateToken, requireRole } from "../../middleware/auth";
+import { Router } from 'express';
+import { HelpController } from '../../controllers/help/HelpController';
+import { authenticateToken, requireRole } from '../../middleware/auth';
 
 const router = Router();
 const helpController = new HelpController();
@@ -47,9 +47,9 @@ const helpController = new HelpController();
  *         description: Internal server error
  */
 router.post(
-  "/api/v1/help-requests",
+  '/api/v1/help-requests',
   authenticateToken,
-  helpController.createHelpRequest,
+  helpController.createHelpRequest
 );
 
 /**
@@ -83,10 +83,10 @@ router.post(
  *         description: Internal server error
  */
 router.get(
-  "/api/v1/help-requests",
+  '/api/v1/help-requests',
   authenticateToken,
-  requireRole(["ADMIN", "RESCUE"]),
-  helpController.getAllHelpRequests,
+  requireRole(['ADMIN', 'RESCUE']),
+  helpController.getAllHelpRequests
 );
 
 /**
@@ -135,9 +135,9 @@ router.get(
  *         description: Internal server error
  */
 router.post(
-  "/api/v1/help-responses",
+  '/api/v1/help-responses',
   authenticateToken,
-  helpController.updateHelpResponse,
+  helpController.updateHelpResponse
 );
 
 export default router;

@@ -1,13 +1,13 @@
-import { BaseService } from "../BaseService";
+import { BaseService } from '../BaseService';
 import {
   HelpRequestCreate,
   HelpRequest,
   HelpResponseUpdate,
-} from "../../types";
+} from '../../types';
 
 export class HelpService extends BaseService {
   async createHelpRequest(
-    helpData: HelpRequestCreate & { userId: string },
+    helpData: HelpRequestCreate & { userId: string }
   ): Promise<{ nearbyUsers: number }> {
     try {
       // Use the authenticated user's ID directly
@@ -34,7 +34,7 @@ export class HelpService extends BaseService {
       });
 
       // Find nearby users (simplified version of the legacy logic)
-      const maxDistance = helpData.helpType === "seriousEmerg" ? 1 : 3;
+      const maxDistance = helpData.helpType === 'seriousEmerg' ? 1 : 3;
 
       // Get recent users within time window
       const twoHoursAgo = Math.floor(Date.now() / 1000) - 7200;
@@ -76,7 +76,7 @@ export class HelpService extends BaseService {
         include: {
           user: true,
         },
-        orderBy: { timestamp: "desc" },
+        orderBy: { timestamp: 'desc' },
       });
 
       return helpRequests.map((request) => ({

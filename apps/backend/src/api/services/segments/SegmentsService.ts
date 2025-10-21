@@ -1,5 +1,5 @@
-import { BaseService } from "../BaseService";
-import { Segment, SegmentUpdate } from "../../types";
+import { BaseService } from '../BaseService';
+import { Segment, SegmentUpdate } from '../../types';
 
 export class SegmentsService extends BaseService {
   async getAllSegments(): Promise<Segment[]> {
@@ -7,7 +7,7 @@ export class SegmentsService extends BaseService {
       const segments = await this.prisma.segment.findMany({
         include: {
           coordinates: {
-            orderBy: { order: "asc" },
+            orderBy: { order: 'asc' },
           },
         },
       });
@@ -33,7 +33,7 @@ export class SegmentsService extends BaseService {
     try {
       const updates = await this.prisma.snowUpdate.findMany({
         where: { segment: segmentId },
-        orderBy: { time: "desc" },
+        orderBy: { time: 'desc' },
         take: 1,
         include: {
           creatorRel: {
@@ -87,16 +87,16 @@ export class SegmentsService extends BaseService {
 
   async getAllUpdates(days: number = 3): Promise<any[]> {
     try {
-      console.log("DEBUG: prisma object:", typeof this.prisma);
+      console.log('DEBUG: prisma object:', typeof this.prisma);
       console.log(
-        "DEBUG: snowUpdate property:",
-        typeof this.prisma?.snowUpdate,
+        'DEBUG: snowUpdate property:',
+        typeof this.prisma?.snowUpdate
       );
       console.log(
-        "DEBUG: Available models:",
+        'DEBUG: Available models:',
         Object.keys(this.prisma || {}).filter(
-          (k) => !k.startsWith("_") && !k.startsWith("$"),
-        ),
+          (k) => !k.startsWith('_') && !k.startsWith('$')
+        )
       );
 
       const daysAgo = new Date();
@@ -105,7 +105,7 @@ export class SegmentsService extends BaseService {
       const updates = await this.prisma.snowUpdate.findMany({
         where: {
           time: { gte: daysAgo },
-          status: "ACTIVE",
+          status: 'ACTIVE',
         },
         include: {
           segmentRel: true,
@@ -123,7 +123,7 @@ export class SegmentsService extends BaseService {
             },
           },
         },
-        orderBy: { time: "desc" },
+        orderBy: { time: 'desc' },
       });
 
       return updates.map((update) => ({

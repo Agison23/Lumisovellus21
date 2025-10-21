@@ -1,319 +1,319 @@
-import swaggerAutogen from "swagger-autogen";
+import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
   info: {
-    version: "v2.0.0",
-    title: "Lumisovellus API",
+    version: 'v2.0.0',
+    title: 'Lumisovellus API',
     description:
-      "Unified backend API for Lumisovellus - Snow condition tracking and rescue coordination system",
+      'Unified backend API for Lumisovellus - Snow condition tracking and rescue coordination system',
     contact: {
-      name: "Mindhive Oy",
-      email: "support@mindhive.fi",
+      name: 'Mindhive Oy',
+      email: 'support@mindhive.fi',
     },
     license: {
-      name: "MIT",
-      url: "https://opensource.org/licenses/MIT",
+      name: 'MIT',
+      url: 'https://opensource.org/licenses/MIT',
     },
   },
   host:
-    process.env.NODE_ENV === "production"
-      ? "api.lumisovellus.fi"
+    process.env.NODE_ENV === 'production'
+      ? 'api.lumisovellus.fi'
       : `localhost:${process.env.PORT || 3001}`,
-  basePath: "/",
-  schemes: ["http", "https"],
-  consumes: ["application/json"],
-  produces: ["application/json"],
+  basePath: '/',
+  schemes: ['http', 'https'],
+  consumes: ['application/json'],
+  produces: ['application/json'],
   tags: [
-    { name: "Health", description: "Health check endpoints" },
+    { name: 'Health', description: 'Health check endpoints' },
     {
-      name: "Authentication",
-      description: "User authentication and account management",
+      name: 'Authentication',
+      description: 'User authentication and account management',
     },
-    { name: "Segments", description: "Ski segment management" },
-    { name: "Updates", description: "Snow condition updates" },
-    { name: "Reviews", description: "User reviews and ratings" },
-    { name: "Snow Types", description: "Snow type classifications" },
-    { name: "Users", description: "User management and mobile features" },
-    { name: "Help Requests", description: "Emergency and assistance requests" },
+    { name: 'Segments', description: 'Ski segment management' },
+    { name: 'Updates', description: 'Snow condition updates' },
+    { name: 'Reviews', description: 'User reviews and ratings' },
+    { name: 'Snow Types', description: 'Snow type classifications' },
+    { name: 'Users', description: 'User management and mobile features' },
+    { name: 'Help Requests', description: 'Emergency and assistance requests' },
   ],
   securityDefinitions: {
     BearerAuth: {
-      type: "apiKey",
-      in: "header",
-      name: "Authorization",
-      description: "JWT token for authentication. Format: Bearer <token>",
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization',
+      description: 'JWT token for authentication. Format: Bearer <token>',
     },
   },
   security: [],
   definitions: {
     Error: {
-      type: "object",
+      type: 'object',
       properties: {
         success: {
-          type: "boolean",
+          type: 'boolean',
           example: false,
         },
         error: {
-          type: "object",
+          type: 'object',
           properties: {
             code: {
-              type: "string",
-              example: "UNAUTHORIZED",
+              type: 'string',
+              example: 'UNAUTHORIZED',
             },
             message: {
-              type: "string",
-              example: "Access token required",
+              type: 'string',
+              example: 'Access token required',
             },
             details: {
-              type: "object",
-              description: "Additional error details",
+              type: 'object',
+              description: 'Additional error details',
             },
           },
         },
         meta: {
-          type: "object",
+          type: 'object',
           properties: {
             timestamp: {
-              type: "string",
-              example: "2024-01-15T10:30:00.000Z",
+              type: 'string',
+              example: '2024-01-15T10:30:00.000Z',
             },
           },
         },
       },
     },
     RegisterRequest: {
-      type: "object",
-      required: ["firstName", "email", "password"],
+      type: 'object',
+      required: ['firstName', 'email', 'password'],
       properties: {
         firstName: {
-          type: "string",
-          example: "John",
+          type: 'string',
+          example: 'John',
         },
         lastName: {
-          type: "string",
-          example: "Doe",
+          type: 'string',
+          example: 'Doe',
         },
         email: {
-          type: "string",
-          format: "email",
-          example: "user@example.com",
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com',
         },
         password: {
-          type: "string",
+          type: 'string',
           minLength: 6,
-          example: "password123",
+          example: 'password123',
         },
         role: {
-          type: "string",
-          enum: ["NORMAL", "PREMIUM", "ADMIN", "RESCUE"],
-          example: "NORMAL",
+          type: 'string',
+          enum: ['NORMAL', 'PREMIUM', 'ADMIN', 'RESCUE'],
+          example: 'NORMAL',
         },
       },
     },
     LoginRequest: {
-      type: "object",
-      required: ["email", "password"],
+      type: 'object',
+      required: ['email', 'password'],
       properties: {
         email: {
-          type: "string",
-          format: "email",
-          example: "user@example.com",
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com',
         },
         password: {
-          type: "string",
-          example: "password123",
+          type: 'string',
+          example: 'password123',
         },
       },
     },
     AuthResponse: {
-      type: "object",
+      type: 'object',
       properties: {
         success: {
-          type: "boolean",
+          type: 'boolean',
           example: true,
         },
         data: {
-          type: "object",
+          type: 'object',
           properties: {
             user: {
-              type: "object",
+              type: 'object',
               properties: {
                 id: {
-                  type: "string",
-                  example: "550e8400-e29b-41d4-a716-446655440001",
+                  type: 'string',
+                  example: '550e8400-e29b-41d4-a716-446655440001',
                 },
-                firstName: { type: "string", example: "John" },
-                lastName: { type: "string", example: "Doe" },
-                email: { type: "string", example: "user@example.com" },
+                firstName: { type: 'string', example: 'John' },
+                lastName: { type: 'string', example: 'Doe' },
+                email: { type: 'string', example: 'user@example.com' },
                 role: {
-                  type: "string",
-                  enum: ["NORMAL", "PREMIUM", "ADMIN", "RESCUE"],
-                  example: "NORMAL",
+                  type: 'string',
+                  enum: ['NORMAL', 'PREMIUM', 'ADMIN', 'RESCUE'],
+                  example: 'NORMAL',
                 },
               },
             },
             accessToken: {
-              type: "string",
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+              type: 'string',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
             },
             refreshToken: {
-              type: "string",
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+              type: 'string',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
             },
           },
         },
         meta: {
-          type: "object",
+          type: 'object',
           properties: {
-            message: { type: "string", example: "Login successful" },
-            timestamp: { type: "string", example: "2024-01-15T10:30:00.000Z" },
+            message: { type: 'string', example: 'Login successful' },
+            timestamp: { type: 'string', example: '2024-01-15T10:30:00.000Z' },
           },
         },
       },
     },
     RefreshTokenRequest: {
-      type: "object",
-      required: ["refreshToken"],
+      type: 'object',
+      required: ['refreshToken'],
       properties: {
         refreshToken: {
-          type: "string",
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          type: 'string',
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         },
       },
     },
     ChangePasswordRequest: {
-      type: "object",
-      required: ["currentPassword", "newPassword"],
+      type: 'object',
+      required: ['currentPassword', 'newPassword'],
       properties: {
         currentPassword: {
-          type: "string",
-          example: "oldpassword",
+          type: 'string',
+          example: 'oldpassword',
         },
         newPassword: {
-          type: "string",
+          type: 'string',
           minLength: 6,
-          example: "newpassword123",
+          example: 'newpassword123',
         },
       },
     },
     UpdateProfileRequest: {
-      type: "object",
+      type: 'object',
       properties: {
         firstName: {
-          type: "string",
-          example: "John",
+          type: 'string',
+          example: 'John',
         },
         lastName: {
-          type: "string",
-          example: "Smith",
+          type: 'string',
+          example: 'Smith',
         },
         email: {
-          type: "string",
-          format: "email",
-          example: "johnsmith@example.com",
+          type: 'string',
+          format: 'email',
+          example: 'johnsmith@example.com',
         },
         phoneNumber: {
-          type: "string",
-          example: "+1234567890",
+          type: 'string',
+          example: '+1234567890',
         },
       },
     },
     ResetPasswordRequest: {
-      type: "object",
-      required: ["email"],
+      type: 'object',
+      required: ['email'],
       properties: {
         email: {
-          type: "string",
-          format: "email",
-          example: "user@example.com",
+          type: 'string',
+          format: 'email',
+          example: 'user@example.com',
         },
       },
     },
     Segment: {
-      type: "object",
+      type: 'object',
       properties: {
         id: {
-          type: "string",
-          format: "uuid",
-          example: "550e8400-e29b-41d4-a716-446655440000",
+          type: 'string',
+          format: 'uuid',
+          example: '550e8400-e29b-41d4-a716-446655440000',
         },
-        name: { type: "string", example: "Segment A" },
-        terrain: { type: "string", example: "Alpine" },
-        avalancheDanger: { type: "boolean", example: false },
-        isLowerSegment: { type: "boolean", example: false },
+        name: { type: 'string', example: 'Segment A' },
+        terrain: { type: 'string', example: 'Alpine' },
+        avalancheDanger: { type: 'boolean', example: false },
+        isLowerSegment: { type: 'boolean', example: false },
         Points: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "object",
+            type: 'object',
             properties: {
-              lat: { type: "number", example: 65.0121 },
-              lng: { type: "number", example: 25.4651 },
+              lat: { type: 'number', example: 65.0121 },
+              lng: { type: 'number', example: 25.4651 },
             },
           },
         },
       },
     },
     ReviewRequest: {
-      type: "object",
-      required: ["segment", "snowType", "details", "comment"],
+      type: 'object',
+      required: ['segment', 'snowType', 'details', 'comment'],
       properties: {
         segment: {
-          type: "string",
-          format: "uuid",
-          example: "550e8400-e29b-41d4-a716-446655440000",
+          type: 'string',
+          format: 'uuid',
+          example: '550e8400-e29b-41d4-a716-446655440000',
         },
         snowType: {
-          type: "string",
-          format: "uuid",
-          example: "550e8400-e29b-41d4-a716-446655440001",
+          type: 'string',
+          format: 'uuid',
+          example: '550e8400-e29b-41d4-a716-446655440001',
         },
-        details: { type: "number", minimum: 1, maximum: 5, example: 4 },
+        details: { type: 'number', minimum: 1, maximum: 5, example: 4 },
         comment: {
-          type: "string",
+          type: 'string',
           maxLength: 1000,
-          example: "Good snow conditions",
+          example: 'Good snow conditions',
         },
       },
     },
     LocationUpdate: {
-      type: "object",
-      required: ["timestamp", "firstName", "lastName", "gpsCoord"],
+      type: 'object',
+      required: ['timestamp', 'firstName', 'lastName', 'gpsCoord'],
       properties: {
-        timestamp: { type: "number", example: 1640995200 },
-        firstName: { type: "string", example: "John" },
-        lastName: { type: "string", example: "Doe" },
-        gpsCoord: { type: "string", example: "65.0121,25.4651" },
-        phoneNumber: { type: "string", example: "+358401234567" },
+        timestamp: { type: 'number', example: 1640995200 },
+        firstName: { type: 'string', example: 'John' },
+        lastName: { type: 'string', example: 'Doe' },
+        gpsCoord: { type: 'string', example: '65.0121,25.4651' },
+        phoneNumber: { type: 'string', example: '+358401234567' },
       },
     },
     HelpRequest: {
-      type: "object",
-      required: ["timestamp", "deviceId", "gpsCoord", "helpType"],
+      type: 'object',
+      required: ['timestamp', 'deviceId', 'gpsCoord', 'helpType'],
       properties: {
-        timestamp: { type: "number", example: 1640995200 },
-        deviceId: { type: "string", example: "device123" },
-        gpsCoord: { type: "string", example: "65.0121,25.4651" },
+        timestamp: { type: 'number', example: 1640995200 },
+        deviceId: { type: 'string', example: 'device123' },
+        gpsCoord: { type: 'string', example: '65.0121,25.4651' },
         helpType: {
-          type: "string",
-          enum: ["seriousEmerg", "help"],
-          example: "help",
+          type: 'string',
+          enum: ['seriousEmerg', 'help'],
+          example: 'help',
         },
-        chatRoomId: { type: "string", example: "room123" },
+        chatRoomId: { type: 'string', example: 'room123' },
       },
     },
   },
 };
 
-const outputFile = "./swagger-output.json";
+const outputFile = './swagger-output.json';
 const endpointsFiles = [
-  "./server.ts",
-  "./api/routes/index.ts",
-  "./api/routes/auth/authRoutes.ts",
-  "./api/routes/users/usersRoutes.ts",
-  "./api/routes/help/helpRoutes.ts",
-  "./api/routes/reviews/reviewsRoutes.ts",
-  "./api/routes/segments/segmentsRoutes.ts",
-  "./api/routes/health/healthRoutes.ts",
+  './server.ts',
+  './api/routes/index.ts',
+  './api/routes/auth/authRoutes.ts',
+  './api/routes/users/usersRoutes.ts',
+  './api/routes/help/helpRoutes.ts',
+  './api/routes/reviews/reviewsRoutes.ts',
+  './api/routes/segments/segmentsRoutes.ts',
+  './api/routes/health/healthRoutes.ts',
 ];
 
 const swaggerAutogenInstance = swaggerAutogen();

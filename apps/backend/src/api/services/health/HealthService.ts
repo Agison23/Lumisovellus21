@@ -1,5 +1,5 @@
-import { BaseService } from "../BaseService";
-import { HealthResponse } from "../../types";
+import { BaseService } from '../BaseService';
+import { HealthResponse } from '../../types';
 
 export class HealthService extends BaseService {
   async getHealthStatus(): Promise<HealthResponse> {
@@ -7,8 +7,8 @@ export class HealthService extends BaseService {
     // await this.prisma.$queryRaw`SELECT 1`;
 
     return {
-      status: "ok",
-      version: "2.0.0",
+      status: 'ok',
+      version: '2.0.0',
     };
   }
 }

@@ -1,5 +1,5 @@
-import { BaseService } from "../BaseService";
-import { Review, ReviewRequest, SnowType } from "../../types";
+import { BaseService } from '../BaseService';
+import { Review, ReviewRequest, SnowType } from '../../types';
 
 export class ReviewsService extends BaseService {
   async getAllSnowTypes(): Promise<SnowType[]> {
@@ -91,11 +91,11 @@ export class ReviewsService extends BaseService {
 
   async createReview(
     reviewData: ReviewRequest,
-    segmentId: string,
+    segmentId: string
   ): Promise<Review> {
     try {
       if (reviewData.segment !== segmentId) {
-        throw new Error("Segment ID mismatch");
+        throw new Error('Segment ID mismatch');
       }
 
       const review = await this.prisma.userReview.create({

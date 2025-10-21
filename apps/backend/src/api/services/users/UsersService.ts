@@ -1,16 +1,16 @@
-import { BaseService } from "../BaseService";
+import { BaseService } from '../BaseService';
 import {
   LocationUpdateRequest,
   BatteryUpdateRequest,
   RoleUpdateRequest,
   UserRole,
-} from "../../types";
+} from '../../types';
 
 export class UsersService extends BaseService {
   async updateLocation(
     deviceId: string,
     locationData: LocationUpdateRequest,
-    ipAddress: string,
+    ipAddress: string
   ): Promise<void> {
     try {
       // Create or update user (mobile user)
@@ -22,11 +22,11 @@ export class UsersService extends BaseService {
         },
         create: {
           devId: deviceId,
-          firstName: locationData.firstName || "Mobile User",
+          firstName: locationData.firstName || 'Mobile User',
           lastName: locationData.lastName || null,
           ipAddress,
           phoneNumber: locationData.phoneNumber || null,
-          role: "NORMAL",
+          role: 'NORMAL',
         },
       });
 
@@ -37,7 +37,7 @@ export class UsersService extends BaseService {
       });
 
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       const parsedTimestamp = Number.isFinite(Number(locationData.timestamp))
@@ -61,10 +61,10 @@ export class UsersService extends BaseService {
 
   async updateBattery(
     deviceId: string,
-    batteryData: BatteryUpdateRequest,
+    batteryData: BatteryUpdateRequest
   ): Promise<void> {
     try {
-      const lowBattery = batteryData.batteryStatus === "low" ? 1 : 0;
+      const lowBattery = batteryData.batteryStatus === 'low' ? 1 : 0;
 
       await this.prisma.user.update({
         where: { devId: deviceId },
@@ -77,7 +77,7 @@ export class UsersService extends BaseService {
 
   async updateRole(
     deviceId: string,
-    roleData: RoleUpdateRequest,
+    roleData: RoleUpdateRequest
   ): Promise<UserRole> {
     try {
       const updatedUser = await this.prisma.user.update({
@@ -92,7 +92,7 @@ export class UsersService extends BaseService {
 
       return {
         role: updatedUser.role.toLowerCase(),
-        permissions: roleDataFromDb?.permissions || "",
+        permissions: roleDataFromDb?.permissions || '',
       };
     } catch (error) {
       return await this.handleDatabaseError(error);
@@ -106,7 +106,7 @@ export class UsersService extends BaseService {
       });
 
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       const roleData = await this.prisma.role.findUnique({
@@ -115,7 +115,7 @@ export class UsersService extends BaseService {
 
       return {
         role: user.role.toLowerCase(),
-        permissions: roleData?.permissions || "",
+        permissions: roleData?.permissions || '',
       };
     } catch (error) {
       return await this.handleDatabaseError(error);

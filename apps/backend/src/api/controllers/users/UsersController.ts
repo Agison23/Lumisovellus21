@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { UsersService } from "../../services/users/UsersService";
-import { ApiResponseHandler } from "../../middleware/responseHandler";
-import { asyncHandler } from "../../middleware/errorHandler";
+import { Request, Response } from 'express';
+import { UsersService } from '../../services/users/UsersService';
+import { ApiResponseHandler } from '../../middleware/responseHandler';
+import { asyncHandler } from '../../middleware/errorHandler';
 
 export class UsersController {
   private usersService: UsersService;
@@ -17,8 +17,8 @@ export class UsersController {
       const ipAddress = `${req.ip},${process.env.PORT || 3001}`;
 
       await this.usersService.updateLocation(deviceId, locationData, ipAddress);
-      ApiResponseHandler.success(res, { status: "ok" });
-    },
+      ApiResponseHandler.success(res, { status: 'ok' });
+    }
   );
 
   updateBattery = asyncHandler(
@@ -27,8 +27,8 @@ export class UsersController {
       const batteryData = req.body;
 
       await this.usersService.updateBattery(deviceId, batteryData);
-      ApiResponseHandler.success(res, { status: "ok" });
-    },
+      ApiResponseHandler.success(res, { status: 'ok' });
+    }
   );
 
   updateRole = asyncHandler(
@@ -38,7 +38,7 @@ export class UsersController {
 
       const result = await this.usersService.updateRole(deviceId, roleData);
       ApiResponseHandler.success(res, result);
-    },
+    }
   );
 
   getUserRole = asyncHandler(
@@ -47,6 +47,6 @@ export class UsersController {
 
       const result = await this.usersService.getUserRole(deviceId);
       ApiResponseHandler.success(res, result);
-    },
+    }
   );
 }

@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { UsersController } from "../../controllers/users/UsersController";
-import { authenticateToken, requireRole } from "../../middleware/auth";
+import { Router } from 'express';
+import { UsersController } from '../../controllers/users/UsersController';
+import { authenticateToken, requireRole } from '../../middleware/auth';
 
 const router = Router();
 const usersController = new UsersController();
@@ -55,9 +55,9 @@ const usersController = new UsersController();
  *               $ref: '#/components/schemas/Error'
  */
 router.post(
-  "/api/v1/users/:deviceId/location",
+  '/api/v1/users/:deviceId/location',
   authenticateToken,
-  usersController.updateLocation,
+  usersController.updateLocation
 );
 
 /**
@@ -110,9 +110,9 @@ router.post(
  *         description: Internal server error
  */
 router.post(
-  "/api/v1/users/:deviceId/battery",
+  '/api/v1/users/:deviceId/battery',
   authenticateToken,
-  usersController.updateBattery,
+  usersController.updateBattery
 );
 
 /**
@@ -165,10 +165,10 @@ router.post(
  *         description: Internal server error
  */
 router.post(
-  "/api/v1/users/:deviceId/role",
+  '/api/v1/users/:deviceId/role',
   authenticateToken,
-  requireRole(["ADMIN"]),
-  usersController.updateRole,
+  requireRole(['ADMIN']),
+  usersController.updateRole
 );
 
 /**
@@ -214,9 +214,9 @@ router.post(
  *         description: Internal server error
  */
 router.get(
-  "/api/v1/users/:deviceId/role",
+  '/api/v1/users/:deviceId/role',
   authenticateToken,
-  usersController.getUserRole,
+  usersController.getUserRole
 );
 
 export default router;

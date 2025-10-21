@@ -1,6 +1,6 @@
 # North Star
 
-# Backend 
+# Backend
 
 ## Local development with docker
 
@@ -12,9 +12,9 @@ A local development environment is available with docker.
 cp backend/app/.env.example backend/app/.env
 ```
 
-2. Build the docker containers based on the environment 
+2. Build the docker containers based on the environment
 
-    For development
+   For development
 
 ```shell session
     NODE_ENV=dev docker-compose up --build
@@ -26,11 +26,10 @@ cp backend/app/.env.example backend/app/.env
     NODE_ENV=prod docker-compose up --build
 ```
 
-
 3. Launch docker-compose
 
 ```shell session
-docker-compose up 
+docker-compose up
 ```
 
 At this point, the docker should be up and running. Now, let's add some data.
@@ -40,4 +39,3 @@ At this point, the docker should be up and running. Now, let's add some data.
 ```shell session
 docker-compose exec backend sh
 ```
-
