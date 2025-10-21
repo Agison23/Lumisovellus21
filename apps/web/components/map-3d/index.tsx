@@ -47,6 +47,7 @@ import {
 // for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
+	throw new Error("Mock error fetching area types");
 	return mapAreas2;
 };
 
@@ -59,6 +60,7 @@ const fetchSnowTypes = async (): Promise<SnowType[]> => {
 
 const fetchUpdateData = async (): Promise<UpdateData[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
+	// throw new Error("Mock error fetching update data");
 	return mockUpdateData;
 };
 
@@ -155,6 +157,7 @@ export default function Map3d() {
 		data: areas = [],
 		isError: areasError,
 		error: areasErrorMessage,
+		isLoading: areasLoading,
 	} = useQuery({
 		queryKey: ["mapAreas"],
 		queryFn: fetchAreas,
@@ -304,15 +307,13 @@ export default function Map3d() {
 		return snowTypes.find((st) => st.id === snowTypeId);
 	};
 
-	if (areasError || snowTypesError || updateError) {
+	if (areasError) {
 		return (
-			<div className="flex items-center justify-center h-full">
-				<p className="text-primary">
-					{t("errors.loadingData") +
-						(areasErrorMessage instanceof Error
-							? ` ${areasErrorMessage.message}`
-							: "")}
-				</p>
+			<div className="p-4">
+				<h2 className="text-red-600 font-bold mb-2">
+					{t("errors.loadingData")}
+				</h2>
+				<p className="text-red-500">{areasErrorMessage?.message}</p>
 			</div>
 		);
 	}
@@ -386,6 +387,11 @@ export default function Map3d() {
 									<p>{t("loading.segmentData")}</p>
 								) : (
 									<>
+										{updateError && (
+											<p className="text-red-500">
+												{t("errors.loadingSegmentData")}
+											</p>
+										)}
 										<p>
 											{selectedArea.avalancheDanger
 												? t("warnings.avalanche.danger")
@@ -420,19 +426,19 @@ export default function Map3d() {
 												</div>
 											);
 										})()}
-										<div className="flex gap-2">
-											<Button onClick={() => form.goToStep(1)}>
-												{t("reportForm.buttons.addObservation")}
-											</Button>
-											<Button
-												variant="secondary"
-												onClick={() => setSelectedArea(null)}
-											>
-												{t("reportForm.buttons.close")}
-											</Button>
-										</div>
 									</>
 								)}
+								<div className="flex gap-2">
+									<Button onClick={() => form.goToStep(1)}>
+										{t("reportForm.buttons.addObservation")}
+									</Button>
+									<Button
+										variant="secondary"
+										onClick={() => setSelectedArea(null)}
+									>
+										{t("reportForm.buttons.close")}
+									</Button>
+								</div>
 							</>
 						)}
 						{form.currentStep === 1 && (
@@ -441,6 +447,11 @@ export default function Map3d() {
 									<div className="flex flex-col gap-2 items-center">
 										<p>{t("reportForm.steps.selectSnowType")}</p>
 										{snowTypesLoading && <p>{t("loading.snowData")}</p>}
+										{snowTypesError && (
+											<p className="text-red-500">
+												{t("errors.loadingSnowData")}
+											</p>
+										)}
 										<div className="grid grid-cols-2 gap-2">
 											{snowTypes
 												.filter((st) => st.categoryId === null)

@@ -1,166 +1,168 @@
 {
-  "AppLayout": {
-    "map": "Kartta",
-    "definitions": "Selitteet",
-    "weather": "Sää"
-  },
-  "LocaleSwitcher": {
-    "label": "Kieli",
-    "en": "English",
-    "fi": "Suomi"
-  },
-  "ThemeSwitcher": {
-    "label": "Teema",
-    "light": "Vaalea",
-    "dark": "Tumma",
-    "system": "Laite"
-  },
-  "MapPage": {
-    "title": "Kartta",
-    "loading": {
-      "map": "Ladataan karttaa...",
-      "snowData": "Ladataan lumitietoja...",
-      "segments": "Ladataan segmenttejä...",
-        "segmentData": "Ladataan segmenttitietoja..."
-    },
-    "warnings": {
-      "avalanche": {
-        "noDanger": "Ei lumivyöryvaroitusta",
-        "danger": "Lumivyöryvaroitus"
-      }
-    },
+	"AppLayout": {
+		"map": "Kartta",
+		"definitions": "Selitteet",
+		"weather": "Sää"
+	},
+	"LocaleSwitcher": {
+		"label": "Kieli",
+		"en": "English",
+		"fi": "Suomi"
+	},
+	"ThemeSwitcher": {
+		"label": "Teema",
+		"light": "Vaalea",
+		"dark": "Tumma",
+		"system": "Laite"
+	},
+	"MapPage": {
+		"title": "Kartta",
+		"loading": {
+			"map": "Ladataan karttaa...",
+			"snowData": "Ladataan lumitietoja...",
+			"segments": "Ladataan segmenttejä...",
+			"segmentData": "Ladataan segmenttitietoja..."
+		},
+		"warnings": {
+			"avalanche": {
+				"noDanger": "Ei lumivyöryvaroitusta",
+				"danger": "Lumivyöryvaroitus"
+			}
+		},
 
-    "errors": {
-      "loadingData": "Lumitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
-    },
-    "reportForm": {
-      "steps": {
-        "selectSnowType": "Valitse lumityyppi",
-        "specifySnowType": "Tarkenna lumityyppi"
-      },
-      "generalSnowTypes": {
-        "fresh": "uutta/vastasatanutta",
-        "windblown": "tuulen muovaama",
-        "icy": "jäistä",
-        "wet": "märkää",
-        "crust": "korppu",
-        "minor": "vähäistä"
-      },
-      "snowTypes": {
-    "1": {
-      "name": "Korppu",
-      "description": "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista."
-    },
-    "2": {
-      "name": "Sohjo",
-      "description": "Vesipitoinen ja osittain sulanut lumi suojasäällä."
-    },
-    "3": {
-      "name": "Jää",
-      "description": "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena."
-    },
-    "4": {
-      "name": "Uusi lumi",
-      "description": "Vastasatanut pehmeä lumi."
-    },
-    "5": {
-      "name": "Tuulen pieksemä lumi",
-      "description": "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi."
-    },
-    "6": {
-      "name": "Vähäinen lumi",
-      "description": ""
-    },
-    "8": {
-      "name": "Lumeton maa",
-      "description": ""
-    },
-    "9": {
-      "name": "Vitilumi",
-      "description": "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta."
-    },
-    "10": {
-      "name": "Puuterilumi",
-      "description": "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella."
-    },
-    "11": {
-      "name": "Märkä uusi lumi",
-      "description": "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella."
-    },
-    "12": {
-      "name": "Sastrugi",
-      "description": "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista."
-    },
-    "13": {
-      "name": "Aaltoileva lumi",
-      "description": "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa."
-    },
-    "14": {
-      "name": "Tuiskulumi",
-      "description": "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle."
-    },
-    "15": {
-      "name": "Ohut korppu",
-      "description": "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa."
-    },
-    "16": {
-      "name": "Rikkoutuva korppu",
-      "description": "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta."
-    },
-    "17": {
-      "name": "Kantava korppu",
-      "description": "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä."
-    },
-    "18": {
-      "name": "Rikkoutuva jää",
-      "description": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros."
-    },
-    "19": {
-      "name": "Kastuva lumi",
-      "description": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi."
-    },
-    "20": {
-      "name": "Saturoitunut lumi",
-      "description": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi"
-    },
-    "21": {
-      "name": "Kiviä",
-      "description": ""
-    },
-    "22": {
-      "name": "Oksia",
-      "description": ""
-    }
-      },
-      "buttons": {
-        "addObservation": "Lisää havainto",
-        "back": "Takaisin",
-        "next": "Seuraava",
-        "submit": "Lähetä",
-        "submitting": "Lähetetään...",
-        "close": "Sulje"
-      },
-      "obstacles": {
-        "description": "Esteet"
-      },
-      "messages": {
-        "submitError": "Havaintoa ei voitu lähettää. Yritä uudelleen.",
-        "submitSuccess": "Havainto lähetetty onnistuneesti. Kiitos!"
-    }
-  }
-  },
-  "WeatherPage": {
-    "title": "Sää",
-    "loading": "Ladataan säätietoja..."
-  },
-  "DefinitionsPage": {
-    "title": "Selitteet"
-  },
-    "Sidebar": {
-      "title": "Pallaksen Pöllöt",
-      "p1": "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista. Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin, joiden sisällä lumi on tyypillisesti hyvin samanlaista.",
-      "p2": "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti. Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta.",
-      "p3": "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja koko kaudelta löydät sääpainikkeen takaa.",
-      "p4": "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme, tunturista ja sen kauneudesta."
-    }
+		"errors": {
+			"loadingData": "Lumitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
+			"loadingSnowData": "Lumityyppien lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
+			"loadingSegmentData": "Segmenttitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
+		},
+		"reportForm": {
+			"steps": {
+				"selectSnowType": "Valitse lumityyppi",
+				"specifySnowType": "Tarkenna lumityyppi"
+			},
+			"generalSnowTypes": {
+				"fresh": "uutta/vastasatanutta",
+				"windblown": "tuulen muovaama",
+				"icy": "jäistä",
+				"wet": "märkää",
+				"crust": "korppu",
+				"minor": "vähäistä"
+			},
+			"snowTypes": {
+				"1": {
+					"name": "Korppu",
+					"description": "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista."
+				},
+				"2": {
+					"name": "Sohjo",
+					"description": "Vesipitoinen ja osittain sulanut lumi suojasäällä."
+				},
+				"3": {
+					"name": "Jää",
+					"description": "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena."
+				},
+				"4": {
+					"name": "Uusi lumi",
+					"description": "Vastasatanut pehmeä lumi."
+				},
+				"5": {
+					"name": "Tuulen pieksemä lumi",
+					"description": "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi."
+				},
+				"6": {
+					"name": "Vähäinen lumi",
+					"description": ""
+				},
+				"8": {
+					"name": "Lumeton maa",
+					"description": ""
+				},
+				"9": {
+					"name": "Vitilumi",
+					"description": "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta."
+				},
+				"10": {
+					"name": "Puuterilumi",
+					"description": "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella."
+				},
+				"11": {
+					"name": "Märkä uusi lumi",
+					"description": "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella."
+				},
+				"12": {
+					"name": "Sastrugi",
+					"description": "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista."
+				},
+				"13": {
+					"name": "Aaltoileva lumi",
+					"description": "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa."
+				},
+				"14": {
+					"name": "Tuiskulumi",
+					"description": "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle."
+				},
+				"15": {
+					"name": "Ohut korppu",
+					"description": "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa."
+				},
+				"16": {
+					"name": "Rikkoutuva korppu",
+					"description": "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta."
+				},
+				"17": {
+					"name": "Kantava korppu",
+					"description": "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä."
+				},
+				"18": {
+					"name": "Rikkoutuva jää",
+					"description": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros."
+				},
+				"19": {
+					"name": "Kastuva lumi",
+					"description": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi."
+				},
+				"20": {
+					"name": "Saturoitunut lumi",
+					"description": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi"
+				},
+				"21": {
+					"name": "Kiviä",
+					"description": ""
+				},
+				"22": {
+					"name": "Oksia",
+					"description": ""
+				}
+			},
+			"buttons": {
+				"addObservation": "Lisää havainto",
+				"back": "Takaisin",
+				"next": "Seuraava",
+				"submit": "Lähetä",
+				"submitting": "Lähetetään...",
+				"close": "Sulje"
+			},
+			"obstacles": {
+				"description": "Esteet"
+			},
+			"messages": {
+				"submitError": "Havaintoa ei voitu lähettää. Yritä uudelleen.",
+				"submitSuccess": "Havainto lähetetty onnistuneesti. Kiitos!"
+			}
+		}
+	},
+	"WeatherPage": {
+		"title": "Sää",
+		"loading": "Ladataan säätietoja..."
+	},
+	"DefinitionsPage": {
+		"title": "Selitteet"
+	},
+	"Sidebar": {
+		"title": "Pallaksen Pöllöt",
+		"p1": "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista. Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin, joiden sisällä lumi on tyypillisesti hyvin samanlaista.",
+		"p2": "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti. Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta.",
+		"p3": "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja koko kaudelta löydät sääpainikkeen takaa.",
+		"p4": "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme, tunturista ja sen kauneudesta."
+	}
 }

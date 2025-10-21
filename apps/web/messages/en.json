@@ -1,165 +1,167 @@
 {
-  "AppLayout": {
-    "map": "Map",
-    "definitions": "Definitions",
-    "weather": "Weather"
-  },
-  "LocaleSwitcher": {
-    "label": "Language",
-    "en": "English",
-    "fi": "Suomi"
-  },
-  "ThemeSwitcher": {
-    "label": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
-  },
-  "MapPage": {
-    "title": "Map",
-    "loading": {
-      "map": "Loading map...",
-      "snowData": "Loading snow data...",
-      "segments": "Loading segments...",
-      "segmentData": "Loading segment data..."
-    },
-    "warnings": {
-      "avalanche": {
-        "noDanger": "No avalanche warning",
-        "danger": "Avalanche warning"
-      }
-    },
-    "errors": {
-      "loadingData": "Error loading data. Please try again later."
-    },
-    "reportForm": {
-      "steps": {
-        "selectSnowType": "Select snow type",
-        "specifySnowType": "Specify snow type"
-      },
-      "generalSnowTypes": {
-        "fresh": "new/freshly fallen snow",
-        "windblown": "windblown",
-        "icy": "icy",
-        "wet": "wet",
-        "crust": "crust",
-        "minor": "minor"
-      },
-      "snowTypes": {
-        "1": {
-          "name": "Crust",
-          "description": "Hard crust covering the surface. Crust can be smooth or rough in nature."
-        },
-        "2": {
-          "name": "Slush",
-          "description": "Water-rich and partially melted snow in sheltered conditions."
-        },
-        "3": {
-          "name": "Ice",
-          "description": "Hard and unbroken icy layer on the surface. Ice forms as a result of melt-freeze cycles."
-        },
-        "4": {
-          "name": "Fresh snow",
-          "description": "Recently fallen soft snow."
-        },
-        "5": {
-          "name": "Wind-blown snow",
-          "description": "Wind-hardened and unevenly shaped snow."
-        },
-        "6": {
-          "name": "Sparse snow",
-          "description": ""
-        },
-        "8": {
-          "name": "Bare ground",
-          "description": ""
-        },
-        "9": {
-          "name": "Powder snow",
-          "description": "Recently fallen, light, soft and slightly consolidated frost snow."
-        },
-        "10": {
-          "name": "Powder",
-          "description": "Recently fallen loose, feather-light and non-consolidated snow. Powder usually forms in calm weather and hard frost."
-        },
-        "11": {
-          "name": "Wet fresh snow",
-          "description": "Snow from which you can easily make a snowball. Wet snow forms when it rains near freezing or well in sheltered areas."
-        },
-        "12": {
-          "name": "Sastrugi",
-          "description": "Wind-caused snow ridges that are hard, icy and sharp-crested."
-        },
-        "13": {
-          "name": "Wavy snow",
-          "description": "Wind-shaped fresh snow area. Waves are soft and easily broken."
-        },
-        "14": {
-          "name": "Wind-packed snow",
-          "description": "Smooth, wind-layered and compacted slab or lens. Wind-packed snow can also accumulate without snowfall if wind moves snow from place to place. Wind-packed snow typically forms in sheltered areas."
-        },
-        "15": {
-          "name": "Thin crust",
-          "description": "Snow crust that breaks under the skier's weight. Below the crust, snow can be sinking in places."
-        },
-        "16": {
-          "name": "Breakable crust",
-          "description": "Intermittently bearing, unexpectedly breaking snow surface. The crust can be very thick if there is porous snow beneath it."
-        },
-        "17": {
-          "name": "Bearing crust",
-          "description": "Solid and bearing snow crust, often with a very hard and dense surface."
-        },
-        "18": {
-          "name": "Breakable ice",
-          "description": "Hard and breakable icy layer on the surface."
-        },
-        "19": {
-          "name": "Softening snow",
-          "description": "Snow that becomes wet or moist from warming or rain starting from the surface."
-        },
-        "20": {
-          "name": "Saturated snow",
-          "description": "Wet, throughly soaked and whipped cream-like snow."
-        },
-        "21": {
-          "name": "Rocks",
-          "description": ""
-        },
-        "22": {
-          "name": "Branches",
-          "description": ""
-        }
-      },
-      "buttons": {
-        "addObservation": "Add observation",
-        "back": "Back",
-        "next": "Next",
-        "submit": "Submit",
-        "submitting": "Submitting...",
-        "close": "Close"
-      },
-      "obstacles": {
-        "description": "Obstacles"
-      },
-      "messages": {
-        "submitError": "Failed to submit observation. Please try again.",
-        "submitSuccess": "Observation submitted successfully. Thank you!"
-      }
-    }
-  },
-  "WeatherPage": {
-    "title": "Weather",
-    "loading": "Loading weather data..."
-  },
-  "DefinitionsPage": {
-    "title": "Definitions"
-  },
-  "Sidebar": {
-    "title": "Pallaksen Pöllöt",
-    "p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
-    "p2": "The information in the application is the subjective observations of the guides and the conditions can change quickly. When using snow data, it is worth taking into account the time stamp of the observation, as well as what additional information has been given about the segment and what the weather data about the area says. In the fells, the traveler is responsible for applying the observations, and the application does not in any way reduce his own responsibility.",
-    "p3": "More detailed snow information for each segment opens by clicking on it. You can find information about the weather for the last few days and the entire season behind the weather button.",
-    "p4": "Please remember to share your location with someone, for example on Whatsapp. Let's take care of ourselves, the fell and its beauty."
-  }
+	"AppLayout": {
+		"map": "Map",
+		"definitions": "Definitions",
+		"weather": "Weather"
+	},
+	"LocaleSwitcher": {
+		"label": "Language",
+		"en": "English",
+		"fi": "Suomi"
+	},
+	"ThemeSwitcher": {
+		"label": "Theme",
+		"light": "Light",
+		"dark": "Dark",
+		"system": "System"
+	},
+	"MapPage": {
+		"title": "Map",
+		"loading": {
+			"map": "Loading map...",
+			"snowData": "Loading snow data...",
+			"segments": "Loading segments...",
+			"segmentData": "Loading segment data..."
+		},
+		"warnings": {
+			"avalanche": {
+				"noDanger": "No avalanche warning",
+				"danger": "Avalanche warning"
+			}
+		},
+		"errors": {
+			"loadingData": "Error loading data. Please try again later.",
+			"loadingSnowData": "Error loading snow types. Please try again later.",
+			"loadingSegmentData": "Error loading segment data. Please try again later."
+		},
+		"reportForm": {
+			"steps": {
+				"selectSnowType": "Select snow type",
+				"specifySnowType": "Specify snow type"
+			},
+			"generalSnowTypes": {
+				"fresh": "new/freshly fallen snow",
+				"windblown": "windblown",
+				"icy": "icy",
+				"wet": "wet",
+				"crust": "crust",
+				"minor": "minor"
+			},
+			"snowTypes": {
+				"1": {
+					"name": "Crust",
+					"description": "Hard crust covering the surface. Crust can be smooth or rough in nature."
+				},
+				"2": {
+					"name": "Slush",
+					"description": "Water-rich and partially melted snow in sheltered conditions."
+				},
+				"3": {
+					"name": "Ice",
+					"description": "Hard and unbroken icy layer on the surface. Ice forms as a result of melt-freeze cycles."
+				},
+				"4": {
+					"name": "Fresh snow",
+					"description": "Recently fallen soft snow."
+				},
+				"5": {
+					"name": "Wind-blown snow",
+					"description": "Wind-hardened and unevenly shaped snow."
+				},
+				"6": {
+					"name": "Sparse snow",
+					"description": ""
+				},
+				"8": {
+					"name": "Bare ground",
+					"description": ""
+				},
+				"9": {
+					"name": "Powder snow",
+					"description": "Recently fallen, light, soft and slightly consolidated frost snow."
+				},
+				"10": {
+					"name": "Powder",
+					"description": "Recently fallen loose, feather-light and non-consolidated snow. Powder usually forms in calm weather and hard frost."
+				},
+				"11": {
+					"name": "Wet fresh snow",
+					"description": "Snow from which you can easily make a snowball. Wet snow forms when it rains near freezing or well in sheltered areas."
+				},
+				"12": {
+					"name": "Sastrugi",
+					"description": "Wind-caused snow ridges that are hard, icy and sharp-crested."
+				},
+				"13": {
+					"name": "Wavy snow",
+					"description": "Wind-shaped fresh snow area. Waves are soft and easily broken."
+				},
+				"14": {
+					"name": "Wind-packed snow",
+					"description": "Smooth, wind-layered and compacted slab or lens. Wind-packed snow can also accumulate without snowfall if wind moves snow from place to place. Wind-packed snow typically forms in sheltered areas."
+				},
+				"15": {
+					"name": "Thin crust",
+					"description": "Snow crust that breaks under the skier's weight. Below the crust, snow can be sinking in places."
+				},
+				"16": {
+					"name": "Breakable crust",
+					"description": "Intermittently bearing, unexpectedly breaking snow surface. The crust can be very thick if there is porous snow beneath it."
+				},
+				"17": {
+					"name": "Bearing crust",
+					"description": "Solid and bearing snow crust, often with a very hard and dense surface."
+				},
+				"18": {
+					"name": "Breakable ice",
+					"description": "Hard and breakable icy layer on the surface."
+				},
+				"19": {
+					"name": "Softening snow",
+					"description": "Snow that becomes wet or moist from warming or rain starting from the surface."
+				},
+				"20": {
+					"name": "Saturated snow",
+					"description": "Wet, throughly soaked and whipped cream-like snow."
+				},
+				"21": {
+					"name": "Rocks",
+					"description": ""
+				},
+				"22": {
+					"name": "Branches",
+					"description": ""
+				}
+			},
+			"buttons": {
+				"addObservation": "Add observation",
+				"back": "Back",
+				"next": "Next",
+				"submit": "Submit",
+				"submitting": "Submitting...",
+				"close": "Close"
+			},
+			"obstacles": {
+				"description": "Obstacles"
+			},
+			"messages": {
+				"submitError": "Failed to submit observation. Please try again.",
+				"submitSuccess": "Observation submitted successfully. Thank you!"
+			}
+		}
+	},
+	"WeatherPage": {
+		"title": "Weather",
+		"loading": "Loading weather data..."
+	},
+	"DefinitionsPage": {
+		"title": "Definitions"
+	},
+	"Sidebar": {
+		"title": "Pallaksen Pöllöt",
+		"p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
+		"p2": "The information in the application is the subjective observations of the guides and the conditions can change quickly. When using snow data, it is worth taking into account the time stamp of the observation, as well as what additional information has been given about the segment and what the weather data about the area says. In the fells, the traveler is responsible for applying the observations, and the application does not in any way reduce his own responsibility.",
+		"p3": "More detailed snow information for each segment opens by clicking on it. You can find information about the weather for the last few days and the entire season behind the weather button.",
+		"p4": "Please remember to share your location with someone, for example on Whatsapp. Let's take care of ourselves, the fell and its beauty."
+	}
 }
