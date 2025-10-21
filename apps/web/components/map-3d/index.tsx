@@ -3,10 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { FeatureCollection, Polygon } from "geojson";
 
 import maplibregl, {
-	FillLayerSpecification,
-	LineLayerSpecification,
 	MapLayerMouseEvent,
-	SymbolLayerSpecification,
 	type FilterSpecification,
 } from "maplibre-gl";
 import { useTranslations } from "next-intl";
@@ -22,7 +19,15 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
-import { MAP_STYLE } from "@/lib/map/map-style";
+import {
+	areaAvalancheDangerOutlineLayer,
+	areaFillLayer,
+	areaHoverLayer,
+	areaLabelLayer,
+	areaOutlineLayer,
+	areaSelectedLayer,
+	MAP_STYLE,
+} from "@/lib/map/map-style";
 import {
 	InteractiveAreaFeature,
 	InteractiveAreaProperties,
@@ -30,118 +35,16 @@ import {
 	mockSnowData,
 	mockUpdateData,
 	SnowType,
+	UpdateData,
 } from "@/lib/map/mock-data";
+import {
+	CameraState,
+	DEFAULT_VIEW_STATE,
+	loadCameraState,
+	saveCameraState,
+} from "@/lib/map/map-camera";
 
-// Add this at the top with other imports/helpers
-
-const CAMERA_STATE_KEY = "map3d_camera_state";
-
-interface CameraState {
-	longitude: number;
-	latitude: number;
-	zoom: number;
-	pitch: number;
-	bearing: number;
-}
-
-const saveCameraState = (state: CameraState) => {
-	if (typeof window === "undefined" || !window.localStorage) return;
-	try {
-		localStorage.setItem(CAMERA_STATE_KEY, JSON.stringify(state));
-	} catch (error) {
-		console.error("Failed to save camera state:", error);
-	}
-};
-
-const loadCameraState = (): CameraState | null => {
-	if (typeof window === "undefined" || !window.localStorage) return null;
-	try {
-		const stored = localStorage.getItem(CAMERA_STATE_KEY);
-		return stored ? JSON.parse(stored) : null;
-	} catch (error) {
-		console.error("Failed to load camera state:", error);
-		return null;
-	}
-};
-
-const DEFAULT_VIEW_STATE: CameraState = {
-	longitude: 24.05,
-	latitude: 68.05,
-	zoom: 13,
-	pitch: 60,
-	bearing: 0,
-};
-
-const areaFillLayer: FillLayerSpecification = {
-	id: "areas-fill",
-	type: "fill",
-	source: "areas",
-	paint: {
-		"fill-color": "#4ecdc4",
-		"fill-opacity": 0.4,
-	},
-};
-
-const areaHoverLayer: FillLayerSpecification = {
-	id: "areas-hover",
-	type: "fill",
-	source: "areas",
-	paint: {
-		"fill-color": "#ff4500",
-		"fill-opacity": 0.2,
-	},
-	filter: ["==", ["get", "id"], ""],
-};
-
-const areaOutlineLayer: LineLayerSpecification = {
-	id: "areas-outline",
-	type: "line",
-	source: "areas",
-	paint: {
-		"line-color": "#2c3e50",
-		"line-width": 2,
-	},
-};
-
-const areaLabelLayer: SymbolLayerSpecification = {
-	id: "areas-labels",
-	type: "symbol",
-	source: "areas",
-	layout: {
-		"text-field": ["get", "name"],
-		"text-size": 14,
-		"text-offset": [0, 0],
-	},
-	paint: {
-		"text-color": "#ffffff",
-		"text-halo-color": "#000000",
-		"text-halo-width": 2,
-	},
-};
-
-const areaSelectedLayer: FillLayerSpecification = {
-	id: "areas-selected",
-	type: "fill",
-	source: "areas",
-	paint: {
-		"fill-color": "#ffd700",
-		"fill-opacity": 0.4,
-	},
-	filter: ["==", ["get", "id"], ""],
-};
-
-const areaAvalancheDangerOutlineLayer: LineLayerSpecification = {
-	id: "areas-avalanche-danger-outline",
-	type: "line",
-	source: "areas",
-	paint: {
-		"line-color": "#ff0000",
-		"line-width": 3,
-	},
-	filter: ["==", ["get", "avalancheDanger"], true],
-};
-
-// for now, mock fetching areas from the API
+// for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	return mapAreas2;
@@ -154,7 +57,7 @@ const fetchSnowTypes = async (): Promise<SnowType[]> => {
 	return mockSnowData;
 };
 
-const fetchUpdateData = async () => {
+const fetchUpdateData = async (): Promise<UpdateData[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	return mockUpdateData;
 };
@@ -247,6 +150,7 @@ export default function Map3d() {
 
 	const t = useTranslations("MapPage");
 
+	// DATA LOADERS:
 	const {
 		data: areas = [],
 		isError: areasError,
@@ -403,7 +307,7 @@ export default function Map3d() {
 	if (areasError || snowTypesError || updateError) {
 		return (
 			<div className="flex items-center justify-center h-full">
-				<p className="text-red-500">
+				<p className="text-primary">
 					{t("errors.loadingData") +
 						(areasErrorMessage instanceof Error
 							? ` ${areasErrorMessage.message}`
