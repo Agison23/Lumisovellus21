@@ -100,7 +100,7 @@ export const areaFillLayer: FillLayerSpecification = {
 	type: "fill",
 	source: "areas",
 	paint: {
-		"fill-color": "#4ecdc4",
+		"fill-color": "#ffffff",
 		"fill-opacity": 0.1,
 	},
 };

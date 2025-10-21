@@ -309,15 +309,12 @@ export default function Map3d() {
 		return {
 			details: updateData.a1Details,
 			snowTypeId: updateData.a1SnowType,
-			time: updateData.time,
+			time: updateData.a1Time as string,
 		};
 	};
 
 	const getLatestGuideUpdateForArea = (updateData: UpdateData) => {
 		// return the latest update from experts (a2 fields)
-		if (!updateData.secondaryId1 || !updateData.secondaryId2) {
-			return null;
-		}
 
 		if (!updateData.snowTypeId1 && !updateData.snowTypeId2) {
 			return null;
@@ -336,6 +333,21 @@ export default function Map3d() {
 		snowTypeId: number | null
 	): SnowType | undefined => {
 		return snowTypes.find((st) => st.id === snowTypeId);
+	};
+
+	const getPrettyTimeDiff = (pastTime: Date): string => {
+		const now = new Date();
+		const diffMs = now.getTime() - pastTime.getTime();
+		const diffMins = Math.floor(diffMs / 60000);
+
+		if (diffMins < 1) return t("reportForm.time.justNow");
+		if (diffMins < 60)
+			return t("reportForm.time.minutesAgo", { count: diffMins });
+		const diffHours = Math.floor(diffMins / 60);
+		if (diffHours < 24)
+			return t("reportForm.time.hoursAgo", { count: diffHours });
+		const diffDays = Math.floor(diffHours / 24);
+		return t("reportForm.time.daysAgo", { count: diffDays });
 	};
 
 	if (areasError) {
@@ -437,12 +449,12 @@ export default function Map3d() {
 											return (
 												<>
 													{guideUpdate && (
-														<div className="text-sm text-muted-foreground mb-2">
+														<div className="text-sm mb-2 text-primary">
 															<p>
 																{t("reportForm.lastUpdate.guide", {
-																	time: new Date(
-																		guideUpdate.time
-																	).toLocaleString(),
+																	time: getPrettyTimeDiff(
+																		new Date(guideUpdate.time)
+																	),
 																})}
 															</p>
 															<p className="font-medium">
@@ -457,15 +469,16 @@ export default function Map3d() {
 															</p>
 														</div>
 													)}
+													<Separator />
 													{userUpdate && (
 														<div className="text-xs text-muted-foreground">
 															<p>{t("reportForm.observationType.visitor")}</p>
 															<div className="text-primary flex flex-col">
 																<p>
 																	{t("reportForm.lastUpdate.visitor", {
-																		time: new Date(
-																			userUpdate.time
-																		).toLocaleString(),
+																		time: getPrettyTimeDiff(
+																			new Date(userUpdate.time)
+																		),
 																	})}
 																</p>
 																<p className="font-medium">

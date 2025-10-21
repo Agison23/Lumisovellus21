@@ -153,7 +153,16 @@
 				"visitor": "Alla oleva tieto perustuu muiden käyttäjien havaintoihin.",
 				"guide": "Alla oleva tieto perustuu oppaiden tekemiin havaintoihin."
 			},
-			"lastUpdate": "Viimeisin päivitys: {time}"
+			"lastUpdate": {
+				"visitor": "Viimeisin päivitys: {time}",
+				"guide": "Viimeisin oppaan päivitys: {time}"
+			},
+			"time": {
+				"justNow": "Juuri nyt",
+				"minutesAgo": "{count} minuuttia sitten",
+				"hoursAgo": "{count} tuntia sitten",
+				"daysAgo": "{count} päivää sitten"
+			}
 		}
 	},
 	"WeatherPage": {
