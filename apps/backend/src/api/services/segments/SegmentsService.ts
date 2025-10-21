@@ -1,5 +1,5 @@
-import { BaseService } from '../BaseService';
-import { Segment, SegmentUpdate } from '../../types';
+import { BaseService } from "../BaseService";
+import { Segment, SegmentUpdate } from "../../types";
 
 export class SegmentsService extends BaseService {
   async getAllSegments(): Promise<Segment[]> {
@@ -7,22 +7,22 @@ export class SegmentsService extends BaseService {
       const segments = await this.prisma.segment.findMany({
         include: {
           coordinates: {
-            orderBy: { order: 'asc' }
+            orderBy: { order: "asc" },
           },
         },
       });
 
       // Transform coordinates to match legacy format
-      return segments.map(segment => ({
+      return segments.map((segment) => ({
         id: segment.id.toString(),
         name: segment.name,
         terrain: segment.terrain,
         avalancheDanger: segment.avalancheDanger,
         isLowerSegment: segment.isLowerSegment,
-        Points: segment.coordinates.map(coord => ({
+        Points: segment.coordinates.map((coord) => ({
           lat: coord.latitude,
-          lng: coord.longitude
-        }))
+          lng: coord.longitude,
+        })),
       }));
     } catch (error) {
       return await this.handleDatabaseError(error);
@@ -33,26 +33,26 @@ export class SegmentsService extends BaseService {
     try {
       const updates = await this.prisma.snowUpdate.findMany({
         where: { segment: segmentId },
-        orderBy: { time: 'desc' },
+        orderBy: { time: "desc" },
         take: 1,
         include: {
           creatorRel: {
-            select: { firstName: true, lastName: true }
+            select: { firstName: true, lastName: true },
           },
           snowConditions: {
             include: {
-              snowTypeRel: true
-            }
+              snowTypeRel: true,
+            },
           },
           reviewReferences: {
             include: {
-              reviewRel: true
-            }
-          }
-        }
+              reviewRel: true,
+            },
+          },
+        },
       });
 
-      return updates.map(update => ({
+      return updates.map((update) => ({
         id: `${update.time.getTime()}-${update.segment}`,
         segment: update.segment,
         time: update.time,
@@ -63,7 +63,7 @@ export class SegmentsService extends BaseService {
         visibility: update.visibility,
         status: update.status,
         priority: update.priority,
-        snowConditions: update.snowConditions.map(condition => ({
+        snowConditions: update.snowConditions.map((condition) => ({
           snowType: condition.snowTypeRel?.name,
           layer: condition.layer,
           depth: condition.depth,
@@ -71,14 +71,14 @@ export class SegmentsService extends BaseService {
           quality: condition.quality,
           hardness: condition.hardness,
           moisture: condition.moisture,
-          notes: condition.notes
+          notes: condition.notes,
         })),
-        reviewReferences: update.reviewReferences.map(ref => ({
+        reviewReferences: update.reviewReferences.map((ref) => ({
           reviewId: ref.reviewId,
           relevance: ref.relevance,
           notes: ref.notes,
-          review: ref.reviewRel
-        }))
+          review: ref.reviewRel,
+        })),
       }));
     } catch (error) {
       return await this.handleDatabaseError(error);
@@ -87,38 +87,46 @@ export class SegmentsService extends BaseService {
 
   async getAllUpdates(days: number = 3): Promise<any[]> {
     try {
-      console.log('DEBUG: prisma object:', typeof this.prisma);
-      console.log('DEBUG: snowUpdate property:', typeof this.prisma?.snowUpdate);
-      console.log('DEBUG: Available models:', Object.keys(this.prisma || {}).filter(k => !k.startsWith('_') && !k.startsWith('$')));
-      
+      console.log("DEBUG: prisma object:", typeof this.prisma);
+      console.log(
+        "DEBUG: snowUpdate property:",
+        typeof this.prisma?.snowUpdate,
+      );
+      console.log(
+        "DEBUG: Available models:",
+        Object.keys(this.prisma || {}).filter(
+          (k) => !k.startsWith("_") && !k.startsWith("$"),
+        ),
+      );
+
       const daysAgo = new Date();
       daysAgo.setDate(daysAgo.getDate() - days);
 
       const updates = await this.prisma.snowUpdate.findMany({
         where: {
           time: { gte: daysAgo },
-          status: 'ACTIVE'
+          status: "ACTIVE",
         },
         include: {
           segmentRel: true,
           creatorRel: {
-            select: { firstName: true, lastName: true }
+            select: { firstName: true, lastName: true },
           },
           snowConditions: {
             include: {
-              snowTypeRel: true
-            }
+              snowTypeRel: true,
+            },
           },
           reviewReferences: {
             include: {
-              reviewRel: true
-            }
-          }
+              reviewRel: true,
+            },
+          },
         },
-        orderBy: { time: 'desc' }
+        orderBy: { time: "desc" },
       });
 
-      return updates.map(update => ({
+      return updates.map((update) => ({
         id: update.id,
         segment: update.segment,
         time: update.time,
@@ -132,7 +140,7 @@ export class SegmentsService extends BaseService {
         creator: update.creatorRel,
         segmentName: update.segmentRel.name,
         snowConditions: update.snowConditions,
-        reviewReferences: update.reviewReferences
+        reviewReferences: update.reviewReferences,
       }));
     } catch (error) {
       return await this.handleDatabaseError(error);

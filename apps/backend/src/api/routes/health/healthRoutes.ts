@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { HealthController } from '../../controllers/health/HealthController';
+import { Router } from "express";
+import { HealthController } from "../../controllers/health/HealthController";
 
 const router = Router();
 const healthController = new HealthController();
@@ -39,6 +39,6 @@ const healthController = new HealthController();
  *                       type: string
  *                       example: "2024-01-15T10:30:00.000Z"
  */
-router.get('/health', healthController.getHealth);
+router.get("/health", healthController.getHealth);
 
 export default router;

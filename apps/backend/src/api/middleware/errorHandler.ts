@@ -1,75 +1,78 @@
-import { Request, Response, NextFunction } from 'express';
-import { ZodError } from 'zod';
-import { ApiResponseHandler } from './responseHandler';
+import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
+import { ApiResponseHandler } from "./responseHandler";
 
 export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
-  console.error('Unhandled error:', error);
+  console.error("Unhandled error:", error);
 
   // Handle Zod validation errors
   if (error instanceof ZodError) {
-    const details = error.errors.map(err => ({
-      field: err.path.join('.'),
+    const details = error.errors.map((err) => ({
+      field: err.path.join("."),
       message: err.message,
-      code: err.code
+      code: err.code,
     }));
-    
-    ApiResponseHandler.validationError(
-      res,
-      'Validation failed',
-      details
-    );
+
+    ApiResponseHandler.validationError(res, "Validation failed", details);
     return;
   }
 
   // Handle Prisma errors
-  if (error.name === 'PrismaClientKnownRequestError') {
+  if (error.name === "PrismaClientKnownRequestError") {
     const prismaError = error as any;
-    
+
     switch (prismaError.code) {
-      case 'P2002':
-        ApiResponseHandler.conflict(res, 'Resource already exists');
+      case "P2002":
+        ApiResponseHandler.conflict(res, "Resource already exists");
         return;
-      case 'P2025':
-        ApiResponseHandler.notFound(res, 'Resource not found');
+      case "P2025":
+        ApiResponseHandler.notFound(res, "Resource not found");
         return;
-      case 'P2003':
-        ApiResponseHandler.validationError(res, 'Invalid reference to related resource');
+      case "P2003":
+        ApiResponseHandler.validationError(
+          res,
+          "Invalid reference to related resource",
+        );
         return;
       default:
-        ApiResponseHandler.internalError(res, 'Database operation failed');
+        ApiResponseHandler.internalError(res, "Database operation failed");
         return;
     }
   }
 
   // Handle other known errors
-  if (error.name === 'JsonWebTokenError') {
-    ApiResponseHandler.unauthorized(res, 'Invalid token');
+  if (error.name === "JsonWebTokenError") {
+    ApiResponseHandler.unauthorized(res, "Invalid token");
     return;
   }
 
-  if (error.name === 'TokenExpiredError') {
-    ApiResponseHandler.unauthorized(res, 'Token expired');
+  if (error.name === "TokenExpiredError") {
+    ApiResponseHandler.unauthorized(res, "Token expired");
     return;
   }
 
   // Default error handling
-  const message = process.env.NODE_ENV !== 'production' 
-    ? error.message 
-    : 'An unexpected error occurred';
+  const message =
+    process.env.NODE_ENV !== "production"
+      ? error.message
+      : "An unexpected error occurred";
 
   ApiResponseHandler.internalError(res, message);
 };
 
 export const notFoundHandler = (req: Request, res: Response): void => {
-  ApiResponseHandler.notFound(res, `Endpoint ${req.method} ${req.path} not found`);
+  ApiResponseHandler.notFound(
+    res,
+    `Endpoint ${req.method} ${req.path} not found`,
+  );
 };
 
-export const asyncHandler = (fn: Function) => {
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };

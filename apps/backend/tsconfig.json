@@ -14,16 +14,8 @@
     "composite": false,
     "types": ["node", "vitest/globals"]
   },
-  "include": [
-    "src/**/*",
-    "prisma/seed.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ],
+  "include": ["src/**/*", "prisma/seed.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
   "ts-node": {
     "esm": true
   }

@@ -1,7 +1,5 @@
-import { Router } from 'express';
-import { SegmentsController } from '../../controllers/segments/SegmentsController';
-import { segmentIdSchema, querySchema } from '../../middleware/validation';
-import { z } from 'zod';
+import { Router } from "express";
+import { SegmentsController } from "../../controllers/segments/SegmentsController";
 
 const router = Router();
 const segmentsController = new SegmentsController();
@@ -38,7 +36,7 @@ const segmentsController = new SegmentsController();
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/segments', segmentsController.getAllSegments);
+router.get("/api/v1/segments", segmentsController.getAllSegments);
 
 /**
  * @swagger
@@ -80,7 +78,10 @@ router.get('/api/v1/segments', segmentsController.getAllSegments);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/segments/:id/updates', segmentsController.getSegmentUpdates);
+router.get(
+  "/api/v1/segments/:id/updates",
+  segmentsController.getSegmentUpdates,
+);
 
 /**
  * @swagger
@@ -123,6 +124,6 @@ router.get('/api/v1/segments/:id/updates', segmentsController.getSegmentUpdates)
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/updates', segmentsController.getAllUpdates);
+router.get("/api/v1/updates", segmentsController.getAllUpdates);
 
 export default router;

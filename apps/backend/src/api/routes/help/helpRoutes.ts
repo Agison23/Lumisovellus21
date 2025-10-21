@@ -1,7 +1,6 @@
-import { Router } from 'express';
-import { HelpController } from '../../controllers/help/HelpController';
-import { helpRequestSchema, helpResponseSchema } from '../../middleware/validation';
-import { authenticateToken, requireRole } from '../../middleware/auth';
+import { Router } from "express";
+import { HelpController } from "../../controllers/help/HelpController";
+import { authenticateToken, requireRole } from "../../middleware/auth";
 
 const router = Router();
 const helpController = new HelpController();
@@ -47,7 +46,11 @@ const helpController = new HelpController();
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/help-requests', authenticateToken, helpController.createHelpRequest);
+router.post(
+  "/api/v1/help-requests",
+  authenticateToken,
+  helpController.createHelpRequest,
+);
 
 /**
  * @swagger
@@ -79,7 +82,12 @@ router.post('/api/v1/help-requests', authenticateToken, helpController.createHel
  *       500:
  *         description: Internal server error
  */
-router.get('/api/v1/help-requests', authenticateToken, requireRole(['ADMIN', 'RESCUE']), helpController.getAllHelpRequests);
+router.get(
+  "/api/v1/help-requests",
+  authenticateToken,
+  requireRole(["ADMIN", "RESCUE"]),
+  helpController.getAllHelpRequests,
+);
 
 /**
  * @swagger
@@ -126,6 +134,10 @@ router.get('/api/v1/help-requests', authenticateToken, requireRole(['ADMIN', 'RE
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/help-responses', authenticateToken, helpController.updateHelpResponse);
+router.post(
+  "/api/v1/help-responses",
+  authenticateToken,
+  helpController.updateHelpResponse,
+);
 
 export default router;

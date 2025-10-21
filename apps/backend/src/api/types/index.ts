@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 // Base API Response Types
 export interface ApiResponse<T = any> {
@@ -102,7 +102,7 @@ export interface LocationUpdateRequest {
 }
 
 export interface BatteryUpdateRequest {
-  batteryStatus: 'low' | 'normal';
+  batteryStatus: "low" | "normal";
 }
 
 export interface RoleUpdateRequest {
@@ -119,7 +119,7 @@ export interface HelpRequestCreate {
   timestamp: number;
   deviceId: string;
   gpsCoord: string;
-  helpType: 'seriousEmerg' | 'help';
+  helpType: "seriousEmerg" | "help";
   chatRoomId: string;
 }
 

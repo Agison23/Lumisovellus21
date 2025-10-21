@@ -35,6 +35,7 @@ BCRYPT_ROUNDS=12
 ### Public Endpoints (No Authentication Required)
 
 #### Register User
+
 - **POST** `/api/v1/auth/register`
 - **Body:**
   ```json
@@ -48,6 +49,7 @@ BCRYPT_ROUNDS=12
   ```
 
 #### Login
+
 - **POST** `/api/v1/auth/login`
 - **Body:**
   ```json
@@ -58,6 +60,7 @@ BCRYPT_ROUNDS=12
   ```
 
 #### Refresh Token
+
 - **POST** `/api/v1/auth/refresh-token`
 - **Body:**
   ```json
@@ -67,6 +70,7 @@ BCRYPT_ROUNDS=12
   ```
 
 #### Reset Password
+
 - **POST** `/api/v1/auth/reset-password`
 - **Body:**
   ```json
@@ -78,17 +82,21 @@ BCRYPT_ROUNDS=12
 ### Protected Endpoints (Authentication Required)
 
 All protected endpoints require the `Authorization` header:
+
 ```
 Authorization: Bearer <access-token>
 ```
 
 #### Logout
+
 - **POST** `/api/v1/auth/logout`
 
 #### Get Profile
+
 - **GET** `/api/v1/auth/profile`
 
 #### Update Profile
+
 - **PUT** `/api/v1/auth/profile`
 - **Body:**
   ```json
@@ -101,6 +109,7 @@ Authorization: Bearer <access-token>
   ```
 
 #### Change Password
+
 - **PUT** `/api/v1/auth/change-password`
 - **Body:**
   ```json
@@ -111,6 +120,7 @@ Authorization: Bearer <access-token>
   ```
 
 #### Verify Token
+
 - **GET** `/api/v1/auth/verify-token`
 
 ## Protected Routes
@@ -118,12 +128,14 @@ Authorization: Bearer <access-token>
 The following existing routes now require authentication:
 
 ### User Routes
+
 - `POST /api/v1/users/:deviceId/location` - Update user location
 - `POST /api/v1/users/:deviceId/battery` - Update battery status
 - `GET /api/v1/users/:deviceId/role` - Get user role
 - `POST /api/v1/users/:deviceId/role` - Update user role (Admin only)
 
 ### Help Routes
+
 - `POST /api/v1/help-requests` - Create help request
 - `GET /api/v1/help-requests` - Get help requests (Admin/Rescue only)
 - `POST /api/v1/help-responses` - Update help response
@@ -175,6 +187,7 @@ All endpoints return standardized error responses:
 ## Usage Example
 
 1. Register a new user:
+
    ```bash
    curl -X POST http://localhost:3001/api/v1/auth/register \
      -H "Content-Type: application/json" \
@@ -182,6 +195,7 @@ All endpoints return standardized error responses:
    ```
 
 2. Login to get tokens:
+
    ```bash
    curl -X POST http://localhost:3001/api/v1/auth/login \
      -H "Content-Type: application/json" \

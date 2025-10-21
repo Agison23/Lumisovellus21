@@ -1,7 +1,6 @@
-import { Router } from 'express';
-import { UsersController } from '../../controllers/users/UsersController';
-import { deviceIdSchema, locationUpdateSchema, batteryUpdateSchema, roleUpdateSchema } from '../../middleware/validation';
-import { authenticateToken, requireRole } from '../../middleware/auth';
+import { Router } from "express";
+import { UsersController } from "../../controllers/users/UsersController";
+import { authenticateToken, requireRole } from "../../middleware/auth";
 
 const router = Router();
 const usersController = new UsersController();
@@ -55,7 +54,11 @@ const usersController = new UsersController();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/api/v1/users/:deviceId/location', authenticateToken, usersController.updateLocation);
+router.post(
+  "/api/v1/users/:deviceId/location",
+  authenticateToken,
+  usersController.updateLocation,
+);
 
 /**
  * @swagger
@@ -106,7 +109,11 @@ router.post('/api/v1/users/:deviceId/location', authenticateToken, usersControll
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/users/:deviceId/battery', authenticateToken, usersController.updateBattery);
+router.post(
+  "/api/v1/users/:deviceId/battery",
+  authenticateToken,
+  usersController.updateBattery,
+);
 
 /**
  * @swagger
@@ -157,7 +164,12 @@ router.post('/api/v1/users/:deviceId/battery', authenticateToken, usersControlle
  *       500:
  *         description: Internal server error
  */
-router.post('/api/v1/users/:deviceId/role', authenticateToken, requireRole(['ADMIN']), usersController.updateRole);
+router.post(
+  "/api/v1/users/:deviceId/role",
+  authenticateToken,
+  requireRole(["ADMIN"]),
+  usersController.updateRole,
+);
 
 /**
  * @swagger
@@ -201,6 +213,10 @@ router.post('/api/v1/users/:deviceId/role', authenticateToken, requireRole(['ADM
  *       500:
  *         description: Internal server error
  */
-router.get('/api/v1/users/:deviceId/role', authenticateToken, usersController.getUserRole);
+router.get(
+  "/api/v1/users/:deviceId/role",
+  authenticateToken,
+  usersController.getUserRole,
+);
 
 export default router;

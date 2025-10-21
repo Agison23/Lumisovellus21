@@ -86,6 +86,7 @@ To add new endpoints to the Swagger documentation:
 ## Viewing Documentation
 
 The Swagger UI is available at:
+
 - **Local development**: `http://localhost:3001/api-docs` (if configured)
 - **Generated JSON**: `swagger-output.json`
 

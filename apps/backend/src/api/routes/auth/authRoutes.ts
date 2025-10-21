@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { AuthController } from '../../controllers/auth/AuthController';
-import { authenticateToken } from '../../middleware/auth';
+import { Router } from "express";
+import { AuthController } from "../../controllers/auth/AuthController";
+import { authenticateToken } from "../../middleware/auth";
 
 const authRouter = Router();
 
@@ -33,7 +33,7 @@ const authRouter = Router();
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.post('/register', AuthController.register);
+authRouter.post("/register", AuthController.register);
 
 /**
  * @swagger
@@ -60,7 +60,7 @@ authRouter.post('/register', AuthController.register);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.post('/login', AuthController.login);
+authRouter.post("/login", AuthController.login);
 
 /**
  * @swagger
@@ -100,7 +100,7 @@ authRouter.post('/login', AuthController.login);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.post('/refresh-token', AuthController.refreshToken);
+authRouter.post("/refresh-token", AuthController.refreshToken);
 
 /**
  * @swagger
@@ -133,7 +133,7 @@ authRouter.post('/refresh-token', AuthController.refreshToken);
  *                       type: string
  *                       example: "If the email exists, a password reset link has been sent"
  */
-authRouter.post('/reset-password', AuthController.resetPassword);
+authRouter.post("/reset-password", AuthController.resetPassword);
 
 /**
  * @swagger
@@ -166,7 +166,7 @@ authRouter.post('/reset-password', AuthController.resetPassword);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.post('/logout', authenticateToken, AuthController.logout);
+authRouter.post("/logout", authenticateToken, AuthController.logout);
 
 /**
  * @swagger
@@ -220,7 +220,7 @@ authRouter.post('/logout', authenticateToken, AuthController.logout);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.get('/profile', authenticateToken, AuthController.getProfile);
+authRouter.get("/profile", authenticateToken, AuthController.getProfile);
 
 /**
  * @swagger
@@ -281,7 +281,7 @@ authRouter.get('/profile', authenticateToken, AuthController.getProfile);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.put('/profile', authenticateToken, AuthController.updateProfile);
+authRouter.put("/profile", authenticateToken, AuthController.updateProfile);
 
 /**
  * @swagger
@@ -320,7 +320,11 @@ authRouter.put('/profile', authenticateToken, AuthController.updateProfile);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.put('/change-password', authenticateToken, AuthController.changePassword);
+authRouter.put(
+  "/change-password",
+  authenticateToken,
+  AuthController.changePassword,
+);
 
 /**
  * @swagger
@@ -371,6 +375,6 @@ authRouter.put('/change-password', authenticateToken, AuthController.changePassw
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-authRouter.get('/verify-token', authenticateToken, AuthController.verifyToken);
+authRouter.get("/verify-token", authenticateToken, AuthController.verifyToken);
 
 export default authRouter;

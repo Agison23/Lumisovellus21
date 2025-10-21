@@ -1,7 +1,6 @@
-import { Router } from 'express';
-import { ReviewsController } from '../../controllers/reviews/ReviewsController';
-import { reviewSchema, segmentIdSchema, querySchema } from '../../middleware/validation';
-import { authenticateToken } from '../../middleware/auth';
+import { Router } from "express";
+import { ReviewsController } from "../../controllers/reviews/ReviewsController";
+import { authenticateToken } from "../../middleware/auth";
 
 const router = Router();
 const reviewsController = new ReviewsController();
@@ -38,7 +37,7 @@ const reviewsController = new ReviewsController();
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
+router.get("/api/v1/snow-types", reviewsController.getAllSnowTypes);
 
 /**
  * @swagger
@@ -81,7 +80,7 @@ router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/reviews', reviewsController.getLatestReviews);
+router.get("/api/v1/reviews", reviewsController.getLatestReviews);
 
 /**
  * @swagger
@@ -122,7 +121,7 @@ router.get('/api/v1/reviews', reviewsController.getLatestReviews);
  *       500:
  *         description: Internal server error
  */
-router.get('/api/v1/reviews/all', reviewsController.getAllReviews);
+router.get("/api/v1/reviews/all", reviewsController.getAllReviews);
 
 /**
  * @swagger
@@ -176,6 +175,10 @@ router.get('/api/v1/reviews/all', reviewsController.getAllReviews);
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.post('/api/v1/segments/:id/reviews', authenticateToken, reviewsController.createReview);
+router.post(
+  "/api/v1/segments/:id/reviews",
+  authenticateToken,
+  reviewsController.createReview,
+);
 
 export default router;

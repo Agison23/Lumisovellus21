@@ -1,8 +1,14 @@
-import { BaseService } from '../BaseService';
-import { HelpRequestCreate, HelpRequest, HelpResponseUpdate } from '../../types';
+import { BaseService } from "../BaseService";
+import {
+  HelpRequestCreate,
+  HelpRequest,
+  HelpResponseUpdate,
+} from "../../types";
 
 export class HelpService extends BaseService {
-  async createHelpRequest(helpData: HelpRequestCreate & { userId: string }): Promise<{ nearbyUsers: number }> {
+  async createHelpRequest(
+    helpData: HelpRequestCreate & { userId: string },
+  ): Promise<{ nearbyUsers: number }> {
     try {
       // Use the authenticated user's ID directly
       const userId = helpData.userId;
@@ -15,7 +21,7 @@ export class HelpService extends BaseService {
           gpsCoord: helpData.gpsCoord,
           helpType: helpData.helpType,
           roomId: helpData.chatRoomId,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         create: {
           id: crypto.randomUUID(),
@@ -24,22 +30,22 @@ export class HelpService extends BaseService {
           gpsCoord: helpData.gpsCoord,
           helpType: helpData.helpType,
           roomId: helpData.chatRoomId,
-        }
+        },
       });
 
       // Find nearby users (simplified version of the legacy logic)
-      const maxDistance = helpData.helpType === 'seriousEmerg' ? 1 : 3;
-      
+      const maxDistance = helpData.helpType === "seriousEmerg" ? 1 : 3;
+
       // Get recent users within time window
       const twoHoursAgo = Math.floor(Date.now() / 1000) - 7200;
       const nearbyUsers = await this.prisma.locationData.findMany({
         where: {
           timestamp: { gte: twoHoursAgo },
-          userId: { not: userId }
+          userId: { not: userId },
         },
         include: {
-          user: true
-        }
+          user: true,
+        },
       });
 
       // Create nearby user entries for help coordination
@@ -51,7 +57,7 @@ export class HelpService extends BaseService {
               helpGiver: nearbyUser.userId,
               helpRequester: userId,
               state: 0, // Pending
-            }
+            },
           });
         } catch (error) {
           // Ignore duplicate entries
@@ -68,12 +74,12 @@ export class HelpService extends BaseService {
     try {
       const helpRequests = await this.prisma.helpRequest.findMany({
         include: {
-          user: true
+          user: true,
         },
-        orderBy: { timestamp: 'desc' }
+        orderBy: { timestamp: "desc" },
       });
 
-      return helpRequests.map(request => ({
+      return helpRequests.map((request) => ({
         id: request.userId,
         userId: request.userId,
         timestamp: request.timestamp,
@@ -81,7 +87,7 @@ export class HelpService extends BaseService {
         helpType: request.helpType,
         roomId: request.roomId,
         createdAt: request.createdAt,
-        updatedAt: request.updatedAt
+        updatedAt: request.updatedAt,
       }));
     } catch (error) {
       return await this.handleDatabaseError(error);
@@ -94,10 +100,10 @@ export class HelpService extends BaseService {
         where: {
           helpGiver_helpRequester: {
             helpGiver: responseData.helpGiver,
-            helpRequester: responseData.helpRequester
-          }
+            helpRequester: responseData.helpRequester,
+          },
         },
-        data: { state: parseInt(responseData.state.toString()) }
+        data: { state: parseInt(responseData.state.toString()) },
       });
     } catch (error) {
       await this.handleDatabaseError(error);

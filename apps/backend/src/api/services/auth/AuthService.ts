@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import jwt, { SignOptions } from 'jsonwebtoken';
-import { JWTPayload } from '../../middleware/auth';
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+import jwt, { SignOptions } from "jsonwebtoken";
+import { JWTPayload } from "../../middleware/auth";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,7 @@ export interface RegisterData {
   lastName?: string;
   email: string;
   password: string;
-  role?: 'NORMAL' | 'PREMIUM' | 'ADMIN' | 'RESCUE';
+  role?: "NORMAL" | "PREMIUM" | "ADMIN" | "RESCUE";
 }
 
 export interface AuthResponse {
@@ -24,7 +24,7 @@ export interface AuthResponse {
     firstName: string;
     lastName: string | null;
     email: string | null;
-    role: 'NORMAL' | 'PREMIUM' | 'ADMIN' | 'RESCUE';
+    role: "NORMAL" | "PREMIUM" | "ADMIN" | "RESCUE";
   };
   accessToken: string;
   refreshToken: string;
@@ -36,23 +36,26 @@ export interface TokenPair {
 }
 
 export class AuthService {
-  private static readonly SALT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '12');
+  private static readonly SALT_ROUNDS = parseInt(
+    process.env.BCRYPT_ROUNDS || "12",
+  );
   private static readonly JWT_SECRET = process.env.JWT_SECRET;
-  private static readonly JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-  private static readonly JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
+  private static readonly JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
+  private static readonly JWT_REFRESH_EXPIRES_IN =
+    process.env.JWT_REFRESH_EXPIRES_IN || "30d";
 
   static async register(data: RegisterData): Promise<AuthResponse> {
     if (!this.JWT_SECRET) {
-      throw new Error('JWT_SECRET not configured');
+      throw new Error("JWT_SECRET not configured");
     }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email: data.email }
+      where: { email: data.email },
     });
 
     if (existingUser) {
-      throw new Error('User with this email already exists');
+      throw new Error("User with this email already exists");
     }
 
     // Hash password
@@ -65,15 +68,15 @@ export class AuthService {
         lastName: data.lastName,
         email: data.email,
         password: hashedPassword,
-        role: data.role || 'NORMAL'
+        role: data.role || "NORMAL",
       },
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
-        role: true
-      }
+        role: true,
+      },
     });
 
     // Generate tokens
@@ -81,32 +84,35 @@ export class AuthService {
 
     return {
       user,
-      ...tokens
+      ...tokens,
     };
   }
 
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     if (!this.JWT_SECRET) {
-      throw new Error('JWT_SECRET not configured');
+      throw new Error("JWT_SECRET not configured");
     }
 
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email: credentials.email }
+      where: { email: credentials.email },
     });
 
     if (!user) {
-      throw new Error('Invalid email or password');
+      throw new Error("Invalid email or password");
     }
 
     if (!user.password) {
-      throw new Error('User account not properly configured');
+      throw new Error("User account not properly configured");
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+    const isValidPassword = await bcrypt.compare(
+      credentials.password,
+      user.password,
+    );
     if (!isValidPassword) {
-      throw new Error('Invalid email or password');
+      throw new Error("Invalid email or password");
     }
 
     // Generate tokens
@@ -118,20 +124,20 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
-      ...tokens
+      ...tokens,
     };
   }
 
   static async refreshToken(refreshToken: string): Promise<TokenPair> {
     if (!this.JWT_SECRET) {
-      throw new Error('JWT_SECRET not configured');
+      throw new Error("JWT_SECRET not configured");
     }
 
     try {
       const decoded = jwt.verify(refreshToken, this.JWT_SECRET) as JWTPayload;
-      
+
       // Verify user still exists
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
@@ -140,17 +146,17 @@ export class AuthService {
           firstName: true,
           lastName: true,
           email: true,
-          role: true
-        }
+          role: true,
+        },
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       return this.generateTokens(user);
     } catch (error) {
-      throw new Error('Invalid refresh token');
+      throw new Error("Invalid refresh token");
     }
   }
 
@@ -162,19 +168,26 @@ export class AuthService {
     // The client should remove the tokens from storage
   }
 
-  static async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+  static async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     if (!user || !user.password) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     // Verify current password
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
     if (!isValidPassword) {
-      throw new Error('Current password is incorrect');
+      throw new Error("Current password is incorrect");
     }
 
     // Hash new password
@@ -183,13 +196,13 @@ export class AuthService {
     // Update password
     await prisma.user.update({
       where: { id: userId },
-      data: { password: hashedPassword }
+      data: { password: hashedPassword },
     });
   }
 
   static async resetPassword(email: string): Promise<void> {
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -204,32 +217,43 @@ export class AuthService {
     // For now, we'll just return success
   }
 
-  static async verifyResetToken(token: string, newPassword: string): Promise<void> {
+  static async verifyResetToken(
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
     // In a real implementation, you would:
     // 1. Verify the reset token
     // 2. Check expiration
     // 3. Update password
     // 4. Invalidate the token
-    throw new Error('Password reset not implemented');
+    throw new Error("Password reset not implemented");
   }
 
-  private static generateTokens(user: { id: string; email: string | null; role: string }): TokenPair {
+  private static generateTokens(user: {
+    id: string;
+    email: string | null;
+    role: string;
+  }): TokenPair {
     if (!this.JWT_SECRET) {
-      throw new Error('JWT_SECRET not configured');
+      throw new Error("JWT_SECRET not configured");
     }
 
     const payload: JWTPayload = {
       userId: user.id,
-      email: user.email || '',
-      role: user.role
+      email: user.email || "",
+      role: user.role,
     };
 
-    const accessToken = jwt.sign(payload, this.JWT_SECRET as string, { expiresIn: '7d' });
-    const refreshToken = jwt.sign(payload, this.JWT_SECRET as string, { expiresIn: '30d' });
+    const accessToken = jwt.sign(payload, this.JWT_SECRET as string, {
+      expiresIn: "7d",
+    });
+    const refreshToken = jwt.sign(payload, this.JWT_SECRET as string, {
+      expiresIn: "30d",
+    });
 
     return {
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
@@ -247,17 +271,20 @@ export class AuthService {
         phoneNumber: true,
         lowBattery: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
   }
 
-  static async updateUserProfile(userId: string, data: Partial<{
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-  }>) {
+  static async updateUserProfile(
+    userId: string,
+    data: Partial<{
+      firstName: string;
+      lastName: string;
+      email: string;
+      phoneNumber: string;
+    }>,
+  ) {
     return await prisma.user.update({
       where: { id: userId },
       data,
@@ -268,8 +295,8 @@ export class AuthService {
         email: true,
         role: true,
         phoneNumber: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
   }
 }

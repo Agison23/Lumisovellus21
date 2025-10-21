@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 export abstract class BaseService {
   protected prisma: PrismaClient;
@@ -8,7 +8,7 @@ export abstract class BaseService {
   }
 
   protected async handleDatabaseError(error: any): Promise<never> {
-    console.error('Database error:', error);
+    console.error("Database error:", error);
     throw error;
   }
 
