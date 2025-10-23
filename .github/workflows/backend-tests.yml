@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, develop, backend-branch]
   pull_request:
+    branches: [main, develop, backend-branch]
 
 jobs:
   test:
@@ -25,9 +26,7 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-interval=10s --health-timeout=5s --health-retries=3
         command: --default-authentication-plugin=mysql_native_password
 
     steps:
@@ -53,13 +52,13 @@ jobs:
         working-directory: apps/backend
         run: |
           # Wait for MySQL to be ready
-          timeout 60 bash -c 'until mysqladmin ping -h localhost -u root -ptestpassword --silent; do sleep 2; done'
+          timeout 60 bash -c 'until mysqladmin ping -h mysql -u root -ptestpassword --silent; do sleep 2; done'
 
           # Setup test environment
-          echo 'DATABASE_URL="mysql://root:testpassword@localhost:3306/testdb"
-          NODE_ENV=test
-          PORT=3001
-          JWT_SECRET=test_jwt_secret_key_for_testing_only' > .env.test
+          echo "DATABASE_URL=mysql://root:testpassword@mysql:3306/testdb" > .env.test
+          echo "NODE_ENV=test" >> .env.test
+          echo "PORT=3001" >> .env.test
+          echo "JWT_SECRET=test_jwt_secret_key_for_testing_only" >> .env.test
 
           # Push database schema
           npx prisma db push --schema=prisma/schema.prisma
@@ -72,22 +71,15 @@ jobs:
         working-directory: apps/backend
         run: npm run typecheck
 
-      - name: Run unit tests
-        working-directory: apps/backend
-        run: npm run test:unit
-
-      - name: Run integration tests
-        working-directory: apps/backend
-        run: npm run test:integration
-
-      - name: Run all tests with coverage
+      - name: Run tests with coverage
         working-directory: apps/backend
         run: npm run test:coverage
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          file: apps/backend/coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/backend/coverage/lcov.info
           flags: backend
           name: backend-coverage
           fail_ci_if_error: false
