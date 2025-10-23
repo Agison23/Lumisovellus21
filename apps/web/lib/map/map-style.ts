@@ -137,7 +137,7 @@ export const TERRAIN_SOURCE_CONFIG = {
 
 export const TERRAIN_CONFIG = {
 	source: "mapbox-dem",
-	exaggeration: 1.5,
+	exaggeration: 2,
 };
 export const areaFillLayer: FillLayerSpecification = {
 	id: "areas-fill",
@@ -214,6 +214,6 @@ export const hillshadeLayer: HillshadeLayerSpecification = {
 	source: "mapbox-dem",
 	type: "hillshade",
 	paint: {
-		"hillshade-exaggeration": 0.5,
+		"hillshade-exaggeration": 1,
 	},
 };
