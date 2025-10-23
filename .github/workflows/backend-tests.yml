@@ -13,11 +13,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [20.x, 22.x]
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -36,151 +36,151 @@ jobs:
         command: --default-authentication-plugin=mysql_native_password
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: apps/backend/package-lock.json
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: apps/backend/package-lock.json
 
-    - name: Install dependencies
-      working-directory: apps/backend
-      run: npm ci
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm ci
 
-    - name: Generate Prisma client
-      working-directory: apps/backend
-      run: npx prisma generate
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
 
-    - name: Setup test database
-      working-directory: apps/backend
-      run: |
-        # Wait for MySQL to be ready
-        timeout 60 bash -c 'until mysqladmin ping -h localhost -u root -ptestpassword --silent; do sleep 2; done'
-        
-        # Setup test environment
-        echo 'DATABASE_URL="mysql://root:testpassword@localhost:3306/testdb"
-        NODE_ENV=test
-        PORT=3001
-        JWT_SECRET=test_jwt_secret_key_for_testing_only' > .env.test
-        
-        # Push database schema
-        npx prisma db push --schema=prisma/schema.prisma
+      - name: Setup test database
+        working-directory: apps/backend
+        run: |
+          # Wait for MySQL to be ready
+          timeout 60 bash -c 'until mysqladmin ping -h localhost -u root -ptestpassword --silent; do sleep 2; done'
 
-    - name: Run linting
-      working-directory: apps/backend
-      run: npm run lint
+          # Setup test environment
+          echo 'DATABASE_URL="mysql://root:testpassword@localhost:3306/testdb"
+          NODE_ENV=test
+          PORT=3001
+          JWT_SECRET=test_jwt_secret_key_for_testing_only' > .env.test
 
-    - name: Run type checking
-      working-directory: apps/backend
-      run: npm run typecheck
+          # Push database schema
+          npx prisma db push --schema=prisma/schema.prisma
 
-    - name: Run unit tests
-      working-directory: apps/backend
-      run: npm run test:unit
+      - name: Run linting
+        working-directory: apps/backend
+        run: npm run lint
 
-    - name: Run integration tests
-      working-directory: apps/backend
-      run: npm run test:integration
+      - name: Run type checking
+        working-directory: apps/backend
+        run: npm run typecheck
 
-    - name: Run all tests with coverage
-      working-directory: apps/backend
-      run: npm run test:coverage
+      - name: Run unit tests
+        working-directory: apps/backend
+        run: npm run test:unit
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        file: apps/backend/coverage/lcov.info
-        flags: backend
-        name: backend-coverage
-        fail_ci_if_error: false
+      - name: Run integration tests
+        working-directory: apps/backend
+        run: npm run test:integration
 
-    - name: Comment PR with coverage
-      if: github.event_name == 'pull_request'
-      uses: romeovs/lcov-reporter-action@v0.3.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        lcov-file: apps/backend/coverage/lcov.info
-        delete-old-comments: true
+      - name: Run all tests with coverage
+        working-directory: apps/backend
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: apps/backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: apps/backend/coverage/lcov.info
+          delete-old-comments: true
 
   test-docker:
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: apps/backend/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: apps/backend/package-lock.json
 
-    - name: Install dependencies
-      working-directory: apps/backend
-      run: npm ci
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm ci
 
-    - name: Run tests with Docker
-      working-directory: apps/backend
-      run: npm run test:docker
+      - name: Run tests with Docker
+        working-directory: apps/backend
+        run: npm run test:docker
 
   security-audit:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: apps/backend/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: apps/backend/package-lock.json
 
-    - name: Install dependencies
-      working-directory: apps/backend
-      run: npm ci
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm ci
 
-    - name: Run security audit
-      working-directory: apps/backend
-      run: npm audit --audit-level=high
+      - name: Run security audit
+        working-directory: apps/backend
+        run: npm audit --audit-level=high
 
-    - name: Run dependency check
-      working-directory: apps/backend
-      run: npx audit-ci --config audit-ci.json
-      continue-on-error: true
+      - name: Run dependency check
+        working-directory: apps/backend
+        run: npx audit-ci --config audit-ci.json
+        continue-on-error: true
 
   build:
     runs-on: ubuntu-latest
     needs: [test, security-audit]
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-        cache-dependency-path: apps/backend/package-lock.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: apps/backend/package-lock.json
 
-    - name: Install dependencies
-      working-directory: apps/backend
-      run: npm ci
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm ci
 
-    - name: Build application
-      working-directory: apps/backend
-      run: npm run build
+      - name: Build application
+        working-directory: apps/backend
+        run: npm run build
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-build-${{ github.sha }}
-        path: apps/backend/dist/
-        retention-days: 7
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-build-${{ github.sha }}
+          path: apps/backend/dist/
+          retention-days: 7
