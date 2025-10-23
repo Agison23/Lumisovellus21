@@ -58,7 +58,7 @@ jobs:
         run: |
           # Wait a moment for MySQL to be ready
           sleep 10
-          
+
           # Push database schema
           npx prisma db push
 
