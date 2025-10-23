@@ -1,23 +1,23 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { testPrisma } from "../vitest.setup";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { testPrisma } from '../vitest.setup';
 
-describe("User Integration Tests", () => {
+describe('User Integration Tests', () => {
   beforeEach(async () => {
     // Clean up users before each test
     await testPrisma.user.deleteMany();
   });
 
-  it("should create a user successfully", async () => {
+  it('should create a user successfully', async () => {
     const userData = {
-      id: "test-user-1",
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@test.com",
-      password: "hashedpassword123",
-      role: "NORMAL" as const,
-      devId: "test-dev-123",
-      ipAddress: "192.168.1.1",
-      phoneNumber: "0401234567",
+      id: 'test-user-1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@test.com',
+      password: 'hashedpassword123',
+      role: 'NORMAL' as const,
+      devId: 'test-dev-123',
+      ipAddress: '192.168.1.1',
+      phoneNumber: '0401234567',
       lowBattery: 0,
     };
 
@@ -34,14 +34,14 @@ describe("User Integration Tests", () => {
     });
   });
 
-  it("should find user by email", async () => {
+  it('should find user by email', async () => {
     const userData = {
-      id: "test-user-2",
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane.smith@test.com",
-      password: "hashedpassword456",
-      role: "PREMIUM" as const,
+      id: 'test-user-2',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'jane.smith@test.com',
+      password: 'hashedpassword456',
+      role: 'PREMIUM' as const,
     };
 
     await testPrisma.user.create({
@@ -56,14 +56,14 @@ describe("User Integration Tests", () => {
     expect(foundUser?.email).toBe(userData.email);
   });
 
-  it("should update user successfully", async () => {
+  it('should update user successfully', async () => {
     const userData = {
-      id: "test-user-3",
-      firstName: "Bob",
-      lastName: "Johnson",
-      email: "bob.johnson@test.com",
-      password: "hashedpassword789",
-      role: "NORMAL" as const,
+      id: 'test-user-3',
+      firstName: 'Bob',
+      lastName: 'Johnson',
+      email: 'bob.johnson@test.com',
+      password: 'hashedpassword789',
+      role: 'NORMAL' as const,
     };
 
     const user = await testPrisma.user.create({
@@ -72,20 +72,20 @@ describe("User Integration Tests", () => {
 
     const updatedUser = await testPrisma.user.update({
       where: { id: user.id },
-      data: { role: "PREMIUM" },
+      data: { role: 'PREMIUM' },
     });
 
-    expect(updatedUser.role).toBe("PREMIUM");
+    expect(updatedUser.role).toBe('PREMIUM');
   });
 
-  it("should delete user successfully", async () => {
+  it('should delete user successfully', async () => {
     const userData = {
-      id: "test-user-4",
-      firstName: "Alice",
-      lastName: "Brown",
-      email: "alice.brown@test.com",
-      password: "hashedpassword101",
-      role: "NORMAL" as const,
+      id: 'test-user-4',
+      firstName: 'Alice',
+      lastName: 'Brown',
+      email: 'alice.brown@test.com',
+      password: 'hashedpassword101',
+      role: 'NORMAL' as const,
     };
 
     const user = await testPrisma.user.create({

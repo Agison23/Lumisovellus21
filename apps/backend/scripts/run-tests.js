@@ -6,8 +6,6 @@
  */
 
 const { spawn, exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
 
 // Colors for console output
 const colors = {
@@ -17,12 +15,13 @@ const colors = {
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
   magenta: '\x1b[35m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 };
 
 function log(level, message) {
   const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
   const color = colors[level] || colors.reset;
+  // eslint-disable-next-line no-console
   console.log(`${color}[${timestamp}] ${message}${colors.reset}`);
 }
 
@@ -57,10 +56,12 @@ function checkTestDb() {
 function startTestDb() {
   return new Promise((resolve, reject) => {
     log('blue', 'Starting test database...');
-    
-    const dockerCompose = spawn('docker', [
-      'compose', '-f', 'docker-compose.test.yml', 'up', '-d'
-    ], { stdio: 'inherit' });
+
+    const dockerCompose = spawn(
+      'docker',
+      ['compose', '-f', 'docker-compose.test.yml', 'up', '-d'],
+      { stdio: 'inherit' }
+    );
 
     dockerCompose.on('close', (code) => {
       if (code === 0) {
@@ -76,26 +77,32 @@ function startTestDb() {
 function waitForDb() {
   return new Promise((resolve, reject) => {
     log('blue', 'Waiting for database to be ready...');
-    
+
     let attempts = 0;
     const maxAttempts = 30;
-    
+
     const checkDb = () => {
       attempts++;
-      
-      exec('docker exec lumisovellus-testdb mysqladmin ping -h localhost --silent', (error) => {
-        if (error && attempts < maxAttempts) {
-          log('blue', `Attempt ${attempts}/${maxAttempts} - Waiting for database...`);
-          setTimeout(checkDb, 2000);
-        } else if (error) {
-          reject(new Error('Database failed to start within expected time'));
-        } else {
-          log('green', 'Database is ready!');
-          resolve();
+
+      exec(
+        'docker exec lumisovellus-testdb mysqladmin ping -h localhost --silent',
+        (error) => {
+          if (error && attempts < maxAttempts) {
+            log(
+              'blue',
+              `Attempt ${attempts}/${maxAttempts} - Waiting for database...`
+            );
+            global.setTimeout(checkDb, 2000);
+          } else if (error) {
+            reject(new Error('Database failed to start within expected time'));
+          } else {
+            log('green', 'Database is ready!');
+            resolve();
+          }
         }
-      });
+      );
     };
-    
+
     checkDb();
   });
 }
@@ -103,9 +110,9 @@ function waitForDb() {
 function setupDbSchema() {
   return new Promise((resolve, reject) => {
     log('blue', 'Setting up database schema...');
-    
+
     const npm = spawn('npm', ['run', 'test:db:setup'], { stdio: 'inherit' });
-    
+
     npm.on('close', (code) => {
       if (code === 0) {
         log('green', 'Database schema setup complete');
@@ -121,9 +128,9 @@ function runTests() {
   return new Promise((resolve, reject) => {
     log('blue', 'Running all tests...');
     console.log('');
-    
+
     const npm = spawn('npm', ['run', 'test:db'], { stdio: 'inherit' });
-    
+
     npm.on('close', (code) => {
       if (code === 0) {
         log('green', 'All tests passed! 🎉');
@@ -139,11 +146,13 @@ function runTests() {
 function cleanup() {
   return new Promise((resolve) => {
     log('blue', 'Cleaning up...');
-    
-    const dockerCompose = spawn('docker', [
-      'compose', '-f', 'docker-compose.test.yml', 'down'
-    ], { stdio: 'inherit' });
-    
+
+    const dockerCompose = spawn(
+      'docker',
+      ['compose', '-f', 'docker-compose.test.yml', 'down'],
+      { stdio: 'inherit' }
+    );
+
     dockerCompose.on('close', () => {
       log('green', 'Cleanup complete');
       resolve();
@@ -155,7 +164,7 @@ async function main() {
   const args = process.argv.slice(2);
   const keepDb = args.includes('--keep-db');
   const showHelp = args.includes('--help') || args.includes('-h');
-  
+
   if (showHelp) {
     console.log('Usage: node run-tests.js [options]');
     console.log('Options:');
@@ -163,31 +172,30 @@ async function main() {
     console.log('  --help, -h   Show this help message');
     process.exit(0);
   }
-  
+
   console.log('🧪 Lumisovellus Backend Test Runner');
   console.log('==================================');
-  
+
   try {
     // Check Docker
     await checkDocker();
-    
+
     // Check if test DB is already running
     const dbRunning = await checkTestDb();
-    
+
     if (!dbRunning) {
       await startTestDb();
       await setupDbSchema();
     } else {
       log('blue', 'Test database already running, skipping setup');
     }
-    
+
     // Run tests
     await runTests();
-    
+
     console.log('');
     console.log('==================================');
     log('green', 'Test run completed successfully! ✅');
-    
   } catch (error) {
     console.log('');
     console.log('==================================');

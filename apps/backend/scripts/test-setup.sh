@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Test Database Setup Script for Lumisovellus Backend
 

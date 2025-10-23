@@ -5,6 +5,7 @@ This document explains how to set up and run tests for the Lumisovellus backend 
 ## Overview
 
 The testing setup includes:
+
 - **Vitest** as the test runner
 - **MySQL test database** running in Docker
 - **Prisma** for database operations
@@ -51,19 +52,20 @@ npm run test:docker
 
 ## Test Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm test` | Run tests without database |
-| `npm run test:db` | Run tests with test database |
-| `npm run test:db:watch` | Run tests in watch mode with test database |
-| `npm run test:coverage` | Run tests with coverage report |
-| `npm run test:migrate` | Run Prisma migrations on test database |
-| `npm run test:db:setup` | Push schema to test database |
-| `npm run test:docker` | Full automated test with Docker setup/teardown |
+| Script                  | Description                                    |
+| ----------------------- | ---------------------------------------------- |
+| `npm test`              | Run tests without database                     |
+| `npm run test:db`       | Run tests with test database                   |
+| `npm run test:db:watch` | Run tests in watch mode with test database     |
+| `npm run test:coverage` | Run tests with coverage report                 |
+| `npm run test:migrate`  | Run Prisma migrations on test database         |
+| `npm run test:db:setup` | Push schema to test database                   |
+| `npm run test:docker`   | Full automated test with Docker setup/teardown |
 
 ## Test Database Configuration
 
 The test database uses the following configuration:
+
 - **Host**: localhost:3307
 - **Database**: testdb
 - **Username**: root
@@ -91,10 +93,10 @@ src/test/
 Unit tests should be placed in `src/test/unit/` and test individual functions without external dependencies.
 
 ```typescript
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from 'vitest';
 
-describe("MyFunction", () => {
-  it("should work correctly", () => {
+describe('MyFunction', () => {
+  it('should work correctly', () => {
     expect(myFunction(input)).toBe(expectedOutput);
   });
 });
@@ -105,15 +107,15 @@ describe("MyFunction", () => {
 Integration tests should be placed in `src/test/integration/` and test database operations and API endpoints.
 
 ```typescript
-import { describe, it, expect, beforeEach } from "vitest";
-import { testPrisma } from "../vitest.setup";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { testPrisma } from '../vitest.setup';
 
-describe("User Integration Tests", () => {
+describe('User Integration Tests', () => {
   beforeEach(async () => {
     await testPrisma.user.deleteMany();
   });
 
-  it("should create a user", async () => {
+  it('should create a user', async () => {
     const user = await testPrisma.user.create({
       data: userData,
     });
@@ -125,6 +127,7 @@ describe("User Integration Tests", () => {
 ## Database Testing
 
 The test setup automatically:
+
 1. Cleans the database before each test suite
 2. Provides a `testPrisma` client for database operations
 3. Runs tests sequentially to avoid conflicts

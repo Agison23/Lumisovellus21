@@ -1,20 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL || "mysql://root:testpassword@localhost:3307/testdb"
-    }
-  }
+      url:
+        process.env.DATABASE_URL ||
+        'mysql://root:testpassword@localhost:3307/testdb',
+    },
+  },
 });
 
 export default async function setup() {
-  console.log("Setting up test database...");
-  
+  console.log('Setting up test database...');
+
   try {
     // Connect to the test database
     await prisma.$connect();
-    
+
     // Clean up all existing data in the correct order (respecting foreign key constraints)
     await prisma.snowUpdateReviewReference.deleteMany();
     await prisma.snowUpdateAttachment.deleteMany();
@@ -30,10 +32,10 @@ export default async function setup() {
     await prisma.user.deleteMany();
     await prisma.rescueUser.deleteMany();
     await prisma.role.deleteMany();
-    
-    console.log("Test database cleaned successfully");
+
+    console.log('Test database cleaned successfully');
   } catch (error) {
-    console.error("Error setting up test database:", error);
+    console.error('Error setting up test database:', error);
     throw error;
   } finally {
     await prisma.$disconnect();

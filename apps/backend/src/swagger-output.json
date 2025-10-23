@@ -49,10 +49,7 @@
       "description": "Emergency and assistance requests"
     }
   ],
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -61,19 +58,13 @@
       "description": "JWT token for authentication. Format: Bearer <token>"
     }
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/api-docs.json": {
       "get": {
         "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK"
@@ -677,11 +668,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "firstName",
-            "email",
-            "password"
-          ],
+          "example": ["firstName", "email", "password"],
           "items": {
             "type": "string"
           }
@@ -758,12 +745,7 @@
                 },
                 "enum": {
                   "type": "array",
-                  "example": [
-                    "NORMAL",
-                    "PREMIUM",
-                    "ADMIN",
-                    "RESCUE"
-                  ],
+                  "example": ["NORMAL", "PREMIUM", "ADMIN", "RESCUE"],
                   "items": {
                     "type": "string"
                   }
@@ -787,10 +769,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "email",
-            "password"
-          ],
+          "example": ["email", "password"],
           "items": {
             "type": "string"
           }
@@ -1039,9 +1018,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "refreshToken"
-          ],
+          "example": ["refreshToken"],
           "items": {
             "type": "string"
           }
@@ -1075,10 +1052,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "currentPassword",
-            "newPassword"
-          ],
+          "example": ["currentPassword", "newPassword"],
           "items": {
             "type": "string"
           }
@@ -1199,9 +1173,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "email"
-          ],
+          "example": ["email"],
           "items": {
             "type": "string"
           }
@@ -1371,12 +1343,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "segment",
-            "snowType",
-            "details",
-            "comment"
-          ],
+          "example": ["segment", "snowType", "details", "comment"],
           "items": {
             "type": "string"
           }
@@ -1469,12 +1436,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "timestamp",
-            "firstName",
-            "lastName",
-            "gpsCoord"
-          ],
+          "example": ["timestamp", "firstName", "lastName", "gpsCoord"],
           "items": {
             "type": "string"
           }
@@ -1560,12 +1522,7 @@
         },
         "required": {
           "type": "array",
-          "example": [
-            "timestamp",
-            "deviceId",
-            "gpsCoord",
-            "helpType"
-          ],
+          "example": ["timestamp", "deviceId", "gpsCoord", "helpType"],
           "items": {
             "type": "string"
           }
@@ -1621,10 +1578,7 @@
                 },
                 "enum": {
                   "type": "array",
-                  "example": [
-                    "seriousEmerg",
-                    "help"
-                  ],
+                  "example": ["seriousEmerg", "help"],
                   "items": {
                     "type": "string"
                   }

@@ -1,18 +1,18 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { testPrisma } from "../vitest.setup";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { testPrisma } from '../vitest.setup';
 
-describe("Segment Integration Tests", () => {
+describe('Segment Integration Tests', () => {
   beforeEach(async () => {
     // Clean up segments and coordinates before each test
     await testPrisma.coordinate.deleteMany();
     await testPrisma.segment.deleteMany();
   });
 
-  it("should create a segment with coordinates", async () => {
+  it('should create a segment with coordinates', async () => {
     const segmentData = {
-      id: "test-segment-1",
-      name: "Test Slope",
-      terrain: "Beginner",
+      id: 'test-segment-1',
+      name: 'Test Slope',
+      terrain: 'Beginner',
       avalancheDanger: false,
     };
 
@@ -30,14 +30,14 @@ describe("Segment Integration Tests", () => {
     // Add coordinates to the segment
     const coordinates = [
       {
-        id: "coord-1",
+        id: 'coord-1',
         segment: segment.id,
         order: 1,
         latitude: 65.0121,
         longitude: 25.4651,
       },
       {
-        id: "coord-2",
+        id: 'coord-2',
         segment: segment.id,
         order: 2,
         latitude: 65.0122,
@@ -59,11 +59,11 @@ describe("Segment Integration Tests", () => {
     expect(segmentWithCoords?.coordinates).toHaveLength(2);
   });
 
-  it("should handle avalanche danger segments", async () => {
+  it('should handle avalanche danger segments', async () => {
     const dangerousSegment = {
-      id: "danger-segment-1",
-      name: "Advanced Slope",
-      terrain: "Expert",
+      id: 'danger-segment-1',
+      name: 'Advanced Slope',
+      terrain: 'Expert',
       avalancheDanger: true,
     };
 
