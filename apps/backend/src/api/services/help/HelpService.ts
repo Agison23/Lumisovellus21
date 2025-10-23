@@ -155,7 +155,7 @@ export class HelpService extends BaseService {
       );
 
       // Create nearby user entries for help coordination
-      const createdNearbyUsers = [];
+      const createdNearbyUsers: NearbyUser[] = [];
       for (const nearbyUser of otherNearbyUsers) {
         try {
           await this.prisma.nearbyUser.create({
