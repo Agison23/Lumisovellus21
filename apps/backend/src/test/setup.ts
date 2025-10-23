@@ -11,8 +11,6 @@ const prisma = new PrismaClient({
 });
 
 export default async function setup() {
-  console.log('Setting up test database...');
-
   try {
     // Connect to the test database
     await prisma.$connect();
@@ -32,8 +30,6 @@ export default async function setup() {
     await prisma.user.deleteMany();
     await prisma.rescueUser.deleteMany();
     await prisma.role.deleteMany();
-
-    console.log('Test database cleaned successfully');
   } catch (error) {
     console.error('Error setting up test database:', error);
     throw error;

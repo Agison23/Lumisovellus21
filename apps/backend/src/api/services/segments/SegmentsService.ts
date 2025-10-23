@@ -87,18 +87,6 @@ export class SegmentsService extends BaseService {
 
   async getAllUpdates(days: number = 3): Promise<any[]> {
     try {
-      console.log('DEBUG: prisma object:', typeof this.prisma);
-      console.log(
-        'DEBUG: snowUpdate property:',
-        typeof this.prisma?.snowUpdate
-      );
-      console.log(
-        'DEBUG: Available models:',
-        Object.keys(this.prisma || {}).filter(
-          (k) => !k.startsWith('_') && !k.startsWith('$')
-        )
-      );
-
       const daysAgo = new Date();
       daysAgo.setDate(daysAgo.getDate() - days);
 

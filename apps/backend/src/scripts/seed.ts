@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seed...');
-
   // Create default users (from legacy web system)
   const hashedPassword = await bcrypt.hash('admin123', 15);
   const hashedUserPassword = await bcrypt.hash('user123', 15);
@@ -76,14 +74,6 @@ async function main() {
     },
   });
 
-  console.log('✅ Created users:', {
-    adminUser: adminUser.id,
-    normalUser: normalUser.id,
-    rescueUser: rescueUser.id,
-    mobileUser1: mobileUser1.id,
-    mobileUser2: mobileUser2.id,
-  });
-
   // Create rescue system users (from legacy mobile system)
   await prisma.rescueUser.upsert({
     where: { username: 'admin' },
@@ -127,8 +117,6 @@ async function main() {
       permissions: 'rescue,snow condition',
     },
   });
-
-  console.log('✅ Created rescue users and roles');
 
   // Create snow types (from legacy web system)
   const snowTypes = [
@@ -186,8 +174,6 @@ async function main() {
       },
     });
   }
-
-  console.log('✅ Created snow types');
 
   // Create segments (Pallas area segments from legacy system)
   const segments = [
@@ -282,8 +268,6 @@ async function main() {
     }
   }
 
-  console.log('✅ Created segments and coordinates');
-
   // Create sample reviews
   const segments_list = await prisma.segment.findMany();
   const snowTypes_list = await prisma.snowType.findMany();
@@ -309,8 +293,6 @@ async function main() {
       });
     }
   }
-
-  console.log('✅ Created sample reviews');
 
   // Create sample updates
   for (let i = 0; i < 5; i++) {
@@ -349,8 +331,6 @@ async function main() {
       });
     }
   }
-
-  console.log('✅ Created sample updates');
 
   // Create sample mobile users
   const mobileUsers = [
@@ -393,10 +373,6 @@ async function main() {
       },
     });
   }
-
-  console.log('✅ Created sample mobile users and location data');
-
-  console.log('🎉 Database seed completed successfully!');
 }
 
 main()
