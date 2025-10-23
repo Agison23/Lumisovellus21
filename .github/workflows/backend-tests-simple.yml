@@ -2,11 +2,7 @@ name: Backend Tests (Simple)
 
 on:
   push:
-    paths:
-      - 'apps/backend/**'
   pull_request:
-    paths:
-      - 'apps/backend/**'
 
 jobs:
   test:
