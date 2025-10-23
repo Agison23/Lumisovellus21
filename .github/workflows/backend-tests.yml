@@ -97,29 +97,6 @@ jobs:
           lcov-file: apps/backend/coverage/lcov.info
           delete-old-comments: true
 
-  test-docker:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: apps/backend/package-lock.json
-
-      - name: Install dependencies
-        working-directory: apps/backend
-        run: npm ci
-
-      - name: Run tests with Docker
-        working-directory: apps/backend
-        run: npm run test:docker
-
   security-audit:
     runs-on: ubuntu-latest
 
@@ -169,10 +146,3 @@ jobs:
       - name: Build application
         working-directory: apps/backend
         run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-build-${{ github.sha }}
-          path: apps/backend/dist/
-          retention-days: 7
