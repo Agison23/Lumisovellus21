@@ -74,28 +74,6 @@ async function main() {
     },
   });
 
-  // Create rescue system users (from legacy mobile system)
-  await prisma.rescueUser.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: {
-      id: crypto.randomUUID(),
-      username: 'admin',
-      password: 'admin123',
-      isAdmin: true,
-    },
-  });
-
-  await prisma.rescueUser.upsert({
-    where: { username: 'rescue' },
-    update: {},
-    create: {
-      id: crypto.randomUUID(),
-      username: 'rescue',
-      password: 'rescue123',
-      isAdmin: false,
-    },
-  });
 
   // Create mobile user roles
   await prisma.role.upsert({
