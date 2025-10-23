@@ -74,7 +74,6 @@ async function main() {
     },
   });
 
-
   // Create mobile user roles
   await prisma.role.upsert({
     where: { name: 'normal' },

@@ -33,6 +33,7 @@ describe('HelpService Unit Tests', () => {
       const helpData = {
         userId,
         timestamp: 1640995200,
+        deviceId: 'device-123',
         gpsCoord: '65.0123,25.4567',
         helpType: 'seriousEmerg' as const,
         chatRoomId: 'room-123',
@@ -81,12 +82,12 @@ describe('HelpService Unit Tests', () => {
 
       const result = await helpService.createHelpRequest(helpData);
 
-      expect(result).toEqual({ 
+      expect(result).toEqual({
         nearbyUsers: 2, // Both users are nearby
         nearbyUsersList: [
           { userId: nearbyUser1.id, distance: expect.any(Number) },
-          { userId: nearbyUser2.id, distance: expect.any(Number) }
-        ]
+          { userId: nearbyUser2.id, distance: expect.any(Number) },
+        ],
       });
 
       // Verify help request was created
@@ -137,6 +138,7 @@ describe('HelpService Unit Tests', () => {
       const helpData = {
         userId,
         timestamp: 1640995200,
+        deviceId: 'device-update',
         gpsCoord: '65.0123,25.4567',
         helpType: 'seriousEmerg' as const,
         chatRoomId: 'room-updated',
@@ -144,9 +146,9 @@ describe('HelpService Unit Tests', () => {
 
       const result = await helpService.createHelpRequest(helpData);
 
-      expect(result).toEqual({ 
+      expect(result).toEqual({
         nearbyUsers: 0,
-        nearbyUsersList: []
+        nearbyUsersList: [],
       });
 
       // Verify help request was updated
@@ -177,16 +179,17 @@ describe('HelpService Unit Tests', () => {
       const helpData = {
         userId,
         timestamp: 1640995200,
+        deviceId: 'device-help-type',
         gpsCoord: '65.0123,25.4567',
-        helpType: 'minorHelp' as const,
+        helpType: 'help' as const,
         chatRoomId: 'room-minor',
       };
 
       const result = await helpService.createHelpRequest(helpData);
 
-      expect(result).toEqual({ 
+      expect(result).toEqual({
         nearbyUsers: 0,
-        nearbyUsersList: []
+        nearbyUsersList: [],
       });
     });
   });
@@ -489,7 +492,7 @@ describe('HelpService Unit Tests', () => {
       const result = await helpService.getHelpRequestHelpers(helpRequestId);
 
       expect(result).toHaveLength(2);
-      
+
       // Should be sorted by state (pending first), then by distance
       expect(result[0]).toMatchObject({
         userId: helper1.id,
@@ -520,7 +523,7 @@ describe('HelpService Unit Tests', () => {
 
     it('should return empty array for non-existent help request', async () => {
       const result = await helpService.getHelpRequestHelpers('non-existent-id');
-      
+
       expect(result).toEqual([]);
     });
 

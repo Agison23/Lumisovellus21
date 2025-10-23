@@ -16,16 +16,23 @@ export class HelpService extends BaseService {
    * @param lon2 Longitude of second point
    * @returns Distance in kilometers
    */
-  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  private calculateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number {
     const R = 6371; // Earth's radius in kilometers
     const dLat = this.toRadians(lat2 - lat1);
     const dLon = this.toRadians(lon2 - lon1);
-    
-    const a = 
+
+    const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
+      Math.cos(this.toRadians(lat1)) *
+        Math.cos(this.toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -40,7 +47,9 @@ export class HelpService extends BaseService {
    * @returns Object with latitude and longitude
    */
   private parseGPSCoordinates(gpsCoord: string): { lat: number; lon: number } {
-    const [lat, lon] = gpsCoord.split(',').map(coord => parseFloat(coord.trim()));
+    const [lat, lon] = gpsCoord
+      .split(',')
+      .map((coord) => parseFloat(coord.trim()));
     return { lat, lon };
   }
 
@@ -52,8 +61,8 @@ export class HelpService extends BaseService {
    * @returns Array of nearby users with distance information
    */
   private async findNearbyUsers(
-    requesterGPS: string, 
-    maxDistance: number, 
+    requesterGPS: string,
+    maxDistance: number,
     timeWindow: number = 7200
   ): Promise<Array<{ userId: string; distance: number; user: any }>> {
     const requesterCoords = this.parseGPSCoordinates(requesterGPS);
@@ -72,7 +81,8 @@ export class HelpService extends BaseService {
       },
     });
 
-    const nearbyUsers: Array<{ userId: string; distance: number; user: any }> = [];
+    const nearbyUsers: Array<{ userId: string; distance: number; user: any }> =
+      [];
 
     for (const locationData of recentUsers) {
       try {
@@ -93,7 +103,9 @@ export class HelpService extends BaseService {
         }
       } catch (error) {
         // Skip invalid GPS coordinates
-        console.warn(`Invalid GPS coordinates for user ${locationData.userId}: ${locationData.gpsCoord}`);
+        console.warn(
+          `Invalid GPS coordinates for user ${locationData.userId}: ${locationData.gpsCoord}`
+        );
       }
     }
 
@@ -138,7 +150,9 @@ export class HelpService extends BaseService {
       );
 
       // Filter out the help requester themselves
-      const otherNearbyUsers = nearbyUsers.filter(user => user.userId !== userId);
+      const otherNearbyUsers = nearbyUsers.filter(
+        (user) => user.userId !== userId
+      );
 
       // Create nearby user entries for help coordination
       const createdNearbyUsers = [];
@@ -162,7 +176,7 @@ export class HelpService extends BaseService {
         }
       }
 
-      return { 
+      return {
         nearbyUsers: createdNearbyUsers.length,
         nearbyUsersList: createdNearbyUsers,
       };
@@ -224,7 +238,9 @@ export class HelpService extends BaseService {
    * @param helpRequestId The ID of the help request
    * @returns Array of users who can help with their status and distance
    */
-  async getHelpRequestHelpers(helpRequestId: string): Promise<HelpRequestHelper[]> {
+  async getHelpRequestHelpers(
+    helpRequestId: string
+  ): Promise<HelpRequestHelper[]> {
     try {
       // First, get the help request to verify it exists
       const helpRequest = await this.prisma.helpRequest.findUnique({
@@ -264,7 +280,7 @@ export class HelpService extends BaseService {
       });
 
       // Get the most recent location data for each helper to calculate distance
-      const helperIds = nearbyUsers.map(nu => nu.helpGiver);
+      const helperIds = nearbyUsers.map((nu) => nu.helpGiver);
       const recentLocations = await this.prisma.locationData.findMany({
         where: {
           userId: { in: helperIds },
@@ -278,20 +294,24 @@ export class HelpService extends BaseService {
 
       // Create a map of user ID to their most recent location
       const locationMap = new Map();
-      recentLocations.forEach(loc => {
+      recentLocations.forEach((loc) => {
         locationMap.set(loc.userId, loc);
       });
 
       // Calculate distances and format response
-      const helpers = nearbyUsers.map(nearbyUser => {
+      const helpers = nearbyUsers.map((nearbyUser) => {
         const user = nearbyUser.giver;
         const recentLocation = locationMap.get(user.id);
-        
+
         let distance = 0;
         if (recentLocation) {
           try {
-            const requesterCoords = this.parseGPSCoordinates(helpRequest.gpsCoord);
-            const helperCoords = this.parseGPSCoordinates(recentLocation.gpsCoord);
+            const requesterCoords = this.parseGPSCoordinates(
+              helpRequest.gpsCoord
+            );
+            const helperCoords = this.parseGPSCoordinates(
+              recentLocation.gpsCoord
+            );
             distance = this.calculateDistance(
               requesterCoords.lat,
               requesterCoords.lon,
@@ -314,7 +334,9 @@ export class HelpService extends BaseService {
           distance: Math.round(distance * 100) / 100, // Round to 2 decimal places
           state: nearbyUser.state,
           lowBattery: user.lowBattery,
-          lastSeen: recentLocation ? new Date(recentLocation.timestamp * 1000) : new Date(0),
+          lastSeen: recentLocation
+            ? new Date(recentLocation.timestamp * 1000)
+            : new Date(0),
         };
       });
 

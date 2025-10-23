@@ -471,7 +471,7 @@ describe('Help API Integration Tests', () => {
       });
 
       expect(response.body.data).toHaveLength(2);
-      
+
       // Should be sorted by state (pending first), then by distance
       expect(response.body.data[0]).toMatchObject({
         userId: helper1.id,
