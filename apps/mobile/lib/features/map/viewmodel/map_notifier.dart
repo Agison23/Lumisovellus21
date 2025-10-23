@@ -68,8 +68,8 @@ class InteractiveAreaNotifier extends AutoDisposeAsyncNotifier<Map<String, dynam
   }
 }
 
-final mapStyleNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<MapStyleNotifier, String>(MapStyleNotifier.new);
+// final mapStyleNotifierProvider =
+//     AutoDisposeAsyncNotifierProvider<MapStyleNotifier, String>(MapStyleNotifier.new);
 
 final interactiveAreaNotifierProvider =
     AutoDisposeAsyncNotifierProvider<InteractiveAreaNotifier, Map<String, dynamic>>(

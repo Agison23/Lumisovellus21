@@ -1,6 +1,8 @@
+// import 'dart:math';
+// import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../providers.dart';
@@ -12,15 +14,15 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  MapLibreMapController? _controller;
+  MapboxMap? _map;
+
   @override
   Widget build(BuildContext context) {
-    final style = ref.watch(mapStyleNotifierProvider);
     final t = AppLocalizations.of(context);
-    final isOnline = ref.watch(connectivityProvider);
+    final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
     final areasMgr = ref.watch(areasLayerManagerProvider);
 
-    // Push area updates into the manager (allowed inside build)
+    // Forward area updates into the manager (legal inside build with Riverpod)
     ref.listen(interactiveAreaNotifierProvider, (prev, next) {
       next.when(
         data: (fc) => areasMgr.setData(fc),
@@ -32,53 +34,90 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          style.when(
-            data: (s) => MapLibreMap(
-              key: ValueKey(s.hashCode),       // force new map when style string changes
-              styleString: s,
-              onMapCreated: (c) {
-                _controller = c;
-                areasMgr.attach(c);
-              },
-              onStyleLoadedCallback: () {
-                areasMgr.onStyleLoaded();
-              },
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(68.06, 24.07),
-                zoom: 12,
-              ),
-              cameraTargetBounds: CameraTargetBounds(
-                LatLngBounds(
-                  southwest: LatLng(67.970, 23.725),
-                  northeast: LatLng(68.162, 24.334),
-                ),
-              ),
-              minMaxZoomPreference: const MinMaxZoomPreference(7, 18),
-              rotateGesturesEnabled: true,
-              tiltGesturesEnabled: false,
+          MapWidget(
+            // Can be used to force recreation of the map, but should be careful so as not to waste sessions
+            // key: Key(String.fromCharCodes(List.generate(5, (index) => Random().nextInt(33) + 89))),
+            styleUri: 'mapbox://styles/mapbox/outdoors-v12',
+            cameraOptions: CameraOptions(
+              center: Point(coordinates: Position(24.07, 68.06)),
+              zoom: 12,
+              pitch: 0, // change for 3D view
+              bearing: 0,
             ),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('$e')),
+            onMapCreated: (controller) async {
+              _map = controller;
+              areasMgr.attach(controller);
+
+              await controller.gestures.updateSettings(
+                GesturesSettings(
+                  pitchEnabled: true,
+                  rotateEnabled: true,
+                  scrollEnabled: true,
+                ),
+              );
+
+              await controller.setBounds(
+                CameraBoundsOptions(
+                  bounds: CoordinateBounds(
+                    southwest: Point(coordinates: Position(23.725, 67.970)),
+                    northeast: Point(coordinates: Position(24.334, 68.162)),
+                    infiniteBounds: false,
+                  ),
+                  minZoom: 7,
+                  maxZoom: 18,
+                ),
+              );
+            },
+            onStyleLoadedListener: (_) async {
+              await areasMgr.onStyleLoaded();
+              await _setupTerrain();
+            },
           ),
-          if (!isOnline)
-            Positioned(
-              left: 0, right: 0, bottom: 100,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    t.mapOfflineModeMessage,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
+
+           if (!isOnline)
+             Positioned(
+               left: 0, right: 0, bottom: 100,
+               child: Center(
+                 child: Container(
+                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                   decoration: BoxDecoration(
+                     color: Colors.black.withOpacity(0.6),
+                     borderRadius: BorderRadius.circular(8),
+                   ),
+                   child: Text(
+                     t.mapOfflineModeMessage,
+                     style: const TextStyle(color: Colors.white),
+                   ),
+                 ),
+               ),
+             ),
         ],
       ),
     );
+  }
+
+  Future<void> _setupTerrain() async {
+    if (_map == null) return;
+
+    try {
+      final sourceExists = await _map!.style.styleSourceExists('mapbox-dem');
+      
+      if (!sourceExists) {
+        await _map!.style.addSource(
+          RasterDemSource(
+            id: 'mapbox-dem',
+            url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          ),
+        );
+      }
+
+      // await _map!.style.setStyleTerrain(jsonEncode({
+      //   "source": "mapbox-dem",
+      //   "exaggeration": 1.5,
+      // }));
+
+    } catch (e) {
+      print('Error setting up terrain: $e');
+    }
   }
 }
