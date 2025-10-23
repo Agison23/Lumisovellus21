@@ -32,10 +32,14 @@ describe('BaseService Unit Tests', () => {
 
   describe('handleDatabaseError', () => {
     it('should log error and re-throw it', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const testError = new Error('Test database error');
 
-      await expect(testService.testHandleDatabaseError(testError)).rejects.toThrow('Test database error');
+      await expect(
+        testService.testHandleDatabaseError(testError)
+      ).rejects.toThrow('Test database error');
 
       expect(consoleSpy).toHaveBeenCalledWith('Database error:', testError);
 
@@ -43,10 +47,14 @@ describe('BaseService Unit Tests', () => {
     });
 
     it('should handle non-Error objects', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const testError = 'String error';
 
-      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(testError);
+      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(
+        testError
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith('Database error:', testError);
 
@@ -54,10 +62,14 @@ describe('BaseService Unit Tests', () => {
     });
 
     it('should handle null errors', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const testError = null;
 
-      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(testError);
+      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(
+        testError
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith('Database error:', testError);
 
@@ -65,10 +77,14 @@ describe('BaseService Unit Tests', () => {
     });
 
     it('should handle undefined errors', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
       const testError = undefined;
 
-      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(testError);
+      await expect(testService.testHandleDatabaseError(testError)).rejects.toBe(
+        testError
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith('Database error:', testError);
 
@@ -78,7 +94,9 @@ describe('BaseService Unit Tests', () => {
 
   describe('disconnect', () => {
     it('should disconnect from prisma client', async () => {
-      const disconnectSpy = vi.spyOn(testService['prisma'], '$disconnect').mockResolvedValue(undefined);
+      const disconnectSpy = vi
+        .spyOn(testService['prisma'], '$disconnect')
+        .mockResolvedValue(undefined);
 
       await testService.disconnect();
 
@@ -88,9 +106,13 @@ describe('BaseService Unit Tests', () => {
     });
 
     it('should handle disconnect errors gracefully', async () => {
-      const disconnectSpy = vi.spyOn(testService['prisma'], '$disconnect').mockRejectedValue(new Error('Disconnect failed'));
+      const disconnectSpy = vi
+        .spyOn(testService['prisma'], '$disconnect')
+        .mockRejectedValue(new Error('Disconnect failed'));
 
-      await expect(testService.disconnect()).rejects.toThrow('Disconnect failed');
+      await expect(testService.disconnect()).rejects.toThrow(
+        'Disconnect failed'
+      );
 
       expect(disconnectSpy).toHaveBeenCalledOnce();
 

@@ -76,8 +76,12 @@ describe('Help API Integration Tests', () => {
 
     // Generate JWT tokens
     authToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-    adminToken = jwt.sign({ userId: adminUser.id }, JWT_SECRET, { expiresIn: '1h' });
-    rescueToken = jwt.sign({ userId: rescueUser.id }, JWT_SECRET, { expiresIn: '1h' });
+    adminToken = jwt.sign({ userId: adminUser.id }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
+    rescueToken = jwt.sign({ userId: rescueUser.id }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
   });
 
   describe('POST /api/v1/help-requests', () => {
@@ -273,9 +277,7 @@ describe('Help API Integration Tests', () => {
     });
 
     it('should return 401 without authentication', async () => {
-      await request(app)
-        .get('/api/v1/help-requests')
-        .expect(401);
+      await request(app).get('/api/v1/help-requests').expect(401);
     });
   });
 

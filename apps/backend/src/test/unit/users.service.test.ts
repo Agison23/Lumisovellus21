@@ -253,7 +253,9 @@ describe('UsersService Unit Tests', () => {
     it('should throw error when user not found', async () => {
       const deviceId = 'non-existent-device';
 
-      await expect(usersService.getUserRole(deviceId)).rejects.toThrow('User not found');
+      await expect(usersService.getUserRole(deviceId)).rejects.toThrow(
+        'User not found'
+      );
     });
 
     it('should handle role not found in database', async () => {

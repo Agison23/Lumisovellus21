@@ -11,9 +11,7 @@ app.use('/', healthRoutes);
 describe('Health API Integration Tests', () => {
   describe('GET /health', () => {
     it('should return health status successfully', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -28,21 +26,15 @@ describe('Health API Integration Tests', () => {
     });
 
     it('should always return the same health status', async () => {
-      const response1 = await request(app)
-        .get('/health')
-        .expect(200);
+      const response1 = await request(app).get('/health').expect(200);
 
-      const response2 = await request(app)
-        .get('/health')
-        .expect(200);
+      const response2 = await request(app).get('/health').expect(200);
 
       expect(response1.body.data).toEqual(response2.body.data);
     });
 
     it('should return valid JSON response structure', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toHaveProperty('success');
       expect(response.body).toHaveProperty('data');
@@ -59,7 +51,7 @@ describe('Health API Integration Tests', () => {
 
       const responses = await Promise.all(promises);
 
-      responses.forEach(response => {
+      responses.forEach((response) => {
         expect(response.body.success).toBe(true);
         expect(response.body.data.status).toBe('ok');
         expect(response.body.data.version).toBe('2.0.0');

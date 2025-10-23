@@ -68,9 +68,7 @@ describe('Reviews API Integration Tests', () => {
         ],
       });
 
-      const response = await request(app)
-        .get('/api/v1/snow-types')
-        .expect(200);
+      const response = await request(app).get('/api/v1/snow-types').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -92,9 +90,7 @@ describe('Reviews API Integration Tests', () => {
     });
 
     it('should return empty array when no snow types exist', async () => {
-      const response = await request(app)
-        .get('/api/v1/snow-types')
-        .expect(200);
+      const response = await request(app).get('/api/v1/snow-types').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);
@@ -169,9 +165,7 @@ describe('Reviews API Integration Tests', () => {
         ],
       });
 
-      const response = await request(app)
-        .get('/api/v1/reviews')
-        .expect(200);
+      const response = await request(app).get('/api/v1/reviews').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -194,9 +188,7 @@ describe('Reviews API Integration Tests', () => {
     });
 
     it('should return empty array when no reviews exist', async () => {
-      const response = await request(app)
-        .get('/api/v1/reviews')
-        .expect(200);
+      const response = await request(app).get('/api/v1/reviews').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);

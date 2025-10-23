@@ -18,7 +18,7 @@ describe('HelpService Unit Tests', () => {
   describe('createHelpRequest', () => {
     it('should create a new help request and find nearby users', async () => {
       const userId = 'test-user-123';
-      
+
       // Create the user first
       await testPrisma.user.create({
         data: {
@@ -99,12 +99,12 @@ describe('HelpService Unit Tests', () => {
       });
 
       expect(nearbyUsers).toHaveLength(2);
-      expect(nearbyUsers.every(nu => nu.state === 0)).toBe(true); // Pending state
+      expect(nearbyUsers.every((nu) => nu.state === 0)).toBe(true); // Pending state
     });
 
     it('should update existing help request', async () => {
       const userId = 'test-user-update';
-      
+
       // Create the user first
       await testPrisma.user.create({
         data: {
@@ -152,7 +152,7 @@ describe('HelpService Unit Tests', () => {
 
     it('should handle different help types with appropriate distance', async () => {
       const userId = 'test-user-help-type';
-      
+
       // Create the user first
       await testPrisma.user.create({
         data: {

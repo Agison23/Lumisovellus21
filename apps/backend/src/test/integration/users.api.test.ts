@@ -66,7 +66,9 @@ describe('Users API Integration Tests', () => {
 
     // Generate JWT tokens
     authToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-    adminToken = jwt.sign({ userId: adminUser.id }, JWT_SECRET, { expiresIn: '1h' });
+    adminToken = jwt.sign({ userId: adminUser.id }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
   });
 
   describe('POST /api/v1/users/:deviceId/location', () => {
@@ -344,9 +346,7 @@ describe('Users API Integration Tests', () => {
     it('should return 401 without authentication', async () => {
       const deviceId = 'device-123';
 
-      await request(app)
-        .get(`/api/v1/users/${deviceId}/role`)
-        .expect(401);
+      await request(app).get(`/api/v1/users/${deviceId}/role`).expect(401);
     });
 
     it('should return 401 with invalid token', async () => {
