@@ -10,6 +10,7 @@ import Nav from "@/components/app-nav";
 import AppSidebar from "@/components/app-sidebar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,12 +45,13 @@ export default async function RootLayout({
               <div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
             <AppSidebar />
             <SidebarInset className="relative flex flex-col gap-2 flex-1">
-              <div className="w-full flex justify-start items-center absolute z-999 p-2">
+              <div className="w-full flex justify-start items-center absolute z-10 p-2">
                 <SidebarTrigger className="bg-background" />
               </div>
               <div className="flex-1 w-full h-full rounded-xl overflow-clip">
                 <Providers>
                   {children}
+                  <Toaster position="bottom-left" />
                 </Providers>
               </div>
               <div className="w-full flex justify-center absolute bottom-1 p-2 z-9999 pointer-events-none">

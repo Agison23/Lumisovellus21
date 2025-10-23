@@ -2,16 +2,19 @@
 import { useTranslations } from "next-intl";
 import LocaleSwitcher from "./locale-switcher";
 import { ThemeToggle } from "./theme/theme-toggle";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarGroupContent } from "./ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarGroupContent, SidebarTrigger } from "./ui/sidebar";
 
 export default function AppSidebar() {
   const t = useTranslations("Sidebar");
   return (
     <Sidebar side="left" variant="inset">
       <SidebarHeader>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
             <LocaleSwitcher />
             <ThemeToggle />
+            <div className="w-full md:hidden flex justify-start items-center z-999 p-2">
+              <SidebarTrigger className="bg-background" />
+            </div>
         </div>
 
         <h1>{t('title')}</h1>
