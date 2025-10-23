@@ -140,4 +140,70 @@ router.post(
   helpController.updateHelpResponse
 );
 
+/**
+ * @swagger
+ * /api/v1/help-requests/{id}/helpers:
+ *   get:
+ *     summary: Get users who can help with a specific help request
+ *     description: Retrieve all users who have been notified about a help request with their status and distance
+ *     tags: [Help Requests]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Help request ID
+ *     responses:
+ *       200:
+ *         description: Help request helpers retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       userId:
+ *                         type: string
+ *                       firstName:
+ *                         type: string
+ *                       lastName:
+ *                         type: string
+ *                       phoneNumber:
+ *                         type: string
+ *                       distance:
+ *                         type: number
+ *                         description: Distance in kilometers (-1 if no location data)
+ *                       state:
+ *                         type: integer
+ *                         description: Response state (0: Pending, 1: Accepted, 2: Declined, 3: Completed)
+ *                       lowBattery:
+ *                         type: integer
+ *                         description: Battery status (0: Normal, 1: Low)
+ *                       lastSeen:
+ *                         type: string
+ *                         format: date-time
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     timestamp:
+ *                       type: string
+ *       404:
+ *         description: Help request not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  '/api/v1/help-requests/:id/helpers',
+  authenticateToken,
+  helpController.getHelpRequestHelpers
+);
+
 export default router;

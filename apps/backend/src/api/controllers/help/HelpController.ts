@@ -41,4 +41,13 @@ export class HelpController {
       ApiResponseHandler.success(res, { status: 'ok' });
     }
   );
+
+  getHelpRequestHelpers = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { id } = req.params;
+
+      const helpers = await this.helpService.getHelpRequestHelpers(id);
+      ApiResponseHandler.success(res, helpers);
+    }
+  );
 }

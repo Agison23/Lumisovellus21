@@ -140,6 +140,22 @@ export interface HelpResponseUpdate {
   state: number;
 }
 
+export interface NearbyUser {
+  userId: string;
+  distance: number;
+}
+
+export interface HelpRequestHelper {
+  userId: string;
+  firstName: string;
+  lastName: string | null;
+  phoneNumber: string | null;
+  distance: number; // -1 if no location data
+  state: number; // 0: Pending, 1: Accepted, 2: Declined, 3: Completed
+  lowBattery: number; // 0: Normal, 1: Low
+  lastSeen: Date;
+}
+
 // Error Types
 export interface ApiError {
   code: string;

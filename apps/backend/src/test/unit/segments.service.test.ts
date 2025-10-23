@@ -6,7 +6,10 @@ describe('SegmentsService Unit Tests', () => {
   let segmentsService: SegmentsService;
 
   beforeEach(async () => {
-    // Clean up data before each test
+    // Clean up data before each test (in correct order to avoid foreign key constraints)
+    await testPrisma.nearbyUser.deleteMany();
+    await testPrisma.helpRequest.deleteMany();
+    await testPrisma.locationData.deleteMany();
     await testPrisma.snowUpdateReviewReference.deleteMany();
     await testPrisma.snowUpdateAttachment.deleteMany();
     await testPrisma.snowUpdateCondition.deleteMany();

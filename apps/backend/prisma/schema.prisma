@@ -37,7 +37,7 @@ model Role {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@map("role")
+  @@map("roles")
 }
 
 model Segment {
@@ -153,7 +153,7 @@ model SnowUpdateCondition {
   @@index([updateId], map: "snow_update_conditions_update_fkey")
   @@index([snowType], map: "snow_update_conditions_snow_type_fkey")
   @@index([layer], map: "snow_update_conditions_layer_fkey")
-  @@map("snow_update_conditions")
+  @@map("snow_conditions")
 }
 
 model SnowUpdateReviewReference {
@@ -169,7 +169,7 @@ model SnowUpdateReviewReference {
   @@unique([updateId, reviewId])
   @@index([updateId], map: "snow_update_review_refs_update_fkey")
   @@index([reviewId], map: "snow_update_review_refs_review_fkey")
-  @@map("snow_update_review_references")
+  @@map("snow_review_references")
 }
 
 model SnowUpdateAttachment {
@@ -185,7 +185,7 @@ model SnowUpdateAttachment {
 
   @@index([updateId], map: "snow_update_attachments_update_fkey")
   @@index([fileType], map: "snow_update_attachments_file_type_fkey")
-  @@map("snow_update_attachments")
+  @@map("snow_attachments")
 }
 
 model LocationData {
@@ -229,7 +229,7 @@ model NearbyUser {
 
   @@unique([helpGiver, helpRequester])
   @@index([helpRequester], map: "nearby_users_help_request_fkey")
-  @@map("nearby_users")
+  @@map("help_notifications")
 }
 
 enum SnowUpdateStatus {

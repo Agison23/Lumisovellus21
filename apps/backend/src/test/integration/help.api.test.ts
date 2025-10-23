@@ -250,7 +250,7 @@ describe('Help API Integration Tests', () => {
 
       expect(response.body.data).toHaveLength(2);
       expect(response.body.data[0]).toMatchObject({
-        id: user2.id, // Should be ordered by timestamp desc
+        id: 'help-2', // Should be ordered by timestamp desc
         userId: user2.id,
         timestamp: 1640995300,
         gpsCoord: '65.0200,25.4600',
@@ -364,6 +364,161 @@ describe('Help API Integration Tests', () => {
       await request(app)
         .post('/api/v1/help-responses')
         .send(responseData)
+        .expect(401);
+    });
+  });
+
+  describe('GET /api/v1/help-requests/:id/helpers', () => {
+    it('should get helpers for a help request successfully', async () => {
+      const helpRequestId = 'help-request-helpers';
+      const requesterId = 'requester-helpers';
+
+      // Create help requester
+      await testPrisma.user.create({
+        data: {
+          id: requesterId,
+          devId: 'device-requester-helpers',
+          firstName: 'Help',
+          lastName: 'Requester',
+          role: 'NORMAL',
+        },
+      });
+
+      // Create help request
+      await testPrisma.helpRequest.create({
+        data: {
+          id: helpRequestId,
+          userId: requesterId,
+          timestamp: 1640995200,
+          gpsCoord: '65.0123,25.4567',
+          helpType: 'seriousEmerg',
+          roomId: 'room-helpers',
+        },
+      });
+
+      // Create helper users
+      const helper1 = await testPrisma.user.create({
+        data: {
+          id: 'helper-api-1',
+          devId: 'device-helper-api-1',
+          firstName: 'Helper',
+          lastName: 'One',
+          phoneNumber: '+358401234567',
+          role: 'NORMAL',
+        },
+      });
+
+      const helper2 = await testPrisma.user.create({
+        data: {
+          id: 'helper-api-2',
+          devId: 'device-helper-api-2',
+          firstName: 'Helper',
+          lastName: 'Two',
+          phoneNumber: '+358401234568',
+          lowBattery: 1,
+          role: 'NORMAL',
+        },
+      });
+
+      // Create nearby user entries
+      await testPrisma.nearbyUser.createMany({
+        data: [
+          {
+            id: 'nearby-api-1',
+            helpGiver: helper1.id,
+            helpRequester: requesterId,
+            state: 0, // Pending
+          },
+          {
+            id: 'nearby-api-2',
+            helpGiver: helper2.id,
+            helpRequester: requesterId,
+            state: 1, // Accepted
+          },
+        ],
+      });
+
+      // Create recent location data for helpers
+      const recentTime = Math.floor(Date.now() / 1000) - 3600; // 1 hour ago
+      await testPrisma.locationData.createMany({
+        data: [
+          {
+            id: 'loc-api-helper-1',
+            userId: helper1.id,
+            timestamp: recentTime,
+            gpsCoord: '65.0125,25.4570', // Within 30km of help request
+          },
+          {
+            id: 'loc-api-helper-2',
+            userId: helper2.id,
+            timestamp: recentTime,
+            gpsCoord: '65.0128,25.4575', // Within 30km of help request
+          },
+        ],
+      });
+
+      const response = await request(app)
+        .get(`/api/v1/help-requests/${helpRequestId}/helpers`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+
+      expect(response.body).toMatchObject({
+        success: true,
+        data: expect.any(Array),
+        meta: {
+          timestamp: expect.any(String),
+        },
+      });
+
+      expect(response.body.data).toHaveLength(2);
+      
+      // Should be sorted by state (pending first), then by distance
+      expect(response.body.data[0]).toMatchObject({
+        userId: helper1.id,
+        firstName: 'Helper',
+        lastName: 'One',
+        phoneNumber: '+358401234567',
+        distance: expect.any(Number),
+        state: 0, // Pending
+        lowBattery: 0,
+        lastSeen: expect.any(String),
+      });
+
+      expect(response.body.data[1]).toMatchObject({
+        userId: helper2.id,
+        firstName: 'Helper',
+        lastName: 'Two',
+        phoneNumber: '+358401234568',
+        distance: expect.any(Number),
+        state: 1, // Accepted
+        lowBattery: 1,
+        lastSeen: expect.any(String),
+      });
+    });
+
+    it('should return empty array for non-existent help request', async () => {
+      const response = await request(app)
+        .get('/api/v1/help-requests/non-existent-id/helpers')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toEqual([]);
+    });
+
+    it('should allow normal user to access helpers endpoint', async () => {
+      const response = await request(app)
+        .get('/api/v1/help-requests/some-id/helpers')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toEqual([]);
+    });
+
+    it('should return 401 without authentication', async () => {
+      await request(app)
+        .get('/api/v1/help-requests/some-id/helpers')
         .expect(401);
     });
   });
