@@ -51,6 +51,7 @@ dependencies:
   shelf: ^1.4.2
   connectivity_plus: ^7.0.0
   internet_connection_checker_plus: ^2.9.0
+  mapbox_maps_flutter: ^2.11.0
 
 dev_dependencies:
   flutter_test:

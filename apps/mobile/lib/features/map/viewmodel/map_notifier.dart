@@ -7,6 +7,11 @@ import '../data/services/tile_proxy_server.dart';
 import '../data/repositories/map_style_repository.dart';
 import '../data/repositories/tile_cache_repository.dart';
 import 'package:lumisovellus/core/data/providers.dart';
+import '../data/repositories/interactive_area_repository.dart';
+import '../data/services/mock_interactive_area_service.dart';
+import '../data/services/interactive_area_service.dart';
+import '../data/models/interactive_area.dart';
+
 
 final tileCacheRepoProvider = Provider((ref) => TileCacheRepository(ref.watch(appDbProvider), ref.watch(jobsDaoProvider)));
 
@@ -43,5 +48,30 @@ class MapStyleNotifier extends AutoDisposeAsyncNotifier<String> {
   }
 }
 
+final interactiveAreaServiceProvider = Provider<InteractiveAreaService>(
+  (ref) => MockInteractiveAreaService(),
+);
+
+final interactiveAreaRepositoryProvider = Provider<InteractiveAreaRepository>(
+  (ref) => InteractiveAreaRepository(ref.watch(interactiveAreaServiceProvider)),
+);
+
+class InteractiveAreaNotifier extends AutoDisposeAsyncNotifier<Map<String, dynamic>> {
+  @override
+  Future<Map<String, dynamic>> build() async {
+    final repo = ref.watch(interactiveAreaRepositoryProvider);
+    final areas = await repo.getAreas();
+    return {
+      'type': 'FeatureCollection',
+      'features': areas.map((e) => e.toMap()).toList(),
+    };
+  }
+}
+
 final mapStyleNotifierProvider =
     AutoDisposeAsyncNotifierProvider<MapStyleNotifier, String>(MapStyleNotifier.new);
+
+final interactiveAreaNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<InteractiveAreaNotifier, Map<String, dynamic>>(
+  InteractiveAreaNotifier.new,
+);
