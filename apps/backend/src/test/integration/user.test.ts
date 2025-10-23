@@ -3,7 +3,11 @@ import { testPrisma } from '../vitest.setup';
 
 describe('User Integration Tests', () => {
   beforeEach(async () => {
-    // Clean up users before each test
+    // Clean up users before each test (in correct order to avoid foreign key constraints)
+    await testPrisma.nearbyUser.deleteMany();
+    await testPrisma.helpRequest.deleteMany();
+    await testPrisma.userReview.deleteMany();
+    await testPrisma.locationData.deleteMany();
     await testPrisma.user.deleteMany();
   });
 
