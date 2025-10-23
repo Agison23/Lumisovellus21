@@ -1,99 +1,143 @@
 import type {
 	FillLayerSpecification,
+	HillshadeLayerSpecification,
 	LineLayerSpecification,
 	StyleSpecification,
 	SymbolLayerSpecification,
-} from "maplibre-gl";
+} from "mapbox-gl";
 
 export const MAP_STYLE: StyleSpecification = {
 	version: 8,
-	glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+	glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
 	sources: {
-		osm: {
-			type: "raster",
-			tiles: ["https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"],
-			tileSize: 256,
-			maxzoom: 19,
-			attribution: "© OpenStreetMap contributors",
+		"mapbox-streets": {
+			type: "vector",
+			url: "mapbox://mapbox.mapbox-streets-v8",
 		},
 		terrainSource: {
 			type: "raster-dem",
-			tiles: [
-				"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-			],
-			tileSize: 256,
-			maxzoom: 15,
-			encoding: "terrarium",
-			attribution: "Terrain data © AWS Terrain Tiles",
-		},
-		hillshadeSource: {
-			type: "raster-dem",
-			tiles: [
-				"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-			],
-			tileSize: 256,
-			maxzoom: 15,
-			encoding: "terrarium",
-			attribution: "Terrain data © AWS Terrain Tiles",
+			url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+			tileSize: 512,
+			maxzoom: 14,
 		},
 	},
 	layers: [
 		{
-			id: "osm",
-			type: "raster",
-			source: "osm",
+			id: "background",
+			type: "background",
+			paint: {
+				"background-color": "#f5f5f5",
+			},
 		},
 		{
-			id: "hills",
-			type: "hillshade",
-			source: "hillshadeSource",
-			layout: {
-				visibility: "visible",
-			},
+			id: "water",
+			type: "fill",
+			source: "mapbox-streets",
+			"source-layer": "water",
 			paint: {
-				"hillshade-shadow-color": "#473B24",
+				"fill-color": "#b0d4ff",
+			},
+		},
+		{
+			id: "landuse",
+			type: "fill",
+			source: "mapbox-streets",
+			"source-layer": "landuse",
+			paint: {
+				"fill-color": "#e0ddd9",
+				"fill-opacity": 0.5,
+			},
+		},
+		{
+			id: "roads",
+			type: "line",
+			source: "mapbox-streets",
+			"source-layer": "road",
+			paint: {
+				"line-color": "#fff",
+				"line-width": 1,
 			},
 		},
 	],
 	terrain: {
 		source: "terrainSource",
-		exaggeration: 1,
+		exaggeration: 1.5,
 	},
 };
 
 export const MAP_STYLE_NO_HILLSIDE: StyleSpecification = {
 	version: 8,
-	glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+	glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
 	sources: {
-		osm: {
-			type: "raster",
-			tiles: ["https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"],
-			tileSize: 256,
-			maxzoom: 19,
-			attribution: "© OpenStreetMap contributors",
-		},
-		terrainSource: {
-			type: "raster-dem",
-			tiles: [
-				"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-			],
-			tileSize: 256,
-			maxzoom: 15,
-			encoding: "terrarium",
-			attribution: "Terrain data © AWS Terrain Tiles",
+		"mapbox-streets": {
+			type: "vector",
+			url: "mapbox://mapbox.mapbox-streets-v8",
 		},
 	},
 	layers: [
 		{
-			id: "osm",
-			type: "raster",
-			source: "osm",
+			id: "background",
+			type: "background",
+			paint: {
+				"background-color": "#f5f5f5",
+			},
+		},
+		{
+			id: "water",
+			type: "fill",
+			source: "mapbox-streets",
+			"source-layer": "water",
+			paint: {
+				"fill-color": "#b0d4ff",
+			},
+		},
+		{
+			id: "landuse",
+			type: "fill",
+			source: "mapbox-streets",
+			"source-layer": "landuse",
+			paint: {
+				"fill-color": "#e0ddd9",
+				"fill-opacity": 0.5,
+			},
+		},
+		{
+			id: "roads",
+			type: "line",
+			source: "mapbox-streets",
+			"source-layer": "road",
+			paint: {
+				"line-color": "#fff",
+				"line-width": 1,
+			},
 		},
 	],
-	terrain: {
-		source: "terrainSource",
-		exaggeration: 1,
-	},
+};
+
+/**
+ * Mapbox satellite style with terrain data source for use with react-map-gl.
+ * The satellite basemap is loaded via the mapStyle prop on the Map component,
+ * but the terrain source configuration needs to be added separately.
+ *
+ * Usage:
+ * 1. Pass "mapbox://styles/mapbox/{style}" as the mapStyle prop
+ * 2. Add a Source component with id="mapbox-dem" and type="raster-dem"
+ * 3. Pass terrain configuration to the Map component
+ *
+ * For a fully declarative approach with react-map-gl, use the Source component
+ * to add the terrain data source.
+ */
+export const TERRAIN_SOURCE_CONFIG = {
+	id: "mapbox-dem",
+	type: "raster-dem" as const,
+	url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+	tileSize: 512,
+	maxzoom: 14,
+};
+
+export const TERRAIN_CONFIG = {
+	source: "mapbox-dem",
+	exaggeration: 1.5,
 };
 export const areaFillLayer: FillLayerSpecification = {
 	id: "areas-fill",
@@ -163,4 +207,13 @@ export const areaAvalancheDangerOutlineLayer: LineLayerSpecification = {
 		"line-width": 3,
 	},
 	filter: ["==", ["get", "avalancheDanger"], true],
+};
+
+export const hillshadeLayer: HillshadeLayerSpecification = {
+	id: "hillshade",
+	source: "mapbox-dem",
+	type: "hillshade",
+	paint: {
+		"hillshade-exaggeration": 0.5,
+	},
 };
