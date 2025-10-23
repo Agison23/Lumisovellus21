@@ -49,9 +49,11 @@ jobs:
 
       - name: Setup test database
         working-directory: apps/backend
+        env:
+          MYSQL_PASSWORD: testpassword
         run: |
           # Wait for MySQL to be ready
-          timeout 60 bash -c 'until mysqladmin ping -h localhost -u root -ptestpassword --silent; do sleep 2; done'
+          timeout 60 bash -c "until mysqladmin ping -h localhost -u root -p\$MYSQL_PASSWORD --silent; do sleep 2; done"
           
           # Setup test environment
           echo "DATABASE_URL=mysql://root:testpassword@localhost:3306/testdb" > .env.test
