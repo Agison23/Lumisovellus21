@@ -163,11 +163,11 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get phoneNum;
 
-  /// No description provided for @definitions.
+  /// No description provided for @snowDefinitionsPageTitle.
   ///
   /// In en, this message translates to:
-  /// **'DEFINITIONS'**
-  String get definitions;
+  /// **'Definitions'**
+  String get snowDefinitionsPageTitle;
 
   /// No description provided for @avalancheWarning.
   ///
@@ -396,11 +396,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Little snow'**
   String get littleSnow;
+
   /// No description provided for @mapOfflineModeMessage.
   ///
   /// In en, this message translates to:
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
+
+  /// No description provided for @rescue.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get rescue;
+
+  /// No description provided for @rescuePageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get rescuePageTitle;
+
+  /// No description provided for @rescuePageLatitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get rescuePageLatitude;
+
+  /// No description provided for @rescuePageLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get rescuePageLongitude;
+
+  /// No description provided for @rescuePageAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Position accuracy'**
+  String get rescuePageAccuracy;
+
+  /// No description provided for @map.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get map;
+
+  /// No description provided for @weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weather;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @callForHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Call for Help'**
+  String get callForHelp;
+
+  /// No description provided for @currentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Location'**
+  String get currentLocation;
+
+  /// No description provided for @locationNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not available'**
+  String get locationNotAvailable;
+
+  /// No description provided for @userInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'User Information'**
+  String get userInformation;
+
+  /// No description provided for @userInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your personal information'**
+  String get userInformationSubtitle;
+
+  /// No description provided for @settingsPageSnowDefinitions.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow definitions'**
+  String get settingsPageSnowDefinitions;
+
+  /// No description provided for @settingsPageSnowDefinitionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow definitions'**
+  String get settingsPageSnowDefinitionsSubtitle;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change app language'**
+  String get languageSubtitle;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @finnish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finnish (Suomi)'**
+  String get finnish;
+
+  /// No description provided for @weatherNotImplemented.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather feature coming soon'**
+  String get weatherNotImplemented;
+
+  /// No description provided for @userInfoNotImplemented.
+  ///
+  /// In en, this message translates to:
+  /// **'User information feature coming soon'**
+  String get userInfoNotImplemented;
 }
 
 class _AppLocalizationsDelegate

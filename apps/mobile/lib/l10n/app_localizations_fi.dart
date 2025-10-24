@@ -45,7 +45,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get phoneNum => 'Puhelinnumero';
 
   @override
-  String get definitions => 'MÄÄRITELMÄT';
+  String get snowDefinitionsPageTitle => 'Määritelmät';
 
   @override
   String get avalancheWarning => 'Lumivyöryvaroitus';
@@ -176,8 +176,75 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get littleSnow => 'Vähäinen lumi';
-  
+
   @override
   String get mapOfflineModeMessage =>
       'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
+
+  @override
+  String get rescue => 'Pelastus';
+
+  @override
+  String get rescuePageTitle => 'Pelastus';
+
+  @override
+  String get rescuePageLatitude => 'Leveysaste';
+
+  @override
+  String get rescuePageLongitude => 'Pituusaste';
+
+  @override
+  String get rescuePageAccuracy => 'Paikannustarkkuus';
+
+  @override
+  String get map => 'Kartta';
+
+  @override
+  String get weather => 'Sää';
+
+  @override
+  String get settings => 'Asetukset';
+
+  @override
+  String get callForHelp => 'Pyydä apua';
+
+  @override
+  String get currentLocation => 'Nykyinen sijainti';
+
+  @override
+  String get locationNotAvailable => 'Sijainti ei saatavilla';
+
+  @override
+  String get userInformation => 'Käyttäjätiedot';
+
+  @override
+  String get userInformationSubtitle => 'Hallitse henkilökohtaisia tietojasi';
+
+  @override
+  String get settingsPageSnowDefinitions => 'Lumityypit';
+
+  @override
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Näytä lumityyppien määritelmät';
+
+  @override
+  String get language => 'Kieli';
+
+  @override
+  String get languageSubtitle => 'Vaihda sovelluksen kieltä';
+
+  @override
+  String get selectLanguage => 'Valitse kieli';
+
+  @override
+  String get english => 'Englanti (English)';
+
+  @override
+  String get finnish => 'Suomi';
+
+  @override
+  String get weatherNotImplemented => 'Sääominaisuus tulossa pian';
+
+  @override
+  String get userInfoNotImplemented => 'Käyttäjätieto-ominaisuus tulossa pian';
 }
