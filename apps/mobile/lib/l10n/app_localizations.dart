@@ -433,6 +433,48 @@ abstract class AppLocalizations {
   /// **'Position accuracy'**
   String get rescuePageAccuracy;
 
+  /// No description provided for @rescuePageHelpRequestDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Help-request alerts and sends your location to nearby rescuers'**
+  String get rescuePageHelpRequestDescription;
+
+  /// No description provided for @rescuePageEmergencyCallDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'In serious emergency, call the emergency number 112'**
+  String get rescuePageEmergencyCallDescription;
+
+  /// No description provided for @rescuePageIndicateNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please indicate your need'**
+  String get rescuePageIndicateNeed;
+
+  /// No description provided for @rescuePageHealthIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Health issue'**
+  String get rescuePageHealthIssue;
+
+  /// No description provided for @rescuePageEquipmentIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment issue'**
+  String get rescuePageEquipmentIssue;
+
+  /// No description provided for @rescuePageImLost.
+  ///
+  /// In en, this message translates to:
+  /// **'I am lost'**
+  String get rescuePageImLost;
+
+  /// No description provided for @rescuePageRequestHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Request help'**
+  String get rescuePageRequestHelp;
+
   /// No description provided for @map.
   ///
   /// In en, this message translates to:

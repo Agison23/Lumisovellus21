@@ -197,6 +197,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageAccuracy => 'Position accuracy';
 
   @override
+  String get rescuePageHelpRequestDescription =>
+      'Help-request alerts and sends your location to nearby rescuers';
+
+  @override
+  String get rescuePageEmergencyCallDescription =>
+      'In serious emergency, call the emergency number 112';
+
+  @override
+  String get rescuePageIndicateNeed => 'Please indicate your need';
+
+  @override
+  String get rescuePageHealthIssue => 'Health issue';
+
+  @override
+  String get rescuePageEquipmentIssue => 'Equipment issue';
+
+  @override
+  String get rescuePageImLost => 'I am lost';
+
+  @override
+  String get rescuePageRequestHelp => 'Request help';
+
+  @override
   String get map => 'Map';
 
   @override

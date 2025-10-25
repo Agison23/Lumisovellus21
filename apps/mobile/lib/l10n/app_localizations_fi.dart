@@ -197,6 +197,29 @@ class AppLocalizationsFi extends AppLocalizations {
   String get rescuePageAccuracy => 'Paikannustarkkuus';
 
   @override
+  String get rescuePageHelpRequestDescription =>
+      'Avunpyyntö hälyttää ja lähettää sijaintisi lähellä oleville auttajille';
+
+  @override
+  String get rescuePageEmergencyCallDescription =>
+      'Vakavassa hätätilanteessa soita hätänumeroon 112';
+
+  @override
+  String get rescuePageIndicateNeed => 'Ilmoita tarpeesi';
+
+  @override
+  String get rescuePageHealthIssue => 'Terveysongelma';
+
+  @override
+  String get rescuePageEquipmentIssue => 'Varusteongelma';
+
+  @override
+  String get rescuePageImLost => 'Olen eksyksissä';
+
+  @override
+  String get rescuePageRequestHelp => 'Pyydä apua';
+
+  @override
   String get map => 'Kartta';
 
   @override
