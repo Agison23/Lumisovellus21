@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'core/i18n/locale_provider.dart';
 import 'core/data/providers.dart';
 // import 'features/onboarding/view/onboarding_page.dart';
@@ -9,6 +10,10 @@ import 'features/map/views/map_screen.dart';
 import 'features/snow_definitions/view/snow_definitions_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  const token = String.fromEnvironment('ACCESS_TOKEN');
+  MapboxOptions.setAccessToken(token);
+
   runApp(const ProviderScope(child: App()));
   WidgetsBinding.instance.addPostFrameCallback((_) {
     final container = ProviderContainer();
