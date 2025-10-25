@@ -2,23 +2,21 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { FeatureCollection, Polygon } from "geojson";
 
-import maplibregl, {
-	MapLayerMouseEvent,
-	type FilterSpecification,
-} from "maplibre-gl";
+import { MapMouseEvent, type FilterSpecification } from "mapbox-gl";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useRef, useState } from "react";
-import Map, {
-	Layer,
-	NavigationControl,
-	Source,
-	TerrainControl,
-} from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Layer, NavigationControl, Source } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
+import {
+	CameraState,
+	DEFAULT_VIEW_STATE,
+	loadCameraState,
+	saveCameraState,
+} from "@/lib/map/map-camera";
 import {
 	areaAvalancheDangerOutlineLayer,
 	areaFillLayer,
@@ -26,7 +24,9 @@ import {
 	areaLabelLayer,
 	areaOutlineLayer,
 	areaSelectedLayer,
-	MAP_STYLE,
+	hillshadeLayer,
+	TERRAIN_CONFIG,
+	TERRAIN_SOURCE_CONFIG,
 } from "@/lib/map/map-style";
 import {
 	InteractiveAreaFeature,
@@ -37,12 +37,6 @@ import {
 	SnowType,
 	UpdateData,
 } from "@/lib/map/mock-data";
-import {
-	CameraState,
-	DEFAULT_VIEW_STATE,
-	loadCameraState,
-	saveCameraState,
-} from "@/lib/map/map-camera";
 
 // for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
@@ -227,7 +221,7 @@ export default function Map3d() {
 		[selectedArea]
 	);
 
-	const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
+	const handleMouseMove = useCallback((event: MapMouseEvent) => {
 		const hoveredFeature = event.features && event.features[0];
 		event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
 
@@ -239,12 +233,12 @@ export default function Map3d() {
 		}
 	}, []);
 
-	const handleMouseLeave = useCallback((event: MapLayerMouseEvent) => {
+	const handleMouseLeave = useCallback((event: MapMouseEvent) => {
 		event.target.getCanvas().style.cursor = "";
 		setHoveredAreaId(null);
 	}, []);
 
-	const handleClick = useCallback((event: MapLayerMouseEvent) => {
+	const handleClick = useCallback((event: MapMouseEvent) => {
 		const feature = event.features && event.features[0];
 
 		setSelectedSnowCategoryId(null);
@@ -376,10 +370,8 @@ export default function Map3d() {
 				</div>
 			)}
 			<Map
-				mapLib={maplibregl}
 				initialViewState={viewState}
 				style={{ width: "100%", height: "100%" }}
-				mapStyle={MAP_STYLE}
 				maxTileCacheSize={500}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
@@ -398,6 +390,9 @@ export default function Map3d() {
 					saveCameraState(newState);
 				}}
 				interactiveLayerIds={["areas-fill"]}
+				mapStyle="mapbox://styles/mapbox/outdoors-v12"
+				mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_ACCESS_TOKEN}
+				terrain={TERRAIN_CONFIG}
 			>
 				<NavigationControl
 					position="top-right"
@@ -405,15 +400,20 @@ export default function Map3d() {
 					showCompass
 					showZoom
 				/>
-				<TerrainControl position="top-right" source="terrainSource" />
-				<Source id="areas" type="geojson" data={areasGeoJson} promoteId="id">
-					<Layer {...areaFillLayer} />
-					<Layer {...areaOutlineLayer} />
-					<Layer {...areaAvalancheDangerOutlineLayer} />
-					<Layer {...areaHoverLayer} filter={hoverFilter} />
-					<Layer {...areaSelectedLayer} filter={selectedFilter} />
-					<Layer {...areaLabelLayer} />
-				</Source>
+				{/* Terrain source for 3D elevation */}
+				<Source {...TERRAIN_SOURCE_CONFIG} />
+				{/* Hillshade layer for visual terrain shading */}
+				<Layer {...hillshadeLayer} />
+				{!isLoading && (
+					<Source id="areas" type="geojson" data={areasGeoJson} promoteId="id">
+						<Layer {...areaFillLayer} />
+						<Layer {...areaOutlineLayer} />
+						<Layer {...areaAvalancheDangerOutlineLayer} />
+						<Layer {...areaHoverLayer} filter={hoverFilter} />
+						<Layer {...areaSelectedLayer} filter={selectedFilter} />
+						<Layer {...areaLabelLayer} />
+					</Source>
+				)}
 			</Map>
 
 			{selectedArea && (
