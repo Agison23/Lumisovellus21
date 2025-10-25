@@ -77,7 +77,7 @@ export class SnowerAPI {
 		try {
 			if (!process.env.SNOWER_USERNAME || !process.env.SNOWER_PASSWORD) {
 				console.warn(
-					"SNOWER_USERNAME or SNOWER_PASSWORD is not set. Skipping authentication."
+					"SNOWER_USERNAME or SNOWER_PASSWORD is not set in environment variables. Skipping authentication."
 				);
 				return;
 			}
