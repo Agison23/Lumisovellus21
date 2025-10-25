@@ -44,6 +44,30 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               pitch: 60, // change for 3D view
               bearing: 0,
             ),
+            onTapListener: (ctx) async {
+              if (_map == null) return;
+
+              final geometry = RenderedQueryGeometry.fromScreenCoordinate(ctx.touchPosition);
+              final options = RenderedQueryOptions(layerIds: ['areas-fill']);
+              final features = await _map!.queryRenderedFeatures(geometry, options);
+
+              if (features.isEmpty) {
+                await areasMgr.setSelectedId(null);
+                return;
+              }
+
+              final first = features.first;
+              if (first == null) {
+                await areasMgr.setSelectedId(null);
+                return;
+              }
+
+              final feature = first.queriedFeature.feature;
+              final id = feature['id']?.toString() ?? 
+                  (feature['properties'] is Map ? (feature['properties'] as Map)['id']?.toString() : null);
+
+              await areasMgr.setSelectedId(id);
+            },
             onMapCreated: (controller) async {
               _map = controller;
               areasMgr.attach(controller);

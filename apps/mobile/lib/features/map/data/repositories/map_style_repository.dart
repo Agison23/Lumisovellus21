@@ -199,11 +199,12 @@ class MapStyleRepository {
   // Filters for hover/selected
   Future<void> setHoverFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasHoverId)) return;
-    await style.setStyleLayerProperty(areasHoverId, 'filter', ["==", ["get", "id"], ""]);
+    await style.setStyleLayerProperty(areasHoverId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
   }
+
 
   Future<void> setSelectedFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasSelectedId)) return;
-    await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["get", "id"], ""]);
+    await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
   }
 }
