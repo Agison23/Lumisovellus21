@@ -41,7 +41,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             cameraOptions: CameraOptions(
               center: Point(coordinates: Position(24.07, 68.06)),
               zoom: 12,
-              pitch: 0, // change for 3D view
+              pitch: 60, // change for 3D view
               bearing: 0,
             ),
             onMapCreated: (controller) async {
@@ -70,7 +70,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
             onStyleLoadedListener: (_) async {
               await areasMgr.onStyleLoaded();
-              await _setupTerrain();
             },
           ),
 
@@ -94,30 +93,5 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _setupTerrain() async {
-    if (_map == null) return;
-
-    try {
-      final sourceExists = await _map!.style.styleSourceExists('mapbox-dem');
-      
-      if (!sourceExists) {
-        await _map!.style.addSource(
-          RasterDemSource(
-            id: 'mapbox-dem',
-            url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-          ),
-        );
-      }
-
-      // await _map!.style.setStyleTerrain(jsonEncode({
-      //   "source": "mapbox-dem",
-      //   "exaggeration": 1.5,
-      // }));
-
-    } catch (e) {
-      print('Error setting up terrain: $e');
-    }
   }
 }

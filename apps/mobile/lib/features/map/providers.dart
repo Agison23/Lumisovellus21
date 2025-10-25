@@ -1,17 +1,16 @@
 export 'viewmodel/map_notifier.dart' show interactiveAreaNotifierProvider;
+
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'data/repositories/map_style_repository.dart';
 
 class AreasLayerManager {
-  static const _sourceId = 'areas';
-  static const _fillLayerId = 'areas-fill';
-  static const _lineLayerId = 'areas-outline';
-
   MapboxMap? _map;
+  StyleManager? get _style => _map?.style;
   bool _styleReady = false;
-  bool _areasReady = false;
   Map<String, dynamic>? _lastFc;
+  final _styleRepo = MapStyleRepository();
 
   void attach(MapboxMap map) {
     _map = map;
@@ -19,74 +18,29 @@ class AreasLayerManager {
 
   Future<void> onStyleLoaded() async {
     _styleReady = true;
-    _areasReady = false;
-    await _recreateIfPossible();
+    if (_style == null) return;
+
+    await _styleRepo.applyTerrainAndSky(_style!, exaggeration: 2.0);
+
+    if (_lastFc != null) {
+      await _styleRepo.ensureAreasStyle(_style!, fcJson: _lastFc);
+    }
   }
 
   Future<void> setData(Map<String, dynamic> fc) async {
     _lastFc = fc;
-    if (!_styleReady || _map == null) return;
-
-    if (!_areasReady) {
-      await _recreateIfPossible();
-      return;
-    }
-
-    try {
-      await _map!.style.setStyleSourceProperty(
-        _sourceId,
-        'data',
-        jsonEncode(_lastFc),
-      );
-    } catch (_) {
-      _areasReady = false;
-      await _recreateIfPossible();
-    }
+    if (!_styleReady || _style == null) return;
+    await _styleRepo.setAreasData(_style!, jsonEncode(fc));
   }
 
-  Future<void> _recreateIfPossible() async {
-    if (!_styleReady || _map == null || _lastFc == null) return;
-    final style = _map!.style;
+  Future<void> setHoveredId(String? id) async {
+    if (!_styleReady || _style == null) return;
+    await _styleRepo.setHoverFilter(_style!, id: id);
+  }
 
-    try {
-      if (await style.styleLayerExists(_fillLayerId)) {
-        await style.removeStyleLayer(_fillLayerId);
-      }
-    } catch (_) {}
-    try {
-      if (await style.styleLayerExists(_lineLayerId)) {
-        await style.removeStyleLayer(_lineLayerId);
-      }
-    } catch (_) {}
-    try {
-      if (await style.styleSourceExists(_sourceId)) {
-        await style.removeStyleSource(_sourceId);
-      }
-    } catch (_) {}
-
-    await style.addSource(
-      GeoJsonSource(id: _sourceId, data: jsonEncode(_lastFc)),
-    );
-
-    await style.addLayer(
-      FillLayer(
-        id: _fillLayerId,
-        sourceId: _sourceId,
-        fillOpacity: 0.35,
-        fillColor: 0xFF2E86DE,
-      ),
-    );
-
-    await style.addLayer(
-      LineLayer(
-        id: _lineLayerId,
-        sourceId: _sourceId,
-        lineWidth: 1.0,
-        lineColor: 0xFF2E86DE,
-      ),
-    );
-
-    _areasReady = true;
+  Future<void> setSelectedId(String? id) async {
+    if (!_styleReady || _style == null) return;
+    await _styleRepo.setSelectedFilter(_style!, id: id);
   }
 }
 

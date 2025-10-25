@@ -41,7 +41,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-  maplibre_gl: ^0.24.0
   flutter_svg: ^2.0.10+1
   drift: ^2.28.2
   sqlite3_flutter_libs: ^0.5.40
