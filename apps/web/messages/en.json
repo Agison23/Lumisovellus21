@@ -32,7 +32,31 @@
 		"errors": {
 			"loadingData": "Error loading data. Please try again later.",
 			"loadingSnowData": "Error loading snow types. Please try again later.",
-			"loadingSegmentData": "Error loading segment data. Please try again later."
+			"loadingSegmentData": "Error loading segment data. Please try again later.",
+			"loadingMonitorData": "Error loading monitor data. Please try again later."
+		},
+		"monitorInfo": {
+			"fields": {
+				"temperature": {
+					"label": "Temperature",
+					"unit": "°C",
+					"noData": "No data"
+				},
+				"snowDepth": {
+					"label": "Snow depth",
+					"unit": "cm",
+					"noData": "No data"
+				},
+				"coordinates": {
+					"label": "Coordinates",
+					"latitude": "Latitude",
+					"longitude": "Longitude",
+					"noData": "No data"
+				}
+			},
+			"buttons": {
+				"close": "Close"
+			}
 		},
 		"reportForm": {
 			"steps": {

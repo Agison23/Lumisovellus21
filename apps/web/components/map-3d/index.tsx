@@ -37,6 +37,7 @@ import {
 	SnowType,
 	UpdateData,
 } from "@/lib/map/mock-data";
+import { Monitor } from "@/lib/snower/types";
 
 // for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
@@ -56,6 +57,14 @@ const fetchUpdateData = async (): Promise<UpdateData[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	// throw new Error("Mock error fetching update data");
 	return mockUpdateData;
+};
+
+const fetchMonitorData = async (): Promise<Monitor[]> => {
+	const res = await fetch("/api/snower/");
+	if (!res.ok) {
+		throw new Error("Failed to fetch monitor data");
+	}
+	return res.json();
 };
 
 function calculatePolygonArea(coordinates: number[][]): number {
@@ -124,11 +133,6 @@ export default function Map3d() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showLoading, setShowLoading] = useState(true);
 	const hasLoadedRef = useRef(false);
-	const [popupInfo, setPopupInfo] = useState<{
-		longtitude: number;
-		latitude: number;
-		name: string;
-	} | null>(null);
 	const [selectedSnowCategoryId, setSelectedSnowCategoryId] = useState<
 		number | null
 	>(null);
@@ -138,6 +142,7 @@ export default function Map3d() {
 	const [selectedObstacleIds, setSelectedObstacleIds] = useState<
 		number[] | null
 	>(null);
+	const [selectedMonitor, setSelectedMonitor] = useState<Monitor | null>(null);
 
 	const [viewState, setViewState] = useState<CameraState>(() => {
 		if (typeof window === "undefined") return DEFAULT_VIEW_STATE;
@@ -177,6 +182,16 @@ export default function Map3d() {
 		queryFn: fetchUpdateData,
 		refetchInterval: 10000,
 		staleTime: 5000,
+	});
+
+	const {
+		data: monitors = [],
+		isError: monitorsError,
+		isLoading: monitorsLoading,
+	} = useQuery({
+		queryKey: ["monitors"],
+		queryFn: fetchMonitorData,
+		staleTime: Infinity,
 	});
 
 	const submitMutation = useMutation({
@@ -221,6 +236,25 @@ export default function Map3d() {
 		[selectedArea]
 	);
 
+	const monitorsGeoJson = useMemo<FeatureCollection>(
+		() => ({
+			type: "FeatureCollection",
+			features: monitors.map((monitor) => ({
+				type: "Feature" as const,
+				geometry: {
+					type: "Point" as const,
+					coordinates: [monitor.lng, monitor.lat],
+				},
+				properties: {
+					name: monitor.name,
+					temperature: monitor.temperature,
+					snowDepth: monitor.snowDepth,
+				},
+			})),
+		}),
+		[monitors]
+	);
+
 	const handleMouseMove = useCallback((event: MapMouseEvent) => {
 		const hoveredFeature = event.features && event.features[0];
 		event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
@@ -238,34 +272,46 @@ export default function Map3d() {
 		setHoveredAreaId(null);
 	}, []);
 
-	const handleClick = useCallback((event: MapMouseEvent) => {
-		const feature = event.features && event.features[0];
+	const handleClick = useCallback(
+		(event: MapMouseEvent) => {
+			const feature = event.features && event.features[0];
 
-		setSelectedSnowCategoryId(null);
-		setSelectedSnowTypeId(null);
-		setSelectedObstacleIds(null);
-		if (!feature) {
-			setSelectedArea(null);
-			setPopupInfo(null);
-			form.reset();
+			setSelectedSnowCategoryId(null);
+			setSelectedSnowTypeId(null);
+			setSelectedObstacleIds(null);
+
+			// Check if a monitor was clicked
+			if (feature?.layer?.id === "monitors-points") {
+				const monitor = monitors.find(
+					(m) => m.name === feature.properties?.name
+				);
+				if (monitor) {
+					setSelectedMonitor(monitor);
+					setSelectedArea(null);
+					return;
+				}
+			}
+
+			// Handle area clicks as before
+			if (!feature) {
+				setSelectedArea(null);
+				setSelectedMonitor(null);
+				form.reset();
+				submitMutation.reset();
+				return;
+			}
+
+			const properties = feature.properties as InteractiveAreaProperties;
+			setSelectedArea(properties);
+			setSelectedMonitor(null);
+			form.updateFormData({
+				areaId: properties.id,
+			});
+			form.goToStep(0);
 			submitMutation.reset();
-			return;
-		}
-
-		const properties = feature.properties as InteractiveAreaProperties;
-		setSelectedArea(properties);
-		form.updateFormData({
-			areaId: properties.id,
-		});
-		form.goToStep(0);
-		submitMutation.reset();
-
-		setPopupInfo({
-			longtitude: event.lngLat.lng,
-			latitude: event.lngLat.lat,
-			name: properties.name,
-		});
-	}, []);
+		},
+		[monitors]
+	);
 
 	const handleMapLoad = useCallback(() => {
 		if (!hasLoadedRef.current) {
@@ -354,6 +400,15 @@ export default function Map3d() {
 			</div>
 		);
 	}
+	if (monitorsError) {
+		return (
+			<div className="p-4">
+				<h2 className="text-red-600 font-bold mb-2">
+					failed to load monitor data
+				</h2>
+			</div>
+		);
+	}
 	return (
 		<div className="relative w-full h-full">
 			{showLoading && (
@@ -389,7 +444,7 @@ export default function Map3d() {
 					setViewState(newState);
 					saveCameraState(newState);
 				}}
-				interactiveLayerIds={["areas-fill"]}
+				interactiveLayerIds={["areas-fill", "monitors-points"]}
 				mapStyle="mapbox://styles/mapbox/outdoors-v12"
 				mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_ACCESS_TOKEN}
 				terrain={TERRAIN_CONFIG}
@@ -405,17 +460,81 @@ export default function Map3d() {
 				{/* Hillshade layer for visual terrain shading */}
 				<Layer {...hillshadeLayer} />
 				{!isLoading && (
-					<Source id="areas" type="geojson" data={areasGeoJson} promoteId="id">
-						<Layer {...areaFillLayer} />
-						<Layer {...areaOutlineLayer} />
-						<Layer {...areaAvalancheDangerOutlineLayer} />
-						<Layer {...areaHoverLayer} filter={hoverFilter} />
-						<Layer {...areaSelectedLayer} filter={selectedFilter} />
-						<Layer {...areaLabelLayer} />
-					</Source>
+					<>
+						<Source id="monitors" type="geojson" data={monitorsGeoJson}>
+							<Layer
+								id="monitors-points"
+								type="circle"
+								paint={{
+									"circle-radius": 6,
+									"circle-color": "#ff6b6b",
+									"circle-stroke-width": 2,
+									"circle-stroke-color": "#fff",
+								}}
+							/>
+						</Source>
+						<Source
+							id="areas"
+							type="geojson"
+							data={areasGeoJson}
+							promoteId="id"
+						>
+							<Layer {...areaFillLayer} />
+							<Layer {...areaOutlineLayer} />
+							<Layer {...areaAvalancheDangerOutlineLayer} />
+							<Layer {...areaHoverLayer} filter={hoverFilter} />
+							<Layer {...areaSelectedLayer} filter={selectedFilter} />
+							<Layer {...areaLabelLayer} />
+						</Source>
+					</>
 				)}
 			</Map>
 
+			{selectedMonitor && (
+				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 w-80 max-w-[90vw]">
+					<div className="flex flex-col gap-2">
+						<h3 className="font-medium text-base">{selectedMonitor.name}</h3>
+						<Separator />
+						<div className="flex flex-col gap-3">
+							<div>
+								<p className="text-muted-foreground text-xs">
+									{t("monitorInfo.fields.temperature.label")}
+								</p>
+								{selectedMonitor.temperature === "No Data"
+									? t("monitorInfo.fields.temperature.noData")
+									: selectedMonitor.temperature}
+							</div>
+							<div>
+								<p className="text-muted-foreground text-xs">
+									{t("monitorInfo.fields.snowDepth.label")}
+								</p>
+								<p className="font-medium">
+									{selectedMonitor.snowDepth === "No Data"
+										? t("monitorInfo.fields.snowDepth.noData")
+										: selectedMonitor.snowDepth}
+								</p>
+							</div>
+							<div className="text-xs text-muted-foreground">
+								<p>
+									{t("monitorInfo.fields.coordinates.latitude")}:{" "}
+									{selectedMonitor.lat.toFixed(4)}
+								</p>
+								<p>
+									{t("monitorInfo.fields.coordinates.longitude")}:{" "}
+									{selectedMonitor.lng.toFixed(4)}
+								</p>
+							</div>
+						</div>
+					</div>
+					<Button
+						variant="default"
+						onClick={() => setSelectedMonitor(null)}
+						className="w-full"
+					>
+						{t("reportForm.buttons.close")}
+					</Button>
+				</div>
+			)}
 			{selectedArea && (
 				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-100px)] w-80 max-w-[90vw]">
 					<div className="flex flex-col">
