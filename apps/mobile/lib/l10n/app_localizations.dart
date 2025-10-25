@@ -396,6 +396,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Little snow'**
   String get littleSnow;
+
   /// No description provided for @mapOfflineModeMessage.
   ///
   /// In en, this message translates to:
