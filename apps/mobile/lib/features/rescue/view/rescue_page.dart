@@ -108,14 +108,30 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).rescuePageRequestHelp),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        contentPadding: const EdgeInsets.fromLTRB(
+          20.0,
+          16.0,
+          20.0,
+          0.0,
+        ), // reduced bottom,
+        actionsPadding: const EdgeInsets.fromLTRB(
+          20.0,
+          0.0,
+          20.0,
+          0.0,
+        ), // reduced bottom,
         content: Text(
-          'Help request for $_selectedNeed will be sent to nearby rescuers.',
+          AppLocalizations.of(context).rescuePageRequestHelpConfirm,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text(AppLocalizations.of(context).dialogCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context).dialogConfirm),
           ),
         ],
       ),
@@ -167,7 +183,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     final t = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFAFAFAFA),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -182,8 +198,8 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade400,
-                      blurRadius: 8,
+                      color: Colors.grey.shade300,
+                      blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -311,35 +327,39 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 48),
 
                       // Request help button
                       Center(
                         child: GestureDetector(
                           onTap: _requestHelp,
                           child: Container(
-                            width: 120,
-                            height: 120,
+                            width: 170,
+                            height: 170,
                             decoration: BoxDecoration(
-                              color: Colors.red.shade600,
+                              color: const Color(0xFFE53935),
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.red.shade300,
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
+                                  color: Colors.grey.shade800,
+                                  blurRadius: 10,
                                 ),
                               ],
                             ),
                             child: Center(
-                              child: Text(
-                                t.rescuePageRequestHelp,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ), // add horizontal padding
+                                child: Text(
+                                  t.rescuePageRequestHelp,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -360,7 +380,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.shade400,
-                      blurRadius: 8,
+                      blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -383,27 +403,31 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      width: 120,
+                      width: 170,
                       height: 60,
                       child: ElevatedButton(
                         onPressed: _callForHelp,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade600,
-                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.grey.shade200,
+                          foregroundColor: Colors.red.shade400,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          side: BorderSide(
+                            color: Colors.red.shade400,
+                            width: 2,
                           ),
                           elevation: 4,
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.phone, size: 24),
+                            Icon(Icons.phone, size: 28),
                             SizedBox(width: 12),
                             Text(
                               '112',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 26,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

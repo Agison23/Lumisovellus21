@@ -63,6 +63,7 @@
   "rescuePageEquipmentIssue": "Varusteongelma",
   "rescuePageImLost": "Olen eksyksissä",
   "rescuePageRequestHelp": "Pyydä apua",
+  "rescuePageRequestHelpConfirm": "Lähetetäänkö avunpyyntö lähellä oleville pelastajille?",
   "map": "Kartta",
   "weather": "Sää",
   "settings": "Asetukset",
@@ -78,6 +79,7 @@
   "selectLanguage": "Valitse kieli",
   "english": "Englanti (English)",
   "finnish": "Suomi",
-  "weatherNotImplemented": "Sääominaisuus tulossa pian",
-  "userInfoNotImplemented": "Käyttäjätieto-ominaisuus tulossa pian"
+  "userInfoNotImplemented": "Käyttäjätieto-ominaisuus tulossa pian",
+  "dialogConfirm": "Vahvista",
+  "dialogCancel": "Peruuta"
 }

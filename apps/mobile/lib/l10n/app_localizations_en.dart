@@ -220,6 +220,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageRequestHelp => 'Request help';
 
   @override
+  String get rescuePageRequestHelpConfirm =>
+      'Send help request to nearby rescuers?';
+
+  @override
   String get map => 'Map';
 
   @override
@@ -269,4 +273,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userInfoNotImplemented => 'User information feature coming soon';
+
+  @override
+  String get dialogConfirm => 'Confirm';
+
+  @override
+  String get dialogCancel => 'Cancel';
 }

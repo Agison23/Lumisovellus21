@@ -10,11 +10,7 @@ import 'package:lumisovellus/features/map/views/map_screen.dart';
 final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -62,10 +58,7 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
@@ -98,65 +91,6 @@ class _WeatherPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-
-    return Scaffold(
-      backgroundColor: Colors.blue.shade50,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.cloud,
-                size: 80,
-                color: Colors.blue.shade400,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                t.weather,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  color: Colors.blue.shade700,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.construction,
-                      size: 48,
-                      color: Colors.orange.shade600,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      t.weatherNotImplemented,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey.shade700,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return const Scaffold(backgroundColor: Colors.white);
   }
 }

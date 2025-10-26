@@ -220,6 +220,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get rescuePageRequestHelp => 'Pyydä apua';
 
   @override
+  String get rescuePageRequestHelpConfirm =>
+      'Lähetetäänkö avunpyyntö lähellä oleville pelastajille?';
+
+  @override
   String get map => 'Kartta';
 
   @override
@@ -270,4 +274,10 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get userInfoNotImplemented => 'Käyttäjätieto-ominaisuus tulossa pian';
+
+  @override
+  String get dialogConfirm => 'Vahvista';
+
+  @override
+  String get dialogCancel => 'Peruuta';
 }

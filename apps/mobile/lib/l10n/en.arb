@@ -63,6 +63,7 @@
   "rescuePageEquipmentIssue": "Equipment issue",
   "rescuePageImLost": "I am lost",
   "rescuePageRequestHelp": "Request help",
+  "rescuePageRequestHelpConfirm": "Send help request to nearby rescuers?",
   "map": "Map",
   "weather": "Weather",
   "settings": "Settings",
@@ -78,6 +79,7 @@
   "selectLanguage": "Select Language",
   "english": "English",
   "finnish": "Finnish (Suomi)",
-  "weatherNotImplemented": "Weather feature coming soon",
-  "userInfoNotImplemented": "User information feature coming soon"
+  "userInfoNotImplemented": "User information feature coming soon",
+  "dialogConfirm": "Confirm",
+  "dialogCancel": "Cancel"
 }

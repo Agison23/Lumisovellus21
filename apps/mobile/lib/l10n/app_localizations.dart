@@ -475,6 +475,12 @@ abstract class AppLocalizations {
   /// **'Request help'**
   String get rescuePageRequestHelp;
 
+  /// No description provided for @rescuePageRequestHelpConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Send help request to nearby rescuers?'**
+  String get rescuePageRequestHelpConfirm;
+
   /// No description provided for @map.
   ///
   /// In en, this message translates to:
@@ -576,6 +582,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User information feature coming soon'**
   String get userInfoNotImplemented;
+
+  /// No description provided for @dialogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get dialogConfirm;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
 }
 
 class _AppLocalizationsDelegate
