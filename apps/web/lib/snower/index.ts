@@ -51,8 +51,6 @@ export class SnowerAPI {
 				headers["authentication-key"] = this.authKey;
 			}
 
-			console.log(`Fetching API: ${url} with body:`, body);
-
 			const response = await fetch(url, {
 				method: "POST",
 				headers,
@@ -223,7 +221,6 @@ export class SnowerAPI {
 				monitorsWithLocations
 			);
 
-			console.log("Fetched monitor data:", monitorsWithReadings);
 			return mergeMonitors(DEFAULT_MONITORS, monitorsWithReadings);
 		} catch (error) {
 			console.error("Failed to fetch all monitor data:", error);
