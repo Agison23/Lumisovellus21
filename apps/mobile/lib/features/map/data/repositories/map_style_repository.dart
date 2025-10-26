@@ -1,60 +1,6 @@
 import 'dart:convert';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
-// Legacy style with OSM + DEM tiles via proxy or local cache
-final base = Uri.parse('file://tiles');
-final b = base.toString().endsWith('/') ? base.toString() : '${base.toString()}/';
-final isFile = base.scheme == 'file';
-final prefix = isFile ? '' : 'tiles/';
-
-final style = {
-  'version': 8,
-  'glyphs': '', // disable glyphs for now
-  'sources': {
-    'osm': {
-      'type': 'raster',
-      'tiles': ['${b}${prefix}osm/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 19,
-      'attribution': '© OpenStreetMap contributors'
-    },
-    'terrainSource': {
-      'type': 'raster-dem',
-      'tiles': ['${b}${prefix}dem/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 15,
-      'encoding': 'terrarium',
-      'attribution': 'Terrain data © AWS Terrain Tiles'
-    },
-    'hillshadeSource': {
-      'type': 'raster-dem',
-      'tiles': ['${b}${prefix}dem/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 15,
-      'encoding': 'terrarium',
-      'attribution': 'Terrain data © AWS Terrain Tiles'
-    }
-  },
-  'layers': [
-    {
-      'id': 'osm',
-      'type': 'raster',
-      'source': 'osm'
-    },
-    {
-      'id': 'hills',
-      'type': 'hillshade',
-      'source': 'hillshadeSource',
-      'layout': {'visibility': 'visible'},
-      'paint': {'hillshade-shadow-color': '#473B24'}
-    }
-  ],
-  'terrain': {
-    'source': 'terrainSource',
-    'exaggeration': 1,
-  }
-};
-
 class MapStyleRepository {
   static const demSourceId = 'mapbox-dem';
   static const areasSourceId = 'areas';
