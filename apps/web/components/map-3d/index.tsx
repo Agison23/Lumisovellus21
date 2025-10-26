@@ -60,7 +60,9 @@ const fetchUpdateData = async (): Promise<UpdateData[]> => {
 };
 
 const fetchMonitorData = async (): Promise<Monitor[]> => {
-	const res = await fetch("/api/snower/");
+	const res = await fetch("/api/snower");
+	// throw new Error("Mock error fetching monitor data");
+
 	if (!res.ok) {
 		throw new Error("Failed to fetch monitor data");
 	}
@@ -239,18 +241,23 @@ export default function Map3d() {
 	const monitorsGeoJson = useMemo<FeatureCollection>(
 		() => ({
 			type: "FeatureCollection",
-			features: monitors.map((monitor) => ({
-				type: "Feature" as const,
-				geometry: {
-					type: "Point" as const,
-					coordinates: [monitor.lng, monitor.lat],
-				},
-				properties: {
-					name: monitor.name,
-					temperature: monitor.temperature,
-					snowDepth: monitor.snowDepth,
-				},
-			})),
+			features: monitors
+				.filter(
+					(monitor) =>
+						monitor.snowDepth !== "No Data" || monitor.temperature !== "No Data"
+				)
+				.map((monitor) => ({
+					type: "Feature" as const,
+					geometry: {
+						type: "Point" as const,
+						coordinates: [monitor.lng, monitor.lat],
+					},
+					properties: {
+						name: monitor.name,
+						temperature: monitor.temperature,
+						snowDepth: monitor.snowDepth,
+					},
+				})),
 		}),
 		[monitors]
 	);
@@ -397,15 +404,6 @@ export default function Map3d() {
 					{t("errors.loadingData")}
 				</h2>
 				<p className="text-red-500">{areasErrorMessage?.message}</p>
-			</div>
-		);
-	}
-	if (monitorsError) {
-		return (
-			<div className="p-4">
-				<h2 className="text-red-600 font-bold mb-2">
-					failed to load monitor data
-				</h2>
 			</div>
 		);
 	}
