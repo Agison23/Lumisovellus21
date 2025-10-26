@@ -51,6 +51,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get avalancheWarning => 'Lumivyöryvaroitus';
 
   @override
+  String get noAvalancheWarning => 'Ei lumivyöryvaroitusta';
+
+  @override
   String get avalancheWarningDesc =>
       'Pallaksen lumivyöryalueet sisältävät useita kuroja kuten Pyhäkuru, Palkaskuru, Rihmakuru ja kaikki yli 25 asteen jyrkät rinteet Lommoltunturissa, Keimiötunturissa ja Lehmäkerossa. Yksittäisiä pienempiä lumivyöryjä voi esiintyä myös muualla jyrkän maaston läheisyydessä. Lumivyöryjen todennäköisyys kasvaa säämuutosten myötä.';
 
@@ -180,4 +183,10 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
+
+  @override
+  String get close => 'Sulje';
+
+  @override
+  String get addObservation => 'Lisää havainto';
 }

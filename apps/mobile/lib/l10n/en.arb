@@ -13,6 +13,7 @@
   "phoneNum": "Phone number",
   "definitions": "DEFINITIONS",
   "avalancheWarning": "Avalanche warning",
+  "noAvalancheWarning": "No avalanche warning",
   "avalancheWarningDesc": "The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.",
   "snowTypes": "Snow types",
   "newSnow": "New snow",
@@ -50,5 +51,7 @@
   "saturatedSnow": "Saturated snow",
   "saturatedSnowDesc": "Completely wet , slushing and whipped cream like snow.",
   "littleSnow": "Little snow",
-  "mapOfflineModeMessage": "You''re offline - showing saved map data"
+  "mapOfflineModeMessage": "You''re offline - showing saved map data",
+  "close": "Close",
+  "addObservation": "Add observation"
 }

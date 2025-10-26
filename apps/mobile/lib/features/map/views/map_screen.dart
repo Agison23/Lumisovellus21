@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../providers.dart';
+import 'widgets/area_card.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -19,6 +21,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final t = AppLocalizations.of(context);
     final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
     final areasMgr = ref.watch(areasLayerManagerProvider);
+
+    final s = ref.watch(interactiveAreaNotifierProvider).value;
+    final features = (s?.fc?['features'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    final selected = features.firstWhereOrNull((f) {
+      final id = f['id']?.toString() ?? ((f['properties'] as Map?)?['id']?.toString());
+      return id == s?.selectedId;
+    });
 
     ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.selectedId), (_, id) {
       areasMgr.setSelectedId(id);
@@ -113,6 +122,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                  ),
                ),
              ),
+             
+          if (selected != null)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: AreaCard(
+                t: t,
+                name: (selected['properties'] as Map?)?['name']?.toString() ?? '',
+                terrain: (selected['properties'] as Map?)?['terrain']?.toString() ?? '',
+                danger: ((selected['properties'] as Map?)?['avalancheDanger'] == true)
+                    ? t.avalancheWarning
+                    : t.noAvalancheWarning,
+                onAdd: () {},
+                onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
+              ),
+            ),
         ],
       ),
     );

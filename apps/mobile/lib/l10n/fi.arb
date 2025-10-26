@@ -13,6 +13,7 @@
   "phoneNum": "Puhelinnumero",
   "definitions": "MÄÄRITELMÄT",
   "avalancheWarning": "Lumivyöryvaroitus",
+  "noAvalancheWarning": "Ei lumivyöryvaroitusta",
   "avalancheWarningDesc": "Pallaksen lumivyöryalueet sisältävät useita kuroja kuten Pyhäkuru, Palkaskuru, Rihmakuru ja kaikki yli 25 asteen jyrkät rinteet Lommoltunturissa, Keimiötunturissa ja Lehmäkerossa. Yksittäisiä pienempiä lumivyöryjä voi esiintyä myös muualla jyrkän maaston läheisyydessä. Lumivyöryjen todennäköisyys kasvaa säämuutosten myötä.",
   "snowTypes": "Lumityypit",
   "newSnow": "Uusi lumi",
@@ -50,5 +51,7 @@
   "saturatedSnow": "Saturoitunut lumi",
   "saturatedSnowDesc": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.",
   "littleSnow": "Vähäinen lumi",
-  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja"
+  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja",
+  "close": "Sulje",
+  "addObservation": "Lisää havainto"
 }

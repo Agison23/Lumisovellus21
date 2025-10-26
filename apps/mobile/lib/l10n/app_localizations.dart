@@ -175,6 +175,12 @@ abstract class AppLocalizations {
   /// **'Avalanche warning'**
   String get avalancheWarning;
 
+  /// No description provided for @noAvalancheWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'No avalanche warning'**
+  String get noAvalancheWarning;
+
   /// No description provided for @avalancheWarningDesc.
   ///
   /// In en, this message translates to:
@@ -402,6 +408,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @addObservation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add observation'**
+  String get addObservation;
 }
 
 class _AppLocalizationsDelegate

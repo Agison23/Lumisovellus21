@@ -51,6 +51,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get avalancheWarning => 'Avalanche warning';
 
   @override
+  String get noAvalancheWarning => 'No avalanche warning';
+
+  @override
   String get avalancheWarningDesc =>
       'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.';
 
@@ -180,4 +183,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'You\'re offline - showing saved map data';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get addObservation => 'Add observation';
 }
