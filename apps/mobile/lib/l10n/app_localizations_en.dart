@@ -205,6 +205,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'In serious emergency, call the emergency number 112';
 
   @override
+  String get rescuePageEmergencyCallFailed =>
+      'The phone app could not be opened';
+
+  @override
   String get rescuePageIndicateNeed => 'Please indicate your need';
 
   @override
@@ -267,9 +271,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get finnish => 'Finnish (Suomi)';
-
-  @override
-  String get weatherNotImplemented => 'Weather feature coming soon';
 
   @override
   String get userInfoNotImplemented => 'User information feature coming soon';

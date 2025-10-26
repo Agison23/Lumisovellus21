@@ -205,6 +205,10 @@ class AppLocalizationsFi extends AppLocalizations {
       'Vakavassa hätätilanteessa soita hätänumeroon 112';
 
   @override
+  String get rescuePageEmergencyCallFailed =>
+      'Puhelinsovellusta ei voitu avata';
+
+  @override
   String get rescuePageIndicateNeed => 'Ilmoita tarpeesi';
 
   @override
@@ -268,9 +272,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get finnish => 'Suomi';
-
-  @override
-  String get weatherNotImplemented => 'Sääominaisuus tulossa pian';
 
   @override
   String get userInfoNotImplemented => 'Käyttäjätieto-ominaisuus tulossa pian';

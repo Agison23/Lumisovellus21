@@ -445,6 +445,12 @@ abstract class AppLocalizations {
   /// **'In serious emergency, call the emergency number 112'**
   String get rescuePageEmergencyCallDescription;
 
+  /// No description provided for @rescuePageEmergencyCallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone app could not be opened'**
+  String get rescuePageEmergencyCallFailed;
+
   /// No description provided for @rescuePageIndicateNeed.
   ///
   /// In en, this message translates to:
@@ -570,12 +576,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finnish (Suomi)'**
   String get finnish;
-
-  /// No description provided for @weatherNotImplemented.
-  ///
-  /// In en, this message translates to:
-  /// **'Weather feature coming soon'**
-  String get weatherNotImplemented;
 
   /// No description provided for @userInfoNotImplemented.
   ///

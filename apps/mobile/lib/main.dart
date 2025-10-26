@@ -60,6 +60,7 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFAFAFAFA),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: (idx) => setState(() => _currentIndex = idx),

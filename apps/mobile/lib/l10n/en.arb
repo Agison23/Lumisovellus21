@@ -58,6 +58,7 @@
   "rescuePageAccuracy": "Position accuracy",
   "rescuePageHelpRequestDescription": "Help-request alerts and sends your location to nearby rescuers",
   "rescuePageEmergencyCallDescription" : "In serious emergency, call the emergency number 112",
+  "rescuePageEmergencyCallFailed" : "The phone app could not be opened",
   "rescuePageIndicateNeed": "Please indicate your need",
   "rescuePageHealthIssue": "Health issue",
   "rescuePageEquipmentIssue": "Equipment issue",
