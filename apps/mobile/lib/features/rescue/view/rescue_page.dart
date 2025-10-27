@@ -115,7 +115,6 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     if (!launchedCorrectly) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          // TODO: localisation later...
           SnackBar(
             content: Text(
               AppLocalizations.of(context).rescuePageEmergencyCallFailed,
@@ -142,6 +141,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         contentPadding: const EdgeInsets.fromLTRB(
           20.0,
