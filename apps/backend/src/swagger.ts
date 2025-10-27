@@ -304,19 +304,4 @@ const doc = {
   },
 };
 
-const outputFile = './swagger-output.json';
-const endpointsFiles = [
-  './server.ts',
-  './api/routes/index.ts',
-  './api/routes/auth/authRoutes.ts',
-  './api/routes/users/usersRoutes.ts',
-  './api/routes/help/helpRoutes.ts',
-  './api/routes/reviews/reviewsRoutes.ts',
-  './api/routes/segments/segmentsRoutes.ts',
-  './api/routes/health/healthRoutes.ts',
-];
-
-const swaggerAutogenInstance = swaggerAutogen();
-swaggerAutogenInstance(outputFile, endpointsFiles, doc);
-
 export default doc;

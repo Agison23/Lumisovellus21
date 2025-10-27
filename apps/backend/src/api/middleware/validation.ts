@@ -9,11 +9,26 @@ export const segmentIdSchema = z.object({
 });
 
 // Review validation
+const hazardSchema = z.enum(['stones', 'branches'], {
+  errorMap: () => ({
+    message: 'Invalid hazard type. Must be one of: stones, branches',
+  }),
+});
+
 export const reviewSchema = z.object({
   segment: z.string().uuid('Invalid segment ID format'),
   snowType: z.string().uuid('Invalid snow type ID format'),
-  details: z.number().int().min(1).max(5, 'Details must be between 1 and 5'),
-  comment: z.string().max(1000, 'Comment must be less than 1000 characters'),
+  hazards: z
+    .array(hazardSchema)
+    .default([])
+    .describe(
+      'Array of hazards found on the trail (e.g., ["stones", "branches"])'
+    ),
+  comment: z
+    .string()
+    .max(1000, 'Comment must be less than 1000 characters')
+    .optional()
+    .nullable(),
 });
 
 // User validation

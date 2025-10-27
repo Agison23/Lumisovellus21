@@ -10,11 +10,17 @@ import path from 'path';
 // Import new API router
 import apiRouter from './api/routes';
 import { errorHandler, notFoundHandler } from './api/middleware/errorHandler';
+import { WeatherScheduler } from './scheduler/weatherScheduler';
 
 // Load swagger file
 let swaggerFile;
 try {
-  const swaggerPath = path.join(process.cwd(), 'src', 'swagger-output.json');
+  // Try src first (for development)
+  let swaggerPath = path.join(process.cwd(), 'src', 'swagger-output.json');
+  if (!fs.existsSync(swaggerPath)) {
+    // Try dist (for production build)
+    swaggerPath = path.join(process.cwd(), 'dist', 'swagger-output.json');
+  }
   swaggerFile = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
 } catch {
   // Swagger file not found, running without documentation
@@ -89,22 +95,28 @@ app.use(notFoundHandler);
 // Error handler
 app.use(errorHandler);
 
+// Initialize and start weather scheduler
+const weatherScheduler = new WeatherScheduler();
+weatherScheduler.start();
+
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  // SIGTERM received, shutting down gracefully
+  console.log('SIGTERM received, shutting down gracefully...');
+  weatherScheduler.stop();
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
-  // SIGINT received, shutting down gracefully
+  console.log('SIGINT received, shutting down gracefully...');
+  weatherScheduler.stop();
   process.exit(0);
 });
 
 app.listen(PORT, () => {
-  // Server started successfully
-  // Health check: http://localhost:${PORT}/health
-  // API base: http://localhost:${PORT}/api/v1
-  // Swagger docs: http://localhost:${PORT}/api-docs
+  console.log(`Server started successfully on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`API base: http://localhost:${PORT}/api/v1`);
+  console.log(`Swagger docs: http://localhost:${PORT}/api-docs`);
 });
 
 export default app;

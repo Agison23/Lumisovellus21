@@ -232,6 +232,29 @@ model NearbyUser {
   @@map("help_notifications")
 }
 
+model Weather {
+  id                  String   @id @default(uuid())
+  timestamp           DateTime @default(now())
+  temperature         Float?
+  windSpeed           Float?   @map("wind_speed")
+  windDirection       Float?   @map("wind_direction")
+  airPressure         Float?   @map("air_pressure")
+  snowDepth           Float?   @map("snow_depth")
+  relativeHumidity    Float?   @map("relative_humidity")
+  dewPoint            Float?   @map("dew_point")
+  precipitation       Float?
+  visibility          Float?
+  cloudCover          Int?     @map("cloud_cover")
+  stationId           String?  @map("station_id") @db.VarChar(50)
+  stationName         String?  @map("station_name") @db.VarChar(100)
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([timestamp])
+  @@index([stationId])
+  @@map("weather")
+}
+
 enum SnowUpdateStatus {
   DRAFT
   ACTIVE

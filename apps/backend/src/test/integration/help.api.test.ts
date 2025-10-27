@@ -85,6 +85,120 @@ describe('Help API Integration Tests', () => {
   });
 
   describe('POST /api/v1/help-requests', () => {
+    it('should find nearby users within 30km', async () => {
+      // Create helper users at different distances
+      // Approximate: 1 degree latitude ≈ 111 km
+      // At latitude 65°, 1 degree longitude ≈ 48 km
+
+      const centralLat = 65.0;
+      const centralLon = 25.0;
+
+      // Create nearby users (within 30km)
+      const nearbyUser1 = await testPrisma.user.create({
+        data: {
+          id: 'nearby-user-1',
+          devId: 'device-nearby-1',
+          firstName: 'Nearby',
+          lastName: 'User1',
+          email: 'nearby1@example.com',
+          role: 'NORMAL',
+        },
+      });
+
+      const nearbyUser2 = await testPrisma.user.create({
+        data: {
+          id: 'nearby-user-2',
+          devId: 'device-nearby-2',
+          firstName: 'Nearby',
+          lastName: 'User2',
+          email: 'nearby2@example.com',
+          role: 'NORMAL',
+        },
+      });
+
+      // Create far users (beyond 30km)
+      const farUser1 = await testPrisma.user.create({
+        data: {
+          id: 'far-user-1',
+          devId: 'device-far-1',
+          firstName: 'Far',
+          lastName: 'User1',
+          email: 'far1@example.com',
+          role: 'NORMAL',
+        },
+      });
+
+      // Create location data for nearby users (within 30km)
+      // ~10km away (≈0.09 degrees latitude)
+      await testPrisma.locationData.create({
+        data: {
+          id: 'location-nearby-1',
+          userId: nearbyUser1.id,
+          timestamp: Math.floor(Date.now() / 1000), // Current time
+          gpsCoord: `${centralLat + 0.09},${centralLon}`, // ~10km north
+        },
+      });
+
+      // ~20km away (≈0.18 degrees latitude)
+      await testPrisma.locationData.create({
+        data: {
+          id: 'location-nearby-2',
+          userId: nearbyUser2.id,
+          timestamp: Math.floor(Date.now() / 1000),
+          gpsCoord: `${centralLat - 0.18},${centralLon}`, // ~20km south
+        },
+      });
+
+      // Create location data for far users (beyond 30km)
+      // ~50km away (≈0.45 degrees latitude)
+      await testPrisma.locationData.create({
+        data: {
+          id: 'location-far-1',
+          userId: farUser1.id,
+          timestamp: Math.floor(Date.now() / 1000),
+          gpsCoord: `${centralLat + 0.45},${centralLon}`, // ~50km north
+        },
+      });
+
+      // Create help request at central location
+      const helpData = {
+        timestamp: Math.floor(Date.now() / 1000),
+        gpsCoord: `${centralLat},${centralLon}`,
+        helpType: 'help',
+        chatRoomId: 'room-test',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/help-requests')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(helpData)
+        .expect(200);
+
+      // Verify response
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.nearbyUsers).toBe(2); // Should find 2 nearby users
+
+      // Verify that nearby user entries were created
+      const nearbyUsersInDb = await testPrisma.nearbyUser.findMany({
+        where: { helpRequester: userId },
+      });
+
+      expect(nearbyUsersInDb).toHaveLength(2);
+
+      // Verify that far users are not included
+      const farUsersInDb = nearbyUsersInDb.filter(
+        (nu) => nu.helpGiver === farUser1.id
+      );
+      expect(farUsersInDb).toHaveLength(0);
+
+      // Verify the help request was created
+      const helpRequest = await testPrisma.helpRequest.findUnique({
+        where: { userId: userId },
+      });
+      expect(helpRequest).toBeTruthy();
+      expect(helpRequest?.gpsCoord).toBe(`${centralLat},${centralLon}`);
+    });
+
     it('should create a help request successfully', async () => {
       const helpData = {
         timestamp: 1640995200,

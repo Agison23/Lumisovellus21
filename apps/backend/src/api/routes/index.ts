@@ -5,6 +5,7 @@ import reviewsRoutes from './reviews/reviewsRoutes';
 import usersRoutes from './users/usersRoutes';
 import helpRoutes from './help/helpRoutes';
 import authRoutes from './auth/authRoutes';
+import weatherRoutes from './weather/weatherRoutes';
 
 const apiRouter = Router();
 
@@ -15,5 +16,6 @@ apiRouter.use('/', segmentsRoutes);
 apiRouter.use('/', reviewsRoutes);
 apiRouter.use('/', usersRoutes);
 apiRouter.use('/', helpRoutes);
+apiRouter.use('/', weatherRoutes);
 
 export default apiRouter;

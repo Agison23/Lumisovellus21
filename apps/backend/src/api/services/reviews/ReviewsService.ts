@@ -1,7 +1,29 @@
 import { BaseService } from '../BaseService';
-import { Review, ReviewRequest, SnowType } from '../../types';
+import { Review, ReviewRequest, SnowType, HazardType } from '../../types';
 
 export class ReviewsService extends BaseService {
+  /**
+   * Convert hazards array to legacy numeric encoding:
+   * stones=1, branches=2, both=3
+   */
+  private hazardsToDetails(hazards: HazardType[]): number | null {
+    if (hazards.length === 0) return null;
+
+    // Use sum of bits to represent multiple hazards
+    let result = 0;
+    for (const hazard of hazards) {
+      switch (hazard) {
+        case 'stones':
+          result += 1;
+          break;
+        case 'branches':
+          result += 2;
+          break;
+      }
+    }
+    return result;
+  }
+
   async getAllSnowTypes(): Promise<SnowType[]> {
     try {
       const snowTypes = await this.prisma.snowType.findMany();
@@ -94,16 +116,12 @@ export class ReviewsService extends BaseService {
     segmentId: string
   ): Promise<Review> {
     try {
-      if (reviewData.segment !== segmentId) {
-        throw new Error('Segment ID mismatch');
-      }
-
       const review = await this.prisma.userReview.create({
         data: {
           id: crypto.randomUUID(),
-          segment: reviewData.segment,
+          segment: segmentId, // Get segment ID from URL path parameter
           snowType: reviewData.snowType,
-          details: reviewData.details,
+          details: this.hazardsToDetails(reviewData.hazards),
           comment: reviewData.comment,
           // Anonymous review while auth is disabled
           userId: undefined,

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ReviewsService } from '../../api/services/reviews/ReviewsService';
 import { testPrisma } from '../vitest.setup';
+import type { ReviewRequest } from '../../api/types';
 
 describe('ReviewsService Unit Tests', () => {
   let reviewsService: ReviewsService;
@@ -9,6 +10,7 @@ describe('ReviewsService Unit Tests', () => {
     // Clean up data before each test (in correct order to avoid foreign key constraints)
     await testPrisma.nearbyUser.deleteMany();
     await testPrisma.helpRequest.deleteMany();
+    await testPrisma.locationData.deleteMany();
     await testPrisma.userReview.deleteMany();
     await testPrisma.snowType.deleteMany();
     await testPrisma.segment.deleteMany();
@@ -246,10 +248,9 @@ describe('ReviewsService Unit Tests', () => {
         },
       });
 
-      const reviewData = {
-        segment: '1',
+      const reviewData: ReviewRequest = {
         snowType: '1',
-        details: 4,
+        hazards: ['stones', 'branches'],
         comment: 'Great conditions today!',
       };
 
@@ -258,10 +259,10 @@ describe('ReviewsService Unit Tests', () => {
       expect(result).toMatchObject({
         segment: '1',
         snowType: '1',
-        details: 4,
         comment: 'Great conditions today!',
         userId: null,
       });
+      expect(result.details).toBeDefined();
       expect(result.id).toBeDefined();
       expect(result.time).toBeInstanceOf(Date);
 
@@ -273,21 +274,8 @@ describe('ReviewsService Unit Tests', () => {
       expect(createdReview).toBeTruthy();
       expect(createdReview?.segment).toBe('1');
       expect(createdReview?.snowType).toBe('1');
-      expect(createdReview?.details).toBe(4);
+      expect(createdReview?.details).toBe(3); // stones=1 + branches=2
       expect(createdReview?.comment).toBe('Great conditions today!');
-    });
-
-    it('should throw error when segment ID mismatch', async () => {
-      const reviewData = {
-        segment: '1',
-        snowType: 1,
-        details: 4,
-        comment: 'Test comment',
-      };
-
-      await expect(
-        reviewsService.createReview(reviewData, '2')
-      ).rejects.toThrow('Segment ID mismatch');
     });
 
     it('should create review with null snowType when not provided', async () => {
@@ -301,17 +289,16 @@ describe('ReviewsService Unit Tests', () => {
         },
       });
 
-      const reviewData = {
-        segment: '1',
+      const reviewData: ReviewRequest = {
         snowType: null,
-        details: 3,
+        hazards: ['branches'],
         comment: 'Average conditions',
       };
 
       const result = await reviewsService.createReview(reviewData, '1');
 
       expect(result.snowType).toBeUndefined();
-      expect(result.details).toBe(3);
+      expect(result.details).toBe(2); // branches=2
       expect(result.comment).toBe('Average conditions');
     });
 
@@ -326,10 +313,9 @@ describe('ReviewsService Unit Tests', () => {
         },
       });
 
-      const reviewData = {
-        segment: '1',
+      const reviewData: ReviewRequest = {
         snowType: null,
-        details: null,
+        hazards: [], // Empty hazards array
         comment: null,
       };
 

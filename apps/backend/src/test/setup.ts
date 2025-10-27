@@ -29,6 +29,7 @@ export default async function setup() {
     await prisma.snowType.deleteMany();
     await prisma.user.deleteMany();
     await prisma.role.deleteMany();
+    await prisma.weather.deleteMany();
   } catch (error) {
     console.error('Error setting up test database:', error);
     throw error;

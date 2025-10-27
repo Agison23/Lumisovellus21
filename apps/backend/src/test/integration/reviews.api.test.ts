@@ -21,6 +21,7 @@ describe('Reviews API Integration Tests', () => {
     // Clean up data before each test (in correct order to avoid foreign key constraints)
     await testPrisma.nearbyUser.deleteMany();
     await testPrisma.helpRequest.deleteMany();
+    await testPrisma.locationData.deleteMany();
     await testPrisma.userReview.deleteMany();
     await testPrisma.snowType.deleteMany();
     await testPrisma.segment.deleteMany();
@@ -291,9 +292,8 @@ describe('Reviews API Integration Tests', () => {
       });
 
       const reviewData = {
-        segment: '1',
         snowType: '1',
-        details: 4,
+        hazards: ['stones', 'branches'],
         comment: 'Great conditions today!',
       };
 
@@ -310,7 +310,7 @@ describe('Reviews API Integration Tests', () => {
           time: expect.any(String),
           segment: '1',
           snowType: '1',
-          details: 4,
+          details: 3, // stones=1 + branches=2
           comment: 'Great conditions today!',
           userId: null,
         },
@@ -327,7 +327,7 @@ describe('Reviews API Integration Tests', () => {
       expect(createdReview).toBeTruthy();
       expect(createdReview?.segment).toBe('1');
       expect(createdReview?.snowType).toBe('1');
-      expect(createdReview?.details).toBe(4);
+      expect(createdReview?.details).toBe(3); // stones=1 + branches=2
       expect(createdReview?.comment).toBe('Great conditions today!');
     });
 
@@ -343,9 +343,8 @@ describe('Reviews API Integration Tests', () => {
       });
 
       const reviewData = {
-        segment: '1',
         snowType: null,
-        details: null,
+        hazards: [],
         comment: null,
       };
 
@@ -358,40 +357,16 @@ describe('Reviews API Integration Tests', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.segment).toBe('1');
       expect(response.body.data.snowType).toBeUndefined();
-      expect(response.body.data.details).toBeNull();
+      expect(response.body.data.details).toBeNull(); // Empty hazards array = null
       expect(response.body.data.comment).toBeNull();
     });
 
-    it('should return 400 for segment ID mismatch', async () => {
-      const segment = await testPrisma.segment.create({
-        data: {
-          id: '1',
-          name: 'Test Segment',
-          terrain: 'Easy',
-          avalancheDanger: false,
-          isLowerSegment: 0,
-        },
-      });
-
-      const reviewData = {
-        segment: '1',
-        snowType: '1',
-        details: 4,
-        comment: 'Great conditions',
-      };
-
-      await request(app)
-        .post('/api/v1/segments/2/reviews')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(reviewData)
-        .expect(500);
-    });
+    // Removed test: "segment ID mismatch" - no longer applicable since segment comes from URL
 
     it('should return 401 without authentication', async () => {
       const reviewData = {
-        segment: '1',
         snowType: '1',
-        details: 4,
+        hazards: ['stones'],
         comment: 'Great conditions',
       };
 
@@ -403,9 +378,8 @@ describe('Reviews API Integration Tests', () => {
 
     it('should return 401 with invalid token', async () => {
       const reviewData = {
-        segment: '1',
         snowType: '1',
-        details: 4,
+        hazards: ['stones'],
         comment: 'Great conditions',
       };
 

@@ -65,11 +65,16 @@ export interface SegmentUpdate {
 }
 
 // Review Types
+/**
+ * Hazard types that can be reported on a trail segment
+ */
+export type HazardType = 'stones' | 'branches';
+
 export interface ReviewRequest {
-  segment: string;
-  snowType: string;
-  details: number;
-  comment: string;
+  snowType: string | null;
+  /** Array of hazards encountered on the trail (e.g., ["stones", "branches"]) */
+  hazards: HazardType[];
+  comment: string | null;
 }
 
 export interface Review {
