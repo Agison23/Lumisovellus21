@@ -48,6 +48,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get definitions => 'MÄÄRITELMÄT';
 
   @override
+  String get snowDefinitionsPageTitle => 'Määritelmät';
+
+  @override
   String get avalancheWarning => 'Lumivyöryvaroitus';
 
   @override
@@ -189,4 +192,105 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get addObservation => 'Lisää havainto';
+
+  @override
+  String get rescue => 'Pelastus';
+
+  @override
+  String get rescuePageTitle => 'Pelastus';
+
+  @override
+  String get rescuePageLatitude => 'Leveysaste';
+
+  @override
+  String get rescuePageLongitude => 'Pituusaste';
+
+  @override
+  String get rescuePageAccuracy => 'Paikannustarkkuus';
+
+  @override
+  String get rescuePageHelpRequestDescription =>
+      'Avunpyyntö hälyttää ja lähettää sijaintisi lähellä oleville auttajille';
+
+  @override
+  String get rescuePageEmergencyCallDescription =>
+      'Vakavassa hätätilanteessa soita hätänumeroon 112';
+
+  @override
+  String get rescuePageEmergencyCallFailed =>
+      'Puhelinsovellusta ei voitu avata';
+
+  @override
+  String get rescuePageIndicateNeed => 'Ilmoita tarpeesi';
+
+  @override
+  String get rescuePageHealthIssue => 'Terveysongelma';
+
+  @override
+  String get rescuePageEquipmentIssue => 'Varusteongelma';
+
+  @override
+  String get rescuePageImLost => 'Olen eksyksissä';
+
+  @override
+  String get rescuePageRequestHelp => 'Pyydä apua';
+
+  @override
+  String get rescuePageRequestHelpConfirm =>
+      'Lähetetäänkö avunpyyntö lähellä oleville pelastajille?';
+
+  @override
+  String get map => 'Kartta';
+
+  @override
+  String get weather => 'Sää';
+
+  @override
+  String get settings => 'Asetukset';
+
+  @override
+  String get callForHelp => 'Pyydä apua';
+
+  @override
+  String get currentLocation => 'Nykyinen sijainti';
+
+  @override
+  String get locationNotAvailable => 'Sijainti ei saatavilla';
+
+  @override
+  String get userInformation => 'Käyttäjätiedot';
+
+  @override
+  String get userInformationSubtitle => 'Hallitse henkilökohtaisia tietojasi';
+
+  @override
+  String get settingsPageSnowDefinitions => 'Lumityypit';
+
+  @override
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Näytä lumityyppien määritelmät';
+
+  @override
+  String get language => 'Kieli';
+
+  @override
+  String get languageSubtitle => 'Vaihda sovelluksen kieltä';
+
+  @override
+  String get selectLanguage => 'Valitse kieli';
+
+  @override
+  String get english => 'Englanti (English)';
+
+  @override
+  String get finnish => 'Suomi';
+
+  @override
+  String get userInfoNotImplemented => 'Käyttäjätieto-ominaisuus tulossa pian';
+
+  @override
+  String get dialogConfirm => 'Vahvista';
+
+  @override
+  String get dialogCancel => 'Peruuta';
 }

@@ -1,107 +1,102 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
+import 'package:lumisovellus/features/settings/view/settings_page.dart';
+import 'package:lumisovellus/features/map/views/map_screen.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'core/i18n/locale_provider.dart';
-import 'core/data/providers.dart';
-// import 'features/onboarding/view/onboarding_page.dart';
-import 'features/map/views/map_screen.dart';
-import 'features/snow_definitions/view/snow_definitions_page.dart';
+
+// Global locale notifier for simple app-wide locale switching.
+// Replace with your preferred state management/localization solution as needed.
+final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   const token = String.fromEnvironment('ACCESS_TOKEN');
   MapboxOptions.setAccessToken(token);
 
-  runApp(const ProviderScope(child: App()));
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final container = ProviderContainer();
-    unawaited(container.read(jobRunnerProvider).runOnce(batch: 32));
-  });
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class App extends ConsumerWidget {
-  const App({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider);
-    return MaterialApp(
-      locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const RootScaffold(), // <- persistent nav here
-      routes: {
-        '/snow-definitions': (context) => const SnowDefinitionsPage(),
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Locale>(
+      valueListenable: localeNotifier,
+      builder: (context, locale, _) {
+        return MaterialApp(
+          title: 'RescueApp',
+          locale: locale,
+          supportedLocales: const [
+            Locale('en'),
+            Locale('fi'),
+            // add other supported locales here
+          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          theme: ThemeData(useMaterial3: true),
+          home: const MainShell(),
+        );
       },
     );
   }
 }
 
-class RootScaffold extends ConsumerStatefulWidget {
-  const RootScaffold({super.key});
+class MainShell extends StatefulWidget {
+  const MainShell({super.key});
+
   @override
-  ConsumerState<RootScaffold> createState() => _RootScaffoldState();
+  State<MainShell> createState() => _MainShellState();
 }
 
-class _RootScaffoldState extends ConsumerState<RootScaffold> {
+class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    MapScreen(),
-    SnowDefinitionsPage(),
-    // simple placeholder - replace with real weather page when available
-    Center(
-        child: Text('Weather (coming soon)',
-            style: TextStyle(fontSize: 20))),
+  final List<Widget> _pages = const [
+    RescuePage(),
+    MapScreen(), // existing screen in your project
+    _WeatherPlaceholder(),
+    SettingsPage(),
   ];
-
-  void _onTap(int index) {
-    setState(() => _currentIndex = index);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // allow body to be rendered under the bottomNavigationBar so the translucent
-      // background actually shows the content beneath it
-      extendBody: true,
-      // keep the pages but preserve state with IndexedStack
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      // semi-transparent, always-on bottom navigation bar
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          // container provides the translucent background
-          color: const Color(0x99000000), // ~60% opacity black
-          child: BottomNavigationBar(
-            // make the bar itself transparent so the container's opacity shows
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white70,
-            currentIndex: _currentIndex,
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.map),
-                label: 'Map',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline),
-                label: 'Definitions',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.cloud_outlined),
-                label: 'Weather',
-              ),
-            ],
-            onTap: _onTap,
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFAFAFAFA),
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: (idx) => setState(() => _currentIndex = idx),
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.local_hospital),
+            label: AppLocalizations.of(context).rescue,
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.map),
+            label: AppLocalizations.of(context).map,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.cloud),
+            label: AppLocalizations.of(context).weather,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context).settings,
+          ),
+        ],
       ),
     );
+  }
+}
+
+class _WeatherPlaceholder extends StatelessWidget {
+  const _WeatherPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(backgroundColor: Colors.white);
   }
 }

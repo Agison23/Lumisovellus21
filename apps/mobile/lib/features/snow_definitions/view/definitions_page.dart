@@ -12,7 +12,7 @@ class DefinitionsPage extends StatelessWidget {
     final t = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       extendBody: true,
       // allow the page content to extend under the bottom nav so the nav's
       // translucency can show the actual page content beneath it
@@ -28,7 +28,7 @@ class DefinitionsPage extends StatelessWidget {
               color: const Color(0xff324c6d),
               child: Center(
                 child: Text(
-                  t.definitions,
+                  t.snowDefinitionsPageTitle.toUpperCase(),
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 24,
@@ -108,7 +108,7 @@ class DefinitionsPage extends StatelessWidget {
           Text(
             t.snowTypes,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
+              color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
