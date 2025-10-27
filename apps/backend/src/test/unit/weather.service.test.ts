@@ -212,7 +212,7 @@ describe('WeatherService Unit Tests', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 500,
-      } as Response);
+      } as any);
 
       const result = await weatherService.fetchFmiWeatherData();
 
@@ -228,7 +228,7 @@ describe('WeatherService Unit Tests', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 500,
-      } as Response);
+      } as any);
 
       const result = await weatherService.updateWeatherData();
 

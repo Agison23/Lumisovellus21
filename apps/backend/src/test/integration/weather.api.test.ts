@@ -3,7 +3,6 @@ import request from 'supertest';
 import express from 'express';
 import { testPrisma } from '../vitest.setup';
 import weatherRoutes from '../../api/routes/weather/weatherRoutes';
-import { ApiResponseHandler } from '../../api/middleware/responseHandler';
 import { errorHandler } from '../../api/middleware/errorHandler';
 
 // Create test app
@@ -252,7 +251,7 @@ describe('Weather API Integration Tests', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         text: async () => mockXmlResponse,
-      } as Response);
+      } as any);
 
       const response = await request(app).post('/weather/update');
 
@@ -281,7 +280,7 @@ describe('Weather API Integration Tests', () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 500,
-      } as Response);
+      } as any);
 
       const response = await request(app).post('/weather/update');
 

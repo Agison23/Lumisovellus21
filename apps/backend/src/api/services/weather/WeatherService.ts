@@ -26,7 +26,7 @@ export class WeatherService extends BaseService {
       const url =
         'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&fmisid=101982&';
 
-      const response = await fetch(url);
+      const response = await global.fetch(url);
       if (!response.ok) {
         console.error('Failed to fetch weather data from FMI');
         return null;
