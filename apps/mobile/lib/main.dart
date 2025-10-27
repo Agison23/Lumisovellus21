@@ -97,6 +97,6 @@ class _WeatherPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(backgroundColor: Colors.white);
+    return const Scaffold(backgroundColor: Colors.white, body: Center(child: Text('Weather screen coming soon!')));
   }
 }
