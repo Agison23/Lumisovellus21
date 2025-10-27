@@ -3,12 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/snow_definitions/view/snow_definitions_page.dart';
 import 'package:lumisovellus/main.dart';
+import 'package:country_flags/country_flags.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   void _showLanguageDialog(BuildContext context) {
     final t = AppLocalizations.of(context);
+    final currentLocale = localeNotifier.value;
+
+    final languages = [('GB', 'en', t.english), ('FI', 'fi', t.finnish)];
 
     showDialog(
       context: context,
@@ -17,24 +21,44 @@ class SettingsPage extends ConsumerWidget {
         title: Text(t.selectLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: Text(t.english),
-              onTap: () {
-                localeNotifier.value = const Locale('en');
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: Text(t.finnish),
-              onTap: () {
-                localeNotifier.value = const Locale('fi');
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+          children: languages.map((language) {
+            final (countryCode, localeCode, displayName) = language;
+            final isSelected = currentLocale.languageCode == localeCode;
+
+            // return ListTile(
+            //   leading: CountryFlag.fromCountryCode(
+            //     countryCode,
+            //     theme: const ImageTheme(shape: Circle()),
+            //   ),
+            //   title: Text(displayName),
+            //   trailing: isSelected
+            //       ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor)
+            //       : null,
+            //   onTap: () {
+            //     localeNotifier.value = Locale(localeCode);
+            //     Navigator.of(context).pop();
+            //   },
+            // );
+            return Container(
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                    : Colors.transparent, // highlight color
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: CountryFlag.fromCountryCode(
+                  countryCode,
+                  theme: const ImageTheme(shape: Circle()),
+                ),
+                title: Text(displayName),
+                onTap: () {
+                  localeNotifier.value = Locale(localeCode);
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+          }).toList(),
         ),
         actions: [
           TextButton(
