@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { UsersController } from '../../controllers/users/UsersController';
-import { authenticateToken, requireRole, requireAdmin } from '../../middleware/auth';
+import {
+  authenticateToken,
+  requireRole,
+  requireAdmin,
+} from '../../middleware/auth';
 
 const router = Router();
 const usersController = new UsersController();

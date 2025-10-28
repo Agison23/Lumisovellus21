@@ -147,13 +147,16 @@ export class UsersService extends BaseService {
     }
   }
 
-  async updateUser(userId: string, data: Partial<{
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-    phoneNumber: string;
-  }>) {
+  async updateUser(
+    userId: string,
+    data: Partial<{
+      firstName: string;
+      lastName: string;
+      email: string;
+      role: string;
+      phoneNumber: string;
+    }>
+  ) {
     try {
       // Check if user exists first
       const existingUser = await this.prisma.user.findUnique({
@@ -173,7 +176,8 @@ export class UsersService extends BaseService {
       if (data.lastName !== undefined) updateData.lastName = data.lastName;
       if (data.email !== undefined) updateData.email = data.email;
       if (data.role !== undefined) updateData.role = data.role;
-      if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber;
+      if (data.phoneNumber !== undefined)
+        updateData.phoneNumber = data.phoneNumber;
 
       const updatedUser = await this.prisma.user.update({
         where: { id: userId },
@@ -210,22 +214,19 @@ export class UsersService extends BaseService {
 
       // Delete related data first (in correct order to avoid foreign key constraints)
       await this.prisma.nearbyUser.deleteMany({
-        where: { 
-          OR: [
-            { helpGiver: userId },
-            { helpRequester: userId }
-          ]
+        where: {
+          OR: [{ helpGiver: userId }, { helpRequester: userId }],
         },
       });
 
       await this.prisma.helpRequest.deleteMany({
         where: { userId },
       });
-      
+
       await this.prisma.locationData.deleteMany({
         where: { userId },
       });
-      
+
       await this.prisma.userReview.deleteMany({
         where: { userId },
       });

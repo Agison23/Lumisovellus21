@@ -459,7 +459,10 @@ describe('Users API Integration Tests', () => {
         firstName: 'Updated',
       };
 
-      await request(app).put(`/api/v1/users/${userId}`).send(updateData).expect(401);
+      await request(app)
+        .put(`/api/v1/users/${userId}`)
+        .send(updateData)
+        .expect(401);
     });
 
     it('should return 404 for non-existent user', async () => {

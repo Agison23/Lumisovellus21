@@ -55,7 +55,11 @@ async function getSwaggerOptions() {
       showCommonExtensions: true,
       requestInterceptor: (request: any) => {
         // Ensure Bearer prefix is added to Authorization header if not present
-        if (request.headers && request.headers.Authorization && !request.headers.Authorization.startsWith('Bearer ')) {
+        if (
+          request.headers &&
+          request.headers.Authorization &&
+          !request.headers.Authorization.startsWith('Bearer ')
+        ) {
           request.headers.Authorization = `Bearer ${request.headers.Authorization}`;
         }
         return request;

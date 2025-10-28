@@ -532,8 +532,12 @@ describe('Segments API Integration Tests', () => {
         .expect(200);
 
       expect(response.body.data).toHaveLength(2);
-      expect(response.body.data.map((u: any) => u.description)).toContain('Recent update');
-      expect(response.body.data.map((u: any) => u.description)).toContain('Two days ago update');
+      expect(response.body.data.map((u: any) => u.description)).toContain(
+        'Recent update'
+      );
+      expect(response.body.data.map((u: any) => u.description)).toContain(
+        'Two days ago update'
+      );
     });
 
     it('should filter by both segmentId and updatedSince', async () => {
@@ -581,13 +585,22 @@ describe('Segments API Integration Tests', () => {
       // Get updates in segment-all-1 since 2 days ago
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
       const response = await request(app)
-        .get(`/api/v1/updates?segmentId=segment-all-1&updatedSince=${twoDaysAgo.toISOString()}`)
+        .get(
+          `/api/v1/updates?segmentId=segment-all-1&updatedSince=${twoDaysAgo.toISOString()}`
+        )
         .expect(200);
 
       expect(response.body.data).toHaveLength(2);
-      expect(response.body.data.map((u: any) => u.segment)).toEqual(['segment-all-1', 'segment-all-1']);
-      expect(response.body.data.map((u: any) => u.description)).toContain('Recent update in segment 1');
-      expect(response.body.data.map((u: any) => u.description)).toContain('One day ago in segment 1');
+      expect(response.body.data.map((u: any) => u.segment)).toEqual([
+        'segment-all-1',
+        'segment-all-1',
+      ]);
+      expect(response.body.data.map((u: any) => u.description)).toContain(
+        'Recent update in segment 1'
+      );
+      expect(response.body.data.map((u: any) => u.description)).toContain(
+        'One day ago in segment 1'
+      );
     });
   });
 });

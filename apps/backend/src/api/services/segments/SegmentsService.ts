@@ -26,7 +26,7 @@ export class SegmentsService extends BaseService {
       let bboxParams: [number, number, number, number] | null = null;
       if (queryParams?.bbox) {
         const bboxParts = queryParams.bbox.split(',').map(Number);
-        if (bboxParts.length === 4 && bboxParts.every(num => !isNaN(num))) {
+        if (bboxParts.length === 4 && bboxParts.every((num) => !isNaN(num))) {
           bboxParams = [bboxParts[0], bboxParts[1], bboxParts[2], bboxParts[3]];
         }
       }
@@ -52,9 +52,10 @@ export class SegmentsService extends BaseService {
             lat: coord.latitude,
             lng: coord.longitude,
           })),
-          lastUpdated: segment.snowUpdates.length > 0 
-            ? segment.snowUpdates[0].time 
-            : segment.updatedAt,
+          lastUpdated:
+            segment.snowUpdates.length > 0
+              ? segment.snowUpdates[0].time
+              : segment.updatedAt,
           updatedAt: segment.updatedAt,
         }))
         .filter((segment) => {
@@ -69,11 +70,12 @@ export class SegmentsService extends BaseService {
           // Filter by bounding box
           if (bboxParams) {
             const [minLat, minLng, maxLat, maxLng] = bboxParams;
-            const withinBounds = segment.Points.some(point => 
-              point.lat >= minLat && 
-              point.lat <= maxLat && 
-              point.lng >= minLng && 
-              point.lng <= maxLng
+            const withinBounds = segment.Points.some(
+              (point) =>
+                point.lat >= minLat &&
+                point.lat <= maxLat &&
+                point.lng >= minLng &&
+                point.lng <= maxLng
             );
             if (!withinBounds) {
               return false;

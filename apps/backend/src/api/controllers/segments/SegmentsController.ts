@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
+import {
+  SegmentsService,
+  SegmentQueryParams,
+} from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
 
