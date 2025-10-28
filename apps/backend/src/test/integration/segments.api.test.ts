@@ -457,5 +457,137 @@ describe('Segments API Integration Tests', () => {
       // Should default to 3 days
       expect(response.body.success).toBe(true);
     });
+
+    it('should filter by segmentId', async () => {
+      const now = new Date();
+
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-segment-1',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: now,
+            description: 'Update in segment 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-segment-2',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-2',
+            time: now,
+            description: 'Update in segment 2',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      const response = await request(app)
+        .get('/api/v1/updates?segmentId=segment-all-1')
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(1);
+      expect(response.body.data[0].segment).toBe('segment-all-1');
+      expect(response.body.data[0].description).toBe('Update in segment 1');
+    });
+
+    it('should filter by updatedSince date', async () => {
+      const now = new Date();
+      const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+      const fourDaysAgo = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-recent-filtered',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: now,
+            description: 'Recent update',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-two-days-filtered',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: twoDaysAgo,
+            description: 'Two days ago update',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-old-filtered',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-2',
+            time: fourDaysAgo,
+            description: 'Old update',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      // Get updates since 3 days ago
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      const response = await request(app)
+        .get(`/api/v1/updates?updatedSince=${threeDaysAgo.toISOString()}`)
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data.map((u: any) => u.description)).toContain('Recent update');
+      expect(response.body.data.map((u: any) => u.description)).toContain('Two days ago update');
+    });
+
+    it('should filter by both segmentId and updatedSince', async () => {
+      const now = new Date();
+      const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-combined-1',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: now,
+            description: 'Recent update in segment 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-combined-2',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: oneDayAgo,
+            description: 'One day ago in segment 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-combined-3',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-1',
+            time: threeDaysAgo,
+            description: 'Three days ago in segment 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-combined-4',
+            creator: 'test-user-all-updates',
+            segment: 'segment-all-2',
+            time: now,
+            description: 'Recent update in segment 2',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      // Get updates in segment-all-1 since 2 days ago
+      const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+      const response = await request(app)
+        .get(`/api/v1/updates?segmentId=segment-all-1&updatedSince=${twoDaysAgo.toISOString()}`)
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data.map((u: any) => u.segment)).toEqual(['segment-all-1', 'segment-all-1']);
+      expect(response.body.data.map((u: any) => u.description)).toContain('Recent update in segment 1');
+      expect(response.body.data.map((u: any) => u.description)).toContain('One day ago in segment 1');
+    });
   });
 });

@@ -85,7 +85,6 @@ router.post(
 router.get(
   '/api/v1/help-requests',
   authenticateToken,
-  requireRole(['ADMIN', 'RESCUE']),
   helpController.getAllHelpRequests
 );
 

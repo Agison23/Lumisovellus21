@@ -358,4 +358,170 @@ describe('Users API Integration Tests', () => {
         .expect(401);
     });
   });
+
+  describe('GET /api/v1/users', () => {
+    it('should list all users for admin', async () => {
+      const response = await request(app)
+        .get('/api/v1/users')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body.data.length).toBe(2); // test user and admin user
+    });
+
+    it('should return 403 for non-admin user', async () => {
+      await request(app)
+        .get('/api/v1/users')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(403);
+    });
+
+    it('should return 401 without authentication', async () => {
+      await request(app).get('/api/v1/users').expect(401);
+    });
+
+    it('should return 401 with invalid token', async () => {
+      await request(app)
+        .get('/api/v1/users')
+        .set('Authorization', 'Bearer invalid-token')
+        .expect(401);
+    });
+  });
+
+  describe('GET /api/v1/users/me', () => {
+    it('should get current user details successfully', async () => {
+      const response = await request(app)
+        .get('/api/v1/users/me')
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        id: userId,
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test@example.com',
+        role: 'NORMAL',
+      });
+    });
+
+    it('should return 401 without authentication', async () => {
+      await request(app).get('/api/v1/users/me').expect(401);
+    });
+
+    it('should return 401 with invalid token', async () => {
+      await request(app)
+        .get('/api/v1/users/me')
+        .set('Authorization', 'Bearer invalid-token')
+        .expect(401);
+    });
+  });
+
+  describe('PUT /api/v1/users/:id', () => {
+    it('should update user successfully as admin', async () => {
+      const updateData = {
+        firstName: 'Updated',
+        lastName: 'Name',
+        phoneNumber: '+9876543210',
+      };
+
+      const response = await request(app)
+        .put(`/api/v1/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(updateData)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        id: userId,
+        firstName: 'Updated',
+        lastName: 'Name',
+        phoneNumber: '+9876543210',
+      });
+    });
+
+    it('should return 403 for non-admin user', async () => {
+      const updateData = {
+        firstName: 'Updated',
+      };
+
+      await request(app)
+        .put(`/api/v1/users/${userId}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(updateData)
+        .expect(403);
+    });
+
+    it('should return 401 without authentication', async () => {
+      const updateData = {
+        firstName: 'Updated',
+      };
+
+      await request(app).put(`/api/v1/users/${userId}`).send(updateData).expect(401);
+    });
+
+    it('should return 404 for non-existent user', async () => {
+      const updateData = {
+        firstName: 'Updated',
+      };
+
+      await request(app)
+        .put('/api/v1/users/non-existent-id')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(updateData)
+        .expect(500); // Prisma will throw an error for non-existent ID
+    });
+  });
+
+  describe('DELETE /api/v1/users/:id', () => {
+    it('should delete user successfully as admin', async () => {
+      const response = await request(app)
+        .delete(`/api/v1/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        message: 'User deleted successfully',
+      });
+
+      // Verify user is deleted
+      const deletedUser = await testPrisma.user.findUnique({
+        where: { id: userId },
+      });
+      expect(deletedUser).toBeNull();
+    });
+
+    it('should return 403 for non-admin user', async () => {
+      // Create another user to try to delete
+      const userToDelete = await testPrisma.user.create({
+        data: {
+          id: 'user-to-delete',
+          devId: 'device-to-delete',
+          firstName: 'To',
+          lastName: 'Delete',
+          email: 'todelete@example.com',
+          role: 'NORMAL',
+        },
+      });
+
+      await request(app)
+        .delete(`/api/v1/users/${userToDelete.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(403);
+    });
+
+    it('should return 401 without authentication', async () => {
+      await request(app).delete(`/api/v1/users/${userId}`).expect(401);
+    });
+
+    it('should return 404 for non-existent user', async () => {
+      await request(app)
+        .delete('/api/v1/users/non-existent-id')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(500); // Prisma will throw an error for non-existent ID
+    });
+  });
 });

@@ -9,8 +9,28 @@ const segmentsController = new SegmentsController();
  * /api/v1/segments:
  *   get:
  *     summary: Get all segments
- *     description: Retrieve all ski segments with their coordinates and terrain information
+ *     description: Retrieve all ski segments with their coordinates and terrain information. Supports filtering by bounding box, search, and updatedSince.
  *     tags: [Segments]
+ *     parameters:
+ *       - in: query
+ *         name: bbox
+ *         schema:
+ *           type: string
+ *         description: Bounding box to filter segments (format: "minLat,minLng,maxLat,maxLng")
+ *         example: "64.0,25.0,66.0,30.0"
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term to filter segments by name
+ *         example: "tunturi"
+ *       - in: query
+ *         name: updatedSince
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Return only segments updated since this date (ISO 8601 format)
+ *         example: "2024-01-01T00:00:00Z"
  *     responses:
  *       200:
  *         description: Segments retrieved successfully
@@ -87,8 +107,8 @@ router.get(
  * @swagger
  * /api/v1/updates:
  *   get:
- *     summary: Get latest updates for all segments
- *     description: Retrieve the most recent updates for all segments from the last 3 days
+ *     summary: Get updates for segments
+ *     description: Get updates filtered by updatedSince or time range; include review details.
  *     tags: [Updates]
  *     parameters:
  *       - in: query
@@ -98,10 +118,34 @@ router.get(
  *           minimum: 1
  *           maximum: 30
  *           default: 3
- *         description: Number of days to look back for updates
+ *         description: Number of days to look back (ignored if updatedSince/from/to provided)
+ *       - in: query
+ *         name: segmentId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Filter updates by a specific segment ID
+ *       - in: query
+ *         name: updatedSince
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Return updates since this timestamp (ISO 8601)
+ *       - in: query
+ *         name: from
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Start of time range (ISO 8601). If provided, overrides days/updatedSince.
+ *       - in: query
+ *         name: to
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: End of time range (ISO 8601). If provided, overrides days/updatedSince.
  *     responses:
  *       200:
- *         description: Updates retrieved successfully
+ *         description: Updates retrieved successfully, with review details included
  *         content:
  *           application/json:
  *             schema:

@@ -1,41 +1,86 @@
-# North Star
+# # North Star
 
-# Backend
+## Backend API
 
-## Local development with docker
+### Docker Development
 
-A local development environment is available with docker.
+For running with Docker:
 
-1. Copy the `.env.example` file into `.env` file in the `backend` directory
+1. **Copy environment file:**
+   ```bash
+   cp .env.example .env
+   ```
 
-```shell session
-cp backend/app/.env.example backend/app/.env
-```
+2. **Build and run containers:**
+   ```bash
+   docker-compose up --build
+   ```
 
-2. Build the docker containers based on the environment
+3. **Access the backend container:**
+   ```bash
+   docker-compose exec backend sh
+   ```
 
-   For development
+### Local Development
 
-```shell session
-    NODE_ENV=dev docker-compose up --build
-```
+#### Running the Backend
 
-    For Production
+1. **Navigate to the backend directory:**
+   ```bash
+   cd apps/backend
+   ```
 
-```shell session
-    NODE_ENV=prod docker-compose up --build
-```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-3. Launch docker-compose
+3. **Set up the database:**
+   ```bash
+   # Create and copy .env file
+   cp .env.example .env
+   
+   # Generate Prisma client
+   npm run db:generate
+   ```
 
-```shell session
-docker-compose up
-```
+4. **Run database migrations:**
+   ```bash
+   npm run db:migrate
+   ```
 
-At this point, the docker should be up and running. Now, let's add some data.
+5. **Seed the database with default data:**
+   ```bash
+   npm run db:seed
+   ```
 
-4. Access the docker container command line
+6. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-```shell session
-docker-compose exec backend sh
-```
+The server will start on **http://localhost:3001**
+
+### API Documentation (Swagger)
+
+Once the server is running, you can access the Swagger documentation at:
+
+**http://localhost:3001/api-docs**
+
+This interactive documentation allows you to:
+- Browse all available endpoints
+- Test API endpoints directly from the browser
+- View request/response schemas
+- See authentication requirements
+
+### Default Users
+
+The seed script creates the following test users:
+
+| Email                     | Password | Role    | Description              |
+|---------------------------|----------|---------|--------------------------|
+| admin@lumisovellus.fi     | admin123 | ADMIN   | Administrative access     |
+| user@lumisovellus.fi      | user123  | NORMAL  | Regular user account     |
+| rescue@lumisovellus.fi    | rescue123| RESCUE  | Rescue operator account  |
+
+You can use these credentials to authenticate and test the API endpoints.

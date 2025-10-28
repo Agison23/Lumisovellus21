@@ -34,10 +34,32 @@ try {
 async function getSwaggerOptions() {
   const baseOptions = {
     explorer: true,
-    customCss: '.swagger-ui .topbar { display: none }',
+    customCss: `
+      .swagger-ui .topbar { display: none }
+      .swagger-ui .auth-wrapper { margin: 20px 0; }
+      .swagger-ui .authorize { 
+        padding: 10px 20px; 
+        background: #4CAF50; 
+        color: white; 
+        border: none; 
+        border-radius: 4px; 
+        cursor: pointer;
+      }
+    `,
     customSiteTitle: 'Lumisovellus API Documentation',
     swaggerOptions: {
-      persistAuthorization: false,
+      persistAuthorization: true,
+      displayRequestDuration: true,
+      filter: true,
+      showExtensions: true,
+      showCommonExtensions: true,
+      requestInterceptor: (request: any) => {
+        // Ensure Bearer prefix is added to Authorization header if not present
+        if (request.headers && request.headers.Authorization && !request.headers.Authorization.startsWith('Bearer ')) {
+          request.headers.Authorization = `Bearer ${request.headers.Authorization}`;
+        }
+        return request;
+      },
     },
   };
 

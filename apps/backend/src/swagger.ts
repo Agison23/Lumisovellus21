@@ -1,6 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
+  openapi: '3.0.0',
   info: {
     version: 'v2.0.0',
     title: 'Lumisovellus API',
@@ -15,14 +16,15 @@ const doc = {
       url: 'https://opensource.org/licenses/MIT',
     },
   },
-  host:
-    process.env.NODE_ENV === 'production'
-      ? 'api.lumisovellus.fi'
-      : `localhost:${process.env.PORT || 3001}`,
-  basePath: '/',
-  schemes: ['http', 'https'],
-  consumes: ['application/json'],
-  produces: ['application/json'],
+  servers: [
+    {
+      url:
+        process.env.NODE_ENV === 'production'
+          ? 'https://api.lumisovellus.fi'
+          : `http://localhost:${process.env.PORT || 3001}`,
+      description: 'API Server',
+    },
+  ],
   tags: [
     { name: 'Health', description: 'Health check endpoints' },
     {
@@ -36,19 +38,19 @@ const doc = {
     { name: 'Users', description: 'User management and mobile features' },
     { name: 'Help Requests', description: 'Emergency and assistance requests' },
   ],
-  securityDefinitions: {
-    BearerAuth: {
-      type: 'apiKey',
-      in: 'header',
-      name: 'Authorization',
-      description: 'JWT token for authentication. Format: Bearer <token>',
+  components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter your JWT token (without the Bearer prefix)',
+      },
     },
-  },
-  security: [],
-  definitions: {
-    Error: {
-      type: 'object',
-      properties: {
+    schemas: {
+      Error: {
+        type: 'object',
+        properties: {
         success: {
           type: 'boolean',
           example: false,
@@ -301,6 +303,7 @@ const doc = {
         chatRoomId: { type: 'string', example: 'room123' },
       },
     },
+  },
   },
 };
 

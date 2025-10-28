@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { SegmentsService } from '../../services/segments/SegmentsService';
+import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
 
@@ -12,7 +12,13 @@ export class SegmentsController {
 
   getAllSegments = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
-      const segments = await this.segmentsService.getAllSegments();
+      const queryParams: SegmentQueryParams = {
+        bbox: req.query.bbox as string | undefined,
+        search: req.query.search as string | undefined,
+        updatedSince: req.query.updatedSince as string | undefined,
+      };
+
+      const segments = await this.segmentsService.getAllSegments(queryParams);
       ApiResponseHandler.success(res, segments);
     }
   );
@@ -28,7 +34,16 @@ export class SegmentsController {
   getAllUpdates = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const days = parseInt(req.query.days as string) || 3;
-      const updates = await this.segmentsService.getAllUpdates(days);
+      const segmentId = (req.query.segmentId as string) || undefined;
+      const updatedSince = (req.query.updatedSince as string) || undefined;
+      const from = (req.query.from as string) || undefined;
+      const to = (req.query.to as string) || undefined;
+      const updates = await this.segmentsService.getAllUpdates(days, {
+        segmentId,
+        updatedSince,
+        from,
+        to,
+      });
       ApiResponseHandler.success(res, updates);
     }
   );
