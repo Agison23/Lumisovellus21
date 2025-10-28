@@ -279,6 +279,16 @@ export default function Map3d() {
 		setHoveredAreaId(null);
 	}, []);
 
+	const form = useMultiStepForm(
+		{
+			areaId: selectedArea?.id || null,
+			timestamp: new Date(),
+			selectedSnowTypeId: selectedSnowTypeId,
+			obstacleIds: selectedObstacleIds,
+		},
+		3
+	);
+
 	const handleClick = useCallback(
 		(event: MapMouseEvent) => {
 			const feature = event.features && event.features[0];
@@ -317,7 +327,7 @@ export default function Map3d() {
 			form.goToStep(0);
 			submitMutation.reset();
 		},
-		[monitors]
+		[monitors, form, submitMutation]
 	);
 
 	const handleMapLoad = useCallback(() => {
@@ -330,16 +340,6 @@ export default function Map3d() {
 			}, 1500);
 		}
 	}, []);
-
-	const form = useMultiStepForm(
-		{
-			areaId: selectedArea?.id || null,
-			timestamp: new Date(),
-			selectedSnowTypeId: selectedSnowTypeId,
-			obstacleIds: selectedObstacleIds,
-		},
-		3
-	);
 
 	const getUpdateDataForArea = (
 		areaId: string
@@ -566,7 +566,7 @@ export default function Map3d() {
 											return (
 												<>
 													{guideUpdate && (
-														<div className="text-sm mb-2 text-primary">
+														<div className="text-sm text-primary">
 															<p>
 																{t("reportForm.lastUpdate.guide", {
 																	time: getPrettyTimeDiff(
@@ -586,7 +586,7 @@ export default function Map3d() {
 															</p>
 														</div>
 													)}
-													<Separator />
+													{userUpdate && guideUpdate && <Separator />}
 													{userUpdate && (
 														<div className="text-xs text-muted-foreground">
 															<p>{t("reportForm.observationType.visitor")}</p>
