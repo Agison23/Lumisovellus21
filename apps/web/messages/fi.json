@@ -36,6 +36,10 @@
 			"loadingSegmentData": "Segmenttitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
 			"loadingMonitorData": "Monitoritietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
 		},
+		"controls": {
+			"segments": "Segmentit",
+			"sensors": "Anturit"
+		},
 		"monitorInfo": {
 			"fields": {
 				"temperature": {

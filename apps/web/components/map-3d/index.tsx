@@ -4,7 +4,14 @@ import { FeatureCollection, Polygon } from "geojson";
 
 import { MapMouseEvent, type FilterSpecification } from "mapbox-gl";
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+	Activity,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import Map, { Layer, NavigationControl, Source } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
@@ -29,60 +36,28 @@ import {
 	TERRAIN_SOURCE_CONFIG,
 } from "@/lib/map/map-style";
 import {
-	InteractiveAreaFeature,
 	InteractiveAreaProperties,
-	mapAreas2,
-	mockSnowData,
 	mockUpdateData,
 	SnowType,
 	UpdateData,
 } from "@/lib/map/mock-data";
 import { Monitor } from "@/lib/snower/types";
-
-// for now, mock fetching from the API
-const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
-	await new Promise((resolve) => setTimeout(resolve, 500));
-	// throw new Error("Mock error fetching area types");
-	return mapAreas2;
-};
-
-const fetchSnowTypes = async (): Promise<SnowType[]> => {
-	await new Promise((resolve) => setTimeout(resolve, 500));
-	// mock if api throws error
-	// throw new Error("Mock error fetching snow types");
-	return mockSnowData;
-};
-
-const fetchUpdateData = async (): Promise<UpdateData[]> => {
-	await new Promise((resolve) => setTimeout(resolve, 500));
-	// throw new Error("Mock error fetching update data");
-	return mockUpdateData;
-};
-
-const fetchMonitorData = async (): Promise<Monitor[]> => {
-	const res = await fetch("/api/snower");
-	// throw new Error("Mock error fetching monitor data");
-
-	if (!res.ok) {
-		throw new Error("Failed to fetch monitor data");
-	}
-	return res.json();
-};
-
-function calculatePolygonArea(coordinates: number[][]): number {
-	// Shoelace formula for polygon area
-	// Note: This gives area in "degree squares" - only useful for comparison
-	let area = 0;
-	const n = coordinates.length;
-
-	for (let i = 0; i < n - 1; i++) {
-		const [lon1, lat1] = coordinates[i];
-		const [lon2, lat2] = coordinates[i + 1];
-		area += (lon2 - lon1) * (lat2 + lat1);
-	}
-
-	return Math.abs(area) / 2;
-}
+import {
+	fetchAreas,
+	fetchMonitorData,
+	fetchSnowTypes,
+	fetchUpdateData,
+} from "@/lib/map/loaders";
+import MapLoadingOverlay from "./map-loading";
+import MonitorInfo from "./monitor-info";
+import { calculatePolygonArea } from "@/lib/map/utils";
+import { Toggle } from "../ui/toggle";
+import { ActivityIcon, AreaChart, LandPlot } from "lucide-react";
+import {
+	loadControlState,
+	saveControlState,
+	CONTROL_STORAGE_KEYS,
+} from "@/lib/map/control-state";
 
 const submitObservation = async (data: {
 	areaId: string | null;
@@ -150,6 +125,15 @@ export default function Map3d() {
 		if (typeof window === "undefined") return DEFAULT_VIEW_STATE;
 		return loadCameraState() ?? DEFAULT_VIEW_STATE;
 	});
+
+	// map control states
+	const [showAreas, setShowAreas] = useState(true);
+	const [showMonitors, setShowMonitors] = useState(true);
+
+	useEffect(() => {
+		setShowAreas(loadControlState(CONTROL_STORAGE_KEYS.SHOW_AREAS, true));
+		setShowMonitors(loadControlState(CONTROL_STORAGE_KEYS.SHOW_MONITORS, true));
+	}, []);
 
 	const t = useTranslations("MapPage");
 
@@ -376,12 +360,6 @@ export default function Map3d() {
 		};
 	};
 
-	const getSnowTypeDetails = (
-		snowTypeId: number | null
-	): SnowType | undefined => {
-		return snowTypes.find((st) => st.id === snowTypeId);
-	};
-
 	const getPrettyTimeDiff = (pastTime: Date): string => {
 		const now = new Date();
 		const diffMs = now.getTime() - pastTime.getTime();
@@ -409,19 +387,12 @@ export default function Map3d() {
 	}
 	return (
 		<div className="relative w-full h-full">
-			{showLoading && (
-				<div
-					className={`absolute inset-0 z-50 flex items-center justify-center bg-background backdrop-blur-sm transition-opacity duration-500 ${
-						isLoading ? "opacity-100" : "opacity-0"
-					}`}
-				>
-					<div className="flex flex-col items-center gap-4">
-						<p className="text-primary text-lg font-medium animate-pulse">
-							{t("loading.map")}
-						</p>
-					</div>
-				</div>
-			)}
+			<MapLoadingOverlay
+				showLoading={showLoading}
+				isLoading={isLoading}
+				loadingText={t("loading.map")}
+			/>
+
 			<Map
 				initialViewState={viewState}
 				style={{ width: "100%", height: "100%" }}
@@ -459,79 +430,75 @@ export default function Map3d() {
 				<Layer {...hillshadeLayer} />
 				{!isLoading && (
 					<>
-						<Source id="monitors" type="geojson" data={monitorsGeoJson}>
-							<Layer
-								id="monitors-points"
-								type="circle"
-								paint={{
-									"circle-radius": 6,
-									"circle-color": "#ff6b6b",
-									"circle-stroke-width": 2,
-									"circle-stroke-color": "#fff",
-								}}
-							/>
-						</Source>
-						<Source
-							id="areas"
-							type="geojson"
-							data={areasGeoJson}
-							promoteId="id"
-						>
-							<Layer {...areaFillLayer} />
-							<Layer {...areaOutlineLayer} />
-							<Layer {...areaAvalancheDangerOutlineLayer} />
-							<Layer {...areaHoverLayer} filter={hoverFilter} />
-							<Layer {...areaSelectedLayer} filter={selectedFilter} />
-							<Layer {...areaLabelLayer} />
-						</Source>
+						{showMonitors && (
+							<Source id="monitors" type="geojson" data={monitorsGeoJson}>
+								<Layer
+									id="monitors-points"
+									type="circle"
+									paint={{
+										"circle-radius": 6,
+										"circle-color": "#ff6b6b",
+										"circle-stroke-width": 2,
+										"circle-stroke-color": "#fff",
+									}}
+								/>
+							</Source>
+						)}
+						{showAreas && (
+							<Source
+								id="areas"
+								type="geojson"
+								data={areasGeoJson}
+								promoteId="id"
+							>
+								<Layer {...areaFillLayer} />
+								<Layer {...areaOutlineLayer} />
+								<Layer {...areaAvalancheDangerOutlineLayer} />
+								<Layer {...areaHoverLayer} filter={hoverFilter} />
+								<Layer {...areaSelectedLayer} filter={selectedFilter} />
+								<Layer {...areaLabelLayer} />
+							</Source>
+						)}
 					</>
 				)}
 			</Map>
 
+			<div className="absolute bottom-15 bg-background rounded-lg flex text-xs gap-0.5 p-1 -translate-x-1/2 left-1/2">
+				<Toggle
+					size="sm"
+					pressed={showAreas}
+					onPressedChange={(pressed) => {
+						setShowAreas(pressed);
+						saveControlState(CONTROL_STORAGE_KEYS.SHOW_AREAS, pressed);
+					}}
+					variant="outline"
+					className="data-[state=on]:bg-transparent  data-[state=on]:*:[svg]:stroke-green-500 text-xs"
+				>
+					<LandPlot />
+					{t("controls.segments")}
+				</Toggle>
+				<Separator orientation="vertical" />
+				<Toggle
+					size="sm"
+					pressed={showMonitors}
+					onPressedChange={(pressed) => {
+						setShowMonitors(pressed);
+						saveControlState(CONTROL_STORAGE_KEYS.SHOW_MONITORS, pressed);
+					}}
+					variant="outline"
+					className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-green-500 text-xs"
+				>
+					<ActivityIcon />
+					{t("controls.sensors")}
+				</Toggle>
+			</div>
+
 			{selectedMonitor && (
-				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 w-80 max-w-[90vw]">
-					<div className="flex flex-col gap-2">
-						<h3 className="font-medium text-base">{selectedMonitor.name}</h3>
-						<Separator />
-						<div className="flex flex-col gap-3">
-							<div>
-								<p className="text-muted-foreground text-xs">
-									{t("monitorInfo.fields.temperature.label")}
-								</p>
-								{selectedMonitor.temperature === "No Data"
-									? t("monitorInfo.fields.temperature.noData")
-									: selectedMonitor.temperature}
-							</div>
-							<div>
-								<p className="text-muted-foreground text-xs">
-									{t("monitorInfo.fields.snowDepth.label")}
-								</p>
-								<p className="font-medium">
-									{selectedMonitor.snowDepth === "No Data"
-										? t("monitorInfo.fields.snowDepth.noData")
-										: selectedMonitor.snowDepth}
-								</p>
-							</div>
-							<div className="text-xs text-muted-foreground">
-								<p>
-									{t("monitorInfo.fields.coordinates.latitude")}:{" "}
-									{selectedMonitor.lat.toFixed(4)}
-								</p>
-								<p>
-									{t("monitorInfo.fields.coordinates.longitude")}:{" "}
-									{selectedMonitor.lng.toFixed(4)}
-								</p>
-							</div>
-						</div>
-					</div>
-					<Button
-						variant="default"
-						onClick={() => setSelectedMonitor(null)}
-						className="w-full"
-					>
-						{t("reportForm.buttons.close")}
-					</Button>
-				</div>
+				<MonitorInfo
+					monitor={selectedMonitor}
+					onClose={() => setSelectedMonitor(null)}
+					t={t}
+				/>
 			)}
 			{selectedArea && (
 				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-100px)] w-80 max-w-[90vw]">
