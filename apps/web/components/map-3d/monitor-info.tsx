@@ -1,6 +1,6 @@
-import { Monitor } from "@/lib/snower/types";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Monitor } from "@/lib/snower/types";
 type MonitorInfoProps = {
 	monitor: Monitor;
 	onClose: () => void;
@@ -18,9 +18,11 @@ export default function MonitorInfo({ monitor, onClose, t }: MonitorInfoProps) {
 						<p className="text-muted-foreground text-xs">
 							{t("monitorInfo.fields.temperature.label")}
 						</p>
-						{monitor.temperature === "No Data"
-							? t("monitorInfo.fields.temperature.noData")
-							: monitor.temperature}
+						<p className="font-medium">
+							{monitor.temperature === "No Data"
+								? t("monitorInfo.fields.temperature.noData")
+								: monitor.temperatureString}
+						</p>
 					</div>
 					<div>
 						<p className="text-muted-foreground text-xs">
@@ -29,7 +31,7 @@ export default function MonitorInfo({ monitor, onClose, t }: MonitorInfoProps) {
 						<p className="font-medium">
 							{monitor.snowDepth === "No Data"
 								? t("monitorInfo.fields.snowDepth.noData")
-								: monitor.snowDepth}
+								: monitor.snowDepthString}
 						</p>
 					</div>
 					<div className="text-xs text-muted-foreground">

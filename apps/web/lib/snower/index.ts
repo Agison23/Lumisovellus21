@@ -1,15 +1,20 @@
 import {
+	DEFAULT_MONITORS,
+	DEFAULT_BOUNDING_BOX,
+	API_ENDPOINTS,
+} from "./constants";
+import {
 	Monitor,
 	MonitorLocation,
 	SnowerAPIConfig,
 	ReadingData,
 } from "./types";
 import {
-	DEFAULT_MONITORS,
-	DEFAULT_BOUNDING_BOX,
-	API_ENDPOINTS,
-} from "./constants";
-import { formatValue, mergeMonitors, isWithinBounds } from "./utils";
+	formatValueToString,
+	formatValueToObject,
+	mergeMonitors,
+	isWithinBounds,
+} from "./utils";
 
 export class SnowerAPIError extends Error {
 	constructor(
@@ -159,7 +164,9 @@ export class SnowerAPI {
 						name: monitor,
 						lat,
 						lng,
+						temperatureString: "No Data",
 						temperature: "No Data",
+						snowDepthString: "No Data",
 						snowDepth: "No Data",
 					} as Monitor;
 				} catch {
@@ -192,11 +199,19 @@ export class SnowerAPI {
 
 					return {
 						...monitor,
-						temperature: formatValue(
+						temperatureString: formatValueToString(
 							data.probe_temperature?.value,
 							data.probe_temperature?.unit
 						),
-						snowDepth: formatValue(
+						temperature: formatValueToObject(
+							data.probe_temperature?.value,
+							data.probe_temperature?.unit
+						),
+						snowDepthString: formatValueToString(
+							data.snow_depth?.value,
+							data.snow_depth?.unit
+						),
+						snowDepth: formatValueToObject(
 							data.snow_depth?.value,
 							data.snow_depth?.unit
 						),
