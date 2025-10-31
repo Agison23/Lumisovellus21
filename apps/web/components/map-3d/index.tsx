@@ -449,19 +449,14 @@ export default function Map3d() {
 										}}
 									/>
 								</Source>
-								{monitors
-									.filter(
-										(monitor) =>
-											monitor.snowDepth !== "No Data" ||
-											monitor.temperature !== "No Data"
-									)
-									.map((monitor) => (
+								{viewState.zoom > 11.5 &&
+									monitors.map((monitor) => (
 										<Marker
 											key={monitor.name}
 											longitude={monitor.lng}
 											latitude={monitor.lat}
 											offset={[0, -35]}
-											className="bg-background p-1 rounded-md"
+											className="bg-background p-1 rounded-md "
 										>
 											<div>
 												{monitor.temperature !== "No Data" && (
