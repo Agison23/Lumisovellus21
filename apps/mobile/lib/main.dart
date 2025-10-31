@@ -30,7 +30,12 @@ class MyApp extends StatelessWidget {
             // add other supported locales here
           ],
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: ThemeData(useMaterial3: true),
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0D1B2A), // <-- this is your new primary color
+            ),
+          ),
           home: const MainShell(),
         );
       },
@@ -60,6 +65,7 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFAFAFAFA),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         onTap: (idx) => setState(() => _currentIndex = idx),

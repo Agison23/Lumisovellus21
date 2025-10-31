@@ -445,6 +445,12 @@ abstract class AppLocalizations {
   /// **'In serious emergency, call the emergency number 112'**
   String get rescuePageEmergencyCallDescription;
 
+  /// No description provided for @rescuePageEmergencyCallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone app could not be opened'**
+  String get rescuePageEmergencyCallFailed;
+
   /// No description provided for @rescuePageIndicateNeed.
   ///
   /// In en, this message translates to:

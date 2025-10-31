@@ -205,6 +205,10 @@ class AppLocalizationsFi extends AppLocalizations {
       'Vakavassa hätätilanteessa soita hätänumeroon 112';
 
   @override
+  String get rescuePageEmergencyCallFailed =>
+      'Puhelinsovellusta ei voitu avata';
+
+  @override
   String get rescuePageIndicateNeed => 'Ilmoita tarpeesi';
 
   @override

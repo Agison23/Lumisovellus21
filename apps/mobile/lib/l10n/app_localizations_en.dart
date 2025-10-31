@@ -205,6 +205,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'In serious emergency, call the emergency number 112';
 
   @override
+  String get rescuePageEmergencyCallFailed =>
+      'The phone app could not be opened';
+
+  @override
   String get rescuePageIndicateNeed => 'Please indicate your need';
 
   @override

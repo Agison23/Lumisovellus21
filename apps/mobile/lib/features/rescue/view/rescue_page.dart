@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
-import 'package:lumisovellus/features/map/views/map_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
 
 class RescuePage extends ConsumerStatefulWidget {
   const RescuePage({super.key});
@@ -136,23 +137,54 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     }
   }
 
-  void _callForHelp() {
-    // TODO: Implement actual rescue call functionality
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).callForHelp),
-        content: const Text(
-          'Emergency call functionality will be implemented here.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+  Future<void> _call112(BuildContext context) async {
+    const String suomi112Package = 'fi.digia.suomi112';
+    final Uri phoneUri = Uri(scheme: 'tel', path: '112');
+    // Try to launch the 112 Suomi app using external_app_launcher
+    try {
+      debugPrint('Attempting to launch 112 Suomi app...');
+      await LaunchApp.openApp(
+        androidPackageName: suomi112Package,
+        openStore: false, // Don't open Play Store if app is not installed
+      );
+      debugPrint('Successfully launched 112 Suomi app');
+      return; // Successfully launched 112 Suomi app
+    } catch (e) {
+      // App is not installed or cannot be launched
+      debugPrint(
+        'Failed to launch 112 Suomi app: $e, falling back to phone dialer',
+      );
+    }
+
+    bool launchedCorrectly = false;
+    // Fallback: open phone dialer with 112
+    try {
+      debugPrint('Attempting to open phone dialer with 112');
+      final bool launched = await launchUrl(
+        phoneUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (launched) {
+        debugPrint('Successfully opened phone dialer with 112');
+        launchedCorrectly = true;
+      } else {
+        debugPrint('Failed to open phone dialer with 112');
+      }
+    } catch (e) {
+      debugPrint('Failed to launch phone dialer: $e');
+    }
+
+    if (!launchedCorrectly) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).rescuePageEmergencyCallFailed,
+            ),
           ),
-        ],
-      ),
-    );
+        );
+      }
+    }
   }
 
   void _requestHelp() {
@@ -351,11 +383,11 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                 width: double.infinity,
                                 child: ElevatedButton.icon(
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => const MapScreen(),
-                                      ),
-                                    );
+                                    // Navigator.of(context).push(
+                                    //   MaterialPageRoute(
+                                    //     builder: (_) => const MapScreen(),
+                                    //   ),
+                                    // );
                                   },
                                   icon: const Icon(Icons.place),
                                   label: const Text(
@@ -500,7 +532,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                       width: 170,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed: _callForHelp,
+                        onPressed: () => _call112(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey.shade200,
                           foregroundColor: Colors.red.shade400,

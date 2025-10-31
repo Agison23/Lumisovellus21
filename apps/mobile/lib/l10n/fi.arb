@@ -64,6 +64,7 @@
   "rescuePageImLost": "Olen eksyksissä",
   "rescuePageRequestHelp": "Pyydä apua",
   "rescuePageRequestHelpConfirm": "Lähetetäänkö avunpyyntö lähellä oleville pelastajille?",
+  "rescuePageEmergencyCallFailed" : "Puhelinsovellusta ei voitu avata",
   "map": "Kartta",
   "weather": "Sää",
   "settings": "Asetukset",
