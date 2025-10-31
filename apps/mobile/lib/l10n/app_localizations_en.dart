@@ -269,9 +269,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finnish => 'Finnish (Suomi)';
 
   @override
-  String get weatherNotImplemented => 'Weather feature coming soon';
-
-  @override
   String get userInfoNotImplemented => 'User information feature coming soon';
 
   @override

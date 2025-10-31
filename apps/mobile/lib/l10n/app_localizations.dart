@@ -571,12 +571,6 @@ abstract class AppLocalizations {
   /// **'Finnish (Suomi)'**
   String get finnish;
 
-  /// No description provided for @weatherNotImplemented.
-  ///
-  /// In en, this message translates to:
-  /// **'Weather feature coming soon'**
-  String get weatherNotImplemented;
-
   /// No description provided for @userInfoNotImplemented.
   ///
   /// In en, this message translates to:
