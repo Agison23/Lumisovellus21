@@ -558,3 +558,188 @@ const List<Map<String, dynamic>> mapAreas2 = [
     },
   },
 ];
+
+const List<Map<String, dynamic>> mockSnowData = [
+  {
+    "id": 1,
+    "name": "Korppu",
+    "colour": "#3838a0",
+    "skiability": 3,
+    "categoryId": null,
+    "explanation":
+        "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.",
+  },
+  {
+    "id": 2,
+    "name": "Sohjo",
+    "colour": "#919394",
+    "skiability": 2,
+    "categoryId": null,
+    "explanation": "Vesipitoinen ja osittain sulanut lumi suojasäällä.",
+  },
+  {
+    "id": 3,
+    "name": "Jää",
+    "colour": "#34929A",
+    "skiability": 2,
+    "categoryId": null,
+    "explanation":
+        "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.",
+  },
+  {
+    "id": 4,
+    "name": "Uusi lumi",
+    "colour": "#5AABED",
+    "skiability": 4,
+    "categoryId": null,
+    "explanation": "Vastasatanut pehmeä lumi.",
+  },
+  {
+    "id": 5,
+    "name": "Tuulen pieksemä lumi",
+    "colour": "#7C759F",
+    "skiability": 3,
+    "categoryId": null,
+    "explanation":
+        "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.",
+  },
+  {
+    "id": 6,
+    "name": "Vähäinen lumi",
+    "colour": "#6D4F32",
+    "skiability": null,
+    "categoryId": null,
+    "explanation": "",
+  },
+  {
+    "id": 8,
+    "name": "Lumeton maa",
+    "colour": "#000000",
+    "skiability": null,
+    "categoryId": null,
+    "explanation": "",
+  },
+  {
+    "id": 9,
+    "name": "Vitilumi",
+    "colour": "#5AABED",
+    "skiability": 5,
+    "categoryId": 4,
+    "explanation":
+        "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.",
+  },
+  {
+    "id": 10,
+    "name": "Puuterilumi",
+    "colour": "#5AABED",
+    "skiability": 5,
+    "categoryId": 4,
+    "explanation":
+        "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.",
+  },
+  {
+    "id": 11,
+    "name": "Märkä uusi lumi",
+    "colour": "#5AABED",
+    "skiability": 4,
+    "categoryId": 4,
+    "explanation":
+        "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
+  },
+  {
+    "id": 12,
+    "name": "Sastrugi",
+    "colour": "#7C759F",
+    "skiability": 1,
+    "categoryId": 5,
+    "explanation":
+        "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista.",
+  },
+  {
+    "id": 13,
+    "name": "Aaltoileva lumi",
+    "colour": "#7C759F",
+    "skiability": 4,
+    "categoryId": 5,
+    "explanation":
+        "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa.",
+  },
+  {
+    "id": 14,
+    "name": "Tuiskulumi",
+    "colour": "#7C759F",
+    "skiability": 4,
+    "categoryId": 5,
+    "explanation":
+        "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.",
+  },
+  {
+    "id": 15,
+    "name": "Ohut korppu",
+    "colour": "#3838a0",
+    "skiability": 3,
+    "categoryId": 1,
+    "explanation":
+        "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.",
+  },
+  {
+    "id": 16,
+    "name": "Rikkoutuva korppu",
+    "colour": "#3838a0",
+    "skiability": 2,
+    "categoryId": 1,
+    "explanation":
+        "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.",
+  },
+  {
+    "id": 17,
+    "name": "Kantava korppu",
+    "colour": "#3838a0",
+    "skiability": 3,
+    "categoryId": 1,
+    "explanation":
+        "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.",
+  },
+  {
+    "id": 18,
+    "name": "Rikkoutuva jää",
+    "colour": "#34929A",
+    "skiability": 1,
+    "categoryId": 3,
+    "explanation": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.",
+  },
+  {
+    "id": 19,
+    "name": "Kastuva lumi",
+    "colour": "#919394",
+    "skiability": 3,
+    "categoryId": 2,
+    "explanation":
+        "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.",
+  },
+  {
+    "id": 20,
+    "name": "Saturoitunut lumi",
+    "colour": "#919394",
+    "skiability": 2,
+    "categoryId": 2,
+    "explanation":
+        "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi",
+  },
+  {
+    "id": 21,
+    "name": "Kiviä",
+    "colour": "#4B4B4B",
+    "skiability": null,
+    "categoryId": 7,
+    "explanation": "",
+  },
+  {
+    "id": 22,
+    "name": "Oksia",
+    "colour": "#6D4F32",
+    "skiability": null,
+    "categoryId": 7,
+    "explanation": "",
+  },
+];

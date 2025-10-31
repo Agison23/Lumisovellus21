@@ -1,4 +1,4 @@
-export 'viewmodel/map_notifier.dart' show interactiveAreaNotifierProvider;
+export 'viewmodel/map_notifier.dart' show interactiveAreaNotifierProvider, snowTypesNotifierProvider;
 
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

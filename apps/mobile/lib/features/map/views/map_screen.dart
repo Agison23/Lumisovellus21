@@ -21,6 +21,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final t = AppLocalizations.of(context);
     final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
     final areasMgr = ref.watch(areasLayerManagerProvider);
+    final snowTypes = ref.watch(snowTypesNotifierProvider).value ?? const [];
 
     final s = ref.watch(interactiveAreaNotifierProvider).value;
     final features = (s?.fc?['features'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
@@ -125,7 +126,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
              
           if (selected != null)
             Positioned(
-              top: 16,
+              top: 32,
               left: 16,
               child: AreaCard(
                 t: t,
@@ -134,6 +135,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 danger: ((selected['properties'] as Map?)?['avalancheDanger'] == true)
                     ? t.avalancheWarning
                     : t.noAvalancheWarning,
+                snowTypes: snowTypes,
                 onAdd: () {},
                 onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
               ),

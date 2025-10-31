@@ -293,4 +293,19 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get dialogCancel => 'Peruuta';
+
+  @override
+  String get back => 'Takaisin';
+
+  @override
+  String get submit => 'Lähetä';
+
+  @override
+  String get obstacles => 'Esteet';
+
+  @override
+  String get selectSnowType => 'Valitse lumityyppi';
+
+  @override
+  String get specifySnowType => 'Täsmennä lumityyppi';
 }
