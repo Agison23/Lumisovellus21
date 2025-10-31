@@ -53,8 +53,7 @@
   "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja",
   "rescue": "Pelastus",
   "rescuePageTitle": "Pelastus",
-  "rescuePageLatitude": "Leveysaste",
-  "rescuePageLongitude": "Pituusaste",
+  "rescuePageCoordinateSystem": "Koordinaattijärjestelmä",
   "rescuePageAccuracy": "Paikannustarkkuus",
   "rescuePageHelpRequestDescription": "Avunpyyntö hälyttää ja lähettää sijaintisi lähellä oleville auttajille",
   "rescuePageEmergencyCallDescription" : "Vakavassa hätätilanteessa soita hätänumeroon 112",
@@ -82,5 +81,9 @@
   "finnish": "Suomi",
   "userInfoNotImplemented": "Käyttäjätieto-ominaisuus tulossa pian",
   "dialogConfirm": "Vahvista",
-  "dialogCancel": "Peruuta"
+  "dialogCancel": "Peruuta",
+  "coordinateDirectionNorth": "P",
+  "coordinateDirectionSouth": "E",
+  "coordinateDirectionEast": "I",
+  "coordinateDirectionWest": "L"
 }

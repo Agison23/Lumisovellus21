@@ -53,8 +53,7 @@
   "mapOfflineModeMessage": "You''re offline - showing saved map data",
   "rescue": "Rescue",
   "rescuePageTitle": "Rescue",
-  "rescuePageLatitude": "Latitude",
-  "rescuePageLongitude": "Longitude",
+  "rescuePageCoordinateSystem": "Coordinate system",
   "rescuePageAccuracy": "Position accuracy",
   "rescuePageHelpRequestDescription": "Help-request alerts and sends your location to nearby rescuers",
   "rescuePageEmergencyCallDescription" : "In serious emergency, call the emergency number 112",
@@ -82,5 +81,9 @@
   "finnish": "Finnish (Suomi)",
   "userInfoNotImplemented": "User information feature coming soon",
   "dialogConfirm": "Confirm",
-  "dialogCancel": "Cancel"
+  "dialogCancel": "Cancel",
+  "coordinateDirectionNorth": "N",
+  "coordinateDirectionSouth": "S",
+  "coordinateDirectionEast": "E",
+  "coordinateDirectionWest": "W"
 }

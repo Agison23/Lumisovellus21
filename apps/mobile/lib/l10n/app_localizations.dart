@@ -415,17 +415,11 @@ abstract class AppLocalizations {
   /// **'Rescue'**
   String get rescuePageTitle;
 
-  /// No description provided for @rescuePageLatitude.
+  /// No description provided for @rescuePageCoordinateSystem.
   ///
   /// In en, this message translates to:
-  /// **'Latitude'**
-  String get rescuePageLatitude;
-
-  /// No description provided for @rescuePageLongitude.
-  ///
-  /// In en, this message translates to:
-  /// **'Longitude'**
-  String get rescuePageLongitude;
+  /// **'Coordinate system'**
+  String get rescuePageCoordinateSystem;
 
   /// No description provided for @rescuePageAccuracy.
   ///
@@ -594,6 +588,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get dialogCancel;
+
+  /// No description provided for @coordinateDirectionNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'N'**
+  String get coordinateDirectionNorth;
+
+  /// No description provided for @coordinateDirectionSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get coordinateDirectionSouth;
+
+  /// No description provided for @coordinateDirectionEast.
+  ///
+  /// In en, this message translates to:
+  /// **'E'**
+  String get coordinateDirectionEast;
+
+  /// No description provided for @coordinateDirectionWest.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get coordinateDirectionWest;
 }
 
 class _AppLocalizationsDelegate

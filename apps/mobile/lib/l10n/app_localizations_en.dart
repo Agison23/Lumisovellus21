@@ -188,10 +188,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageTitle => 'Rescue';
 
   @override
-  String get rescuePageLatitude => 'Latitude';
-
-  @override
-  String get rescuePageLongitude => 'Longitude';
+  String get rescuePageCoordinateSystem => 'Coordinate system';
 
   @override
   String get rescuePageAccuracy => 'Position accuracy';
@@ -280,4 +277,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogCancel => 'Cancel';
+
+  @override
+  String get coordinateDirectionNorth => 'N';
+
+  @override
+  String get coordinateDirectionSouth => 'S';
+
+  @override
+  String get coordinateDirectionEast => 'E';
+
+  @override
+  String get coordinateDirectionWest => 'W';
 }

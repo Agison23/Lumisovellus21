@@ -188,10 +188,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get rescuePageTitle => 'Pelastus';
 
   @override
-  String get rescuePageLatitude => 'Leveysaste';
-
-  @override
-  String get rescuePageLongitude => 'Pituusaste';
+  String get rescuePageCoordinateSystem => 'Koordinaattijärjestelmä';
 
   @override
   String get rescuePageAccuracy => 'Paikannustarkkuus';
@@ -281,4 +278,16 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get dialogCancel => 'Peruuta';
+
+  @override
+  String get coordinateDirectionNorth => 'P';
+
+  @override
+  String get coordinateDirectionSouth => 'E';
+
+  @override
+  String get coordinateDirectionEast => 'I';
+
+  @override
+  String get coordinateDirectionWest => 'L';
 }
