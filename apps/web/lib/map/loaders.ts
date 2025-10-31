@@ -1,3 +1,4 @@
+import { Monitor } from "../snower/types";
 import {
 	InteractiveAreaFeature,
 	SnowType,
@@ -6,7 +7,6 @@ import {
 	mockSnowData,
 	mockUpdateData,
 } from "./mock-data";
-import { Monitor } from "../snower/types";
 
 // for now, mock fetching from the API
 export const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {

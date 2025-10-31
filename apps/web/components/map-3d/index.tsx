@@ -16,13 +16,13 @@ import {
 	NavigationControl,
 	Source,
 	Layer,
-	Popup,
 	Marker,
 } from "react-map-gl/mapbox";
 import Map from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { Toggle } from "../ui/toggle";
 import MapLoadingOverlay from "./map-loading";
@@ -63,7 +63,6 @@ import type {
 } from "@/lib/map/mock-data";
 import { calculatePolygonArea } from "@/lib/map/utils";
 import type { Monitor } from "@/lib/snower/types";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const submitObservation = async (data: {
 	areaId: string | null;

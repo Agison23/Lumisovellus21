@@ -1,5 +1,5 @@
-import { SnowerAPI } from "@/lib/snower";
 import { NextResponse } from "next/server";
+import { SnowerAPI } from "@/lib/snower";
 
 export const revalidate = 1800; // 30 minutes
 
