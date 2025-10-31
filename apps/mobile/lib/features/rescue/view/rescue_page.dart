@@ -4,6 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
+import 'package:lumisovellus/features/rescue/model/help_models.dart';
+import 'package:lumisovellus/features/rescue/data/help_service_provider.dart';
 
 class RescuePage extends ConsumerStatefulWidget {
   const RescuePage({super.key});
@@ -137,7 +139,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
       return;
     }
 
-    // TODO: Implement actual help request functionality
+    // Confirm and dispatch help request via HelpService (testable)
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -162,10 +164,50 @@ class _RescuePageState extends ConsumerState<RescuePage> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(AppLocalizations.of(context).dialogCancel),
+            key: const ValueKey('rescue.confirm.cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final service = ref.read(helpServiceProvider);
+              final needType = _selectedNeed == 'health'
+                  ? HelpNeedType.health
+                  : _selectedNeed == 'equipment'
+                  ? HelpNeedType.equipment
+                  : HelpNeedType.lost;
+              try {
+                final resp = await service.requestHelp(
+                  HelpRequest(
+                    needType: needType,
+                    latitude: _currentPosition?.latitude,
+                    longitude: _currentPosition?.longitude,
+                    accuracyMeters: _currentPosition?.accuracy,
+                  ),
+                );
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${AppLocalizations.of(context).rescuePageRequestHelp}: ${resp.message ?? 'sent'}',
+                    ),
+                  ),
+                );
+              } catch (e) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).rescuePageEmergencyCallFailed,
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
             child: Text(AppLocalizations.of(context).dialogConfirm),
+            key: const ValueKey('rescue.confirm.ok'),
           ),
         ],
       ),
@@ -176,6 +218,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     final isSelected = _selectedNeed == value;
 
     return GestureDetector(
+      key: ValueKey('rescue.need.$value'),
       onTap: () {
         setState(() {
           _selectedNeed = value;
@@ -298,112 +341,103 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
-                  // decoration: BoxDecoration(
-                  //   color: Colors.white,
-                  //   borderRadius: BorderRadius.circular(12),
-                  //   boxShadow: [
-                  //     BoxShadow(
-                  //       color: Colors.grey.shade400,
-                  //       blurRadius: 8,
-                  //       offset: const Offset(0, 2),
-                  //     ),
-                  //   ],
-                  // ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Help request description
-                      Text(
-                        t.rescuePageHelpRequestDescription,
-                        style: const TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 24),
-                      // Please indicate your need
-                      Text(
-                        t.rescuePageIndicateNeed,
-                        // style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        //   fontWeight: FontWeight.bold,
-                        // ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Help request description
+                        Text(
+                          t.rescuePageHelpRequestDescription,
+                          style: const TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 6),
+                        const SizedBox(height: 24),
+                        // Please indicate your need
+                        Text(
+                          t.rescuePageIndicateNeed,
+                          // style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          //   fontWeight: FontWeight.bold,
+                          // ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 6),
 
-                      // Need selection buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildNeedButton(
-                              context,
-                              t.rescuePageHealthIssue,
-                              'health',
+                        // Need selection buttons
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildNeedButton(
+                                context,
+                                t.rescuePageHealthIssue,
+                                'health',
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: _buildNeedButton(
-                              context,
-                              t.rescuePageEquipmentIssue,
-                              'equipment',
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: _buildNeedButton(
+                                context,
+                                t.rescuePageEquipmentIssue,
+                                'equipment',
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: _buildNeedButton(
-                              context,
-                              t.rescuePageImLost,
-                              'lost',
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: _buildNeedButton(
+                                context,
+                                t.rescuePageImLost,
+                                'lost',
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 48),
+                          ],
+                        ),
+                        const SizedBox(height: 48),
 
-                      // Request help button
-                      Center(
-                        child: GestureDetector(
-                          onTap: _requestHelp,
-                          child: Container(
-                            width: 170,
-                            height: 170,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE53935),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade800,
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                ), // add horizontal padding
-                                child: Text(
-                                  t.rescuePageRequestHelp,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
+                        // Request help button
+                        Center(
+                          child: GestureDetector(
+                            key: const ValueKey('rescue.requestHelpButton'),
+                            onTap: _requestHelp,
+                            child: Container(
+                              width: 170,
+                              height: 170,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE53935),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade800,
+                                    blurRadius: 10,
                                   ),
-                                  textAlign: TextAlign.center,
+                                ],
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ), // add horizontal padding
+                                  child: Text(
+                                    t.rescuePageRequestHelp,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-
               const SizedBox(height: 24),
 
               // Call 112 segment
