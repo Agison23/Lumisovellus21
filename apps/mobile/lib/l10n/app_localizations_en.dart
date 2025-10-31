@@ -180,4 +180,55 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'You\'re offline - showing saved map data';
+
+  @override
+  String get weather => 'Weather';
+
+  @override
+  String get dayBeforeYesterday => '2 days ago';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get now => 'Now';
+
+  @override
+  String get temperature => 'Temperature';
+
+  @override
+  String get snowDepth => 'Snow depth';
+
+  @override
+  String get wind => 'Wind';
+
+  @override
+  String get airPressure => 'Air pressure';
+
+  @override
+  String get north => 'North';
+
+  @override
+  String get northeast => 'Northeast';
+
+  @override
+  String get east => 'East';
+
+  @override
+  String get southeast => 'Southeast';
+
+  @override
+  String get south => 'South';
+
+  @override
+  String get southwest => 'Southwest';
+
+  @override
+  String get west => 'West';
+
+  @override
+  String get northwest => 'Northwest';
+
+  @override
+  String get trend => 'Trend';
 }

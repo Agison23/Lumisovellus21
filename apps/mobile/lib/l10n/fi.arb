@@ -50,5 +50,22 @@
   "saturatedSnow": "Saturoitunut lumi",
   "saturatedSnowDesc": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.",
   "littleSnow": "Vähäinen lumi",
-  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja"
+  "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja",
+  "weather": "Sää",
+  "dayBeforeYesterday": "Toissapäivänä",
+  "yesterday": "Eilen",
+  "now": "Nyt",
+  "temperature": "Lämpötila",
+  "snowDepth": "Lumen syvyys",
+  "wind": "Tuuli",
+  "airPressure": "Ilmanpaine",
+  "north": "Pohjoinen",
+  "northeast": "Koillinen",
+  "east": "Itä",
+  "southeast": "Kaakko",
+  "south": "Etelä",
+  "southwest": "Lounas",
+  "west": "Länsi",
+  "northwest": "Luode",
+  "trend": "Muutokset"
 }

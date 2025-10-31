@@ -50,5 +50,22 @@
   "saturatedSnow": "Saturated snow",
   "saturatedSnowDesc": "Completely wet , slushing and whipped cream like snow.",
   "littleSnow": "Little snow",
-  "mapOfflineModeMessage": "You''re offline - showing saved map data"
+  "mapOfflineModeMessage": "You''re offline - showing saved map data",
+  "weather": "Weather",
+  "dayBeforeYesterday": "2 days ago",
+  "yesterday": "Yesterday",
+  "now": "Now",
+  "temperature": "Temperature",
+  "snowDepth": "Snow depth",
+  "wind": "Wind",
+  "airPressure": "Air pressure",
+  "north": "North",
+  "northeast": "Northeast",
+  "east": "East",
+  "southeast": "Southeast",
+  "south": "South",
+  "southwest": "Southwest",
+  "west": "West",
+  "northwest": "Northwest",
+  "trend": "Trend"
 }

@@ -402,6 +402,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
+
+  /// No description provided for @weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weather;
+
+  /// No description provided for @dayBeforeYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'2 days ago'**
+  String get dayBeforeYesterday;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get now;
+
+  /// No description provided for @temperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get temperature;
+
+  /// No description provided for @snowDepth.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow depth'**
+  String get snowDepth;
+
+  /// No description provided for @wind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get wind;
+
+  /// No description provided for @airPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Air pressure'**
+  String get airPressure;
+
+  /// No description provided for @north.
+  ///
+  /// In en, this message translates to:
+  /// **'North'**
+  String get north;
+
+  /// No description provided for @northeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Northeast'**
+  String get northeast;
+
+  /// No description provided for @east.
+  ///
+  /// In en, this message translates to:
+  /// **'East'**
+  String get east;
+
+  /// No description provided for @southeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Southeast'**
+  String get southeast;
+
+  /// No description provided for @south.
+  ///
+  /// In en, this message translates to:
+  /// **'South'**
+  String get south;
+
+  /// No description provided for @southwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Southwest'**
+  String get southwest;
+
+  /// No description provided for @west.
+  ///
+  /// In en, this message translates to:
+  /// **'West'**
+  String get west;
+
+  /// No description provided for @northwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Northwest'**
+  String get northwest;
+
+  /// No description provided for @trend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend'**
+  String get trend;
 }
 
 class _AppLocalizationsDelegate

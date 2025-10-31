@@ -8,6 +8,7 @@ import 'core/data/providers.dart';
 // import 'features/onboarding/view/onboarding_page.dart';
 import 'features/map/views/map_screen.dart';
 import 'features/snow_definitions/view/snow_definitions_page.dart';
+import 'features/weather/view/weather_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,10 +51,7 @@ class _RootScaffoldState extends ConsumerState<RootScaffold> {
   static const List<Widget> _pages = <Widget>[
     MapScreen(),
     SnowDefinitionsPage(),
-    // simple placeholder - replace with real weather page when available
-    Center(
-        child: Text('Weather (coming soon)',
-            style: TextStyle(fontSize: 20))),
+    WeatherPage(),
   ];
 
   void _onTap(int index) {

@@ -180,4 +180,55 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
+
+  @override
+  String get weather => 'Sää';
+
+  @override
+  String get dayBeforeYesterday => 'Toissapäivänä';
+
+  @override
+  String get yesterday => 'Eilen';
+
+  @override
+  String get now => 'Nyt';
+
+  @override
+  String get temperature => 'Lämpötila';
+
+  @override
+  String get snowDepth => 'Lumen syvyys';
+
+  @override
+  String get wind => 'Tuuli';
+
+  @override
+  String get airPressure => 'Ilmanpaine';
+
+  @override
+  String get north => 'Pohjoinen';
+
+  @override
+  String get northeast => 'Koillinen';
+
+  @override
+  String get east => 'Itä';
+
+  @override
+  String get southeast => 'Kaakko';
+
+  @override
+  String get south => 'Etelä';
+
+  @override
+  String get southwest => 'Lounas';
+
+  @override
+  String get west => 'Länsi';
+
+  @override
+  String get northwest => 'Luode';
+
+  @override
+  String get trend => 'Muutokset';
 }
