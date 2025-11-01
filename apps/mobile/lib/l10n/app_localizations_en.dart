@@ -308,4 +308,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get specifySnowType => 'Specify snow type';
+
+  @override
+  String get sensors => 'Sensors';
+
+  @override
+  String get segments => 'Segments';
 }

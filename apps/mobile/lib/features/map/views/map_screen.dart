@@ -6,6 +6,7 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../providers.dart';
 import 'widgets/area_card.dart';
+import 'widgets/filter_button.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -63,15 +64,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               final features = await _map!.queryRenderedFeatures(geometry, options);
 
               final first = features.firstOrNull;
+              final notifier = ref.read(interactiveAreaNotifierProvider.notifier);
               if (first == null) {
                 await areasMgr.setSelectedId(null);
+                notifier.select(null);
                 return;
               }
 
               final feature = first.queriedFeature.feature;
-              final id = feature['id']?.toString() ?? 
+              final id = feature['id']?.toString() ??
                   (feature['properties'] is Map ? (feature['properties'] as Map)['id']?.toString() : null);
-              ref.read(interactiveAreaNotifierProvider.notifier).select(id);
+
+              notifier.select(id);
             },
             onMapCreated: (controller) async {
               _map = controller;
@@ -140,6 +144,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
               ),
             ),
+
+          Positioned(
+            bottom: 16,
+            left: 16,
+            child: FilterButton(t: t),
+          )
         ],
       ),
     );

@@ -308,4 +308,10 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get specifySnowType => 'Täsmennä lumityyppi';
+
+  @override
+  String get sensors => 'Anturit';
+
+  @override
+  String get segments => 'Segmentit';
 }

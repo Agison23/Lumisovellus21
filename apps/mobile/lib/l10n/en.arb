@@ -91,5 +91,7 @@
   "submit": "Submit",
   "obstacles": "Obstacles",
   "selectSnowType": "Select snow type",
-  "specifySnowType": "Specify snow type"
+  "specifySnowType": "Specify snow type",
+  "sensors": "Sensors",
+  "segments": "Segments"
 }

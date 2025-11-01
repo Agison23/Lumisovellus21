@@ -91,5 +91,7 @@
   "submit": "Lähetä",
   "obstacles": "Esteet",
   "selectSnowType": "Valitse lumityyppi",
-  "specifySnowType": "Täsmennä lumityyppi"
+  "specifySnowType": "Täsmennä lumityyppi",
+  "sensors": "Anturit",
+  "segments": "Segmentit"
 }
