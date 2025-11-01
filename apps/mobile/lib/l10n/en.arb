@@ -86,5 +86,10 @@
   "finnish": "Finnish (Suomi)",
   "userInfoNotImplemented": "User information feature coming soon",
   "dialogConfirm": "Confirm",
-  "dialogCancel": "Cancel"
+  "dialogCancel": "Cancel",
+  "back": "Back",
+  "submit": "Submit",
+  "obstacles": "Obstacles",
+  "selectSnowType": "Select snow type",
+  "specifySnowType": "Specify snow type"
 }

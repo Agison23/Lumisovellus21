@@ -293,4 +293,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogCancel => 'Cancel';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get obstacles => 'Obstacles';
+
+  @override
+  String get selectSnowType => 'Select snow type';
+
+  @override
+  String get specifySnowType => 'Specify snow type';
 }

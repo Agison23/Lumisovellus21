@@ -86,5 +86,10 @@
   "finnish": "Suomi",
   "userInfoNotImplemented": "Käyttäjätieto-ominaisuus tulossa pian",
   "dialogConfirm": "Vahvista",
-  "dialogCancel": "Peruuta"
+  "dialogCancel": "Peruuta",
+  "back": "Takaisin",
+  "submit": "Lähetä",
+  "obstacles": "Esteet",
+  "selectSnowType": "Valitse lumityyppi",
+  "specifySnowType": "Täsmennä lumityyppi"
 }

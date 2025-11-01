@@ -618,6 +618,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get dialogCancel;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @obstacles.
+  ///
+  /// In en, this message translates to:
+  /// **'Obstacles'**
+  String get obstacles;
+
+  /// No description provided for @selectSnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select snow type'**
+  String get selectSnowType;
+
+  /// No description provided for @specifySnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify snow type'**
+  String get specifySnowType;
 }
 
 class _AppLocalizationsDelegate
