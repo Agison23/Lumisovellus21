@@ -20,7 +20,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescueFeatureInfo =>
-      'The app\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You can help other users, too. Location sharing can be disabled at any time.';
+      'The app\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request help from other users around you. You can help other users, too. Location sharing can be disabled at any time.';
 
   @override
   String get allowSharing => 'ALLOW SHARING';
@@ -48,11 +48,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get definitions => 'DEFINITIONS';
 
   @override
+  String get snowDefinitionsPageTitle => 'Definitions';
+
+  @override
   String get avalancheWarning => 'Avalanche warning';
 
   @override
+  String get noAvalancheWarning => 'No avalanche warning';
+
+  @override
   String get avalancheWarningDesc =>
-      'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.';
+      'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.';
 
   @override
   String get snowTypes => 'Snow types';
@@ -68,14 +74,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get freshWetSnowDesc =>
-      'Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point';
+      'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.';
 
   @override
   String get powderSnow => 'Powder snow';
 
   @override
   String get powderSnowDesc =>
-      'Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather.';
+      'Fresh, loose and extremely light snow. Powder snow forms in calm and very cold weather.';
 
   @override
   String get freshSnow => 'Fresh snow';
@@ -102,14 +108,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive.';
+      'A crust that breaks from the weight of a skier. Under the crust, the snow can be submersive.';
 
   @override
   String get collapsingCrust => 'Collapsing crust';
 
   @override
   String get collapsingCrustDesc =>
-      'Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath.';
+      'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.';
 
   @override
   String get windpackedSnow => 'Windpacked snow';
@@ -123,7 +129,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driftsAndBanksDesc =>
-      'An area of new snow shaped by the wind. waves are soft and easy to break.';
+      'An area of new snow shaped by the wind. Waves are soft and easy to break.';
 
   @override
   String get sastrug => 'Sastrug';
@@ -147,7 +153,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'A hard and unbreakable icy layer on the surface of the snow. Hard, glazed surface caused by melt-freeze process.';
 
   @override
-  String get breakableIce => 'Brekable ice';
+  String get breakableIce => 'Breakable ice';
 
   @override
   String get breakableIceDesc =>
@@ -158,7 +164,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get slushDesc =>
-      'Wet and partially melted snow in above zero degrees weather.';
+      'Wet and partially melted snow in above zero degree weather.';
 
   @override
   String get wettingSnow => 'Wetting snow';
@@ -172,7 +178,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saturatedSnowDesc =>
-      'Completely wet , slushing and whipped cream like snow.';
+      'Completely wet, slushing and whipped cream-like snow.';
 
   @override
   String get littleSnow => 'Little snow';
@@ -180,4 +186,111 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'You\'re offline - showing saved map data';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get addObservation => 'Add observation';
+
+  @override
+  String get rescue => 'Rescue';
+
+  @override
+  String get rescuePageTitle => 'Rescue';
+
+  @override
+  String get rescuePageLatitude => 'Latitude';
+
+  @override
+  String get rescuePageLongitude => 'Longitude';
+
+  @override
+  String get rescuePageAccuracy => 'Position accuracy';
+
+  @override
+  String get rescuePageHelpRequestDescription =>
+      'Help request alerts and sends your location to nearby rescuers';
+
+  @override
+  String get rescuePageEmergencyCallDescription =>
+      'In serious emergency, call the emergency number 112';
+
+  @override
+  String get rescuePageEmergencyCallFailed =>
+      'The phone app could not be opened';
+
+  @override
+  String get rescuePageIndicateNeed => 'Please indicate your need';
+
+  @override
+  String get rescuePageHealthIssue => 'Health issue';
+
+  @override
+  String get rescuePageEquipmentIssue => 'Equipment issue';
+
+  @override
+  String get rescuePageImLost => 'I am lost';
+
+  @override
+  String get rescuePageRequestHelp => 'Request help';
+
+  @override
+  String get rescuePageRequestHelpConfirm =>
+      'Send help request to nearby rescuers?';
+
+  @override
+  String get map => 'Map';
+
+  @override
+  String get weather => 'Weather';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get callForHelp => 'Call for Help';
+
+  @override
+  String get currentLocation => 'Current Location';
+
+  @override
+  String get locationNotAvailable => 'Location not available';
+
+  @override
+  String get userInformation => 'User Information';
+
+  @override
+  String get userInformationSubtitle => 'Manage your personal information';
+
+  @override
+  String get settingsPageSnowDefinitions => 'Snow definitions';
+
+  @override
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Show snow type definitions';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageSubtitle => 'Change app language';
+
+  @override
+  String get selectLanguage => 'Select Language';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get finnish => 'Finnish (Suomi)';
+
+  @override
+  String get userInfoNotImplemented => 'User information feature coming soon';
+
+  @override
+  String get dialogConfirm => 'Confirm';
+
+  @override
+  String get dialogCancel => 'Cancel';
 }

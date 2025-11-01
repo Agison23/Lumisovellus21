@@ -1,11 +1,11 @@
-// import 'dart:math';
-// import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../providers.dart';
+import 'widgets/area_card.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -22,13 +22,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
     final areasMgr = ref.watch(areasLayerManagerProvider);
 
-    // Forward area updates into the manager (legal inside build with Riverpod)
-    ref.listen(interactiveAreaNotifierProvider, (prev, next) {
-      next.when(
-        data: (fc) => areasMgr.setData(fc),
-        loading: () {},
-        error: (_, __) {},
-      );
+    final s = ref.watch(interactiveAreaNotifierProvider).value;
+    final features = (s?.fc?['features'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    final selected = features.firstWhereOrNull((f) {
+      final id = f['id']?.toString() ?? ((f['properties'] as Map?)?['id']?.toString());
+      return id == s?.selectedId;
+    });
+
+    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.selectedId), (_, id) {
+      areasMgr.setSelectedId(id);
+    });
+
+    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.hoveredId), (_, id) {
+      areasMgr.setHoveredId(id);
+    });
+
+    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.fc), (_, fc) {
+      if (fc != null) areasMgr.setData(fc);
     });
 
     return Scaffold(
@@ -44,6 +54,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               pitch: 60, // change for 3D view
               bearing: 0,
             ),
+            onTapListener: (ctx) async {
+              if (_map == null) return;
+
+              final geometry = RenderedQueryGeometry.fromScreenCoordinate(ctx.touchPosition);
+              final options = RenderedQueryOptions(layerIds: ['areas-fill']);
+              final features = await _map!.queryRenderedFeatures(geometry, options);
+
+              final first = features.firstOrNull;
+              if (first == null) {
+                await areasMgr.setSelectedId(null);
+                return;
+              }
+
+              final feature = first.queriedFeature.feature;
+              final id = feature['id']?.toString() ?? 
+                  (feature['properties'] is Map ? (feature['properties'] as Map)['id']?.toString() : null);
+              ref.read(interactiveAreaNotifierProvider.notifier).select(id);
+            },
             onMapCreated: (controller) async {
               _map = controller;
               areasMgr.attach(controller);
@@ -69,7 +97,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               );
             },
             onStyleLoadedListener: (_) async {
+              final v = ref.read(interactiveAreaNotifierProvider).value;
               await areasMgr.onStyleLoaded();
+              if (v?.fc != null) await areasMgr.setData(v!.fc!);
+              await areasMgr.setSelectedId(v?.selectedId);
+              await areasMgr.setHoveredId(v?.hoveredId);
             },
           ),
 
@@ -90,6 +122,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                  ),
                ),
              ),
+             
+          if (selected != null)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: AreaCard(
+                t: t,
+                name: (selected['properties'] as Map?)?['name']?.toString() ?? '',
+                terrain: (selected['properties'] as Map?)?['terrain']?.toString() ?? '',
+                danger: ((selected['properties'] as Map?)?['avalancheDanger'] == true)
+                    ? t.avalancheWarning
+                    : t.noAvalancheWarning,
+                onAdd: () {},
+                onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
+              ),
+            ),
         ],
       ),
     );
