@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lumisovellus/features/rescue/data/help_service_provider.dart';
+import 'package:lumisovellus/features/rescue/help_service_provider.dart';
 import 'package:lumisovellus/features/rescue/model/help_models.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../test_utils/pump_rescue.dart';
@@ -18,8 +18,9 @@ class RecordingHelpService implements HelpService {
     return HelpResponse(
       requestId: 'id-1',
       createdAt: DateTime(2024, 1, 1),
-      accepted: true,
-      message: 'ok',
+      needType: HelpNeedType.health,
+      active: true,
+      notifiedNearbyCount: 4
     );
   }
 

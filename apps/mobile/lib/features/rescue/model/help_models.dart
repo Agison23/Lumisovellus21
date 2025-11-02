@@ -21,20 +21,24 @@ class HelpRequest {
 class HelpResponse {
   final String requestId;
   final DateTime createdAt;
-  final bool accepted;
-  final String? message;
+  final HelpNeedType needType;
+  final bool active;
+  final int notifiedNearbyCount;
 
   const HelpResponse({
     required this.requestId,
     required this.createdAt,
-    required this.accepted,
-    this.message,
+    required this.needType,
+    required this.active,
+    required this.notifiedNearbyCount,
   });
+}
+
+class HelpAcceptance {
+
 }
 
 abstract class HelpService {
   Future<HelpResponse> requestHelp(HelpRequest request);
   Future<void> cancelHelp(String requestId);
 }
-
-

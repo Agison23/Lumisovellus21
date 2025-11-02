@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../model/help_models.dart';
+import '../../model/help_models.dart';
 
 class InMemoryHelpStore {
   final List<HelpRequest> requests = <HelpRequest>[];
@@ -18,8 +18,9 @@ class FakeHelpService implements HelpService {
     final response = HelpResponse(
       requestId: DateTime.now().microsecondsSinceEpoch.toString(),
       createdAt: DateTime.now(),
-      accepted: true,
-      message: 'Help request queued',
+      active: true,
+      needType: request.needType,
+      notifiedNearbyCount: 3
     );
     _store.responses[response.requestId] = response;
     return response;

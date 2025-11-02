@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lumisovellus/features/rescue/data/help_service_fake.dart';
+import 'package:lumisovellus/features/rescue/data/services/help_service_fake.dart';
 import 'package:lumisovellus/features/rescue/model/help_models.dart';
 
 void main() {
@@ -13,7 +13,6 @@ void main() {
 
     expect(store.requests.length, 1);
     expect(store.responses.containsKey(resp.requestId), isTrue);
-    expect(resp.accepted, isTrue);
   });
 
   test('FakeHelpService cancelHelp removes response', () async {

@@ -6,7 +6,7 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:lumisovellus/features/rescue/model/help_models.dart';
-import 'package:lumisovellus/features/rescue/data/help_service_provider.dart';
+import 'package:lumisovellus/features/rescue/providers.dart';
 
 class RescuePage extends ConsumerStatefulWidget {
   const RescuePage({super.key});

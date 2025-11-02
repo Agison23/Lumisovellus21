@@ -1,4 +1,4 @@
-import '../model/help_models.dart';
+import '../../model/help_models.dart';
 
 class BackendHelpService implements HelpService {
   BackendHelpService({required this.baseUrl});

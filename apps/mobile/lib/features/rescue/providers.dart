@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/config/app_config.dart';
-import '../model/help_models.dart';
-import 'help_service_fake.dart';
-import 'help_service_backend.dart';
+import 'model/help_models.dart';
+import 'data/services/help_service_fake.dart';
+import 'data/services/help_service_backend.dart';
 
 final inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
   return InMemoryHelpStore();
@@ -16,5 +16,3 @@ final helpServiceProvider = Provider<HelpService>((ref) {
   final store = ref.watch(inMemoryHelpStoreProvider);
   return FakeHelpService(store);
 });
-
-
