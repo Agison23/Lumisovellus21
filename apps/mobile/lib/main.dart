@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
 import 'package:lumisovellus/features/settings/view/settings_page.dart';
@@ -35,7 +36,25 @@ class MyApp extends StatelessWidget {
             // add other supported locales here
           ],
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: ThemeData(useMaterial3: true),
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0D1B2A), // <-- this is your new primary color
+            ),
+            extensions: <ThemeExtension<dynamic>>[
+              RescueTheme.light(),
+            ],
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0D1B2A),
+              brightness: Brightness.dark,
+            ),
+            extensions: <ThemeExtension<dynamic>>[
+              RescueTheme.dark(),
+            ],
+          ),
           home: const MainShell(),
         );
       },
@@ -55,19 +74,32 @@ class _MainShellState extends State<MainShell> {
 
   final List<Widget> _pages = const [
     RescuePage(),
-    MapScreen(), // existing screen in your project
+    MapScreen(), 
     _WeatherPlaceholder(),
     SettingsPage(),
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFAFAFAFA),
+ Widget build(BuildContext context) {
+  return Scaffold(
+    body: IndexedStack(index: _currentIndex, children: _pages),
+    bottomNavigationBar: Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey.shade300, 
+            width: 0.6,               
+          ),
+        ),
+      ),
+      child: BottomNavigationBar(
+        iconSize: 30,
+        backgroundColor: Theme.of(context).extension<RescueTheme>()?.pageBackground ??
+            const Color(0xFAFAFAFA),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color.fromARGB(255, 52, 73, 95),
+        unselectedItemColor: const Color.fromARGB(255, 148, 158, 167),
         onTap: (idx) => setState(() => _currentIndex = idx),
         items: [
           BottomNavigationBarItem(
@@ -88,7 +120,8 @@ class _MainShellState extends State<MainShell> {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 

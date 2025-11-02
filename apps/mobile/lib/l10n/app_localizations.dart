@@ -439,17 +439,17 @@ abstract class AppLocalizations {
   /// **'Rescue'**
   String get rescuePageTitle;
 
-  /// No description provided for @rescuePageLatitude.
+  /// No description provided for @rescuePageCoordinateSystem.
   ///
   /// In en, this message translates to:
-  /// **'Latitude'**
-  String get rescuePageLatitude;
+  /// **'Coordinate system'**
+  String get rescuePageCoordinateSystem;
 
-  /// No description provided for @rescuePageLongitude.
+  /// No description provided for @rescuePageShowOnMap.
   ///
   /// In en, this message translates to:
-  /// **'Longitude'**
-  String get rescuePageLongitude;
+  /// **'Show on map'**
+  String get rescuePageShowOnMap;
 
   /// No description provided for @rescuePageAccuracy.
   ///
@@ -460,13 +460,13 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageHelpRequestDescription.
   ///
   /// In en, this message translates to:
-  /// **'Help request alerts and sends your location to nearby rescuers'**
+  /// **'Help-request alerts and sends your location to nearby rescuers'**
   String get rescuePageHelpRequestDescription;
 
   /// No description provided for @rescuePageEmergencyCallDescription.
   ///
   /// In en, this message translates to:
-  /// **'In serious emergency, call the emergency number 112'**
+  /// **'In an emergency, always call 112'**
   String get rescuePageEmergencyCallDescription;
 
   /// No description provided for @rescuePageEmergencyCallFailed.
@@ -502,7 +502,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageRequestHelp.
   ///
   /// In en, this message translates to:
-  /// **'Request help'**
+  /// **'Request Help'**
   String get rescuePageRequestHelp;
 
   /// No description provided for @rescuePageRequestHelpConfirm.
@@ -613,12 +613,6 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get dialogConfirm;
 
-  /// No description provided for @dialogCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get dialogCancel;
-
   /// No description provided for @back.
   ///
   /// In en, this message translates to:
@@ -648,6 +642,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Specify snow type'**
   String get specifySnowType;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// No description provided for @coordinateDirectionNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'N'**
+  String get coordinateDirectionNorth;
+
+  /// No description provided for @coordinateDirectionSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get coordinateDirectionSouth;
+
+  /// No description provided for @coordinateDirectionEast.
+  ///
+  /// In en, this message translates to:
+  /// **'E'**
+  String get coordinateDirectionEast;
+
+  /// No description provided for @coordinateDirectionWest.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get coordinateDirectionWest;
 }
 
 class _AppLocalizationsDelegate

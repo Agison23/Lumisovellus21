@@ -200,21 +200,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageTitle => 'Rescue';
 
   @override
-  String get rescuePageLatitude => 'Latitude';
+  String get rescuePageCoordinateSystem => 'Coordinate system';
 
   @override
-  String get rescuePageLongitude => 'Longitude';
+  String get rescuePageShowOnMap => 'Show on map';
 
   @override
   String get rescuePageAccuracy => 'Position accuracy';
 
   @override
   String get rescuePageHelpRequestDescription =>
-      'Help request alerts and sends your location to nearby rescuers';
+      'Help-request alerts and sends your location to nearby rescuers';
 
   @override
   String get rescuePageEmergencyCallDescription =>
-      'In serious emergency, call the emergency number 112';
+      'In an emergency, always call 112';
 
   @override
   String get rescuePageEmergencyCallFailed =>
@@ -233,7 +233,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageImLost => 'I am lost';
 
   @override
-  String get rescuePageRequestHelp => 'Request help';
+  String get rescuePageRequestHelp => 'Request Help';
 
   @override
   String get rescuePageRequestHelpConfirm =>
@@ -292,9 +292,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogConfirm => 'Confirm';
 
   @override
-  String get dialogCancel => 'Cancel';
-
-  @override
   String get back => 'Back';
 
   @override
@@ -308,4 +305,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get specifySnowType => 'Specify snow type';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String get coordinateDirectionNorth => 'N';
+
+  @override
+  String get coordinateDirectionSouth => 'S';
+
+  @override
+  String get coordinateDirectionEast => 'E';
+
+  @override
+  String get coordinateDirectionWest => 'W';
 }
