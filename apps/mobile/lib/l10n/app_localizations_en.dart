@@ -191,6 +191,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageCoordinateSystem => 'Coordinate system';
 
   @override
+  String get rescuePageShowOnMap => 'Show on map';
+
+  @override
   String get rescuePageAccuracy => 'Position accuracy';
 
   @override
@@ -199,7 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescuePageEmergencyCallDescription =>
-      'In serious emergency, call the emergency number 112';
+      'In an emergency, always call 112';
 
   @override
   String get rescuePageEmergencyCallFailed =>
@@ -218,7 +221,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageImLost => 'I am lost';
 
   @override
-  String get rescuePageRequestHelp => 'Request help';
+  String get rescuePageRequestHelp => 'Request Help';
 
   @override
   String get rescuePageRequestHelpConfirm =>

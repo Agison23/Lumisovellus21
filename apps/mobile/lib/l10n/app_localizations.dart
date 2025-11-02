@@ -421,6 +421,12 @@ abstract class AppLocalizations {
   /// **'Coordinate system'**
   String get rescuePageCoordinateSystem;
 
+  /// No description provided for @rescuePageShowOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on map'**
+  String get rescuePageShowOnMap;
+
   /// No description provided for @rescuePageAccuracy.
   ///
   /// In en, this message translates to:
@@ -436,7 +442,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageEmergencyCallDescription.
   ///
   /// In en, this message translates to:
-  /// **'In serious emergency, call the emergency number 112'**
+  /// **'In an emergency, always call 112'**
   String get rescuePageEmergencyCallDescription;
 
   /// No description provided for @rescuePageEmergencyCallFailed.
@@ -472,7 +478,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageRequestHelp.
   ///
   /// In en, this message translates to:
-  /// **'Request help'**
+  /// **'Request Help'**
   String get rescuePageRequestHelp;
 
   /// No description provided for @rescuePageRequestHelpConfirm.

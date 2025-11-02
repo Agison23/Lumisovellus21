@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
@@ -16,7 +17,6 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   Position? _currentPosition;
   bool _isLoadingLocation = false;
   String? _selectedNeed;
-  final Color _coordCellColor = const Color(0xdce53835);
 
   // Converts decimal degrees to degrees and minutes (DMM) with cardinal
   // direction key. For example: 37.422 -> (37, 25.320, 'north') for latitude.
@@ -36,7 +36,10 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   }
 
   // Gets the localized direction string from a direction key.
-  String _getDirectionString(String directionKey, AppLocalizations localizations) {
+  String _getDirectionString(
+    String directionKey,
+    AppLocalizations localizations,
+  ) {
     switch (directionKey) {
       case 'north':
         return localizations.coordinateDirectionNorth;
@@ -52,48 +55,36 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   }
 
   Widget _coordCell(
+    BuildContext context,
     String text, {
     Alignment alignment = Alignment.center,
     double? minWidth,
   }) {
+    final rescueTheme = context.rescueTheme;
     return Container(
       constraints: BoxConstraints(minHeight: 20, minWidth: minWidth ?? 0),
       alignment: alignment,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: _coordCellColor,
+        color: rescueTheme.coordinateCell,
         borderRadius: BorderRadius.circular(10),
       ),
 
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
-        ),
-      ),
+      child: Text(text, style: rescueTheme.coordinateCellStyle),
     );
   }
 
-  Widget _coordDirCell(String dir) {
+  Widget _coordDirCell(BuildContext context, String dir) {
+    final rescueTheme = context.rescueTheme;
     return Container(
       constraints: const BoxConstraints(minHeight: 20, minWidth: 48),
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: _coordCellColor,
+        color: rescueTheme.coordinateCell,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        dir,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+      child: Text(dir, style: rescueTheme.coordinateDirectionStyle),
     );
   }
 
@@ -213,7 +204,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
         return StatefulBuilder(
           builder: (context, setLocalState) {
             String? localSelectedNeed = _selectedNeed;
-            var radioTextStyle = const TextStyle(fontSize: 16);
+            final rescueTheme = context.rescueTheme;
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -222,7 +213,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
               actionsPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 12.0),
               title: Text(
                 AppLocalizations.of(context).rescuePageIndicateNeed,
-                style: const TextStyle(fontSize: 20),
+                style: rescueTheme.dialogTitleStyle,
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -241,7 +232,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                         RadioListTile<String>(
                           title: Text(
                             AppLocalizations.of(context).rescuePageHealthIssue,
-                            style: radioTextStyle,
+                            style: rescueTheme.dialogRadioStyle,
                           ),
                           value: 'health',
                           dense: true,
@@ -252,7 +243,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                             AppLocalizations.of(
                               context,
                             ).rescuePageEquipmentIssue,
-                            style: radioTextStyle,
+                            style: rescueTheme.dialogRadioStyle,
                           ),
                           value: 'equipment',
                           dense: true,
@@ -261,7 +252,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                         RadioListTile<String>(
                           title: Text(
                             AppLocalizations.of(context).rescuePageImLost,
-                            style: radioTextStyle,
+                            style: rescueTheme.dialogRadioStyle,
                           ),
                           value: 'lost',
                           dense: true,
@@ -304,15 +295,18 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    final rescueTheme = context.rescueTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFAFAFAFA),
+      backgroundColor: rescueTheme.pageBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // Location information segment
+              const SizedBox(height: 20),
+
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -322,11 +316,6 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Icon(
-                        //   Icons.location_on,
-                        //   color: Colors.red.shade500,
-                        //   size: 20,
-                        // ),
                         const SizedBox(width: 8),
                         Text(
                           t.currentLocation,
@@ -350,8 +339,14 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                             _currentPosition!.longitude,
                             isLatitude: false,
                           );
-                          final latDir = _getDirectionString(latDirKey, localizations);
-                          final lonDir = _getDirectionString(lonDirKey, localizations);
+                          final latDir = _getDirectionString(
+                            latDirKey,
+                            localizations,
+                          );
+                          final lonDir = _getDirectionString(
+                            lonDirKey,
+                            localizations,
+                          );
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -361,6 +356,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                   const SizedBox(width: 40),
                                   Expanded(
                                     child: _coordCell(
+                                      context,
                                       '$latDeg°',
                                       alignment: Alignment.centerLeft,
                                       minWidth: 64,
@@ -370,12 +366,13 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                   Expanded(
                                     flex: 2,
                                     child: _coordCell(
+                                      context,
                                       latMin,
                                       alignment: Alignment.centerLeft,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  _coordDirCell(latDir),
+                                  _coordDirCell(context, latDir),
                                   const SizedBox(width: 40),
                                 ],
                               ),
@@ -385,6 +382,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                   const SizedBox(width: 40),
                                   Expanded(
                                     child: _coordCell(
+                                      context,
                                       '$lonDeg°',
                                       alignment: Alignment.centerLeft,
                                       minWidth: 64,
@@ -394,56 +392,86 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                   Expanded(
                                     flex: 2,
                                     child: _coordCell(
+                                      context,
                                       lonMin,
                                       alignment: Alignment.centerLeft,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  _coordDirCell(lonDir),
+                                  _coordDirCell(context, lonDir),
                                   const SizedBox(width: 40),
                                 ],
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 10),
+                              Text(
+                                '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
                               SizedBox(
-                                width: double.infinity,
+                                // width: 150,
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     // TODO: implement show on map
                                   },
-                                  icon: Icon(Icons.place, color: Colors.red.shade500),
-                                  label: const Text(
-                                    'SHOW ON MAP',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.6,
-                                    ),
+                                  icon: Icon(
+                                    Icons.place,
+                                    color: rescueTheme.requestHelpButton,
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xfffafafa),
-                                    foregroundColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    side: BorderSide.none,
-                                    shadowColor: Colors.transparent
+                                  label: Text(
+                                    t.rescuePageShowOnMap
+                                        .toUpperCase(),
+                                    style: rescueTheme.secondaryButtonStyle,
                                   ),
+                                  style:
+                                      ElevatedButton.styleFrom(
+                                        backgroundColor: rescueTheme
+                                            .secondaryButtonBackground,
+                                        foregroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        side: BorderSide.none,
+                                        shadowColor: Colors.transparent,
+                                      ).copyWith(
+                                        overlayColor: WidgetStateProperty.all(
+                                          Colors.transparent,
+                                        ),
+                                      ),
                                 ),
                               ),
                               const SizedBox(height: 0),
-                              Text(
-                                '${t.rescuePageCoordinateSystem}: WGS84',
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(color: Colors.grey.shade700),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(color: Colors.grey.shade700),
-                              ),
+                              // Text(
+                              //   '${t.rescuePageCoordinateSystem}: WGS84',
+                              //   style: Theme.of(context).textTheme.bodySmall
+                              //       ?.copyWith(
+                              //         color: Theme.of(
+                              //           context,
+                              //         ).colorScheme.onSurfaceVariant,
+                              //       ),
+                              // ),
+                              // const SizedBox(height: 2),
+                              // Text(
+                              //   '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
+                              //   style: Theme.of(context).textTheme.bodySmall
+                              //       ?.copyWith(
+                              //         color: Theme.of(
+                              //           context,
+                              //         ).colorScheme.onSurfaceVariant,
+                              //       ),
+                              // ),
                             ],
                           );
                         },
@@ -452,82 +480,85 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                       Text(
                         t.locationNotAvailable,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
-              // Request help segment
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Help request description
-                      Text(
-                        t.rescuePageHelpRequestDescription,
-                        style: const TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 34),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: rescueTheme.cardShadow,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Help request description
+                    Text(
+                      t.rescuePageHelpRequestDescription,
+                      style: rescueTheme.descriptionStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 34),
 
-                      // Request help button
-                      Center(
-                        child: GestureDetector(
-                          onTap: _requestHelp,
-                          child: Container(
-                            width: 170,
-                            height: 170,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE53935),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade800,
-                                  blurRadius: 10,
-                                ),
-                              ],
+                    // Request help button
+                    GestureDetector(
+                      onTap: _requestHelp,
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: rescueTheme.requestHelpButton,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: rescueTheme.requestHelpButtonShadow,
+                              spreadRadius: 14,
                             ),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                ), // add horizontal padding
-                                child: Text(
-                                  t.rescuePageRequestHelp,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            t.rescuePageRequestHelp,
+                            style: rescueTheme.requestHelpButtonStyle.copyWith(
+                              color: rescueTheme.requestHelpButtonText,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 25),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
 
               // Call 112 segment
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  color: rescueTheme.cardBackground,
+                  borderRadius: BorderRadius.circular(5),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade400,
+                      color: rescueTheme.cardShadow,
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -540,13 +571,15 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             t.rescuePageEmergencyCallDescription,
-                            style: const TextStyle(fontSize: 18),
+                            style: rescueTheme.descriptionStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
+                        const SizedBox(width: 12),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -556,37 +589,38 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                       child: ElevatedButton(
                         onPressed: () => _call112(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          foregroundColor: Colors.red.shade400,
+                          backgroundColor: rescueTheme.emergencyCallBackground,
+                          foregroundColor: rescueTheme.emergencyCallForeground,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           side: BorderSide(
-                            color: Colors.red.shade400,
+                            color: rescueTheme.emergencyCallBorder,
                             width: 2,
                           ),
                           elevation: 4,
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.phone, size: 28),
-                            SizedBox(width: 12),
+                            const Icon(Icons.phone, size: 28),
+                            const SizedBox(width: 12),
                             Text(
                               '112',
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: rescueTheme.emergencyCallButtonStyle,
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
+              //     ],
+              //   ),
+              // ),
+              const SizedBox(height: 34),
             ],
           ),
         ),
