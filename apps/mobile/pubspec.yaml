@@ -41,7 +41,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-  maplibre_gl: ^0.24.0
   flutter_svg: ^2.0.10+1
   drift: ^2.28.2
   sqlite3_flutter_libs: ^0.5.40
@@ -51,6 +50,8 @@ dependencies:
   shelf: ^1.4.2
   connectivity_plus: ^7.0.0
   internet_connection_checker_plus: ^2.9.0
+  mapbox_maps_flutter: ^2.11.0
+  collection: ^1.19.1
   geolocator: ^13.0.1
   url_launcher: ^6.3.2
   external_app_launcher: ^4.0.3

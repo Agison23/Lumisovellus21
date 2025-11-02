@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
@@ -18,6 +19,76 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   Position? _currentPosition;
   bool _isLoadingLocation = false;
   String? _selectedNeed;
+
+  // Converts decimal degrees to degrees and minutes (DMM) with cardinal
+  // direction key. For example: 37.422 -> (37, 25.320, 'north') for latitude.
+  (int degrees, String minutesStr, String directionKey) _toDmm(
+    double value, {
+    required bool isLatitude,
+  }) {
+    final absVal = value.abs();
+    final deg = absVal.floor();
+    final minutes = (absVal - deg) * 60.0;
+    final minutesFixed = minutes.toStringAsFixed(3);
+    final minutesPadded = minutes < 10 ? '0$minutesFixed' : minutesFixed;
+    final dirKey = value >= 0
+        ? (isLatitude ? 'north' : 'east')
+        : (isLatitude ? 'south' : 'west');
+    return (deg, minutesPadded, dirKey);
+  }
+
+  // Gets the localized direction string from a direction key.
+  String _getDirectionString(
+    String directionKey,
+    AppLocalizations localizations,
+  ) {
+    switch (directionKey) {
+      case 'north':
+        return localizations.coordinateDirectionNorth;
+      case 'south':
+        return localizations.coordinateDirectionSouth;
+      case 'east':
+        return localizations.coordinateDirectionEast;
+      case 'west':
+        return localizations.coordinateDirectionWest;
+      default:
+        return directionKey;
+    }
+  }
+
+  Widget _coordCell(
+    BuildContext context,
+    String text, {
+    Alignment alignment = Alignment.center,
+    double? minWidth,
+  }) {
+    final rescueTheme = context.rescueTheme;
+    return Container(
+      constraints: BoxConstraints(minHeight: 20, minWidth: minWidth ?? 0),
+      alignment: alignment,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: rescueTheme.coordinateCell,
+        borderRadius: BorderRadius.circular(10),
+      ),
+
+      child: Text(text, style: rescueTheme.coordinateCellStyle),
+    );
+  }
+
+  Widget _coordDirCell(BuildContext context, String dir) {
+    final rescueTheme = context.rescueTheme;
+    return Container(
+      constraints: const BoxConstraints(minHeight: 20, minWidth: 48),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: rescueTheme.coordinateCell,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(dir, style: rescueTheme.coordinateDirectionStyle),
+    );
+  }
 
   @override
   void initState() {
@@ -83,12 +154,19 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     // Try to launch the 112 Suomi app using external_app_launcher
     try {
       debugPrint('Attempting to launch 112 Suomi app...');
-      await LaunchApp.openApp(
+      var res = await LaunchApp.openApp(
         androidPackageName: suomi112Package,
         openStore: false, // Don't open Play Store if app is not installed
       );
-      debugPrint('Successfully launched 112 Suomi app');
-      return; // Successfully launched 112 Suomi app
+
+      if (res == 1) {
+        debugPrint('Successfully launched 112 Suomi app');
+        return; // Successfully launched 112 Suomi app
+      } else {
+        debugPrint(
+          'Failed to launch 112 Suomi app, falling back to phone dialer',
+        );
+      }
     } catch (e) {
       // App is not installed or cannot be launched
       debugPrint(
@@ -128,169 +206,155 @@ class _RescuePageState extends ConsumerState<RescuePage> {
   }
 
   void _requestHelp() {
-    if (_selectedNeed == null) {
-      // Show error if no need is selected
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).rescuePageIndicateNeed),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    // Confirm and dispatch help request via HelpService (testable)
+    // Show dialog where the user selects a need and confirms sending help request
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        contentPadding: const EdgeInsets.fromLTRB(
-          20.0,
-          16.0,
-          20.0,
-          0.0,
-        ), // reduced bottom,
-        actionsPadding: const EdgeInsets.fromLTRB(
-          20.0,
-          0.0,
-          20.0,
-          0.0,
-        ), // reduced bottom,
-        content: Text(
-          AppLocalizations.of(context).rescuePageRequestHelpConfirm,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context).dialogCancel),
-            key: const ValueKey('rescue.confirm.cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final service = ref.read(helpServiceProvider);
-              final needType = _selectedNeed == 'health'
-                  ? HelpNeedType.health
-                  : _selectedNeed == 'equipment'
-                  ? HelpNeedType.equipment
-                  : HelpNeedType.lost;
-              try {
-                final resp = await service.requestHelp(
-                  HelpRequest(
-                    needType: needType,
-                    latitude: _currentPosition?.latitude,
-                    longitude: _currentPosition?.longitude,
-                    accuracyMeters: _currentPosition?.accuracy,
-                  ),
-                );
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '${AppLocalizations.of(context).rescuePageRequestHelp}: ${resp.message ?? 'sent'}',
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setLocalState) {
+            String? localSelectedNeed = _selectedNeed;
+            final rescueTheme = context.rescueTheme;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              contentPadding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0.0),
+              actionsPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 12.0),
+              title: Text(
+                AppLocalizations.of(context).rescuePageIndicateNeed,
+                style: rescueTheme.dialogTitleStyle,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RadioGroup<String>(
+                    groupValue: localSelectedNeed,
+                    onChanged: (String? value) {
+                      setLocalState(() {
+                        localSelectedNeed = value;
+                        _selectedNeed = value;
+                      });
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RadioListTile<String>(
+                          title: Text(
+                            AppLocalizations.of(context).rescuePageHealthIssue,
+                            style: rescueTheme.dialogRadioStyle,
+                          ),
+                          value: 'health',
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        RadioListTile<String>(
+                          title: Text(
+                            AppLocalizations.of(
+                              context,
+                            ).rescuePageEquipmentIssue,
+                            style: rescueTheme.dialogRadioStyle,
+                          ),
+                          value: 'equipment',
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        RadioListTile<String>(
+                          title: Text(
+                            AppLocalizations.of(context).rescuePageImLost,
+                            style: rescueTheme.dialogRadioStyle,
+                          ),
+                          value: 'lost',
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                      ],
                     ),
                   ),
-                );
-              } catch (e) {
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).rescuePageEmergencyCallFailed,
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
-            child: Text(AppLocalizations.of(context).dialogConfirm),
-            key: const ValueKey('rescue.confirm.ok'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNeedButton(BuildContext context, String text, String value) {
-    final isSelected = _selectedNeed == value;
-
-    return GestureDetector(
-      key: ValueKey('rescue.need.$value'),
-      onTap: () {
-        setState(() {
-          _selectedNeed = value;
-        });
+                ],
+              ),
+              actions: [
+                TextButton(
+                  key: const ValueKey('rescue.confirm.cancel'),
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(AppLocalizations.of(context).dialogCancel),
+                ),
+                TextButton(
+                  key: const ValueKey('rescue.confirm.ok'),
+                  onPressed: localSelectedNeed == null
+                      ? null
+                      : () async {
+                          Navigator.of(context).pop();
+                          final service = ref.read(helpServiceProvider);
+                          final needType = _selectedNeed == 'health'
+                              ? HelpNeedType.health
+                              : _selectedNeed == 'equipment'
+                              ? HelpNeedType.equipment
+                              : HelpNeedType.lost;
+                          try {
+                            final resp = await service.requestHelp(
+                              HelpRequest(
+                                needType: needType,
+                                latitude: _currentPosition?.latitude,
+                                longitude: _currentPosition?.longitude,
+                                accuracyMeters: _currentPosition?.accuracy,
+                              ),
+                            );
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${AppLocalizations.of(context).rescuePageRequestHelp}: ${resp.needType.toString()}',
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).rescuePageEmergencyCallFailed,
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                  child: Text(AppLocalizations.of(context).dialogConfirm),
+                ),
+              ],
+            );
+          },
+        );
       },
-      child: Container(
-        height: 56, // Increased height to accommodate longer text
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 4,
-        ), // Reduced horizontal padding
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.red.shade50 : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? Colors.red.shade600 : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: isSelected ? Colors.red.shade700 : Colors.grey.shade700,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              fontSize: 11, // Slightly smaller font size
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    final rescueTheme = context.rescueTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFAFAFAFA),
+      backgroundColor: rescueTheme.pageBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // Location information segment
+              const SizedBox(height: 20),
+
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.location_on,
-                          color: Colors.red.shade500,
-                          size: 24,
-                        ),
                         const SizedBox(width: 8),
                         Text(
                           t.currentLocation,
@@ -303,151 +367,237 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     if (_isLoadingLocation)
                       const Center(child: CircularProgressIndicator())
                     else if (_currentPosition != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${t.rescuePageLatitude}: ${_currentPosition!.latitude.toStringAsFixed(6)}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${t.rescuePageLongitude}: ${_currentPosition!.longitude.toStringAsFixed(6)}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)}m',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: Colors.grey.shade600),
-                          ),
-                        ],
+                      Builder(
+                        builder: (context) {
+                          final localizations = AppLocalizations.of(context);
+                          final (latDeg, latMin, latDirKey) = _toDmm(
+                            _currentPosition!.latitude,
+                            isLatitude: true,
+                          );
+                          final (lonDeg, lonMin, lonDirKey) = _toDmm(
+                            _currentPosition!.longitude,
+                            isLatitude: false,
+                          );
+                          final latDir = _getDirectionString(
+                            latDirKey,
+                            localizations,
+                          );
+                          final lonDir = _getDirectionString(
+                            lonDirKey,
+                            localizations,
+                          );
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 40),
+                                  Expanded(
+                                    child: _coordCell(
+                                      context,
+                                      '$latDeg°',
+                                      alignment: Alignment.centerLeft,
+                                      minWidth: 64,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    flex: 2,
+                                    child: _coordCell(
+                                      context,
+                                      latMin,
+                                      alignment: Alignment.centerLeft,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _coordDirCell(context, latDir),
+                                  const SizedBox(width: 40),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 40),
+                                  Expanded(
+                                    child: _coordCell(
+                                      context,
+                                      '$lonDeg°',
+                                      alignment: Alignment.centerLeft,
+                                      minWidth: 64,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    flex: 2,
+                                    child: _coordCell(
+                                      context,
+                                      lonMin,
+                                      alignment: Alignment.centerLeft,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _coordDirCell(context, lonDir),
+                                  const SizedBox(width: 40),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                              SizedBox(
+                                // width: 150,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    // TODO: implement show on map
+                                  },
+                                  icon: Icon(
+                                    Icons.place,
+                                    color: rescueTheme.requestHelpButton,
+                                  ),
+                                  label: Text(
+                                    t.rescuePageShowOnMap.toUpperCase(),
+                                    style: rescueTheme.secondaryButtonStyle,
+                                  ),
+                                  style:
+                                      ElevatedButton.styleFrom(
+                                        backgroundColor: rescueTheme
+                                            .secondaryButtonBackground,
+                                        foregroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        side: BorderSide.none,
+                                        shadowColor: Colors.transparent,
+                                      ).copyWith(
+                                        overlayColor: WidgetStateProperty.all(
+                                          Colors.transparent,
+                                        ),
+                                      ),
+                                ),
+                              ),
+                              const SizedBox(height: 0),
+                              // Text(
+                              //   '${t.rescuePageCoordinateSystem}: WGS84',
+                              //   style: Theme.of(context).textTheme.bodySmall
+                              //       ?.copyWith(
+                              //         color: Theme.of(
+                              //           context,
+                              //         ).colorScheme.onSurfaceVariant,
+                              //       ),
+                              // ),
+                              // const SizedBox(height: 2),
+                              // Text(
+                              //   '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
+                              //   style: Theme.of(context).textTheme.bodySmall
+                              //       ?.copyWith(
+                              //         color: Theme.of(
+                              //           context,
+                              //         ).colorScheme.onSurfaceVariant,
+                              //       ),
+                              // ),
+                            ],
+                          );
+                        },
                       )
                     else
                       Text(
                         t.locationNotAvailable,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 20),
 
-              // Request help segment
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Help request description
-                        Text(
-                          t.rescuePageHelpRequestDescription,
-                          style: const TextStyle(fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 24),
-                        // Please indicate your need
-                        Text(
-                          t.rescuePageIndicateNeed,
-                          // style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          //   fontWeight: FontWeight.bold,
-                          // ),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 6),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: rescueTheme.cardShadow,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Help request description
+                    Text(
+                      t.rescuePageHelpRequestDescription,
+                      style: rescueTheme.descriptionStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 34),
 
-                        // Need selection buttons
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildNeedButton(
-                                context,
-                                t.rescuePageHealthIssue,
-                                'health',
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: _buildNeedButton(
-                                context,
-                                t.rescuePageEquipmentIssue,
-                                'equipment',
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: _buildNeedButton(
-                                context,
-                                t.rescuePageImLost,
-                                'lost',
-                              ),
+                    // Request help button
+                    GestureDetector(
+                      key: const ValueKey('rescue.requestHelpButton'),
+                      onTap: _requestHelp,
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: rescueTheme.requestHelpButton,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: rescueTheme.requestHelpButtonShadow,
+                              spreadRadius: 14,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 48),
-
-                        // Request help button
-                        Center(
-                          child: GestureDetector(
-                            key: const ValueKey('rescue.requestHelpButton'),
-                            onTap: _requestHelp,
-                            child: Container(
-                              width: 170,
-                              height: 170,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE53935),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade800,
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                  ), // add horizontal padding
-                                  child: Text(
-                                    t.rescuePageRequestHelp,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            t.rescuePageRequestHelp,
+                            style: rescueTheme.requestHelpButtonStyle.copyWith(
+                              color: rescueTheme.requestHelpButtonText,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 25),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
+
+              const SizedBox(height: 20),
 
               // Call 112 segment
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  color: rescueTheme.cardBackground,
+                  borderRadius: BorderRadius.circular(5),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade400,
+                      color: rescueTheme.cardShadow,
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -460,13 +610,15 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             t.rescuePageEmergencyCallDescription,
-                            style: const TextStyle(fontSize: 18),
+                            style: rescueTheme.descriptionStyle,
                             textAlign: TextAlign.center,
                           ),
                         ),
+                        const SizedBox(width: 12),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -476,37 +628,38 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                       child: ElevatedButton(
                         onPressed: () => _call112(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          foregroundColor: Colors.red.shade400,
+                          backgroundColor: rescueTheme.emergencyCallBackground,
+                          foregroundColor: rescueTheme.emergencyCallForeground,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                           side: BorderSide(
-                            color: Colors.red.shade400,
+                            color: rescueTheme.emergencyCallBorder,
                             width: 2,
                           ),
                           elevation: 4,
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.phone, size: 28),
-                            SizedBox(width: 12),
+                            const Icon(Icons.phone, size: 28),
+                            const SizedBox(width: 12),
                             Text(
                               '112',
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: rescueTheme.emergencyCallButtonStyle,
                             ),
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
+              //     ],
+              //   ),
+              // ),
+              const SizedBox(height: 34),
             ],
           ),
         ),

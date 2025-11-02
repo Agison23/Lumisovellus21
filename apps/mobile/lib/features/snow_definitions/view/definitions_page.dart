@@ -30,7 +30,7 @@ class DefinitionsPage extends StatelessWidget {
                 child: Text(
                   t.snowDefinitionsPageTitle.toUpperCase(),
                   style: const TextStyle(
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 255, 255, 255),
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
