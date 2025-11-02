@@ -2,23 +2,21 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { FeatureCollection, Polygon } from "geojson";
 
-import maplibregl, {
-	MapLayerMouseEvent,
-	type FilterSpecification,
-} from "maplibre-gl";
+import { MapMouseEvent, type FilterSpecification } from "mapbox-gl";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useRef, useState } from "react";
-import Map, {
-	Layer,
-	NavigationControl,
-	Source,
-	TerrainControl,
-} from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Layer, NavigationControl, Source } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
+import {
+	CameraState,
+	DEFAULT_VIEW_STATE,
+	loadCameraState,
+	saveCameraState,
+} from "@/lib/map/map-camera";
 import {
 	areaAvalancheDangerOutlineLayer,
 	areaFillLayer,
@@ -26,7 +24,9 @@ import {
 	areaLabelLayer,
 	areaOutlineLayer,
 	areaSelectedLayer,
-	MAP_STYLE,
+	hillshadeLayer,
+	TERRAIN_CONFIG,
+	TERRAIN_SOURCE_CONFIG,
 } from "@/lib/map/map-style";
 import {
 	InteractiveAreaFeature,
@@ -37,12 +37,7 @@ import {
 	SnowType,
 	UpdateData,
 } from "@/lib/map/mock-data";
-import {
-	CameraState,
-	DEFAULT_VIEW_STATE,
-	loadCameraState,
-	saveCameraState,
-} from "@/lib/map/map-camera";
+import { Monitor } from "@/lib/snower/types";
 
 // for now, mock fetching from the API
 const fetchAreas = async (): Promise<InteractiveAreaFeature[]> => {
@@ -62,6 +57,16 @@ const fetchUpdateData = async (): Promise<UpdateData[]> => {
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	// throw new Error("Mock error fetching update data");
 	return mockUpdateData;
+};
+
+const fetchMonitorData = async (): Promise<Monitor[]> => {
+	const res = await fetch("/api/snower");
+	// throw new Error("Mock error fetching monitor data");
+
+	if (!res.ok) {
+		throw new Error("Failed to fetch monitor data");
+	}
+	return res.json();
 };
 
 function calculatePolygonArea(coordinates: number[][]): number {
@@ -130,11 +135,6 @@ export default function Map3d() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [showLoading, setShowLoading] = useState(true);
 	const hasLoadedRef = useRef(false);
-	const [popupInfo, setPopupInfo] = useState<{
-		longtitude: number;
-		latitude: number;
-		name: string;
-	} | null>(null);
 	const [selectedSnowCategoryId, setSelectedSnowCategoryId] = useState<
 		number | null
 	>(null);
@@ -144,6 +144,7 @@ export default function Map3d() {
 	const [selectedObstacleIds, setSelectedObstacleIds] = useState<
 		number[] | null
 	>(null);
+	const [selectedMonitor, setSelectedMonitor] = useState<Monitor | null>(null);
 
 	const [viewState, setViewState] = useState<CameraState>(() => {
 		if (typeof window === "undefined") return DEFAULT_VIEW_STATE;
@@ -183,6 +184,16 @@ export default function Map3d() {
 		queryFn: fetchUpdateData,
 		refetchInterval: 10000,
 		staleTime: 5000,
+	});
+
+	const {
+		data: monitors = [],
+		isError: monitorsError,
+		isLoading: monitorsLoading,
+	} = useQuery({
+		queryKey: ["monitors"],
+		queryFn: fetchMonitorData,
+		staleTime: Infinity,
 	});
 
 	const submitMutation = useMutation({
@@ -227,7 +238,31 @@ export default function Map3d() {
 		[selectedArea]
 	);
 
-	const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
+	const monitorsGeoJson = useMemo<FeatureCollection>(
+		() => ({
+			type: "FeatureCollection",
+			features: monitors
+				.filter(
+					(monitor) =>
+						monitor.snowDepth !== "No Data" || monitor.temperature !== "No Data"
+				)
+				.map((monitor) => ({
+					type: "Feature" as const,
+					geometry: {
+						type: "Point" as const,
+						coordinates: [monitor.lng, monitor.lat],
+					},
+					properties: {
+						name: monitor.name,
+						temperature: monitor.temperature,
+						snowDepth: monitor.snowDepth,
+					},
+				})),
+		}),
+		[monitors]
+	);
+
+	const handleMouseMove = useCallback((event: MapMouseEvent) => {
 		const hoveredFeature = event.features && event.features[0];
 		event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
 
@@ -239,39 +274,51 @@ export default function Map3d() {
 		}
 	}, []);
 
-	const handleMouseLeave = useCallback((event: MapLayerMouseEvent) => {
+	const handleMouseLeave = useCallback((event: MapMouseEvent) => {
 		event.target.getCanvas().style.cursor = "";
 		setHoveredAreaId(null);
 	}, []);
 
-	const handleClick = useCallback((event: MapLayerMouseEvent) => {
-		const feature = event.features && event.features[0];
+	const handleClick = useCallback(
+		(event: MapMouseEvent) => {
+			const feature = event.features && event.features[0];
 
-		setSelectedSnowCategoryId(null);
-		setSelectedSnowTypeId(null);
-		setSelectedObstacleIds(null);
-		if (!feature) {
-			setSelectedArea(null);
-			setPopupInfo(null);
-			form.reset();
+			setSelectedSnowCategoryId(null);
+			setSelectedSnowTypeId(null);
+			setSelectedObstacleIds(null);
+
+			// Check if a monitor was clicked
+			if (feature?.layer?.id === "monitors-points") {
+				const monitor = monitors.find(
+					(m) => m.name === feature.properties?.name
+				);
+				if (monitor) {
+					setSelectedMonitor(monitor);
+					setSelectedArea(null);
+					return;
+				}
+			}
+
+			// Handle area clicks as before
+			if (!feature) {
+				setSelectedArea(null);
+				setSelectedMonitor(null);
+				form.reset();
+				submitMutation.reset();
+				return;
+			}
+
+			const properties = feature.properties as InteractiveAreaProperties;
+			setSelectedArea(properties);
+			setSelectedMonitor(null);
+			form.updateFormData({
+				areaId: properties.id,
+			});
+			form.goToStep(0);
 			submitMutation.reset();
-			return;
-		}
-
-		const properties = feature.properties as InteractiveAreaProperties;
-		setSelectedArea(properties);
-		form.updateFormData({
-			areaId: properties.id,
-		});
-		form.goToStep(0);
-		submitMutation.reset();
-
-		setPopupInfo({
-			longtitude: event.lngLat.lng,
-			latitude: event.lngLat.lat,
-			name: properties.name,
-		});
-	}, []);
+		},
+		[monitors]
+	);
 
 	const handleMapLoad = useCallback(() => {
 		if (!hasLoadedRef.current) {
@@ -376,10 +423,8 @@ export default function Map3d() {
 				</div>
 			)}
 			<Map
-				mapLib={maplibregl}
 				initialViewState={viewState}
 				style={{ width: "100%", height: "100%" }}
-				mapStyle={MAP_STYLE}
 				maxTileCacheSize={500}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
@@ -397,7 +442,10 @@ export default function Map3d() {
 					setViewState(newState);
 					saveCameraState(newState);
 				}}
-				interactiveLayerIds={["areas-fill"]}
+				interactiveLayerIds={["areas-fill", "monitors-points"]}
+				mapStyle="mapbox://styles/mapbox/outdoors-v12"
+				mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_ACCESS_TOKEN}
+				terrain={TERRAIN_CONFIG}
 			>
 				<NavigationControl
 					position="top-right"
@@ -405,17 +453,86 @@ export default function Map3d() {
 					showCompass
 					showZoom
 				/>
-				<TerrainControl position="top-right" source="terrainSource" />
-				<Source id="areas" type="geojson" data={areasGeoJson} promoteId="id">
-					<Layer {...areaFillLayer} />
-					<Layer {...areaOutlineLayer} />
-					<Layer {...areaAvalancheDangerOutlineLayer} />
-					<Layer {...areaHoverLayer} filter={hoverFilter} />
-					<Layer {...areaSelectedLayer} filter={selectedFilter} />
-					<Layer {...areaLabelLayer} />
-				</Source>
+				{/* Terrain source for 3D elevation */}
+				<Source {...TERRAIN_SOURCE_CONFIG} />
+				{/* Hillshade layer for visual terrain shading */}
+				<Layer {...hillshadeLayer} />
+				{!isLoading && (
+					<>
+						<Source id="monitors" type="geojson" data={monitorsGeoJson}>
+							<Layer
+								id="monitors-points"
+								type="circle"
+								paint={{
+									"circle-radius": 6,
+									"circle-color": "#ff6b6b",
+									"circle-stroke-width": 2,
+									"circle-stroke-color": "#fff",
+								}}
+							/>
+						</Source>
+						<Source
+							id="areas"
+							type="geojson"
+							data={areasGeoJson}
+							promoteId="id"
+						>
+							<Layer {...areaFillLayer} />
+							<Layer {...areaOutlineLayer} />
+							<Layer {...areaAvalancheDangerOutlineLayer} />
+							<Layer {...areaHoverLayer} filter={hoverFilter} />
+							<Layer {...areaSelectedLayer} filter={selectedFilter} />
+							<Layer {...areaLabelLayer} />
+						</Source>
+					</>
+				)}
 			</Map>
 
+			{selectedMonitor && (
+				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 w-80 max-w-[90vw]">
+					<div className="flex flex-col gap-2">
+						<h3 className="font-medium text-base">{selectedMonitor.name}</h3>
+						<Separator />
+						<div className="flex flex-col gap-3">
+							<div>
+								<p className="text-muted-foreground text-xs">
+									{t("monitorInfo.fields.temperature.label")}
+								</p>
+								{selectedMonitor.temperature === "No Data"
+									? t("monitorInfo.fields.temperature.noData")
+									: selectedMonitor.temperature}
+							</div>
+							<div>
+								<p className="text-muted-foreground text-xs">
+									{t("monitorInfo.fields.snowDepth.label")}
+								</p>
+								<p className="font-medium">
+									{selectedMonitor.snowDepth === "No Data"
+										? t("monitorInfo.fields.snowDepth.noData")
+										: selectedMonitor.snowDepth}
+								</p>
+							</div>
+							<div className="text-xs text-muted-foreground">
+								<p>
+									{t("monitorInfo.fields.coordinates.latitude")}:{" "}
+									{selectedMonitor.lat.toFixed(4)}
+								</p>
+								<p>
+									{t("monitorInfo.fields.coordinates.longitude")}:{" "}
+									{selectedMonitor.lng.toFixed(4)}
+								</p>
+							</div>
+						</div>
+					</div>
+					<Button
+						variant="default"
+						onClick={() => setSelectedMonitor(null)}
+						className="w-full"
+					>
+						{t("reportForm.buttons.close")}
+					</Button>
+				</div>
+			)}
 			{selectedArea && (
 				<div className="absolute top-12 left-2 bg-background p-2 rounded-lg shadow-lg text-sm flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-200 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-100px)] w-80 max-w-[90vw]">
 					<div className="flex flex-col">

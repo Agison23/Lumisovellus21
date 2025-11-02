@@ -45,10 +45,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get phoneNum => 'Puhelinnumero';
 
   @override
+  String get definitions => 'MÄÄRITELMÄT';
+
+  @override
   String get snowDefinitionsPageTitle => 'Määritelmät';
 
   @override
   String get avalancheWarning => 'Lumivyöryvaroitus';
+
+  @override
+  String get noAvalancheWarning => 'Ei lumivyöryvaroitusta';
 
   @override
   String get avalancheWarningDesc =>
@@ -144,40 +150,47 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get iceDesc =>
-      'Kova ja murtumaton jääkerros lumipinnalla. Kova, lasittunut pinta sulamis-jäätymisprosessin seurauksena.';
+      'Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.';
 
   @override
-  String get breakableIce => 'Murtuva jää';
+  String get breakableIce => 'Rikkoutuva jää';
 
   @override
-  String get breakableIceDesc => 'Kova, mutta murtuva jääkerros lumipinnalla.';
+  String get breakableIceDesc =>
+      'Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.';
 
   @override
-  String get slush => 'Loska';
+  String get slush => 'Sohjo';
 
   @override
-  String get slushDesc => 'Märkä ja osittain sulanut lumi yli nollan asteessa.';
+  String get slushDesc => 'Vesipitoinen ja osittain sulanut lumi suojasäällä.';
 
   @override
-  String get wettingSnow => 'Kostea lumi';
+  String get wettingSnow => 'Kastuva lumi';
 
   @override
   String get wettingSnowDesc =>
-      'Märkä tai kostea lumi lämpimän sään tai sateen seurauksena.';
+      'Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.';
 
   @override
-  String get saturatedSnow => 'Kyllästynyt lumi';
+  String get saturatedSnow => 'Saturoitunut lumi';
 
   @override
   String get saturatedSnowDesc =>
-      'Täysin märkä, loskaantunut ja kermamainen lumi.';
+      'Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.';
 
   @override
-  String get littleSnow => 'Vähän lunta';
+  String get littleSnow => 'Vähäinen lumi';
 
   @override
   String get mapOfflineModeMessage =>
-      'Olet offline-tilassa – näytetään tallennetut karttatiedot';
+      'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
+
+  @override
+  String get close => 'Sulje';
+
+  @override
+  String get addObservation => 'Lisää havainto';
 
   @override
   String get rescue => 'Pelastus';
@@ -223,7 +236,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get rescuePageRequestHelpConfirm =>
-      'Lähetetäänkö avunpyyntö lähistön pelastajille?';
+      'Lähetetäänkö avunpyyntö lähellä oleville pelastajille?';
 
   @override
   String get map => 'Kartta';
@@ -275,6 +288,21 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get dialogConfirm => 'Vahvista';
+
+  @override
+  String get back => 'Takaisin';
+
+  @override
+  String get submit => 'Lähetä';
+
+  @override
+  String get obstacles => 'Esteet';
+
+  @override
+  String get selectSnowType => 'Valitse lumityyppi';
+
+  @override
+  String get specifySnowType => 'Täsmennä lumityyppi';
 
   @override
   String get dialogCancel => 'Peruuta';

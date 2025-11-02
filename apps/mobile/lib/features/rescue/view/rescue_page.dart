@@ -152,12 +152,19 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     // Try to launch the 112 Suomi app using external_app_launcher
     try {
       debugPrint('Attempting to launch 112 Suomi app...');
-      await LaunchApp.openApp(
+      var res = await LaunchApp.openApp(
         androidPackageName: suomi112Package,
         openStore: false, // Don't open Play Store if app is not installed
       );
-      debugPrint('Successfully launched 112 Suomi app');
-      return; // Successfully launched 112 Suomi app
+
+      if (res == 1) {
+        debugPrint('Successfully launched 112 Suomi app');
+        return; // Successfully launched 112 Suomi app
+      } else {
+        debugPrint(
+          'Failed to launch 112 Suomi app, falling back to phone dialer',
+        );
+      }
     } catch (e) {
       // App is not installed or cannot be launched
       debugPrint(
@@ -423,8 +430,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                                     color: rescueTheme.requestHelpButton,
                                   ),
                                   label: Text(
-                                    t.rescuePageShowOnMap
-                                        .toUpperCase(),
+                                    t.rescuePageShowOnMap.toUpperCase(),
                                     style: rescueTheme.secondaryButtonStyle,
                                   ),
                                   style:

@@ -33,7 +33,31 @@
 		"errors": {
 			"loadingData": "Lumitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
 			"loadingSnowData": "Lumityyppien lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
-			"loadingSegmentData": "Segmenttitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
+			"loadingSegmentData": "Segmenttitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
+			"loadingMonitorData": "Monitoritietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen."
+		},
+		"monitorInfo": {
+			"fields": {
+				"temperature": {
+					"label": "Lämpötila",
+					"unit": "°C",
+					"noData": "Ei tietoa"
+				},
+				"snowDepth": {
+					"label": "Lumisyvyys",
+					"unit": "cm",
+					"noData": "Ei tietoa"
+				},
+				"coordinates": {
+					"label": "Koordinaatit",
+					"latitude": "Leveysaste",
+					"longitude": "Pituusaste",
+					"noData": "Ei tietoa"
+				}
+			},
+			"buttons": {
+				"close": "Sulje"
+			}
 		},
 		"reportForm": {
 			"steps": {

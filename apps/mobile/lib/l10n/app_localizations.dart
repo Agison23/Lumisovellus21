@@ -118,7 +118,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescueFeatureInfo.
   ///
   /// In en, this message translates to:
-  /// **'The app\'\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You can help other users, too. Location sharing can be disabled at any time.'**
+  /// **'The app\'\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request help from other users around you. You can help other users, too. Location sharing can be disabled at any time.'**
   String get rescueFeatureInfo;
 
   /// No description provided for @allowSharing.
@@ -163,6 +163,12 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get phoneNum;
 
+  /// No description provided for @definitions.
+  ///
+  /// In en, this message translates to:
+  /// **'DEFINITIONS'**
+  String get definitions;
+
   /// No description provided for @snowDefinitionsPageTitle.
   ///
   /// In en, this message translates to:
@@ -175,10 +181,16 @@ abstract class AppLocalizations {
   /// **'Avalanche warning'**
   String get avalancheWarning;
 
+  /// No description provided for @noAvalancheWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'No avalanche warning'**
+  String get noAvalancheWarning;
+
   /// No description provided for @avalancheWarningDesc.
   ///
   /// In en, this message translates to:
-  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.'**
+  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.'**
   String get avalancheWarningDesc;
 
   /// No description provided for @snowTypes.
@@ -208,7 +220,7 @@ abstract class AppLocalizations {
   /// No description provided for @freshWetSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point'**
+  /// **'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.'**
   String get freshWetSnowDesc;
 
   /// No description provided for @powderSnow.
@@ -220,7 +232,7 @@ abstract class AppLocalizations {
   /// No description provided for @powderSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather.'**
+  /// **'Fresh, loose and extremely light snow. Powder snow forms in calm and very cold weather.'**
   String get powderSnowDesc;
 
   /// No description provided for @freshSnow.
@@ -268,7 +280,7 @@ abstract class AppLocalizations {
   /// No description provided for @thinCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
+  /// **'A crust that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
   String get thinCrustDesc;
 
   /// No description provided for @collapsingCrust.
@@ -280,7 +292,7 @@ abstract class AppLocalizations {
   /// No description provided for @collapsingCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath.'**
+  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.'**
   String get collapsingCrustDesc;
 
   /// No description provided for @windpackedSnow.
@@ -304,7 +316,7 @@ abstract class AppLocalizations {
   /// No description provided for @driftsAndBanksDesc.
   ///
   /// In en, this message translates to:
-  /// **'An area of new snow shaped by the wind. waves are soft and easy to break.'**
+  /// **'An area of new snow shaped by the wind. Waves are soft and easy to break.'**
   String get driftsAndBanksDesc;
 
   /// No description provided for @sastrug.
@@ -346,7 +358,7 @@ abstract class AppLocalizations {
   /// No description provided for @breakableIce.
   ///
   /// In en, this message translates to:
-  /// **'Brekable ice'**
+  /// **'Breakable ice'**
   String get breakableIce;
 
   /// No description provided for @breakableIceDesc.
@@ -364,7 +376,7 @@ abstract class AppLocalizations {
   /// No description provided for @slushDesc.
   ///
   /// In en, this message translates to:
-  /// **'Wet and partially melted snow in above zero degrees weather.'**
+  /// **'Wet and partially melted snow in above zero degree weather.'**
   String get slushDesc;
 
   /// No description provided for @wettingSnow.
@@ -388,7 +400,7 @@ abstract class AppLocalizations {
   /// No description provided for @saturatedSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Completely wet , slushing and whipped cream like snow.'**
+  /// **'Completely wet, slushing and whipped cream-like snow.'**
   String get saturatedSnowDesc;
 
   /// No description provided for @littleSnow.
@@ -402,6 +414,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @addObservation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add observation'**
+  String get addObservation;
 
   /// No description provided for @rescue.
   ///
@@ -544,7 +568,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPageSnowDefinitionsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Snow definitions'**
+  /// **'Show snow type definitions'**
   String get settingsPageSnowDefinitionsSubtitle;
 
   /// No description provided for @language.
@@ -588,6 +612,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get dialogConfirm;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @obstacles.
+  ///
+  /// In en, this message translates to:
+  /// **'Obstacles'**
+  String get obstacles;
+
+  /// No description provided for @selectSnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select snow type'**
+  String get selectSnowType;
+
+  /// No description provided for @specifySnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify snow type'**
+  String get specifySnowType;
 
   /// No description provided for @dialogCancel.
   ///

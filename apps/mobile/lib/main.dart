@@ -5,12 +5,17 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
 import 'package:lumisovellus/features/settings/view/settings_page.dart';
 import 'package:lumisovellus/features/map/views/map_screen.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 // Global locale notifier for simple app-wide locale switching.
 // Replace with your preferred state management/localization solution as needed.
 final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  const token = String.fromEnvironment('ACCESS_TOKEN');
+  MapboxOptions.setAccessToken(token);
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -125,6 +130,6 @@ class _WeatherPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(backgroundColor: Colors.white);
+    return const Scaffold(backgroundColor: Colors.white, body: Center(child: Text('Weather screen coming soon!')));
   }
 }
