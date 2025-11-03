@@ -42,6 +42,11 @@ class AreasLayerManager {
     if (!_styleReady || _style == null) return;
     await _styleRepo.setSelectedFilter(_style!, id: id);
   }
+
+  Future<void> setAreasVisible(bool visible) async {
+    if (!_styleReady || _style == null) return;
+    await _styleRepo.setAreasVisibility(_style!, visible: visible);
+  }
 }
 
 final areasLayerManagerProvider = Provider.autoDispose<AreasLayerManager>((

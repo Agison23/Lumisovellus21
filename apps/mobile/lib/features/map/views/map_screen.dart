@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,8 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/connectivity_provider.dart';
 import '../providers.dart';
 import 'widgets/area_card.dart';
+import 'widgets/filter_button.dart';
+import 'widgets/location_picker.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -15,6 +18,31 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   MapboxMap? _map;
+
+  Future<void> _goToUserLocation() async {
+    final enabled = await geo.Geolocator.isLocationServiceEnabled();
+    if (!enabled) return;
+
+    var perm = await geo.Geolocator.checkPermission();
+    if (perm == geo.LocationPermission.denied) {
+      perm = await geo.Geolocator.requestPermission();
+    }
+    if (perm == geo.LocationPermission.denied || perm == geo.LocationPermission.deniedForever) {
+      return;
+    }
+
+    final pos = await geo.Geolocator.getCurrentPosition(
+      locationSettings: const geo.LocationSettings(accuracy: geo.LocationAccuracy.high),
+    );
+
+    final cam = CameraOptions(
+      center: Point(coordinates: Position(pos.longitude, pos.latitude)),
+      zoom: 13,
+      pitch: 0,
+      bearing: 0,
+    );
+    _map?.easeTo(cam, MapAnimationOptions(duration: 500));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +91,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               final features = await _map!.queryRenderedFeatures(geometry, options);
 
               final first = features.firstOrNull;
+              final notifier = ref.read(interactiveAreaNotifierProvider.notifier);
               if (first == null) {
                 await areasMgr.setSelectedId(null);
+                notifier.select(null);
                 return;
               }
 
               final feature = first.queriedFeature.feature;
-              final id = feature['id']?.toString() ?? 
+              final id = feature['id']?.toString() ??
                   (feature['properties'] is Map ? (feature['properties'] as Map)['id']?.toString() : null);
-              ref.read(interactiveAreaNotifierProvider.notifier).select(id);
+
+              notifier.select(id);
             },
             onMapCreated: (controller) async {
               _map = controller;
@@ -85,19 +116,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
               );
 
-              await controller.setBounds(
-                CameraBoundsOptions(
-                  bounds: CoordinateBounds(
-                    southwest: Point(coordinates: Position(23.725, 67.970)),
-                    northeast: Point(coordinates: Position(24.334, 68.162)),
-                    infiniteBounds: false,
-                  ),
-                  minZoom: 7,
-                  maxZoom: 18,
-                ),
-              );
+              // await controller.setBounds(
+              //   CameraBoundsOptions(
+              //     bounds: CoordinateBounds(
+              //       southwest: Point(coordinates: Position(23.725, 67.970)),
+              //       northeast: Point(coordinates: Position(24.334, 68.162)),
+              //       infiniteBounds: false,
+              //     ),
+              //     minZoom: 7,
+              //     maxZoom: 18,
+              //   ),
+              // );
             },
             onStyleLoadedListener: (_) async {
+              await _map?.location.updateSettings(LocationComponentSettings(
+                enabled: true,
+                pulsingEnabled: true,
+              ));
               final v = ref.read(interactiveAreaNotifierProvider).value;
               await areasMgr.onStyleLoaded();
               if (v?.fc != null) await areasMgr.setData(v!.fc!);
@@ -140,6 +175,29 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
               ),
             ),
+
+          Positioned(
+            bottom: 16,
+            left: 16,
+            child: FilterButton(t: t),
+          ),
+          
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LocateButton(onLocate: _goToUserLocation),
+                const SizedBox(height: 8),
+                PlacesButton(
+                  onLocationSelected: (cam) {
+                    _map?.easeTo(cam, MapAnimationOptions(duration: 500));
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

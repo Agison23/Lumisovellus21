@@ -153,4 +153,20 @@ class MapStyleRepository {
     if (!await style.styleLayerExists(areasSelectedId)) return;
     await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
   }
+
+  Future<void> setAreasVisibility(StyleManager style, {required bool visible}) async {
+    const ids = [
+      areasFillId,
+      areasHoverId,
+      areasOutlineId,
+      areasDangerId,
+      areasSelectedId,
+      areasLabelsId,
+    ];
+    for (final id in ids) {
+      if (await style.styleLayerExists(id)) {
+        await style.setStyleLayerProperty(id, 'visibility', visible ? 'visible' : 'none');
+      }
+    }
+  }
 }

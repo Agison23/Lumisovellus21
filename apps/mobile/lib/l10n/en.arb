@@ -95,5 +95,7 @@
   "coordinateDirectionNorth": "N",
   "coordinateDirectionSouth": "S",
   "coordinateDirectionEast": "E",
-  "coordinateDirectionWest": "W"
+  "coordinateDirectionWest": "W",
+  "sensors": "Sensors",
+  "segments": "Segments"
 }

@@ -318,4 +318,8 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get coordinateDirectionWest => 'L';
+  String get sensors => 'Anturit';
+
+  @override
+  String get segments => 'Segmentit';
 }
