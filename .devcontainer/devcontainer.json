@@ -1,0 +1,24 @@
+{
+  "name": "Lumisovellus Dev",
+  "dockerComposeFile": "../infra/docker/docker-compose.dev.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "dart-code.flutter",
+        "prisma.prisma"
+      ]
+    }
+  },
+  // "runArgs": [
+  //   "--network=host"
+  // ],
+  // "remoteEnv": {
+  //   "ADB_SERVER_SOCKET": "tcp:host.docker.internal:5037"
+  // },
+  "postCreateCommand": "adb connect host.docker.internal:5555 && cd apps/mobile && flutter pub get",
+  "forwardPorts": [3000, 8080]
+}

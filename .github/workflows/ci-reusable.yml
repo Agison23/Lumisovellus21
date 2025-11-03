@@ -1,0 +1,237 @@
+# TODO: Most likely this needs to be split into multiple files for backend and frontend etc
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      coverage-threshold:
+        type: number
+        default: 70
+      run-build:
+        type: boolean
+        default: false
+      run-heavy-lint:
+        type: boolean
+        default: false
+      audit-level:
+        type: string
+        default: 'critical'
+      run-security-checks:
+        type: boolean
+        default: false
+      run-smoke-e2e:
+        type: boolean
+        default: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install
+        run: npm ci --prefer-offline --no-audit --fund=false
+
+      # TODO: Needs to be defined
+      - name: Generate OpenAPI & clients
+        run: npm run openapi:check
+
+      # TODO: return exit 1 once better way for checking this is implemented
+      - name: Verify generated OpenAPI clients are committed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Uncommitted OpenAPI/client changes detected. Commit the generated files."
+            git status --porcelain
+            exit 0
+          fi
+
+      - name: Lint (fast)
+        run: npm run lint
+
+      # TODO: Needs to be defined in packages/shared/package.json
+      - name: Lint (heavy)
+        if: ${{ inputs.run-heavy-lint }}
+        run: npm run lint:heavy
+
+      # https://github.com/vercel/next.js/discussions/47010
+      - name: Create Next type shim for typecheck
+        run: |
+          set -eu
+          f=apps/web/next-env.d.ts
+          if [ ! -f "$f" ]; then
+            printf '/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n' > "$f"
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  build:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ inputs.run-build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      # TODO: Split into building web and backend one at a time
+      # TODO: Use docker containers?
+      - name: Build
+        run: npm run build
+      #  upload build artifacts for tests/e2e?
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      # TODO: Split into different tests for different targets mobile/web/backend
+      # TODO: SPlit into different levels of tests unit/integration
+      - name: Test
+        run: npm run test
+
+      # TODO: Implement once coverage reports available from backend and frontend
+      - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
+        run: echo "Check test coverage"
+
+  security:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ inputs.run-security-checks }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/backend
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: npm audit (>= ${{ inputs.audit-level }})
+        run: |
+          level='${{ inputs.audit-level }}'
+          case "$level" in
+            low|moderate|high|critical) ;;
+            *) echo "Invalid audit level: $level"; exit 1;;
+          esac
+          npm audit --audit-level="$level" || {
+            echo "Vulnerabilities >= $level found"; exit 1;
+          }
+
+      - name: gitleaks
+        if: ${{ env.ACT != 'true' }}
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: >
+            dir .
+            --config .gitleaks.toml
+            --no-banner
+            --redact
+            --report-path gitleaks.sarif
+            --report-format sarif
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: gitleaks (local via act)
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          set -euo pipefail
+          V=8.28.0
+          curl -sSL -o /tmp/g.tgz https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz
+          tar -xzf /tmp/g.tgz -C /tmp
+          /tmp/gitleaks dir . \
+            --config .gitleaks.toml \
+            --no-banner \
+            --redact \
+            --report-path gitleaks.sarif \
+            --report-format sarif
+
+      # TODO: Add once archive process is resolved
+      # - name: Upload SARIF to GitHub Security tab
+      #   if: ${{ env.ACT != 'true' }}
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: gitleaks.sarif
+
+  smoke:
+    runs-on: ubuntu-22.04
+    needs: [validate, build, test, security]
+    if: ${{ inputs.run-smoke-e2e }}
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: Add a command to run once somke tests exist
+      - name: Smoke E2E (placeholder)
+        run: echo "Run smoke/e2e tests"
