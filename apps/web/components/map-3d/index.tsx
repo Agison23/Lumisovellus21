@@ -4,20 +4,15 @@ import type { FeatureCollection, Polygon } from "geojson";
 
 import {
 	ActivityIcon,
-	LandPlot,
 	MapPlus,
+	LandPlot,
 	Snowflake,
 	ThermometerSnowflake,
 } from "lucide-react";
 import type { FilterSpecification, MapMouseEvent } from "mapbox-gl";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-	NavigationControl,
-	Source,
-	Layer,
-	Marker,
-} from "react-map-gl/mapbox";
+import { NavigationControl, Source, Layer, Marker } from "react-map-gl/mapbox";
 import Map from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
@@ -449,35 +444,42 @@ export default function Map3d() {
 									/>
 								</Source>
 								{viewState.zoom > 11.5 &&
-									monitors.map((monitor) => (
-										<Marker
-											key={monitor.name}
-											longitude={monitor.lng}
-											latitude={monitor.lat}
-											offset={[0, -35]}
-											className="bg-background p-1 rounded-md "
-										>
-											<div>
-												{monitor.temperature !== "No Data" && (
-													<p className="flex items-center gap-1">
-														<ThermometerSnowflake size={16} />
-														<span>
-															{monitor.temperature.value} °
-															{monitor.temperature.unit[0]}
-														</span>
-													</p>
-												)}
-												{monitor.snowDepth !== "No Data" && (
-													<p className="flex items-center gap-1">
-														<Snowflake size={16} />
-														<span>
-															{monitor.snowDepth.value} {monitor.snowDepth.unit}
-														</span>
-													</p>
-												)}
-											</div>
-										</Marker>
-									))}
+									monitors
+										.filter(
+											(monitor) =>
+												monitor.temperature !== "No Data" ||
+												monitor.snowDepth !== "No Data"
+										)
+										.map((monitor) => (
+											<Marker
+												key={monitor.name}
+												longitude={monitor.lng}
+												latitude={monitor.lat}
+												offset={[0, -35]}
+												className="bg-background p-1 rounded-md "
+											>
+												<div>
+													{monitor.temperature !== "No Data" && (
+														<p className="flex items-center gap-1">
+															<ThermometerSnowflake size={16} />
+															<span>
+																{monitor.temperature.value} °
+																{monitor.temperature.unit[0]}
+															</span>
+														</p>
+													)}
+													{monitor.snowDepth !== "No Data" && (
+														<p className="flex items-center gap-1">
+															<Snowflake size={16} />
+															<span>
+																{monitor.snowDepth.value}{" "}
+																{monitor.snowDepth.unit}
+															</span>
+														</p>
+													)}
+												</div>
+											</Marker>
+										))}
 							</>
 						)}
 						{showAreas && (
