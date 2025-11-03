@@ -28,7 +28,7 @@ class FilterButton extends ConsumerWidget {
 
     return PopupMenuButton<String>(
       constraints: const BoxConstraints(maxWidth: 150),
-      offset: const Offset(0, -120),
+      // offset: const Offset(0, -120),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
       elevation: 6,
@@ -67,13 +67,20 @@ class FilterButton extends ConsumerWidget {
           ),
         ),
       ],
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 243, 243, 243),
-          borderRadius: BorderRadius.circular(10),
+      child: Material(
+        color: Colors.white,
+        elevation: 2,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          width: 40,
+          height: 40,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFE0E0E0)),
+          ),
+          child: const Icon(Icons.filter_list, size: 20, color: Colors.black),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: const Icon(Icons.filter_list, color: Colors.black),
       ),
     );
   }
