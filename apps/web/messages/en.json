@@ -35,6 +35,10 @@
 			"loadingSegmentData": "Error loading segment data. Please try again later.",
 			"loadingMonitorData": "Error loading monitor data. Please try again later."
 		},
+		"controls": {
+			"segments": "Segments",
+			"sensors": "Sensors"
+		},
 		"monitorInfo": {
 			"fields": {
 				"temperature": {
