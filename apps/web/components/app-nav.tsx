@@ -16,6 +16,16 @@ export default function Nav() {
 	const tApp = useTranslations("AppLayout");
 	const path = usePathname();
 
+	const isCurrentPath = (routePath: string) => {
+		if (routePath === "/") {
+			// Only highlight Map if we're exactly on the root
+			return path === "/";
+		}
+		// For other routes, check if the current path starts with the route path (with trailing slash normalization)
+		const normalizePath = (p: string) => (p.endsWith("/") ? p : p + "/");
+		return normalizePath(path).startsWith(normalizePath(routePath));
+	};
+
 	return (
 		<NavigationMenu>
 			<NavigationMenuList className="bg-background rounded-md p-1 pointer-events-auto border border-accent shadow-md">
@@ -23,7 +33,7 @@ export default function Nav() {
 					<NavigationMenuItem
 						key={route.path}
 						className={
-							path === route.path ? "underline underline-offset-4" : ""
+							isCurrentPath(route.path) ? "underline underline-offset-4" : ""
 						}
 					>
 						<NavigationMenuLink asChild>
