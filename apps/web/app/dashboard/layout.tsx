@@ -26,7 +26,7 @@ export default function DashboardLayout({
 				<div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
 					<DashboardSidebar t={t} />
 				</div>
-				<div className="overflow-y-auto pb-12">{children}</div>
+				<div className="overflow-y-auto pb-12 w-full h-full">{children}</div>
 			</SidebarProvider>
 		</div>
 	);

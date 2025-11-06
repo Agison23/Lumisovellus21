@@ -2,7 +2,8 @@
 	"AppLayout": {
 		"map": "Map",
 		"definitions": "Definitions",
-		"weather": "Weather"
+		"weather": "Weather",
+		"dashboard": "Dashboard"
 	},
 	"LocaleSwitcher": {
 		"label": "Language",
@@ -204,7 +205,54 @@
 			"title": "Overview"
 		},
 		"SegmentsPage": {
-			"title": "Segments"
+			"title": "Segments",
+			"avalanche": {
+				"avalancheDanger": "Avalanche danger: ",
+				"true": "True",
+				"false": "False"
+			},
+			"editDialog": {
+				"title": "Editing {name}",
+				"name": "Name",
+				"terrain": "Terrain",
+				"coordinates": {
+					"title": "Coordinates",
+					"latitude": "Latitude",
+					"longitude": "Longitude",
+					"addCoordinate": "Add coordinate"
+				},
+				"avalanche": {
+					"title": "Avalanche",
+					"toggleAvalancheWarning": "Area is prone to avalanches"
+				},
+				"buttons": {
+					"cancel": "Cancel",
+					"save": "Save",
+					"saving": "Saving..."
+				},
+				"errors": {
+					"saveFailed": "Failed to save changes. Please try again.",
+					"deleteFailed": "Failed to delete area. Please try again."
+				},
+				"success": {
+					"saveSuccessful": "Changes saved successfully."
+				}
+			},
+			"deleteDialog": {
+				"title": "Delete {name}?",
+				"message": "Are you sure you want to delete this area? This action cannot be undone.",
+				"buttons": {
+					"cancel": "Cancel",
+					"delete": "Delete",
+					"deleting": "Deleting..."
+				},
+				"errors": {
+					"deleteFailed": "Failed to delete area. Please try again."
+				},
+				"success": {
+					"deleteSuccessful": "Area deleted successfully."
+				}
+			}
 		},
 		"UsersPage": {
 			"title": "Users"

@@ -2,7 +2,8 @@
 	"AppLayout": {
 		"map": "Kartta",
 		"definitions": "Selitteet",
-		"weather": "Sää"
+		"weather": "Sää",
+		"dashboard": "Hallintapaneeli"
 	},
 	"LocaleSwitcher": {
 		"label": "Kieli",
@@ -205,7 +206,48 @@
 			"title": "Yleiskatsaus"
 		},
 		"SegmentsPage": {
-			"title": "Segmentit"
+			"title": "Segmentit",
+			"avalanche": {
+				"avalancheDanger": "Lumivyöryvaroitus: ",
+				"true": "Tosi",
+				"false": "Epätosi"
+			},
+			"editDialog": {
+				"title": "Muokkaa {name}",
+				"name": "Nimi",
+				"terrain": "Maasto",
+				"coordinates": {
+					"title": "Koordinaatit",
+					"latitude": "Leveysaste",
+					"longitude": "Pituusaste",
+					"addCoordinate": "Lisää koordinaatti"
+				},
+				"avalanche": {
+					"title": "Lumivyöry",
+					"toggleAvalancheWarning": "Alue on altis lumivyöryille"
+				},
+				"buttons": {
+					"cancel": "Peruuta",
+					"save": "Tallenna",
+					"saving": "Tallennetaan..."
+				},
+				"errors": {
+					"saveFailed": "Tallennus epäonnistui. Yritä uudelleen.",
+					"deleteFailed": "Poisto epäonnistui. Yritä uudelleen."
+				},
+				"success": {
+					"saveSuccessful": "Muutokset tallennettu onnistuneesti."
+				}
+			},
+			"deleteDialog": {
+				"title": "Poistetaanko {name}?",
+				"message": "Tämä toiminto on peruuttamaton. Haluatko varmasti poistaa tämän segmentin?",
+				"buttons": {
+					"cancel": "Peruuta",
+					"delete": "Poista",
+					"deleting": "Poistetaan..."
+				}
+			}
 		},
 		"UsersPage": {
 			"title": "Käyttäjät"
