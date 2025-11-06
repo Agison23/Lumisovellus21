@@ -25,6 +25,7 @@ export default function DashboardPage() {
 		data: areas = [],
 		isLoading,
 		isError,
+		refetch,
 	} = useQuery({
 		queryKey: ["mapAreas"],
 		queryFn: fetchAreas,
@@ -32,24 +33,22 @@ export default function DashboardPage() {
 	});
 
 	return (
-		<div className="p-2 flex flex-col gap-2">
-			<h1>{t("title")}</h1>
-			<Separator />
+		<div className="p-2 flex flex-col gap-2 w-full">
 			{isLoading && <p>Loading areas...</p>}
 			{isError && <p>Error loading areas.</p>}
 			{!isLoading && !isError && (
 				<>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-2">
 						{areas.map((area) => (
 							<div
 								key={area.properties.id}
-								className="border rounded-md text-left px-2 py-2 items-start flex flex-col gap-2"
+								className="border rounded-md text-left px-2 py-2 items-start flex flex-col gap-2 bg-background"
 							>
 								<div className="flex gap-2 justify-between items-center w-full">
 									<h2 className="font-bold">{area.properties.name}</h2>
 									<div className="flex items-center gap-1 w-max">
-										<DeleteAreaDialog area={area} t={t} />
-										<EditAreaDialogWrapper area={area} t={t} />
+										<DeleteAreaDialog area={area} t={t} refetch={refetch} />
+										<EditAreaDialog area={area} t={t} refetch={refetch} />
 									</div>
 								</div>
 								<div className="flex flex-col">
@@ -71,45 +70,16 @@ export default function DashboardPage() {
 	);
 }
 
-function EditAreaDialogWrapper({
-	area,
-	t,
-}: {
-	area: InteractiveAreaFeature;
-	t: (key: string, params?: Record<string, string>) => string;
-}) {
-	const [open, setOpen] = useState(false);
-
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button variant="outline" size="icon" className="p-1">
-					<Edit size={20} />
-				</Button>
-			</DialogTrigger>
-			<DialogContent className="max-h-[80vh] w-full grid-rows-[auto_1fr] overflow-hidden flex flex-col gap-4">
-				<DialogHeader>
-					<DialogTitle>
-						{t("editDialog.title", {
-							name: area.properties.name,
-						})}
-					</DialogTitle>
-				</DialogHeader>
-				<EditAreaDialog area={area} t={t} onClose={() => setOpen(false)} />
-			</DialogContent>
-		</Dialog>
-	);
-}
-
 function EditAreaDialog({
 	area,
 	t,
-	onClose,
+	refetch,
 }: {
 	area: InteractiveAreaFeature;
 	t: (key: string, params?: Record<string, string>) => string;
-	onClose: () => void;
+	refetch: () => void;
 }) {
+	const [open, setOpen] = useState(false);
 	const [editArea, setEditArea] = useState<InteractiveAreaFeature>(
 		JSON.parse(JSON.stringify(area))
 	);
@@ -134,8 +104,8 @@ function EditAreaDialog({
 	};
 
 	const handleCancel = () => {
-		// clear editArea state or perform any necessary cleanup
 		setEditArea(area);
+		setOpen(false);
 	};
 
 	const mutation = useMutation({
@@ -146,12 +116,11 @@ function EditAreaDialog({
 			});
 		},
 		onSuccess: () => {
-			// toggle dialog off or show success message
 			toast.success(t("editDialog.success.saveSuccessful"));
-			onClose();
+			refetch();
+			setOpen(false);
 		},
 		onError: () => {
-			// show error message
 			toast.error(t("editDialog.errors.saveFailed"));
 		},
 	});
@@ -160,174 +129,201 @@ function EditAreaDialog({
 		mutation.mutate(editArea);
 	};
 
+	const hasBeenModified = JSON.stringify(area) !== JSON.stringify(editArea);
+
 	return (
-		<div className="flex flex-col gap-2 min-h-0">
-			<div className="flex flex-col gap-1">
-				<label className="text-xs">{t("editDialog.name")}</label>
-				<Input
-					value={editArea.properties.name}
-					onChange={(e) =>
-						setEditArea((prev) => ({
-							...prev,
-							properties: { ...prev.properties, name: e.target.value },
-						}))
-					}
-				/>
-			</div>
-			<div className="flex flex-col gap-1">
-				<label className="text-xs">{t("editDialog.terrain")}</label>
-				<Input
-					value={editArea.properties.terrain}
-					onChange={(e) =>
-						setEditArea((prev) => ({
-							...prev,
-							properties: { ...prev.properties, terrain: e.target.value },
-						}))
-					}
-				/>
-			</div>
-			<div className="flex flex-col gap-1 min-h-0 overflow-hidden">
-				<label className="text-xs">{t("editDialog.coordinates.title")}</label>
-				{editArea.geometry.coordinates.map(
-					(coordSet: number[][], index: number) => (
-						<div
-							key={index}
-							className="flex flex-col gap-2 min-h-0 border p-2 rounded-md"
-						>
-							<div
-								ref={(el) => {
-									scrollRefs.current[index] = el;
-								}}
-								className="overflow-y-auto min-h-0"
-							>
-								{coordSet.map((coord: number[], coordIndex: number) => (
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger asChild>
+				<Button variant="outline" size="icon" className="p-1">
+					<Edit size={20} />
+				</Button>
+			</DialogTrigger>
+			<DialogContent className="max-h-[80vh] w-full grid-rows-[auto_1fr] overflow-hidden flex flex-col gap-4">
+				<DialogHeader>
+					<DialogTitle>
+						{t("editDialog.title", {
+							name: area.properties.name,
+						})}
+					</DialogTitle>
+				</DialogHeader>
+				<div className="flex flex-col gap-2 min-h-0">
+					<div className="flex flex-col gap-1">
+						<label className="text-xs">{t("editDialog.name")}</label>
+						<Input
+							value={editArea.properties.name}
+							onChange={(e) =>
+								setEditArea((prev) => ({
+									...prev,
+									properties: { ...prev.properties, name: e.target.value },
+								}))
+							}
+						/>
+					</div>
+					<div className="flex flex-col gap-1">
+						<label className="text-xs">{t("editDialog.terrain")}</label>
+						<Input
+							value={editArea.properties.terrain}
+							onChange={(e) =>
+								setEditArea((prev) => ({
+									...prev,
+									properties: { ...prev.properties, terrain: e.target.value },
+								}))
+							}
+						/>
+					</div>
+					<div className="flex flex-col gap-1 min-h-0 overflow-hidden">
+						<label className="text-xs">
+							{t("editDialog.coordinates.title")}
+						</label>
+						{editArea.geometry.coordinates.map(
+							(coordSet: number[][], index: number) => (
+								<div
+									key={index}
+									className="flex flex-col gap-2 min-h-0 border overflow-hidden rounded-md"
+								>
 									<div
-										key={`${index}-${coordIndex}`}
-										className="flex gap-2 mb-1 min-w-0"
+										ref={(el) => {
+											scrollRefs.current[index] = el;
+										}}
+										className="overflow-y-auto min-h-0 p-2"
 									>
-										<Input
-											placeholder={t("editDialog.coordinates.longitude")}
-											value={coord[0]}
-											type="number"
-											className="min-w-0 flex-1 no-spinner"
-											onChange={(e) =>
-												handleCoordinateChange(
-													index,
-													coordIndex,
-													0,
-													e.target.value
-												)
-											}
-										/>
-										<Input
-											placeholder={t("editDialog.coordinates.latitude")}
-											value={coord[1]}
-											type="number"
-											className="min-w-0 flex-1 no-spinner"
-											onChange={(e) =>
-												handleCoordinateChange(
-													index,
-													coordIndex,
-													1,
-													e.target.value
-												)
-											}
-										/>
-										<Button
-											variant="destructive"
-											className="shrink-0"
-											onClick={() => {
-												const updatedCoordinates = [
-													...editArea.geometry.coordinates,
-												];
-												updatedCoordinates[index].splice(coordIndex, 1);
-												setEditArea((prev) => ({
-													...prev,
-													geometry: {
-														...prev.geometry,
-														coordinates: updatedCoordinates,
-													},
-												}));
-											}}
-										>
-											<Trash />
-										</Button>
+										{coordSet.map((coord: number[], coordIndex: number) => (
+											<div
+												key={`${index}-${coordIndex}`}
+												className="flex gap-2 mb-1 min-w-0"
+											>
+												<Input
+													placeholder={t("editDialog.coordinates.longitude")}
+													value={coord[0]}
+													type="number"
+													className="min-w-0 flex-1 no-spinner"
+													onChange={(e) =>
+														handleCoordinateChange(
+															index,
+															coordIndex,
+															0,
+															e.target.value
+														)
+													}
+												/>
+												<Input
+													placeholder={t("editDialog.coordinates.latitude")}
+													value={coord[1]}
+													type="number"
+													className="min-w-0 flex-1 no-spinner"
+													onChange={(e) =>
+														handleCoordinateChange(
+															index,
+															coordIndex,
+															1,
+															e.target.value
+														)
+													}
+												/>
+												<Button
+													variant="outline"
+													className="shrink-0"
+													onClick={() => {
+														const updatedCoordinates = [
+															...editArea.geometry.coordinates,
+														];
+														updatedCoordinates[index].splice(coordIndex, 1);
+														setEditArea((prev) => ({
+															...prev,
+															geometry: {
+																...prev.geometry,
+																coordinates: updatedCoordinates,
+															},
+														}));
+													}}
+												>
+													<Trash />
+												</Button>
+											</div>
+										))}
 									</div>
-								))}
-							</div>
-							<Button
-								variant="outline"
-								className="flex-1 shrink-0"
-								onClick={() => {
-									const updatedCoordinates = [...editArea.geometry.coordinates];
-									updatedCoordinates[index].push([0, 0]);
+									<Button
+										variant="outline"
+										className="flex-1 shrink-0 mb-2 mx-2"
+										onClick={() => {
+											const updatedCoordinates = [
+												...editArea.geometry.coordinates,
+											];
+											updatedCoordinates[index].push([0, 0]);
+											setEditArea((prev) => ({
+												...prev,
+												geometry: {
+													...prev.geometry,
+													coordinates: updatedCoordinates,
+												},
+											}));
+											// Scroll to bottom after adding coordinate
+											setTimeout(() => {
+												const scrollEl = scrollRefs.current[index];
+												if (scrollEl) {
+													scrollEl.scrollTop = scrollEl.scrollHeight;
+												}
+											}, 0);
+										}}
+									>
+										{t("editDialog.coordinates.addCoordinate")}
+									</Button>
+								</div>
+							)
+						)}
+					</div>
+
+					<div className="flex flex-col gap-1">
+						<label className="text-xs">{t("editDialog.avalanche.title")}</label>
+						<div className="flex gap-2 items-center">
+							<Checkbox
+								checked={editArea.properties.avalancheDanger}
+								onCheckedChange={(checked) =>
 									setEditArea((prev) => ({
 										...prev,
-										geometry: {
-											...prev.geometry,
-											coordinates: updatedCoordinates,
+										properties: {
+											...prev.properties,
+											avalancheDanger: Boolean(checked),
 										},
-									}));
-									// Scroll to bottom after adding coordinate
-									setTimeout(() => {
-										const scrollEl = scrollRefs.current[index];
-										if (scrollEl) {
-											scrollEl.scrollTop = scrollEl.scrollHeight;
-										}
-									}, 0);
-								}}
-							>
-								{t("editDialog.coordinates.addCoordinate")}
-							</Button>
+									}))
+								}
+							/>
+							<span>{t("editDialog.avalanche.toggleAvalancheWarning")}</span>
 						</div>
-					)
-				)}
-			</div>
-
-			<div className="flex flex-col gap-1">
-				<label className="text-xs">{t("editDialog.avalanche.title")}</label>
-				<div className="flex gap-2 items-center">
-					<Checkbox
-						checked={editArea.properties.avalancheDanger}
-						onCheckedChange={(checked) =>
-							setEditArea((prev) => ({
-								...prev,
-								properties: {
-									...prev.properties,
-									avalancheDanger: Boolean(checked),
-								},
-							}))
-						}
-					/>
-					<span>{t("editDialog.avalanche.toggleAvalancheWarning")}</span>
+					</div>
+					<div className="flex gap-2 w-full shrink-0">
+						<Button
+							onClick={() => handleCancel()}
+							variant="outline"
+							className="flex-1"
+							disabled={mutation.isPending}
+						>
+							{t("editDialog.buttons.cancel")}
+						</Button>
+						<Button
+							disabled={mutation.isPending || !hasBeenModified}
+							onClick={() => handleSave()}
+							className="flex-1"
+						>
+							{mutation.isPending
+								? t("editDialog.buttons.saving")
+								: t("editDialog.buttons.save")}
+						</Button>
+					</div>
 				</div>
-			</div>
-			<div className="flex gap-2 w-full shrink-0">
-				<DialogTrigger asChild>
-					<Button
-						onClick={() => handleCancel()}
-						variant="outline"
-						className="flex-1"
-					>
-						{t("editDialog.buttons.cancel")}
-					</Button>
-				</DialogTrigger>
-				<Button onClick={() => handleSave()} className="flex-1">
-					{mutation.isPending
-						? t("editDialog.buttons.saving")
-						: t("editDialog.buttons.save")}
-				</Button>
-			</div>
-		</div>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
 function DeleteAreaDialog({
 	area,
 	t,
+	refetch,
 }: {
 	area: InteractiveAreaFeature;
 	t: (key: string, params?: Record<string, string>) => string;
+	refetch: () => void;
 }) {
 	const [open, setOpen] = useState(false);
 
@@ -339,6 +335,7 @@ function DeleteAreaDialog({
 		},
 		onSuccess: () => {
 			toast.success(t("deleteDialog.success.deleteSuccessful"));
+			refetch();
 			setOpen(false);
 		},
 		onError: () => {
@@ -372,6 +369,7 @@ function DeleteAreaDialog({
 							onClick={() => setOpen(false)}
 							variant="outline"
 							className="flex-1"
+							disabled={deleteMutation.isPending}
 						>
 							{t("deleteDialog.buttons.cancel")}
 						</Button>
@@ -380,6 +378,7 @@ function DeleteAreaDialog({
 						onClick={() => handleDelete()}
 						variant="destructive"
 						className="flex-1"
+						disabled={deleteMutation.isPending}
 					>
 						{deleteMutation.isPending
 							? t("deleteDialog.buttons.deleting")
