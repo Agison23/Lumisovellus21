@@ -199,6 +199,23 @@
 	"DefinitionsPage": {
 		"title": "Definitions"
 	},
+	"Dashboard": {
+		"OverviewPage": {
+			"title": "Overview"
+		},
+		"SegmentsPage": {
+			"title": "Segments"
+		},
+		"UsersPage": {
+			"title": "Users"
+		},
+		"ReportsPage": {
+			"title": "Reports"
+		},
+		"Sidebar": {
+			"title": "Dashboard"
+		}
+	},
 	"Sidebar": {
 		"title": "Pallaksen Pöllöt",
 		"p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
