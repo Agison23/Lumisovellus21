@@ -3,6 +3,9 @@ name: Backend Tests
 on:
   push:
   pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
   test:
@@ -39,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: apps/backend
-        run: npm ci
+        run: npm i --ignore-scripts 
 
       - name: Generate Prisma client
         working-directory: apps/backend
