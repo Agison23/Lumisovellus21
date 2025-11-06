@@ -4,31 +4,12 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
-import fs from 'fs';
-import path from 'path';
 
 // Import new API router
 import apiRouter from './api/routes';
 import { errorHandler, notFoundHandler } from './api/middleware/errorHandler';
 import { WeatherScheduler } from './scheduler/weatherScheduler';
-
-// Load swagger file
-let swaggerFile;
-try {
-  // Try src first (for development)
-  let swaggerPath = path.join(process.cwd(), 'src', 'swagger-output.json');
-  if (!fs.existsSync(swaggerPath)) {
-    // Try dist (for production build)
-    swaggerPath = path.join(process.cwd(), 'dist', 'swagger-output.json');
-  }
-  swaggerFile = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
-} catch {
-  // Swagger file not found, running without documentation
-  swaggerFile = {
-    info: { title: 'API Documentation', version: '1.0.0' },
-    paths: {},
-  };
-}
+import { openApiDocument } from './api/openapi/document';
 
 // Function to get swagger options without auth
 async function getSwaggerOptions() {
@@ -103,13 +84,13 @@ app.use('/api', limiter);
 // Setup Swagger documentation
 app.use('/api-docs', swaggerUi.serve, async (req, res, next) => {
   const options = await getSwaggerOptions();
-  return swaggerUi.setup(swaggerFile, options)(req, res, next);
+  return swaggerUi.setup(openApiDocument, options)(req, res, next);
 });
 
 // JSON endpoint for the OpenAPI spec
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerFile);
+  res.send(openApiDocument);
 });
 
 // Use new API router
