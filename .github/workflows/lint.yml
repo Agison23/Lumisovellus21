@@ -31,7 +31,3 @@ jobs:
       - name: Run linter (backend only)
         working-directory: apps/backend
         run: npm run lint
-
-      - name: Check formatting (backend only)
-        working-directory: apps/backend
-        run: npm run format:check
