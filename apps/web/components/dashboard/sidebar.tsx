@@ -5,6 +5,7 @@ import {
 	SidebarContent,
 	SidebarGroup,
 	SidebarGroupLabel,
+	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
@@ -57,15 +58,15 @@ export function DashboardSidebar({
 		>
 			<SidebarContent className="pt-8">
 				<SidebarGroup>
-					<SidebarGroupLabel>{t("Dashboard.Sidebar.title")}</SidebarGroupLabel>
 					<SidebarContent>
 						<SidebarMenu>
 							{sidebarLinks.map((link) => (
 								<Link href={link.href} key={link.href}>
-									<SidebarMenuItem key={link.href}>
-										<SidebarMenuButton
-											className={`${path === link.href ? "bg-accent" : ""} cursor-pointer`}
-										>
+									<SidebarMenuItem
+										className={`${path === link.href ? "bg-accent border rounded-md" : "border border-transparent"} cursor-pointer`}
+										key={link.href}
+									>
+										<SidebarMenuButton className="cursor-pointer">
 											{link.icon} {t(link.label)}
 										</SidebarMenuButton>
 									</SidebarMenuItem>
