@@ -80,10 +80,12 @@ describe('Segments API Integration Tests', () => {
             terrain: 'Easy',
             avalancheDanger: false,
             isLowerSegment: 0,
-            Points: [
+            points: [
               { lat: 65.0121, lng: 25.4651 },
               { lat: 65.0122, lng: 25.4652 },
             ],
+            guideUpdate: null,
+            userReviews: [],
           },
           {
             id: segment2.id,
@@ -91,12 +93,155 @@ describe('Segments API Integration Tests', () => {
             terrain: 'Difficult',
             avalancheDanger: true,
             isLowerSegment: 1,
-            Points: [],
+            points: [],
+            guideUpdate: null,
+            userReviews: [],
           },
         ]),
       });
 
       expect(response.body.data).toHaveLength(2);
+    });
+
+    it('should return segments with user reviews including secondary snow types', async () => {
+      // Create test segment
+      const segment = await testPrisma.segment.create({
+        data: {
+          id: 'segment-reviews',
+          name: 'Reviews Test Segment',
+          terrain: 'Medium',
+          avalancheDanger: false,
+          isLowerSegment: null,
+        },
+      });
+
+      // Create coordinates
+      await testPrisma.coordinate.createMany({
+        data: [
+          {
+            id: 'coord-review-1',
+            segment: segment.id,
+            order: 1,
+            latitude: 65.0121,
+            longitude: 25.4651,
+          },
+          {
+            id: 'coord-review-2',
+            segment: segment.id,
+            order: 2,
+            latitude: 65.0122,
+            longitude: 25.4652,
+          },
+        ],
+      });
+
+      // Create snow types
+      const primarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: 'snow-primary',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          skiability: 5,
+        },
+      });
+
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: 'snow-secondary',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+        },
+      });
+
+      // Create test user
+      const user = await testPrisma.user.create({
+        data: {
+          id: 'test-user-reviews',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test@test.com',
+          role: 'NORMAL',
+        },
+      });
+
+      // Create user reviews (5 total, but only 3 should be returned)
+      const now = new Date();
+      await testPrisma.userReview.createMany({
+        data: [
+          {
+            id: 'review-1',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: secondarySnowType.id,
+            hazards: ['stones'],
+            comment: 'Review with secondary',
+            userId: user.id,
+            time: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 hour ago
+          },
+          {
+            id: 'review-2',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: null,
+            hazards: ['branches'],
+            comment: 'Review without secondary',
+            userId: user.id,
+            time: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
+          },
+          {
+            id: 'review-3',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: secondarySnowType.id,
+            hazards: ['stones', 'branches'],
+            comment: 'Another review with secondary',
+            userId: user.id,
+            time: new Date(now.getTime() - 3 * 60 * 60 * 1000), // 3 hours ago
+          },
+          {
+            id: 'review-4',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: null,
+            hazards: [],
+            comment: 'Fourth review',
+            userId: user.id,
+            time: new Date(now.getTime() - 4 * 60 * 60 * 1000), // 4 hours ago
+          },
+          {
+            id: 'review-5',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: secondarySnowType.id,
+            hazards: ['stones'],
+            comment: 'Fifth review',
+            userId: user.id,
+            time: new Date(now.getTime() - 5 * 60 * 60 * 1000), // 5 hours ago
+          },
+        ],
+      });
+
+      const response = await request(app).get('/api/v1/segments').expect(200);
+
+      expect(response.body.success).toBe(true);
+      const segmentData = response.body.data.find((s: any) => s.id === segment.id);
+      expect(segmentData).toBeDefined();
+      expect(segmentData.userReviews).toHaveLength(3); // Limited to 3
+
+      // Check that reviews are sorted by time (newest first)
+      expect(segmentData.userReviews[0].submittedAt).toBeDefined();
+      expect(segmentData.userReviews[0].snowTypeId).toBe(primarySnowType.id);
+      expect(segmentData.userReviews[0].secondarySnowTypeId).toBe(secondarySnowType.id);
+      expect(segmentData.userReviews[0].hazards).toEqual(['stones']);
+
+      expect(segmentData.userReviews[1].snowTypeId).toBe(primarySnowType.id);
+      expect(segmentData.userReviews[1].secondarySnowTypeId).toBeNull();
+      expect(segmentData.userReviews[1].hazards).toEqual(['branches']);
+
+      expect(segmentData.userReviews[2].snowTypeId).toBe(primarySnowType.id);
+      expect(segmentData.userReviews[2].secondarySnowTypeId).toBe(secondarySnowType.id);
+      expect(segmentData.userReviews[2].hazards).toEqual(['stones', 'branches']);
     });
 
     it('should return empty array when no segments exist', async () => {
@@ -140,7 +285,7 @@ describe('Segments API Integration Tests', () => {
 
       const response = await request(app).get('/api/v1/segments').expect(200);
 
-      expect(response.body.data[0].Points).toEqual([
+      expect(response.body.data[0].points).toEqual([
         { lat: 65.0121, lng: 25.4651 },
         { lat: 65.0222, lng: 25.4752 },
       ]);
@@ -181,13 +326,14 @@ describe('Segments API Integration Tests', () => {
     });
 
     it('should return latest updates for a segment', async () => {
-      // Create snow update
+      // Create snow update with recent date
+      const now = new Date();
       const snowUpdate = await testPrisma.snowUpdate.create({
         data: {
           id: 'update-1',
           creator: 'test-user-updates',
           segment: 'segment-updates',
-          time: new Date('2024-01-15T10:00:00Z'),
+          time: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 hour ago
           description: 'Great conditions today',
           weather: 'Sunny',
           temperature: -5.0,
@@ -236,6 +382,7 @@ describe('Segments API Integration Tests', () => {
       expect(update.snowConditions).toHaveLength(1);
       expect(update.snowConditions[0]).toMatchObject({
         snowType: 'Powder',
+        secondarySnowType: null,
         layer: 'SURFACE',
         depth: 20.0,
         coverage: 80,
@@ -243,6 +390,73 @@ describe('Segments API Integration Tests', () => {
         hardness: 2,
         moisture: 1,
         notes: 'Excellent powder conditions',
+      });
+    });
+
+    it('should return updates with secondary snow type', async () => {
+      // Create secondary snow type
+      await testPrisma.snowType.create({
+        data: {
+          id: 'ice-snow',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+        },
+      });
+
+      // Create snow update with recent date
+      const now = new Date();
+      const snowUpdate = await testPrisma.snowUpdate.create({
+        data: {
+          id: 'update-2',
+          creator: 'test-user-updates',
+          segment: 'segment-updates',
+          time: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
+          description: 'Mixed conditions',
+          weather: 'Cloudy',
+          temperature: -2.0,
+          windSpeed: 15.0,
+          visibility: 3,
+          status: 'ACTIVE',
+          priority: 1,
+        },
+      });
+
+      // Create snow condition with secondary snow type
+      await testPrisma.snowUpdateCondition.create({
+        data: {
+          id: 'condition-2',
+          updateId: snowUpdate.id,
+          snowType: 'powder-snow',
+          secondarySnowType: 'ice-snow',
+          layer: 'SURFACE',
+          depth: 15.0,
+          coverage: 70,
+          quality: 3,
+          hardness: 3,
+          moisture: 2,
+          notes: 'Powder with ice patches',
+        },
+      });
+
+      const response = await request(app)
+        .get('/api/v1/segments/segment-updates/updates')
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveLength(1);
+
+      const update = response.body.data[0];
+      expect(update.snowConditions[0]).toMatchObject({
+        snowType: 'Powder',
+        secondarySnowType: 'Ice',
+        layer: 'SURFACE',
+        depth: 15.0,
+        coverage: 70,
+        quality: 3,
+        hardness: 3,
+        moisture: 2,
+        notes: 'Powder with ice patches',
       });
     });
 
@@ -257,15 +471,16 @@ describe('Segments API Integration Tests', () => {
       });
     });
 
-    it('should return only the latest update', async () => {
-      // Create multiple updates
+    it('should return only the latest update when limit is 1', async () => {
+      // Create multiple updates with recent dates
+      const now = new Date();
       await testPrisma.snowUpdate.createMany({
         data: [
           {
             id: 'update-old',
             creator: 'test-user-updates',
             segment: 'segment-updates',
-            time: new Date('2024-01-10T10:00:00Z'),
+            time: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
             description: 'Old update',
             status: 'ACTIVE',
           },
@@ -273,7 +488,7 @@ describe('Segments API Integration Tests', () => {
             id: 'update-new',
             creator: 'test-user-updates',
             segment: 'segment-updates',
-            time: new Date('2024-01-15T10:00:00Z'),
+            time: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 hour ago
             description: 'New update',
             status: 'ACTIVE',
           },
@@ -281,11 +496,84 @@ describe('Segments API Integration Tests', () => {
       });
 
       const response = await request(app)
-        .get('/api/v1/segments/segment-updates/updates')
+        .get('/api/v1/segments/segment-updates/updates?limit=1&days=30')
         .expect(200);
 
       expect(response.body.data).toHaveLength(1);
       expect(response.body.data[0].description).toBe('New update');
+    });
+
+    it('should respect limit query parameter', async () => {
+      const now = new Date();
+      // Create multiple updates
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-1',
+            creator: 'test-user-updates',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+            description: 'Update 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-2',
+            creator: 'test-user-updates',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+            description: 'Update 2',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-3',
+            creator: 'test-user-updates',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+            description: 'Update 3',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      const response = await request(app)
+        .get('/api/v1/segments/segment-updates/updates?limit=2&days=30')
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data[0].description).toBe('Update 1');
+      expect(response.body.data[1].description).toBe('Update 2');
+    });
+
+    it('should respect days query parameter', async () => {
+      const now = new Date();
+      // Create updates with different dates
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-recent',
+            creator: 'test-user-updates',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+            description: 'Recent update',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-old',
+            creator: 'test-user-updates',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+            description: 'Old update',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      const response = await request(app)
+        .get('/api/v1/segments/segment-updates/updates?limit=10&days=3')
+        .expect(200);
+
+      expect(response.body.data).toHaveLength(1);
+      expect(response.body.data[0].description).toBe('Recent update');
     });
   });
 

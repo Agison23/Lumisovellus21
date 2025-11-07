@@ -56,6 +56,41 @@ export const errorHandler = (
     return;
   }
 
+  // Handle custom errors with statusCode
+  const customError = error as any;
+  if (customError.statusCode) {
+    const message =
+      process.env.NODE_ENV !== 'production'
+        ? error.message
+        : 'An error occurred';
+
+    switch (customError.statusCode) {
+      case 400:
+        ApiResponseHandler.validationError(res, message);
+        return;
+      case 401:
+        ApiResponseHandler.unauthorized(res, message);
+        return;
+      case 403:
+        ApiResponseHandler.forbidden(res, message);
+        return;
+      case 404:
+        ApiResponseHandler.notFound(res, message);
+        return;
+      case 409:
+        ApiResponseHandler.conflict(res, message);
+        return;
+      default:
+        ApiResponseHandler.error(
+          res,
+          'ERROR',
+          message,
+          customError.statusCode
+        );
+        return;
+    }
+  }
+
   // Default error handling
   const message =
     process.env.NODE_ENV !== 'production'

@@ -82,10 +82,12 @@ describe('SegmentsService Unit Tests', () => {
         terrain: 'Easy',
         avalancheDanger: false,
         isLowerSegment: 0,
-        Points: [
+        points: [
           { lat: 65.0121, lng: 25.4651 },
           { lat: 65.0122, lng: 25.4652 },
         ],
+        guideUpdate: null,
+        userReviews: [],
       });
 
       expect(segments[1]).toMatchObject({
@@ -94,7 +96,9 @@ describe('SegmentsService Unit Tests', () => {
         terrain: 'Difficult',
         avalancheDanger: true,
         isLowerSegment: 1,
-        Points: [{ lat: 65.0221, lng: 25.4751 }],
+        points: [{ lat: 65.0221, lng: 25.4751 }],
+        guideUpdate: null,
+        userReviews: [],
       });
     });
 
@@ -121,8 +125,115 @@ describe('SegmentsService Unit Tests', () => {
         name: 'No Coordinates Slope',
         terrain: 'Medium',
         avalancheDanger: false,
-        Points: [],
+        points: [],
+        guideUpdate: null,
+        userReviews: [],
       });
+    });
+
+    it('should return segments with user reviews including secondary snow types', async () => {
+      // Create test segment
+      const segment = await testPrisma.segment.create({
+        data: {
+          id: 'segment-with-reviews',
+          name: 'Reviews Segment',
+          terrain: 'Medium',
+          avalancheDanger: false,
+        },
+      });
+
+      // Create snow types
+      const primarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: 'snow-primary-unit',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          skiability: 5,
+        },
+      });
+
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: 'snow-secondary-unit',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+        },
+      });
+
+      // Create test user
+      const user = await testPrisma.user.create({
+        data: {
+          id: 'test-user-unit',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test@test.com',
+          role: 'NORMAL',
+        },
+      });
+
+      // Create user reviews
+      const now = new Date();
+      await testPrisma.userReview.createMany({
+        data: [
+          {
+            id: 'review-unit-1',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: secondarySnowType.id,
+            hazards: ['stones'],
+            userId: user.id,
+            time: new Date(now.getTime() - 1 * 60 * 60 * 1000),
+          },
+          {
+            id: 'review-unit-2',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: null,
+            hazards: ['branches'],
+            userId: user.id,
+            time: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+          },
+          {
+            id: 'review-unit-3',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: secondarySnowType.id,
+            hazards: ['stones', 'branches'],
+            userId: user.id,
+            time: new Date(now.getTime() - 3 * 60 * 60 * 1000),
+          },
+          {
+            id: 'review-unit-4',
+            segment: segment.id,
+            snowType: primarySnowType.id,
+            secondarySnowType: null,
+            hazards: [],
+            userId: user.id,
+            time: new Date(now.getTime() - 4 * 60 * 60 * 1000),
+          },
+        ],
+      });
+
+      const segments = await segmentsService.getAllSegments();
+
+      expect(segments).toHaveLength(1);
+      expect(segments[0].userReviews).toHaveLength(3); // Limited to 3
+
+      // Check first review (newest)
+      expect(segments[0].userReviews[0].snowTypeId).toBe(primarySnowType.id);
+      expect(segments[0].userReviews[0].secondarySnowTypeId).toBe(secondarySnowType.id);
+      expect(segments[0].userReviews[0].hazards).toEqual(['stones']);
+
+      // Check second review
+      expect(segments[0].userReviews[1].snowTypeId).toBe(primarySnowType.id);
+      expect(segments[0].userReviews[1].secondarySnowTypeId).toBeNull();
+      expect(segments[0].userReviews[1].hazards).toEqual(['branches']);
+
+      // Check third review
+      expect(segments[0].userReviews[2].snowTypeId).toBe(primarySnowType.id);
+      expect(segments[0].userReviews[2].secondarySnowTypeId).toBe(secondarySnowType.id);
+      expect(segments[0].userReviews[2].hazards).toEqual(['stones', 'branches']);
     });
   });
 
@@ -160,13 +271,14 @@ describe('SegmentsService Unit Tests', () => {
     });
 
     it('should return latest updates for a segment', async () => {
-      // Create snow update
+      // Create snow update with recent date
+      const now = new Date();
       const snowUpdate = await testPrisma.snowUpdate.create({
         data: {
           id: 'update-1',
           creator: 'test-user-1',
           segment: 'segment-updates',
-          time: new Date('2024-01-15T10:00:00Z'),
+          time: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 hour ago
           description: 'Great conditions today',
           weather: 'Sunny',
           temperature: -5.0,
@@ -209,6 +321,7 @@ describe('SegmentsService Unit Tests', () => {
         snowConditions: [
           {
             snowType: 'Powder',
+            secondarySnowType: null,
             layer: 'SURFACE',
             depth: 20.0,
             coverage: 80,
@@ -221,6 +334,69 @@ describe('SegmentsService Unit Tests', () => {
       });
     });
 
+    it('should return updates with secondary snow type', async () => {
+      // Create secondary snow type
+      await testPrisma.snowType.create({
+        data: {
+          id: 'snow-type-2',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+        },
+      });
+
+      // Create snow update with recent date
+      const now = new Date();
+      const snowUpdate = await testPrisma.snowUpdate.create({
+        data: {
+          id: 'update-2',
+          creator: 'test-user-1',
+          segment: 'segment-updates',
+          time: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
+          description: 'Mixed conditions',
+          weather: 'Cloudy',
+          temperature: -2.0,
+          windSpeed: 15.0,
+          visibility: 3,
+          status: 'ACTIVE',
+          priority: 1,
+        },
+      });
+
+      // Create snow condition with secondary snow type
+      await testPrisma.snowUpdateCondition.create({
+        data: {
+          id: 'condition-2',
+          updateId: snowUpdate.id,
+          snowType: 'snow-type-1',
+          secondarySnowType: 'snow-type-2',
+          layer: 'SURFACE',
+          depth: 15.0,
+          coverage: 70,
+          quality: 3,
+          hardness: 3,
+          moisture: 2,
+          notes: 'Powder with ice patches',
+        },
+      });
+
+      const updates =
+        await segmentsService.getSegmentUpdates('segment-updates');
+
+      expect(updates).toHaveLength(1);
+      expect(updates[0].snowConditions[0]).toMatchObject({
+        snowType: 'Powder',
+        secondarySnowType: 'Ice',
+        layer: 'SURFACE',
+        depth: 15.0,
+        coverage: 70,
+        quality: 3,
+        hardness: 3,
+        moisture: 2,
+        notes: 'Powder with ice patches',
+      });
+    });
+
     it('should return empty array for segment with no updates', async () => {
       const updates = await segmentsService.getSegmentUpdates(
         'non-existent-segment'
@@ -228,15 +404,16 @@ describe('SegmentsService Unit Tests', () => {
       expect(updates).toEqual([]);
     });
 
-    it('should return only the latest update', async () => {
-      // Create multiple updates
+    it('should return only the latest update when limit is 1', async () => {
+      // Create multiple updates with recent dates
+      const now = new Date();
       await testPrisma.snowUpdate.createMany({
         data: [
           {
             id: 'update-old',
             creator: 'test-user-1',
             segment: 'segment-updates',
-            time: new Date('2024-01-10T10:00:00Z'),
+            time: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2 hours ago
             description: 'Old update',
             status: 'ACTIVE',
           },
@@ -244,7 +421,7 @@ describe('SegmentsService Unit Tests', () => {
             id: 'update-new',
             creator: 'test-user-1',
             segment: 'segment-updates',
-            time: new Date('2024-01-15T10:00:00Z'),
+            time: new Date(now.getTime() - 1 * 60 * 60 * 1000), // 1 hour ago
             description: 'New update',
             status: 'ACTIVE',
           },
@@ -252,10 +429,81 @@ describe('SegmentsService Unit Tests', () => {
       });
 
       const updates =
-        await segmentsService.getSegmentUpdates('segment-updates');
+        await segmentsService.getSegmentUpdates('segment-updates', 1, 30);
 
       expect(updates).toHaveLength(1);
       expect(updates[0].description).toBe('New update');
+    });
+
+    it('should respect limit parameter', async () => {
+      // Create multiple updates
+      const now = new Date();
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-1',
+            creator: 'test-user-1',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+            description: 'Update 1',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-2',
+            creator: 'test-user-1',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+            description: 'Update 2',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-3',
+            creator: 'test-user-1',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+            description: 'Update 3',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      const updates =
+        await segmentsService.getSegmentUpdates('segment-updates', 2, 30);
+
+      expect(updates).toHaveLength(2);
+      expect(updates[0].description).toBe('Update 1');
+      expect(updates[1].description).toBe('Update 2');
+    });
+
+    it('should respect days parameter', async () => {
+      // Create updates with different dates
+      const now = new Date();
+      await testPrisma.snowUpdate.createMany({
+        data: [
+          {
+            id: 'update-recent',
+            creator: 'test-user-1',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+            description: 'Recent update',
+            status: 'ACTIVE',
+          },
+          {
+            id: 'update-old',
+            creator: 'test-user-1',
+            segment: 'segment-updates',
+            time: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+            description: 'Old update',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+
+      const updates =
+        await segmentsService.getSegmentUpdates('segment-updates', 10, 3);
+
+      expect(updates).toHaveLength(1);
+      expect(updates[0].description).toBe('Recent update');
     });
   });
 

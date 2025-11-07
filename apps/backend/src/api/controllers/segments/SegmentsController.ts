@@ -5,6 +5,8 @@ import {
 } from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
+import { AuthenticatedRequest } from '../../types';
+import { GuideUpdate } from '../../types';
 
 export class SegmentsController {
   private segmentsService: SegmentsService;
@@ -29,7 +31,9 @@ export class SegmentsController {
   getSegmentUpdates = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const { id } = req.params;
-      const updates = await this.segmentsService.getSegmentUpdates(id);
+      const limit = parseInt(req.query.limit as string) || 3;
+      const days = parseInt(req.query.days as string) || 3;
+      const updates = await this.segmentsService.getSegmentUpdates(id, limit, days);
       ApiResponseHandler.success(res, updates);
     }
   );
@@ -48,6 +52,58 @@ export class SegmentsController {
         to,
       });
       ApiResponseHandler.success(res, updates);
+    }
+  );
+
+  createOrUpdateGuideUpdate = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      const { id } = req.params;
+      
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
+
+      const guideUpdateData: {
+        description: string | null;
+        primarySnowTypeIds: string[];
+        secondarySnowTypeIds: string[];
+      } = req.body;
+
+      // Validate request body
+      if (
+        !Array.isArray(guideUpdateData.primarySnowTypeIds) ||
+        !Array.isArray(guideUpdateData.secondarySnowTypeIds)
+      ) {
+        ApiResponseHandler.badRequest(
+          res,
+          'primarySnowTypeIds and secondarySnowTypeIds must be arrays'
+        );
+        return;
+      }
+
+      if (guideUpdateData.primarySnowTypeIds.length > 2) {
+        ApiResponseHandler.badRequest(
+          res,
+          'Maximum 2 primary snow types allowed'
+        );
+        return;
+      }
+
+      if (guideUpdateData.secondarySnowTypeIds.length > 2) {
+        ApiResponseHandler.badRequest(
+          res,
+          'Maximum 2 secondary snow types allowed'
+        );
+        return;
+      }
+
+      const guideUpdate = await this.segmentsService.createOrUpdateGuideUpdate(
+        id,
+        req.user.id,
+        guideUpdateData
+      );
+      ApiResponseHandler.success(res, guideUpdate);
     }
   );
 }

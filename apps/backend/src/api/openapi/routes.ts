@@ -9,6 +9,7 @@ import {
   resetPasswordSchema,
   segmentIdSchema,
   segmentQuerySchema,
+  segmentUpdatesQuerySchema,
   updatesQuerySchema,
   reviewSchema,
   deviceIdSchema,
@@ -18,6 +19,11 @@ import {
   helpRequestSchema,
   helpResponseSchema,
   querySchema,
+  createSnowTypeSchema,
+  snowTypeIdSchema,
+  addSecondarySnowTypesSchema,
+  guideUpdateSchema,
+  observationSchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -343,9 +349,42 @@ export const openApiRoutes = {
       tags: ['Segments'],
       requestParams: {
         path: segmentIdSchema,
+        query: segmentUpdatesQuerySchema,
       },
       responses: {
         '200': createSuccessResponse(z.array(z.any()), 'Updates retrieved successfully'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/api/v1/segments/{id}/guideUpdate': {
+    post: {
+      summary: 'Create or update a guide update for a segment (Admin only)',
+      description:
+        'Creates a new guide update or updates the existing one for a segment. Only admins can create guide updates.',
+      tags: ['Segments'],
+      security: [{ bearerAuth: [] }],
+      requestParams: {
+        path: segmentIdSchema,
+      },
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: guideUpdateSchema,
+          },
+        },
+      },
+      responses: {
+        '200': createSuccessResponse(
+          z.object({
+            description: z.string().nullable(),
+            primarySnowTypeIds: z.array(z.string().uuid()),
+            secondarySnowTypeIds: z.array(z.string().uuid()),
+          }),
+          'Guide update created/updated successfully'
+        ),
         ...createErrorResponses(),
       },
     },
@@ -380,33 +419,78 @@ export const openApiRoutes = {
         ...createErrorResponses(),
       },
     },
-  },
-
-  '/api/v1/reviews': {
-    get: {
-      summary: 'Get latest reviews for all segments',
-      description: 'Retrieve the most recent reviews for all segments from the last 3 days',
-      tags: ['Reviews'],
-      requestParams: {
-        query: querySchema,
+    post: {
+      summary: 'Create a new snow type',
+      description: 'Create a new snow type with the provided information. Requires authentication and admin role.',
+      tags: ['Snow Types'],
+      security: [{ bearerAuth: [] }],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: createSnowTypeSchema,
+            example: {
+              name: 'Powder',
+              colour: '#FFFFFF',
+              skiability: 5,
+              categoryId: 1,
+              explanation: 'Fresh powder snow',
+            },
+          },
+        },
       },
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Reviews retrieved successfully'),
-        ...createErrorResponses(),
+        '201': createSuccessResponse(z.any(), 'Snow type created successfully'),
+        '400': createErrorResponses()['400'],
+        '401': createErrorResponses()['401'],
+        '403': createErrorResponses()['403'],
+        '409': createErrorResponses()['409'],
+        '500': createErrorResponses()['500'],
       },
     },
   },
 
-  '/api/v1/reviews/all': {
+  '/api/v1/snow-types/{id}/secondary': {
+    post: {
+      summary: 'Add secondary snow types to a snow type',
+      description: 'Associate one or more existing snow types as secondary types for the specified snow type. All entities are SnowTypes - "secondary" refers only to the relationship. Requires authentication and admin role.',
+      tags: ['Snow Types'],
+      security: [{ bearerAuth: [] }],
+      requestParams: {
+        path: snowTypeIdSchema,
+      },
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: addSecondarySnowTypesSchema,
+            example: {
+              secondarySnowTypeIds: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'],
+            },
+          },
+        },
+      },
+      responses: {
+        '200': createSuccessResponse(z.any(), 'Secondary snow types added successfully'),
+        '400': createErrorResponses()['400'],
+        '401': createErrorResponses()['401'],
+        '403': createErrorResponses()['403'],
+        '404': createErrorResponses()['404'],
+        '500': createErrorResponses()['500'],
+      },
+    },
+  },
+
+  '/api/v1/reviews': {
     get: {
-      summary: 'Get all reviews from last week',
-      description: 'Retrieve all reviews from the last week with segment and snow type information',
+      summary: 'Get observations for all segments',
+      description: 'Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment',
       tags: ['Reviews'],
       requestParams: {
         query: querySchema,
       },
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'All reviews retrieved successfully'),
+        '200': createSuccessResponse(z.array(observationSchema), 'Observations retrieved successfully'),
         ...createErrorResponses(),
       },
     },

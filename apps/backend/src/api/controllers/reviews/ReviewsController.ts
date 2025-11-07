@@ -20,16 +20,9 @@ export class ReviewsController {
   getLatestReviews = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const days = parseInt(req.query.days as string) || 3;
-      const reviews = await this.reviewsService.getLatestReviews(days);
-      ApiResponseHandler.success(res, reviews);
-    }
-  );
-
-  getAllReviews = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const days = parseInt(req.query.days as string) || 7;
-      const reviews = await this.reviewsService.getAllReviews(days);
-      ApiResponseHandler.success(res, reviews);
+      const limit = parseInt(req.query.limit as string) || 3;
+      const observations = await this.reviewsService.getLatestReviews(days, limit);
+      ApiResponseHandler.success(res, observations);
     }
   );
 

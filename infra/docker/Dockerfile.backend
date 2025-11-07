@@ -13,7 +13,7 @@ COPY packages/shared/package*.json ./packages/shared/
 COPY packages/tsconfig/package*.json ./packages/tsconfig/
 
 # Install dependencies
-RUN npm ci --include=dev
+RUN npm i --ignore-scripts
 
 # Rebuild the source code only when needed
 FROM base AS builder

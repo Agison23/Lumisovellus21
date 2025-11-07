@@ -311,6 +311,23 @@ export const segmentQuerySchema = z
   .meta({ id: 'SegmentQueryParams' });
 
 // Updates query parameters
+export const segmentUpdatesQuerySchema = z
+  .object({
+    limit: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1))
+      .optional()
+      .meta({ description: 'Maximum number of updates to return', example: '3' }),
+    days: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1))
+      .optional()
+      .meta({ description: 'Number of days to look back', example: '3' }),
+  })
+  .meta({ id: 'SegmentUpdatesQueryParams' });
+
 export const updatesQuerySchema = z
   .object({
     days: z
@@ -341,3 +358,98 @@ export const updatesQuerySchema = z
       .meta({ description: 'End of time range (ISO 8601). If provided, overrides days/updatedSince.', example: '2024-01-31T23:59:59Z' }),
   })
   .meta({ id: 'UpdatesQueryParams' });
+
+// Snow Type validation
+export const createSnowTypeSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Name is required')
+      .max(50, 'Name must be less than 50 characters')
+      .meta({ description: 'Snow type name', example: 'Powder' }),
+    colour: z
+      .string()
+      .min(1, 'Colour is required')
+      .max(15, 'Colour must be less than 15 characters')
+      .regex(/^#?[0-9A-Fa-f]{6}$/, 'Colour must be a valid hex color (e.g., #FFFFFF or FFFFFF)')
+      .meta({ description: 'Snow type colour in hex format', example: '#FFFFFF' }),
+    skiability: z
+      .number()
+      .int()
+      .min(1)
+      .max(5)
+      .optional()
+      .nullable()
+      .meta({ description: 'Skiability rating (1-5)' }),
+    categoryId: z
+      .number()
+      .int()
+      .optional()
+      .nullable()
+      .meta({ description: 'Category ID' }),
+    explanation: z
+      .string()
+      .max(5000)
+      .optional()
+      .nullable()
+      .meta({ description: 'Explanation of the snow type', example: 'Fresh powder snow' }),
+  })
+  .meta({ id: 'CreateSnowTypeRequest' });
+
+export const snowTypeIdSchema = z
+  .object({
+    id: z
+      .string()
+      .uuid('Invalid snow type ID format')
+      .meta({ description: 'Snow type ID (UUID)', example: '550e8400-e29b-41d4-a716-446655440000' }),
+  })
+  .meta({ id: 'SnowTypeIdParams' });
+
+export const addSecondarySnowTypesSchema = z
+  .object({
+    secondarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .min(1, 'At least one secondary snow type ID is required')
+      .meta({ description: 'Array of secondary snow type IDs', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+  })
+  .meta({ id: 'AddSecondarySnowTypesRequest' });
+
+// Guide Update validation
+export const guideUpdateSchema = z
+  .object({
+    description: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({ description: 'Description of the guide update', example: 'Excellent powder conditions' }),
+    primarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .max(2, 'Maximum 2 primary snow types allowed')
+      .default([])
+      .meta({ description: 'Array of primary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+    secondarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .max(2, 'Maximum 2 secondary snow types allowed')
+      .default([])
+      .meta({ description: 'Array of secondary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+  })
+  .meta({ id: 'GuideUpdateRequest' });
+
+// Observation schemas
+export const observationSchema = z
+  .object({
+    segmentId: z.string().uuid().meta({ description: 'Segment ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
+    guideUpdate: guideUpdateSchema.nullable().meta({ description: 'Guide update for the segment, if available' }),
+    userReviews: z
+      .array(
+        z
+          .object({
+            submittedAt: z.string().datetime().meta({ description: 'When the review was submitted' }),
+            snowTypeId: z.string().uuid().meta({ description: 'Snow type ID', example: '550e8400-e29b-41d4-a716-446655440001' }),
+            hazards: z.array(z.string()).meta({ description: 'Array of hazards', example: ['stones', 'branches'] }),
+          })
+          .meta({ id: 'UserReviewObservation' })
+      )
+      .meta({ description: 'User reviews for the segment' }),
+  })
+  .meta({ id: 'Observation' });

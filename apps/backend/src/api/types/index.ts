@@ -38,16 +38,41 @@ export interface HealthResponse {
 }
 
 // Segment Types
+export interface GuideUpdate {
+  description: string | null;
+  primarySnowTypeIds: string[];
+  secondarySnowTypeIds: string[];
+}
+
+export interface UserReviewItem {
+  submittedAt: Date;
+  snowTypeId: string;
+  secondarySnowTypeId?: string | null;
+  hazards: string[];
+}
+
+export interface Observation {
+  segmentId: string;
+  guideUpdate: GuideUpdate | null;
+  userReviews: Array<{
+    submittedAt: Date;
+    snowTypeId: string;
+    hazards: string[];
+  }>;
+}
+
 export interface Segment {
   id: string;
   name: string;
   terrain: string;
   avalancheDanger: boolean;
   isLowerSegment: number | null;
-  Points: Array<{
+  points: Array<{
     lat: number;
     lng: number;
   }>;
+  guideUpdate: GuideUpdate | null;
+  userReviews: UserReviewItem[];
 }
 
 export interface SegmentUpdate {
@@ -72,6 +97,7 @@ export type HazardType = 'stones' | 'branches';
 
 export interface ReviewRequest {
   snowType: string | null;
+  secondarySnowType?: string | null;
   /** Array of hazards encountered on the trail (e.g., ["stones", "branches"]) */
   hazards: HazardType[];
   comment: string | null;
@@ -82,7 +108,7 @@ export interface Review {
   time: Date;
   segment: string;
   snowType?: string | null;
-  details?: number | null;
+  hazards?: HazardType[];
   comment?: string | null;
   userId?: string | null;
 }
@@ -95,6 +121,19 @@ export interface SnowType {
   skiability?: number | null;
   categoryId?: number | null;
   explanation?: string | null;
+  secondaryTypes?: SnowType[];
+}
+
+export interface CreateSnowTypeRequest {
+  name: string;
+  colour: string;
+  skiability?: number | null;
+  categoryId?: number | null;
+  explanation?: string | null;
+}
+
+export interface AddSecondarySnowTypesRequest {
+  secondarySnowTypeIds: string[];
 }
 
 // User Types

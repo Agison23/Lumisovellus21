@@ -1,28 +1,7 @@
 import { BaseService } from '../BaseService';
-import { Review, ReviewRequest, SnowType, HazardType } from '../../types';
+import { Review, ReviewRequest, SnowType, HazardType, Observation, GuideUpdate } from '../../types';
 
 export class ReviewsService extends BaseService {
-  /**
-   * Convert hazards array to legacy numeric encoding:
-   * stones=1, branches=2, both=3
-   */
-  private hazardsToDetails(hazards: HazardType[]): number | null {
-    if (hazards.length === 0) return null;
-
-    // Use sum of bits to represent multiple hazards
-    let result = 0;
-    for (const hazard of hazards) {
-      switch (hazard) {
-        case 'stones':
-          result += 1;
-          break;
-        case 'branches':
-          result += 2;
-          break;
-      }
-    }
-    return result;
-  }
 
   async getAllSnowTypes(): Promise<SnowType[]> {
     try {
@@ -41,71 +20,150 @@ export class ReviewsService extends BaseService {
     }
   }
 
-  async getLatestReviews(days: number = 3): Promise<Review[]> {
+  /**
+   * Get the latest guide update (SnowUpdate created by admin) for a segment
+   */
+  private async getGuideUpdateForSegment(segmentId: string): Promise<GuideUpdate | null> {
     try {
-      const daysAgo = new Date();
-      daysAgo.setDate(daysAgo.getDate() - days);
+      // First, find admin users who created updates for this segment
+      const adminUsers = await this.prisma.user.findMany({
+        where: { role: 'ADMIN' },
+        select: { id: true },
+      });
+      const adminUserIds = adminUsers.map((u) => u.id);
 
-      const reviews = await this.prisma.$queryRaw<
-        Array<{
-          id: number;
-          time: Date;
-          segment: number;
-          snowType: number | null;
-          details: number | null;
-          comment: string | null;
-        }>
-      >`
-        SELECT id, time, segment, snowType, details, comment
-        FROM userReviews
-        WHERE (segment, time) IN (
-          SELECT segment, MAX(time)
-          FROM userReviews
-          GROUP BY segment
-        )
-        AND time > ${daysAgo}
-        ORDER BY segment
-      `;
+      if (adminUserIds.length === 0) {
+        return null;
+      }
 
-      return reviews.map((review) => ({
-        id: review.id.toString(),
-        time: review.time,
-        segment: review.segment.toString(),
-        snowType: review.snowType?.toString(),
-        details: review.details,
-        comment: review.comment,
-        userId: undefined,
-      }));
+      // Get the latest active SnowUpdate created by an admin
+      const guideUpdate = await this.prisma.snowUpdate.findFirst({
+        where: {
+          segment: segmentId,
+          status: 'ACTIVE',
+          creator: { in: adminUserIds },
+        },
+        orderBy: { time: 'desc' },
+        include: {
+          snowConditions: true,
+        },
+      });
+
+      if (!guideUpdate || !guideUpdate.snowConditions || guideUpdate.snowConditions.length === 0) {
+        return null;
+      }
+
+      // Extract primary and secondary snow type IDs directly from the condition fields
+      const primarySnowTypeIds: string[] = [];
+      const secondarySnowTypeIds: string[] = [];
+
+      for (const condition of guideUpdate.snowConditions) {
+        if (condition.snowType && !primarySnowTypeIds.includes(condition.snowType)) {
+          primarySnowTypeIds.push(condition.snowType);
+        }
+        if (condition.secondarySnowType && !secondarySnowTypeIds.includes(condition.secondarySnowType)) {
+          secondarySnowTypeIds.push(condition.secondarySnowType);
+        }
+      }
+
+      // Limit to max 2 each
+      return {
+        description: guideUpdate.description,
+        primarySnowTypeIds: primarySnowTypeIds.slice(0, 2),
+        secondarySnowTypeIds: secondarySnowTypeIds.slice(0, 2),
+      };
     } catch (error) {
-      return await this.handleDatabaseError(error);
+      // If there's an error, return null rather than failing the entire request
+      console.error('Error fetching guide update:', error);
+      return null;
     }
   }
 
-  async getAllReviews(days: number = 7): Promise<any[]> {
+  async getLatestReviews(days: number = 3, limit: number = 3): Promise<Observation[]> {
     try {
       const daysAgo = new Date();
       daysAgo.setDate(daysAgo.getDate() - days);
 
-      const reviews = await this.prisma.$queryRaw<
-        Array<{
-          time: Date;
-          details: number | null;
-          snowType: number | null;
-          comment: string | null;
-          snow: string | null;
-          segment: string | null;
-        }>
-      >`
-        SELECT userReviews.time, userReviews.details, userReviews.snowType, userReviews.comment, 
-               snowTypes.name AS snow, segments.name AS segment
-        FROM userReviews
-        LEFT JOIN snowTypes ON userReviews.snowType = snowTypes.id
-        LEFT JOIN segments ON userReviews.segment = segments.id
-        WHERE time > ${daysAgo}
-        ORDER BY time DESC
-      `;
+      // Get all segments that have reviews or guide updates within the last N days
+      // First, get segments with reviews
+      const reviews = await this.prisma.userReview.findMany({
+        where: {
+          time: { gt: daysAgo },
+        },
+        select: {
+          segment: true,
+        },
+        distinct: ['segment'],
+      });
 
-      return reviews;
+      // Get segments with active guide updates (SnowUpdates created by admin)
+      // Note: Guide updates are shown if they're active, regardless of when created
+      const adminUsers = await this.prisma.user.findMany({
+        where: { role: 'ADMIN' },
+        select: { id: true },
+      });
+      const adminUserIds = adminUsers.map((u) => u.id);
+
+      const guideUpdateSegments = adminUserIds.length > 0
+        ? await this.prisma.snowUpdate.findMany({
+            where: {
+              status: 'ACTIVE',
+              creator: { in: adminUserIds },
+            },
+            select: {
+              segment: true,
+            },
+            distinct: ['segment'],
+          })
+        : [];
+
+      // Combine unique segment IDs
+      const segmentIds = new Set<string>();
+      reviews.forEach((r) => segmentIds.add(r.segment));
+      guideUpdateSegments.forEach((g) => segmentIds.add(g.segment));
+
+      // Build observations for each segment
+      const observations: Observation[] = [];
+
+      for (const segmentId of segmentIds) {
+        // Get guide update for this segment
+        const guideUpdate = await this.getGuideUpdateForSegment(segmentId);
+
+        // Get user reviews for this segment (limited and filtered by date)
+        const segmentReviews = await this.prisma.userReview.findMany({
+          where: {
+            segment: segmentId,
+            time: { gt: daysAgo },
+          },
+          orderBy: { time: 'desc' },
+          take: limit,
+        });
+
+        const userReviews = segmentReviews.map((review) => {
+          const hazards = review.hazards
+            ? (Array.isArray(review.hazards)
+                ? (review.hazards as HazardType[])
+                : JSON.parse(review.hazards as string))
+            : [];
+
+          return {
+            submittedAt: review.time,
+            snowTypeId: review.snowType || '',
+            hazards: hazards,
+          };
+        });
+
+        // Only include segments that have at least user reviews or a guide update
+        if (userReviews.length > 0 || guideUpdate !== null) {
+          observations.push({
+            segmentId: segmentId,
+            guideUpdate: guideUpdate,
+            userReviews: userReviews,
+          });
+        }
+      }
+
+      return observations;
     } catch (error) {
       return await this.handleDatabaseError(error);
     }
@@ -121,7 +179,8 @@ export class ReviewsService extends BaseService {
           id: crypto.randomUUID(),
           segment: segmentId, // Get segment ID from URL path parameter
           snowType: reviewData.snowType,
-          details: this.hazardsToDetails(reviewData.hazards),
+          secondarySnowType: reviewData.secondarySnowType || null,
+          hazards: reviewData.hazards.length > 0 ? reviewData.hazards : undefined,
           comment: reviewData.comment,
           // Anonymous review while auth is disabled
           userId: undefined,
@@ -133,12 +192,19 @@ export class ReviewsService extends BaseService {
         },
       });
 
+      // Parse hazards from JSON if it exists
+      const hazards = review.hazards
+        ? (Array.isArray(review.hazards)
+            ? (review.hazards as HazardType[])
+            : JSON.parse(review.hazards as string))
+        : [];
+
       return {
         id: review.id.toString(),
         time: review.time,
         segment: review.segment.toString(),
         snowType: review.snowType?.toString(),
-        details: review.details,
+        hazards: hazards,
         comment: review.comment,
         userId: review.userId,
       };
