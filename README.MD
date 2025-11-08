@@ -127,7 +127,7 @@ Segments & Updates
 
 Reviews
 - GET `/api/v1/snow-types`: Enumerate allowed snow/surface types for reviews.
-- GET `/api/v1/reviews`: Latest reviews across segments; optional `days` (default 3).
+- GET `/api/v1/observations`: Latest observations (reviews and guide updates) across segments; optional `days` (default 3), `page`, `pageSize`, `limit`.
 - GET `/api/v1/reviews/all`: All reviews in a window; optional `days` (default 7).
 - POST `/api/v1/segments/:id/reviews` (Auth): Create a review for a segment with rating/comments.
 

@@ -41,10 +41,10 @@ router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
 
 /**
  * @swagger
- * /api/v1/reviews:
+ * /api/v1/observations:
  *   get:
  *     summary: Get observations for all segments
- *     description: Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment
+ *     description: Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment. Supports pagination of segments.
  *     tags: [Reviews]
  *     parameters:
  *       - in: query
@@ -63,6 +63,21 @@ router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
  *           maximum: 10
  *           default: 3
  *         description: Maximum number of user reviews to return per segment
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for paginated results (segments)
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: Number of segments per page
  *     responses:
  *       200:
  *         description: Observations retrieved successfully
@@ -121,12 +136,23 @@ router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
  *                   properties:
  *                     timestamp:
  *                       type: string
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         page:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
+ *                         total:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
  *       500:
  *         description: Internal server error
  *         schema:
  *           $ref: '#/definitions/Error'
  */
-router.get('/api/v1/reviews', reviewsController.getLatestReviews);
+router.get('/api/v1/observations', reviewsController.getLatestReviews);
 
 /**
  * @swagger

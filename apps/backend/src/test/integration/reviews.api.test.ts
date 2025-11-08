@@ -98,7 +98,7 @@ describe('Reviews API Integration Tests', () => {
     });
   });
 
-  describe('GET /api/v1/reviews', () => {
+  describe('GET /api/v1/observations', () => {
     it('should return latest reviews successfully', async () => {
       // Create test segments
       await testPrisma.segment.createMany({
@@ -179,7 +179,7 @@ describe('Reviews API Integration Tests', () => {
         ],
       });
 
-      const response = await request(app).get('/api/v1/reviews').expect(200);
+      const response = await request(app).get('/api/v1/observations').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -211,7 +211,7 @@ describe('Reviews API Integration Tests', () => {
 
     it('should use custom days parameter', async () => {
       const response = await request(app)
-        .get('/api/v1/reviews?days=7')
+        .get('/api/v1/observations?days=7')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -254,7 +254,7 @@ describe('Reviews API Integration Tests', () => {
       });
 
       const response = await request(app)
-        .get('/api/v1/reviews?limit=2')
+        .get('/api/v1/observations?limit=2')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -267,7 +267,7 @@ describe('Reviews API Integration Tests', () => {
     });
 
     it('should return empty array when no reviews exist', async () => {
-      const response = await request(app).get('/api/v1/reviews').expect(200);
+      const response = await request(app).get('/api/v1/observations').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);

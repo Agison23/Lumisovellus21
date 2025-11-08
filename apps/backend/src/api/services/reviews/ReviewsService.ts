@@ -79,7 +79,12 @@ export class ReviewsService extends BaseService {
     }
   }
 
-  async getLatestReviews(days: number = 3, limit: number = 3): Promise<Observation[]> {
+  async getLatestReviews(
+    days: number = 3,
+    reviewLimit: number = 3,
+    page: number = 1,
+    pageSize: number = 20
+  ): Promise<{ observations: Observation[]; total: number }> {
     try {
       const daysAgo = new Date();
       daysAgo.setDate(daysAgo.getDate() - days);
@@ -118,14 +123,23 @@ export class ReviewsService extends BaseService {
         : [];
 
       // Combine unique segment IDs
-      const segmentIds = new Set<string>();
-      reviews.forEach((r) => segmentIds.add(r.segment));
-      guideUpdateSegments.forEach((g) => segmentIds.add(g.segment));
+      const segmentIdsSet = new Set<string>();
+      reviews.forEach((r) => segmentIdsSet.add(r.segment));
+      guideUpdateSegments.forEach((g) => segmentIdsSet.add(g.segment));
 
-      // Build observations for each segment
+      // Convert to array and sort for consistent pagination
+      const allSegmentIds = Array.from(segmentIdsSet).sort();
+
+      // Calculate pagination
+      const total = allSegmentIds.length;
+      const skip = (page - 1) * pageSize;
+      const paginatedSegmentIds = allSegmentIds.slice(skip, skip + pageSize);
+
+      // Build observations for paginated segments
       const observations: Observation[] = [];
 
-      for (const segmentId of segmentIds) {
+      // Process segments in parallel for better performance
+      const observationPromises = paginatedSegmentIds.map(async (segmentId) => {
         // Get guide update for this segment
         const guideUpdate = await this.getGuideUpdateForSegment(segmentId);
 
@@ -136,7 +150,7 @@ export class ReviewsService extends BaseService {
             time: { gt: daysAgo },
           },
           orderBy: { time: 'desc' },
-          take: limit,
+          take: reviewLimit,
         });
 
         const userReviews = segmentReviews.map((review) => {
@@ -155,15 +169,21 @@ export class ReviewsService extends BaseService {
 
         // Only include segments that have at least user reviews or a guide update
         if (userReviews.length > 0 || guideUpdate !== null) {
-          observations.push({
+          return {
             segmentId: segmentId,
             guideUpdate: guideUpdate,
             userReviews: userReviews,
-          });
+          };
         }
-      }
+        return null;
+      });
 
-      return observations;
+      const results = await Promise.all(observationPromises);
+      // Filter out null values (segments that don't have reviews or guide updates)
+      const validObservations = results.filter((obs): obs is Observation => obs !== null);
+      observations.push(...validObservations);
+
+      return { observations, total };
     } catch (error) {
       return await this.handleDatabaseError(error);
     }

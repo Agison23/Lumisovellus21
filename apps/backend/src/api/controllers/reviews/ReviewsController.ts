@@ -20,9 +20,27 @@ export class ReviewsController {
   getLatestReviews = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const days = parseInt(req.query.days as string) || 3;
-      const limit = parseInt(req.query.limit as string) || 3;
-      const observations = await this.reviewsService.getLatestReviews(days, limit);
-      ApiResponseHandler.success(res, observations);
+      const reviewLimit = parseInt(req.query.limit as string) || 3;
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 20;
+
+      const { observations, total } = await this.reviewsService.getLatestReviews(
+        days,
+        reviewLimit,
+        page,
+        pageSize
+      );
+
+      const totalPages = Math.ceil(total / pageSize);
+
+      ApiResponseHandler.success(res, observations, 200, {
+        pagination: {
+          page,
+          limit: pageSize,
+          total,
+          totalPages,
+        },
+      });
     }
   );
 

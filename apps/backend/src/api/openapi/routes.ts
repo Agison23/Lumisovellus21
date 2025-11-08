@@ -24,6 +24,8 @@ import {
   addSecondarySnowTypesSchema,
   guideUpdateSchema,
   observationSchema,
+  segmentUpdateSchema,
+  reviewsQuerySchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -352,7 +354,7 @@ export const openApiRoutes = {
         query: segmentUpdatesQuerySchema,
       },
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Updates retrieved successfully'),
+        '200': createSuccessResponse(z.array(segmentUpdateSchema), 'Updates retrieved successfully'),
         ...createErrorResponses(),
       },
     },
@@ -400,7 +402,7 @@ export const openApiRoutes = {
       },
       responses: {
         '200': createSuccessResponse(
-          z.array(z.any()),
+          z.array(segmentUpdateSchema),
           'Updates retrieved successfully, with review details included'
         ),
         ...createErrorResponses(),
@@ -481,13 +483,13 @@ export const openApiRoutes = {
     },
   },
 
-  '/api/v1/reviews': {
+  '/api/v1/observations': {
     get: {
       summary: 'Get observations for all segments',
-      description: 'Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment',
+      description: 'Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment. Supports pagination of segments.',
       tags: ['Reviews'],
       requestParams: {
-        query: querySchema,
+        query: reviewsQuerySchema,
       },
       responses: {
         '200': createSuccessResponse(z.array(observationSchema), 'Observations retrieved successfully'),

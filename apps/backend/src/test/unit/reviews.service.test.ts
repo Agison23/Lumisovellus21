@@ -140,14 +140,16 @@ describe('ReviewsService Unit Tests', () => {
         ],
       });
 
-      const result = await reviewsService.getLatestReviews(3, 3);
+      const result = await reviewsService.getLatestReviews(3, 3, 1, 20);
 
       // Should return observations for segments with reviews in last 3 days
-      expect(Array.isArray(result)).toBe(true);
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      expect(Array.isArray(result.observations)).toBe(true);
       
       // Find observations for each segment
-      const observation1 = result.find((obs) => obs.segmentId === '1');
-      const observation2 = result.find((obs) => obs.segmentId === '2');
+      const observation1 = result.observations.find((obs) => obs.segmentId === '1');
+      const observation2 = result.observations.find((obs) => obs.segmentId === '2');
 
       // Segment 1 should have 2 reviews (review-1 and review-3, but review-3 is 4 days ago, so only review-1)
       if (observation1) {
@@ -190,8 +192,11 @@ describe('ReviewsService Unit Tests', () => {
     it('should use default parameters when not provided', async () => {
       const result = await reviewsService.getLatestReviews();
 
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toEqual([]);
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      expect(Array.isArray(result.observations)).toBe(true);
+      expect(result.observations).toEqual([]);
+      expect(result.total).toBe(0);
     });
 
     it('should respect limit parameter', async () => {
@@ -231,9 +236,11 @@ describe('ReviewsService Unit Tests', () => {
         ],
       });
 
-      const result = await reviewsService.getLatestReviews(3, 2);
+      const result = await reviewsService.getLatestReviews(3, 2, 1, 20);
 
-      const observation = result.find((obs) => obs.segmentId === segment.id);
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      const observation = result.observations.find((obs) => obs.segmentId === segment.id);
       expect(observation).toBeDefined();
       if (observation) {
         // Should be limited to 2 reviews
