@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { SegmentsController } from '../../controllers/segments/SegmentsController';
+import { authenticateToken, requireAdmin } from '../../middleware/auth';
 
 const router = Router();
 const segmentsController = new SegmentsController();
@@ -73,6 +74,20 @@ router.get('/api/v1/segments', segmentsController.getAllSegments);
  *           type: string
  *           format: uuid
  *         description: Segment ID (UUID)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 3
+ *         description: Maximum number of updates to return
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 3
+ *         description: Number of days to look back
  *     responses:
  *       200:
  *         description: Updates retrieved successfully
@@ -169,5 +184,93 @@ router.get(
  *           $ref: '#/definitions/Error'
  */
 router.get('/api/v1/updates', segmentsController.getAllUpdates);
+
+/**
+ * @swagger
+ * /api/v1/segments/{id}/guideUpdate:
+ *   post:
+ *     summary: Create or update a guide update for a segment (Admin only)
+ *     description: Creates a new guide update or updates the existing one for a segment. Only admins can create guide updates.
+ *     tags: [Segments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Segment ID (UUID)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - primarySnowTypeIds
+ *               - secondarySnowTypeIds
+ *             properties:
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *                 description: Description of the guide update
+ *               primarySnowTypeIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
+ *                 maxItems: 2
+ *                 description: Array of primary snow type IDs (max 2)
+ *                 example: ["uuid1", "uuid2"]
+ *               secondarySnowTypeIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
+ *                 maxItems: 2
+ *                 description: Array of secondary snow type IDs (max 2)
+ *                 example: ["uuid1", "uuid2"]
+ *     responses:
+ *       200:
+ *         description: Guide update created/updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     description:
+ *                       type: string
+ *                       nullable: true
+ *                     primarySnowTypeIds:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     secondarySnowTypeIds:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *       401:
+ *         description: Unauthorized - Authentication required
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       400:
+ *         description: Bad request - Invalid input
+ *       500:
+ *         description: Internal server error
+ */
+router.post(
+  '/api/v1/segments/:id/guideUpdate',
+  authenticateToken,
+  requireAdmin,
+  segmentsController.createOrUpdateGuideUpdate
+);
 
 export default router;

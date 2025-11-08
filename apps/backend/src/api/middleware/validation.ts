@@ -311,6 +311,23 @@ export const segmentQuerySchema = z
   .meta({ id: 'SegmentQueryParams' });
 
 // Updates query parameters
+export const segmentUpdatesQuerySchema = z
+  .object({
+    limit: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1))
+      .optional()
+      .meta({ description: 'Maximum number of updates to return', example: '3' }),
+    days: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1))
+      .optional()
+      .meta({ description: 'Number of days to look back', example: '3' }),
+  })
+  .meta({ id: 'SegmentUpdatesQueryParams' });
+
 export const updatesQuerySchema = z
   .object({
     days: z
@@ -341,3 +358,197 @@ export const updatesQuerySchema = z
       .meta({ description: 'End of time range (ISO 8601). If provided, overrides days/updatedSince.', example: '2024-01-31T23:59:59Z' }),
   })
   .meta({ id: 'UpdatesQueryParams' });
+
+// Reviews query parameters
+export const reviewsQuerySchema = z
+  .object({
+    days: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(30))
+      .optional()
+      .meta({ description: 'Number of days to look back for reviews and guide updates', example: '3' }),
+    limit: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(10))
+      .optional()
+      .meta({ description: 'Maximum number of user reviews to return per segment', example: '3' }),
+    page: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1))
+      .optional()
+      .meta({ description: 'Page number for paginated results (segments)', example: '1' }),
+    pageSize: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(100))
+      .optional()
+      .meta({ description: 'Number of segments per page', example: '20' }),
+  })
+  .meta({ id: 'ReviewsQueryParams' });
+
+// Snow Type validation
+export const createSnowTypeSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Name is required')
+      .max(50, 'Name must be less than 50 characters')
+      .meta({ description: 'Snow type name', example: 'Powder' }),
+    colour: z
+      .string()
+      .min(1, 'Colour is required')
+      .max(15, 'Colour must be less than 15 characters')
+      .regex(/^#?[0-9A-Fa-f]{6}$/, 'Colour must be a valid hex color (e.g., #FFFFFF or FFFFFF)')
+      .meta({ description: 'Snow type colour in hex format', example: '#FFFFFF' }),
+    skiability: z
+      .number()
+      .int()
+      .min(1)
+      .max(5)
+      .optional()
+      .nullable()
+      .meta({ description: 'Skiability rating (1-5)' }),
+    categoryId: z
+      .number()
+      .int()
+      .optional()
+      .nullable()
+      .meta({ description: 'Category ID' }),
+    explanation: z
+      .string()
+      .max(5000)
+      .optional()
+      .nullable()
+      .meta({ description: 'Explanation of the snow type', example: 'Fresh powder snow' }),
+  })
+  .meta({ id: 'CreateSnowTypeRequest' });
+
+export const snowTypeIdSchema = z
+  .object({
+    id: z
+      .string()
+      .uuid('Invalid snow type ID format')
+      .meta({ description: 'Snow type ID (UUID)', example: '550e8400-e29b-41d4-a716-446655440000' }),
+  })
+  .meta({ id: 'SnowTypeIdParams' });
+
+export const addSecondarySnowTypesSchema = z
+  .object({
+    secondarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .min(1, 'At least one secondary snow type ID is required')
+      .meta({ description: 'Array of secondary snow type IDs', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+  })
+  .meta({ id: 'AddSecondarySnowTypesRequest' });
+
+// Guide Update validation
+export const guideUpdateSchema = z
+  .object({
+    description: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({ description: 'Description of the guide update', example: 'Excellent powder conditions' }),
+    primarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .max(2, 'Maximum 2 primary snow types allowed')
+      .default([])
+      .meta({ description: 'Array of primary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+    secondarySnowTypeIds: z
+      .array(z.string().uuid('Invalid snow type ID format'))
+      .max(2, 'Maximum 2 secondary snow types allowed')
+      .default([])
+      .meta({ description: 'Array of secondary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+  })
+  .meta({ id: 'GuideUpdateRequest' });
+
+// Observation schemas
+export const observationSchema = z
+  .object({
+    segmentId: z.string().uuid().meta({ description: 'Segment ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
+    guideUpdate: guideUpdateSchema.nullable().meta({ description: 'Guide update for the segment, if available' }),
+    userReviews: z
+      .array(
+        z
+          .object({
+            submittedAt: z.string().datetime().meta({ description: 'When the review was submitted' }),
+            snowTypeId: z.string().uuid().meta({ description: 'Snow type ID', example: '550e8400-e29b-41d4-a716-446655440001' }),
+            hazards: z.array(z.string()).meta({ description: 'Array of hazards', example: ['stones', 'branches'] }),
+          })
+          .meta({ id: 'UserReviewObservation' })
+      )
+      .meta({ description: 'User reviews for the segment' }),
+  })
+  .meta({ id: 'Observation' });
+
+// Segment Update Response schemas
+const creatorSchema = z
+  .object({
+    firstName: z.string().nullable().meta({ description: 'Creator first name', example: 'John' }),
+    lastName: z.string().nullable().meta({ description: 'Creator last name', example: 'Doe' }),
+  })
+  .nullable()
+  .meta({ id: 'Creator' });
+
+const snowConditionSchema = z
+  .object({
+    id: z.string().uuid().meta({ description: 'Snow condition ID', example: '550e8400-e29b-41d4-a716-446655440001' }),
+    snowType: z.string().nullable().meta({ description: 'Primary snow type name', example: 'Powder' }),
+    secondarySnowType: z.string().nullable().meta({ description: 'Secondary snow type name', example: 'Wet Snow' }),
+    layer: z.enum(['SURFACE', 'MIDDLE', 'BASE']).meta({ description: 'Snow layer', example: 'SURFACE' }),
+    depth: z.number().nullable().meta({ description: 'Snow depth in cm', example: 20.0 }),
+    coverage: z.number().nullable().meta({ description: 'Snow coverage percentage', example: 80 }),
+    quality: z.number().nullable().meta({ description: 'Snow quality rating', example: 4 }),
+    hardness: z.number().nullable().meta({ description: 'Snow hardness rating', example: 2 }),
+    moisture: z.number().nullable().meta({ description: 'Snow moisture rating', example: 1 }),
+    notes: z.string().nullable().meta({ description: 'Additional notes', example: 'Excellent powder conditions' }),
+    createdAt: z.string().datetime().meta({ description: 'Creation timestamp', example: '2024-01-15T10:30:00.000Z' }),
+  })
+  .meta({ id: 'SnowCondition' });
+
+const reviewReferenceSchema = z
+  .object({
+    id: z.string().uuid().meta({ description: 'Review reference ID', example: '550e8400-e29b-41d4-a716-446655440001' }),
+    updateId: z.string().uuid().meta({ description: 'Snow update ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
+    reviewId: z.string().meta({ description: 'User review ID', example: 'review-123' }),
+    relevance: z.number().int().meta({ description: 'Relevance score', example: 1 }),
+    notes: z.string().nullable().meta({ description: 'Reference notes' }),
+    createdAt: z.string().datetime().meta({ description: 'Creation timestamp', example: '2024-01-15T10:30:00.000Z' }),
+    reviewRel: z
+      .object({
+        id: z.string().meta({ description: 'Review ID' }),
+        time: z.string().datetime().meta({ description: 'Review time' }),
+        segment: z.string().uuid().meta({ description: 'Segment ID' }),
+        snowType: z.string().uuid().nullable().meta({ description: 'Snow type ID' }),
+        secondarySnowType: z.string().uuid().nullable().meta({ description: 'Secondary snow type ID' }),
+        hazards: z.any().nullable().meta({ description: 'Hazards (JSON)' }),
+        comment: z.string().nullable().meta({ description: 'Review comment' }),
+        userId: z.string().nullable().meta({ description: 'User ID' }),
+        createdAt: z.string().datetime().meta({ description: 'Creation timestamp' }),
+        updatedAt: z.string().datetime().meta({ description: 'Update timestamp' }),
+      })
+      .meta({ description: 'Associated user review' }),
+  })
+  .meta({ id: 'ReviewReference' });
+
+export const segmentUpdateSchema = z
+  .object({
+    id: z.string().uuid().meta({ description: 'Update ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
+    segment: z.string().uuid().meta({ description: 'Segment ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
+    time: z.string().datetime().meta({ description: 'Update timestamp', example: '2024-01-15T10:30:00.000Z' }),
+    description: z.string().nullable().meta({ description: 'Update description', example: 'Great conditions today' }),
+    weather: z.string().nullable().meta({ description: 'Weather conditions', example: 'Sunny' }),
+    temperature: z.number().nullable().meta({ description: 'Temperature in Celsius', example: -5.0 }),
+    windSpeed: z.number().nullable().meta({ description: 'Wind speed', example: 10.0 }),
+    visibility: z.number().nullable().meta({ description: 'Visibility rating', example: 5 }),
+    status: z.enum(['DRAFT', 'ACTIVE', 'ARCHIVED', 'DELETED']).meta({ description: 'Update status', example: 'ACTIVE' }),
+    priority: z.number().int().meta({ description: 'Update priority', example: 1 }),
+    creator: creatorSchema.meta({ description: 'Update creator information' }),
+    segmentName: z.string().meta({ description: 'Segment name', example: 'Test Segment' }),
+    snowConditions: z.array(snowConditionSchema).meta({ description: 'Snow conditions for this update' }),
+    reviewReferences: z.array(reviewReferenceSchema).meta({ description: 'Review references associated with this update' }),
+  })
+  .meta({ id: 'SegmentUpdate' });

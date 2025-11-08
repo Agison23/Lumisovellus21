@@ -45,7 +45,9 @@ services:
       # Anonymous volume for node_modules (prevents host node_modules from overwriting)
       - /app/node_modules
     # Updated command to be non-interactive
-    command: sh -c "npx prisma generate && npx prisma migrate dev --name init && npm run db:seed && npm run build:swagger:clean && npm run dev:full"
+    # Use 'db push' for development (syncs schema without creating migration files)
+    # Or use 'migrate deploy' if migrations already exist
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed  && npm run dev"
 
 volumes:
   mysql_data:

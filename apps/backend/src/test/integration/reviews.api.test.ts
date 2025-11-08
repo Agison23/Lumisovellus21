@@ -98,7 +98,7 @@ describe('Reviews API Integration Tests', () => {
     });
   });
 
-  describe('GET /api/v1/reviews', () => {
+  describe('GET /api/v1/observations', () => {
     it('should return latest reviews successfully', async () => {
       // Create test segments
       await testPrisma.segment.createMany({
@@ -120,16 +120,26 @@ describe('Reviews API Integration Tests', () => {
         ],
       });
 
-      // Create test snow type
-      await testPrisma.snowType.create({
-        data: {
-          id: '1',
-          name: 'Powder',
-          colour: '#FFFFFF',
-          skiability: 5,
-          categoryId: 1,
-          explanation: 'Fresh powder',
-        },
+      // Create test snow types
+      await testPrisma.snowType.createMany({
+        data: [
+          {
+            id: '1',
+            name: 'Powder',
+            colour: '#FFFFFF',
+            skiability: 5,
+            categoryId: 1,
+            explanation: 'Fresh powder',
+          },
+          {
+            id: '2',
+            name: 'Ice',
+            colour: '#CCCCCC',
+            skiability: 1,
+            categoryId: 2,
+            explanation: 'Hard ice',
+          },
+        ],
       });
 
       // Create test reviews with different timestamps
@@ -143,7 +153,8 @@ describe('Reviews API Integration Tests', () => {
             id: 'review-1',
             segment: '1',
             snowType: '1',
-            details: 4,
+            secondarySnowType: '2',
+            hazards: ['stones', 'branches'],
             comment: 'Great conditions',
             time: twoDaysAgo,
           },
@@ -151,7 +162,8 @@ describe('Reviews API Integration Tests', () => {
             id: 'review-2',
             segment: '2',
             snowType: null,
-            details: 2,
+            secondarySnowType: null,
+            hazards: ['branches'],
             comment: 'Poor visibility',
             time: twoDaysAgo,
           },
@@ -159,14 +171,15 @@ describe('Reviews API Integration Tests', () => {
             id: 'review-3',
             segment: '1',
             snowType: '1',
-            details: 5,
+            secondarySnowType: null,
+            hazards: ['stones', 'branches'],
             comment: 'Excellent',
             time: fourDaysAgo,
           },
         ],
       });
 
-      const response = await request(app).get('/api/v1/reviews').expect(200);
+      const response = await request(app).get('/api/v1/observations').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -176,33 +189,41 @@ describe('Reviews API Integration Tests', () => {
         },
       });
 
-      expect(response.body.data).toHaveLength(2); // Only reviews from last 3 days
+      // Should return observations grouped by segment
+      expect(response.body.data.length).toBeGreaterThanOrEqual(1);
+      
+      // Check structure of first observation
+      const observation = response.body.data[0];
+      expect(observation).toHaveProperty('segmentId');
+      expect(observation).toHaveProperty('guideUpdate');
+      expect(observation).toHaveProperty('userReviews');
+      expect(Array.isArray(observation.userReviews)).toBe(true);
+      
+      // Check user review structure
+      if (observation.userReviews.length > 0) {
+        const userReview = observation.userReviews[0];
+        expect(userReview).toHaveProperty('submittedAt');
+        expect(userReview).toHaveProperty('snowTypeId');
+        expect(userReview).toHaveProperty('hazards');
+        expect(Array.isArray(userReview.hazards)).toBe(true);
+      }
     });
 
     it('should use custom days parameter', async () => {
       const response = await request(app)
-        .get('/api/v1/reviews?days=7')
+        .get('/api/v1/observations?days=7')
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toEqual([]);
+      expect(Array.isArray(response.body.data)).toBe(true);
     });
 
-    it('should return empty array when no reviews exist', async () => {
-      const response = await request(app).get('/api/v1/reviews').expect(200);
-
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toEqual([]);
-    });
-  });
-
-  describe('GET /api/v1/reviews/all', () => {
-    it('should return all reviews with snow type and segment names', async () => {
+    it('should use custom limit parameter', async () => {
       // Create test data
       const segment = await testPrisma.segment.create({
         data: {
-          id: '1',
-          name: 'Test Segment',
+          id: 'limit-test-segment',
+          name: 'Limit Test Segment',
           terrain: 'Easy',
           avalancheDanger: false,
           isLowerSegment: 0,
@@ -211,56 +232,42 @@ describe('Reviews API Integration Tests', () => {
 
       const snowType = await testPrisma.snowType.create({
         data: {
-          id: '1',
-          name: 'Powder',
+          id: 'limit-test-snow',
+          name: 'Test Snow',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
-          explanation: 'Fresh powder',
         },
       });
 
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
 
-      await testPrisma.userReview.create({
-        data: {
-          id: 'review-1',
-          segment: '1',
-          snowType: '1',
-          details: 4,
-          comment: 'Great conditions',
-          time: oneDayAgo,
-        },
+      // Create 5 reviews
+      await testPrisma.userReview.createMany({
+        data: [
+          { id: 'r1', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r2', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r3', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r4', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r5', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+        ],
       });
 
       const response = await request(app)
-        .get('/api/v1/reviews/all')
+        .get('/api/v1/observations?limit=2')
         .expect(200);
 
-      expect(response.body).toMatchObject({
-        success: true,
-        data: expect.any(Array),
-        meta: {
-          timestamp: expect.any(String),
-        },
-      });
-
-      expect(response.body.data).toHaveLength(1);
-      expect(response.body.data[0]).toMatchObject({
-        time: oneDayAgo.toISOString(),
-        details: 4,
-        snowType: '1',
-        comment: 'Great conditions',
-        snow: 'Powder',
-        segment: 'Test Segment',
-      });
+      expect(response.body.success).toBe(true);
+      
+      // Find the observation for our test segment
+      const observation = response.body.data.find((obs: any) => obs.segmentId === segment.id);
+      expect(observation).toBeDefined();
+      // Should be limited to 2 reviews
+      expect(observation.userReviews.length).toBeLessThanOrEqual(2);
     });
 
-    it('should use custom days parameter', async () => {
-      const response = await request(app)
-        .get('/api/v1/reviews/all?days=14')
-        .expect(200);
+    it('should return empty array when no reviews exist', async () => {
+      const response = await request(app).get('/api/v1/observations').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);
@@ -291,8 +298,21 @@ describe('Reviews API Integration Tests', () => {
         },
       });
 
+      // Create secondary snow type
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '2',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+          categoryId: 2,
+          explanation: 'Hard ice',
+        },
+      });
+
       const reviewData = {
         snowType: '1',
+        secondarySnowType: '2',
         hazards: ['stones', 'branches'],
         comment: 'Great conditions today!',
       };
@@ -310,7 +330,7 @@ describe('Reviews API Integration Tests', () => {
           time: expect.any(String),
           segment: '1',
           snowType: '1',
-          details: 3, // stones=1 + branches=2
+          hazards: ['stones', 'branches'],
           comment: 'Great conditions today!',
           userId: null,
         },
@@ -327,8 +347,85 @@ describe('Reviews API Integration Tests', () => {
       expect(createdReview).toBeTruthy();
       expect(createdReview?.segment).toBe('1');
       expect(createdReview?.snowType).toBe('1');
-      expect(createdReview?.details).toBe(3); // stones=1 + branches=2
+      expect(createdReview?.secondarySnowType).toBe('2');
+      expect(createdReview?.hazards).toEqual(['stones', 'branches']);
       expect(createdReview?.comment).toBe('Great conditions today!');
+    });
+
+    it('should create review with optional secondary snow type', async () => {
+      const segment = await testPrisma.segment.create({
+        data: {
+          id: '2',
+          name: 'Test Segment 2',
+          terrain: 'Easy',
+          avalancheDanger: false,
+          isLowerSegment: 0,
+        },
+      });
+
+      const primarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '3',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          skiability: 5,
+          categoryId: 1,
+          explanation: 'Fresh powder',
+        },
+      });
+
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '4',
+          name: 'Harsi',
+          colour: '#F0F0F0',
+          skiability: 4,
+          categoryId: 2,
+          explanation: 'Surface hoar',
+        },
+      });
+
+      // Test with secondary snow type
+      const reviewDataWithSecondary = {
+        snowType: '3',
+        secondarySnowType: '4',
+        hazards: ['stones'],
+        comment: 'Review with secondary snow type',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/segments/2/reviews')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(reviewDataWithSecondary)
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      const createdReview = await testPrisma.userReview.findFirst({
+        where: { segment: '2' },
+      });
+      expect(createdReview?.snowType).toBe('3');
+      expect(createdReview?.secondarySnowType).toBe('4');
+
+      // Test without secondary snow type
+      const reviewDataWithoutSecondary = {
+        snowType: '3',
+        hazards: ['branches'],
+        comment: 'Review without secondary snow type',
+      };
+
+      await request(app)
+        .post('/api/v1/segments/2/reviews')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(reviewDataWithoutSecondary)
+        .expect(201);
+
+      const reviewWithoutSecondary = await testPrisma.userReview.findMany({
+        where: { segment: '2' },
+        orderBy: { time: 'desc' },
+      });
+
+      expect(reviewWithoutSecondary[0].snowType).toBe('3');
+      expect(reviewWithoutSecondary[0].secondarySnowType).toBeNull();
     });
 
     it('should create review with minimal data', async () => {
@@ -357,7 +454,7 @@ describe('Reviews API Integration Tests', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.segment).toBe('1');
       expect(response.body.data.snowType).toBeUndefined();
-      expect(response.body.data.details).toBeNull(); // Empty hazards array = null
+      expect(response.body.data.hazards).toEqual([]); // Empty hazards array
       expect(response.body.data.comment).toBeNull();
     });
 

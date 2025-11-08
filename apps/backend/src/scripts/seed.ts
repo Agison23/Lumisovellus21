@@ -141,8 +141,11 @@ async function main() {
     },
   ];
 
+  // Create snow types and store their IDs for secondary relationships
+  const createdSnowTypes: { [key: string]: string } = {};
+
   for (const snowType of snowTypes) {
-    await prisma.snowType.upsert({
+    const result = await prisma.snowType.upsert({
       where: { name: snowType.name },
       update: {},
       create: {
@@ -150,7 +153,50 @@ async function main() {
         ...snowType,
       },
     });
+    createdSnowTypes[snowType.name] = result.id;
   }
+
+  // Create secondary snow type relationships (dummy data)
+  // Helper function to create secondary relationship if it doesn't exist
+  const createSecondaryRelationship = async (
+    primaryName: string,
+    secondaryName: string
+  ) => {
+    const primaryId = createdSnowTypes[primaryName];
+    const secondaryId = createdSnowTypes[secondaryName];
+
+    if (!primaryId || !secondaryId) {
+      return;
+    }
+
+    // Check if relationship already exists
+    const existing = await prisma.snowTypeSecondary.findFirst({
+      where: {
+        primarySnowTypeId: primaryId,
+        secondarySnowTypeId: secondaryId,
+      },
+    });
+
+    if (!existing) {
+      await prisma.snowTypeSecondary.create({
+        data: {
+          id: crypto.randomUUID(),
+          primarySnowTypeId: primaryId,
+          secondarySnowTypeId: secondaryId,
+        },
+      });
+    }
+  };
+
+  // Uusi lumi can have Harsi and Kuura as secondary types
+  await createSecondaryRelationship('Uusi lumi', 'Harsi');
+  await createSecondaryRelationship('Uusi lumi', 'Kuura');
+
+  // Kova lumi can have Jäinen lumi as secondary type
+  await createSecondaryRelationship('Kova lumi', 'Jäinen lumi');
+
+  // Märkä lumi can have Harsi as secondary type
+  await createSecondaryRelationship('Märkä lumi', 'Harsi');
 
   // Create segments (Pallas area segments from legacy system)
   const segments = [
@@ -571,9 +617,84 @@ async function main() {
     }
   }
 
+  // Create a comprehensive test segment with all data for testing GET /api/v1/segments
+  const testSegment = await prisma.segment.findFirst({
+    where: { name: 'Metsä' },
+  });
+  const snowTypes_list_for_test = await prisma.snowType.findMany();
+
+  if (testSegment && snowTypes_list_for_test.length >= 4) {
+    // Create a guide update with 2 primary and 2 secondary snow types
+    const primary1 = createdSnowTypes['Uusi lumi'];
+    const primary2 = createdSnowTypes['Kova lumi'];
+    const secondary1 = createdSnowTypes['Harsi'];
+    const secondary2 = createdSnowTypes['Kuura'];
+
+    if (primary1 && primary2 && secondary1 && secondary2) {
+      await prisma.snowUpdate.create({
+        data: {
+          id: crypto.randomUUID(),
+          creator: adminUser.id,
+          segment: testSegment.id,
+          description: 'Comprehensive test guide update with multiple snow types.',
+          status: 'ACTIVE',
+          priority: 1,
+          snowConditions: {
+            create: [
+              {
+                id: crypto.randomUUID(),
+                snowType: primary1,
+                secondarySnowType: secondary1,
+                layer: 'SURFACE',
+              },
+              {
+                id: crypto.randomUUID(),
+                snowType: primary2,
+                secondarySnowType: secondary2,
+                layer: 'MIDDLE',
+              },
+            ],
+          },
+        },
+      });
+    }
+
+    // Create 5 user reviews for this segment (to test the limit of 3)
+    const testSnowType = snowTypes_list_for_test[0];
+    if (testSnowType) {
+      for (let i = 0; i < 5; i++) {
+        const hazards: ('stones' | 'branches')[] = [];
+        if (i % 2 === 0) hazards.push('stones');
+        if (i % 3 === 0) hazards.push('branches');
+
+        // Randomly assign secondary snow type (optional)
+        const secondarySnowType =
+          i % 2 === 0 && snowTypes_list_for_test.length > 1
+            ? snowTypes_list_for_test[
+                Math.floor(Math.random() * (snowTypes_list_for_test.length - 1)) + 1
+              ]
+            : null;
+
+        await prisma.userReview.create({
+          data: {
+            id: crypto.randomUUID(),
+            segment: testSegment.id,
+            snowType: testSnowType.id,
+            secondarySnowType: secondarySnowType?.id,
+            hazards: hazards.length > 0 ? hazards : undefined,
+            comment: `Test review ${i + 1} for comprehensive testing`,
+            userId: normalUser.id,
+            time: new Date(Date.now() - i * 24 * 60 * 60 * 1000), // Staggered times
+          },
+        });
+      }
+    }
+  }
+
   // Create sample reviews
   const segments_list = await prisma.segment.findMany();
   const snowTypes_list = await prisma.snowType.findMany();
+  const hazardTypes: ('stones' | 'branches')[] = ['stones', 'branches'];
 
   for (let i = 0; i < 10; i++) {
     const randomSegment =
@@ -581,6 +702,20 @@ async function main() {
     const randomSnowType =
       snowTypes_list[Math.floor(Math.random() * snowTypes_list.length)];
     const randomUser = Math.random() > 0.5 ? normalUser : rescueUser;
+    // Randomly select 0-2 hazards
+    const randomHazards = hazardTypes
+      .filter(() => Math.random() > 0.5)
+      .slice(0, Math.floor(Math.random() * 3));
+
+    // Randomly assign secondary snow type (optional, ~50% chance)
+    const randomSecondarySnowType =
+      Math.random() > 0.5 && snowTypes_list.length > 1
+        ? snowTypes_list.filter((st) => st.id !== randomSnowType.id)[
+            Math.floor(
+              Math.random() * (snowTypes_list.length - 1)
+            )
+          ]
+        : null;
 
     if (randomSegment && randomSnowType) {
       await prisma.userReview.create({
@@ -588,7 +723,8 @@ async function main() {
           id: crypto.randomUUID(),
           segment: randomSegment.id,
           snowType: randomSnowType.id,
-          details: Math.floor(Math.random() * 5) + 1,
+          secondarySnowType: randomSecondarySnowType?.id,
+          hazards: randomHazards.length > 0 ? randomHazards : undefined,
           comment: `Sample review ${i + 1} for ${randomSegment.name}. Conditions were ${randomSnowType.name.toLowerCase()}.`,
           userId: randomUser.id,
           time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Random time in last week
@@ -597,14 +733,67 @@ async function main() {
     }
   }
 
-  // Create sample updates
+  // Create sample guide updates (SnowUpdates created by admin)
+  // These should have primary and secondary snow types to test the guideUpdate response
   for (let i = 0; i < 5; i++) {
     const randomSegment =
       segments_list[Math.floor(Math.random() * segments_list.length)];
-    const randomSnowType =
-      snowTypes_list[Math.floor(Math.random() * snowTypes_list.length)];
+    
+    // Select 1-2 primary snow types
+    const numPrimary = Math.floor(Math.random() * 2) + 1; // 1 or 2
+    const primarySnowTypes = snowTypes_list
+      .sort(() => Math.random() - 0.5)
+      .slice(0, numPrimary);
+    
+    // Select 0-2 secondary snow types
+    const numSecondary = Math.floor(Math.random() * 3); // 0, 1, or 2
+    const secondarySnowTypes = snowTypes_list
+      .filter((st) => !primarySnowTypes.some((pst) => pst.id === st.id))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, numSecondary);
 
-    if (randomSegment && randomSnowType) {
+    if (randomSegment && primarySnowTypes.length > 0) {
+      const conditionsToCreate: Array<{
+        id: string;
+        snowType: string;
+        secondarySnowType?: string;
+        layer: 'SURFACE' | 'MIDDLE' | 'BASE';
+      }> = [];
+
+      // Create conditions for primary snow types
+      primarySnowTypes.forEach((primaryType, index) => {
+        const layer: 'SURFACE' | 'MIDDLE' | 'BASE' =
+          index === 0 ? 'SURFACE' : index === 1 ? 'MIDDLE' : 'BASE';
+        const secondaryType =
+          index < secondarySnowTypes.length
+            ? secondarySnowTypes[index]
+            : undefined;
+
+        conditionsToCreate.push({
+          id: crypto.randomUUID(),
+          snowType: primaryType.id,
+          secondarySnowType: secondaryType?.id,
+          layer,
+        });
+      });
+
+      // Handle remaining secondary snow types (if we have more secondaries than primaries)
+      if (secondarySnowTypes.length > primarySnowTypes.length) {
+        const basePrimaryType = primarySnowTypes[0];
+        for (
+          let j = primarySnowTypes.length;
+          j < secondarySnowTypes.length;
+          j++
+        ) {
+          conditionsToCreate.push({
+            id: crypto.randomUUID(),
+            snowType: basePrimaryType.id,
+            secondarySnowType: secondarySnowTypes[j].id,
+            layer: 'BASE',
+          });
+        }
+      }
+
       await prisma.snowUpdate.create({
         data: {
           id: crypto.randomUUID(),
@@ -618,17 +807,18 @@ async function main() {
           status: 'ACTIVE',
           priority: Math.floor(Math.random() * 3) + 1, // Random priority 1-3
           snowConditions: {
-            create: {
-              id: crypto.randomUUID(),
-              snowType: randomSnowType.id,
-              layer: 'SURFACE',
+            create: conditionsToCreate.map((cond) => ({
+              id: cond.id,
+              snowType: cond.snowType,
+              secondarySnowType: cond.secondarySnowType,
+              layer: cond.layer,
               depth: Math.random() * 50 + 10, // Random depth 10-60cm
               coverage: Math.floor(Math.random() * 40) + 60, // Random coverage 60-100%
               quality: Math.floor(Math.random() * 5) + 1, // Random quality 1-5
               hardness: Math.floor(Math.random() * 5) + 1, // Random hardness 1-5
               moisture: Math.floor(Math.random() * 5) + 1, // Random moisture 1-5
-              notes: `Surface conditions: ${randomSnowType.name.toLowerCase()}`,
-            },
+              notes: `Conditions: ${primarySnowTypes.map((p) => p.name).join(', ')}`,
+            })),
           },
         },
       });

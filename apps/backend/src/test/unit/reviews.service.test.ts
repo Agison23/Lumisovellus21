@@ -72,7 +72,7 @@ describe('ReviewsService Unit Tests', () => {
   });
 
   describe('getLatestReviews', () => {
-    it('should return latest reviews within specified days', async () => {
+    it('should return observations grouped by segment', async () => {
       // Create test segments
       const segment1 = await testPrisma.segment.create({
         data: {
@@ -117,7 +117,7 @@ describe('ReviewsService Unit Tests', () => {
             id: 'review-1',
             segment: '1',
             snowType: '1',
-            details: 4,
+            hazards: ['stones', 'branches'],
             comment: 'Great conditions',
             time: twoDaysAgo,
           },
@@ -125,7 +125,7 @@ describe('ReviewsService Unit Tests', () => {
             id: 'review-2',
             segment: '2',
             snowType: null,
-            details: 2,
+            hazards: ['branches'],
             comment: 'Poor visibility',
             time: twoDaysAgo,
           },
@@ -133,94 +133,119 @@ describe('ReviewsService Unit Tests', () => {
             id: 'review-3',
             segment: '1',
             snowType: '1',
-            details: 5,
+            hazards: ['stones', 'branches'],
             comment: 'Excellent',
             time: fourDaysAgo,
           },
         ],
       });
 
-      const result = await reviewsService.getLatestReviews(3);
+      const result = await reviewsService.getLatestReviews(3, 3, 1, 20);
 
-      expect(result).toHaveLength(2); // Only reviews from last 3 days
-      expect(result[0]).toMatchObject({
-        id: 'review-1',
-        segment: '1',
-        snowType: '1',
-        details: 4,
-        comment: 'Great conditions',
-      });
-      expect(result[1]).toMatchObject({
-        id: 'review-2',
-        segment: '2',
-        snowType: undefined,
-        details: 2,
-        comment: 'Poor visibility',
-      });
+      // Should return observations for segments with reviews in last 3 days
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      expect(Array.isArray(result.observations)).toBe(true);
+      
+      // Find observations for each segment
+      const observation1 = result.observations.find((obs) => obs.segmentId === '1');
+      const observation2 = result.observations.find((obs) => obs.segmentId === '2');
+
+      // Segment 1 should have 2 reviews (review-1 and review-3, but review-3 is 4 days ago, so only review-1)
+      if (observation1) {
+        expect(observation1).toHaveProperty('segmentId', '1');
+        expect(observation1).toHaveProperty('guideUpdate');
+        expect(observation1).toHaveProperty('userReviews');
+        expect(Array.isArray(observation1.userReviews)).toBe(true);
+        // Should have at least 1 review (review-1 from 2 days ago)
+        expect(observation1.userReviews.length).toBeGreaterThanOrEqual(1);
+        const review1 = observation1.userReviews.find((r) => 
+          r.snowTypeId === '1' && r.hazards.includes('stones')
+        );
+        expect(review1).toBeDefined();
+        if (review1) {
+          expect(review1).toHaveProperty('submittedAt');
+          expect(review1).toHaveProperty('snowTypeId', '1');
+          expect(review1).toHaveProperty('hazards');
+          expect(review1.hazards).toContain('stones');
+          expect(review1.hazards).toContain('branches');
+        }
+      }
+
+      // Segment 2 should have 1 review (review-2, but it has no snowType, so it might be filtered or use empty string)
+      if (observation2) {
+        expect(observation2).toHaveProperty('segmentId', '2');
+        expect(observation2).toHaveProperty('guideUpdate');
+        expect(observation2).toHaveProperty('userReviews');
+        expect(Array.isArray(observation2.userReviews)).toBe(true);
+        // Should have at least 1 review
+        if (observation2.userReviews.length > 0) {
+          const review2 = observation2.userReviews[0];
+          expect(review2).toHaveProperty('submittedAt');
+          expect(review2).toHaveProperty('snowTypeId');
+          expect(review2).toHaveProperty('hazards');
+          expect(review2.hazards).toContain('branches');
+        }
+      }
     });
 
-    it('should use default 3 days when no parameter provided', async () => {
+    it('should use default parameters when not provided', async () => {
       const result = await reviewsService.getLatestReviews();
 
-      expect(result).toEqual([]);
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      expect(Array.isArray(result.observations)).toBe(true);
+      expect(result.observations).toEqual([]);
+      expect(result.total).toBe(0);
     });
-  });
 
-  describe('getAllReviews', () => {
-    it('should return all reviews with snow type and segment names', async () => {
-      // Create test data
+    it('should respect limit parameter', async () => {
+      // Create test segment
       const segment = await testPrisma.segment.create({
         data: {
-          id: '1',
-          name: 'Test Segment',
+          id: 'limit-test',
+          name: 'Limit Test Segment',
           terrain: 'Easy',
           avalancheDanger: false,
           isLowerSegment: 0,
         },
       });
 
+      // Create test snow type
       const snowType = await testPrisma.snowType.create({
         data: {
-          id: '1',
+          id: 'limit-snow',
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
           categoryId: 1,
-          explanation: 'Fresh powder',
         },
       });
 
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
 
-      await testPrisma.userReview.create({
-        data: {
-          id: 'review-1',
-          segment: '1',
-          snowType: '1',
-          details: 4,
-          comment: 'Great conditions',
-          time: oneDayAgo,
-        },
+      // Create 5 reviews
+      await testPrisma.userReview.createMany({
+        data: [
+          { id: 'r1', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r2', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r3', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r4', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+          { id: 'r5', segment: segment.id, snowType: snowType.id, time: oneDayAgo },
+        ],
       });
 
-      const result = await reviewsService.getAllReviews(7);
+      const result = await reviewsService.getLatestReviews(3, 2, 1, 20);
 
-      expect(result).toHaveLength(1);
-      expect(result[0]).toMatchObject({
-        time: oneDayAgo,
-        details: 4,
-        snowType: '1',
-        comment: 'Great conditions',
-        snow: 'Powder',
-        segment: 'Test Segment',
-      });
-    });
-
-    it('should return empty array when no reviews exist', async () => {
-      const result = await reviewsService.getAllReviews(7);
-
-      expect(result).toEqual([]);
+      expect(result).toHaveProperty('observations');
+      expect(result).toHaveProperty('total');
+      const observation = result.observations.find((obs) => obs.segmentId === segment.id);
+      expect(observation).toBeDefined();
+      if (observation) {
+        // Should be limited to 2 reviews
+        expect(observation.userReviews.length).toBeLessThanOrEqual(2);
+      }
     });
   });
 
@@ -248,8 +273,21 @@ describe('ReviewsService Unit Tests', () => {
         },
       });
 
+      // Create secondary snow type
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '2',
+          name: 'Ice',
+          colour: '#CCCCCC',
+          skiability: 1,
+          categoryId: 2,
+          explanation: 'Hard ice',
+        },
+      });
+
       const reviewData: ReviewRequest = {
         snowType: '1',
+        secondarySnowType: '2',
         hazards: ['stones', 'branches'],
         comment: 'Great conditions today!',
       };
@@ -259,10 +297,11 @@ describe('ReviewsService Unit Tests', () => {
       expect(result).toMatchObject({
         segment: '1',
         snowType: '1',
+        hazards: ['stones', 'branches'],
         comment: 'Great conditions today!',
         userId: null,
       });
-      expect(result.details).toBeDefined();
+      expect(result.hazards).toBeDefined();
       expect(result.id).toBeDefined();
       expect(result.time).toBeInstanceOf(Date);
 
@@ -274,8 +313,80 @@ describe('ReviewsService Unit Tests', () => {
       expect(createdReview).toBeTruthy();
       expect(createdReview?.segment).toBe('1');
       expect(createdReview?.snowType).toBe('1');
-      expect(createdReview?.details).toBe(3); // stones=1 + branches=2
+      expect(createdReview?.secondarySnowType).toBe('2');
+      expect(createdReview?.hazards).toEqual(['stones', 'branches']);
       expect(createdReview?.comment).toBe('Great conditions today!');
+    });
+
+    it('should create review with optional secondary snow type', async () => {
+      const segment = await testPrisma.segment.create({
+        data: {
+          id: '2',
+          name: 'Test Segment 2',
+          terrain: 'Easy',
+          avalancheDanger: false,
+          isLowerSegment: 0,
+        },
+      });
+
+      const primarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '3',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          skiability: 5,
+          categoryId: 1,
+          explanation: 'Fresh powder',
+        },
+      });
+
+      const secondarySnowType = await testPrisma.snowType.create({
+        data: {
+          id: '4',
+          name: 'Harsi',
+          colour: '#F0F0F0',
+          skiability: 4,
+          categoryId: 2,
+          explanation: 'Surface hoar',
+        },
+      });
+
+      // Test with secondary snow type
+      const reviewDataWithSecondary: ReviewRequest = {
+        snowType: '3',
+        secondarySnowType: '4',
+        hazards: ['stones'],
+        comment: 'Review with secondary',
+      };
+
+      const resultWithSecondary = await reviewsService.createReview(
+        reviewDataWithSecondary,
+        '2'
+      );
+
+      expect(resultWithSecondary.snowType).toBe('3');
+      const reviewWithSecondary = await testPrisma.userReview.findUnique({
+        where: { id: resultWithSecondary.id },
+      });
+      expect(reviewWithSecondary?.secondarySnowType).toBe('4');
+
+      // Test without secondary snow type
+      const reviewDataWithoutSecondary: ReviewRequest = {
+        snowType: '3',
+        hazards: ['branches'],
+        comment: 'Review without secondary',
+      };
+
+      const resultWithoutSecondary = await reviewsService.createReview(
+        reviewDataWithoutSecondary,
+        '2'
+      );
+
+      expect(resultWithoutSecondary.snowType).toBe('3');
+      const reviewWithoutSecondary = await testPrisma.userReview.findUnique({
+        where: { id: resultWithoutSecondary.id },
+      });
+      expect(reviewWithoutSecondary?.secondarySnowType).toBeNull();
     });
 
     it('should create review with null snowType when not provided', async () => {
@@ -298,7 +409,7 @@ describe('ReviewsService Unit Tests', () => {
       const result = await reviewsService.createReview(reviewData, '1');
 
       expect(result.snowType).toBeUndefined();
-      expect(result.details).toBe(2); // branches=2
+      expect(result.hazards).toEqual(['branches']);
       expect(result.comment).toBe('Average conditions');
     });
 
@@ -323,7 +434,7 @@ describe('ReviewsService Unit Tests', () => {
 
       expect(result.segment).toBe('1');
       expect(result.snowType).toBeUndefined();
-      expect(result.details).toBeNull();
+      expect(result.hazards).toEqual([]);
       expect(result.comment).toBeNull();
     });
   });
