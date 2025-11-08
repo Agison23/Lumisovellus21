@@ -207,6 +207,9 @@
 			"title": "Yleiskatsaus"
 		},
 		"SegmentsPage": {
+			"search": {
+				"placeholder": "Etsi segmenttejä..."
+			},
 			"title": "Segmentit",
 			"avalanche": {
 				"avalancheDanger": "Lumivyöryvaroitus: ",

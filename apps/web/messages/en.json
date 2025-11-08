@@ -207,6 +207,9 @@
 		},
 		"SegmentsPage": {
 			"title": "Segments",
+			"search": {
+				"placeholder": "Search segments..."
+			},
 			"avalanche": {
 				"avalancheDanger": "Avalanche danger: ",
 				"true": "True",

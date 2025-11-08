@@ -70,8 +70,11 @@ export default function DashboardLayout({
 										{element.path === "/dashboard"
 											? t("Dashboard.title")
 											: t(
-													`Dashboard.${element.name.charAt(0).toUpperCase() + element.name.slice(1)}Page.title`
-												)}
+													`Dashboard.${
+														element.name.charAt(0).toUpperCase() +
+														element.name.slice(1)
+													}Page.title`
+											  )}
 									</Link>
 									{index < createPathElements(path).length - 1 && (
 										<span>/</span>
@@ -80,7 +83,7 @@ export default function DashboardLayout({
 							))}
 						</ul>
 					</nav>
-					<div className="flex flex-col overflow-y-auto w-full h-full pb-14">
+					<div className="flex flex-col overflow-y-auto w-full h-full">
 						{children}
 					</div>
 				</div>

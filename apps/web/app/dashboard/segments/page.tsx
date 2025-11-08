@@ -15,7 +15,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { ChangeEvent, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export default function DashboardPage() {
@@ -32,14 +32,42 @@ export default function DashboardPage() {
 		staleTime: 5 * 60 * 1000, // 5 minutes
 	});
 
+	useState<InteractiveAreaFeature[]>(areas);
+	const [searchTerm, setSearchTerm] = useState<string>("");
+
+	// Filter areas based on search term
+	const filteredSegments = useMemo(() => {
+		if (searchTerm.trim() === "") {
+			return areas;
+		}
+		const tokens = searchTerm.toLowerCase().split(" ").filter(Boolean);
+		return areas.filter((area) => {
+			const name = area.properties.name.toLowerCase();
+			const terrain = area.properties.terrain.toLowerCase();
+			const id = area.properties.id.toLowerCase();
+			return tokens.every(
+				(token) =>
+					name.includes(token) || terrain.includes(token) || id.includes(token)
+			);
+		});
+	}, [areas, searchTerm]);
+
 	return (
-		<div className="p-2 flex flex-col gap-2 w-full">
+		<div className="p-2 flex flex-col gap-2 w-full overflow-hidden">
 			{isLoading && <p>Loading areas...</p>}
 			{isError && <p>Error loading areas.</p>}
 			{!isLoading && !isError && (
 				<>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-2">
-						{areas.map((area) => (
+					<Input
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							setSearchTerm(e.currentTarget.value)
+						}
+						value={searchTerm}
+						placeholder={t("search.placeholder")}
+						className="h-max"
+					/>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto pb-14">
+						{filteredSegments.map((area) => (
 							<div
 								key={area.properties.id}
 								className="border rounded-md text-left px-2 py-2 items-start flex flex-col gap-2 bg-background"
@@ -188,10 +216,7 @@ function EditAreaDialog({
 										className="overflow-y-auto min-h-0 p-2"
 									>
 										{coordSet.map((coord: number[], coordIndex: number) => (
-											<div
-												key={`${index}-${coordIndex}`}
-												className="flex gap-2 mb-1 min-w-0"
-											>
+											<div key={coordIndex} className="flex gap-2 mb-1 min-w-0">
 												<Input
 													placeholder={t("editDialog.coordinates.longitude")}
 													value={coord[0]}
