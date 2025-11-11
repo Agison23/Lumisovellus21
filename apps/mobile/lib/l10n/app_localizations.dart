@@ -672,6 +672,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'W'**
   String get coordinateDirectionWest;
+
   /// No description provided for @sensors.
   ///
   /// In en, this message translates to:

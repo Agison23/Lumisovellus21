@@ -1,0 +1,184 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
+
+
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class User {
+  /// Returns a new [User] instance.
+  User({
+
+    required  this.id,
+
+    required  this.firstName,
+
+    required  this.lastName,
+
+    required  this.email,
+
+    required  this.role,
+
+    required  this.phoneNumber,
+
+    required  this.lowBattery,
+
+    required  this.createdAt,
+
+    required  this.updatedAt,
+  });
+
+  @JsonKey(
+    
+    name: r'id',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String id;
+
+
+
+  @JsonKey(
+    
+    name: r'firstName',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String firstName;
+
+
+
+  @JsonKey(
+    
+    name: r'lastName',
+    required: true,
+    includeIfNull: true,
+  )
+
+
+  final String? lastName;
+
+
+
+  @JsonKey(
+    
+    name: r'email',
+    required: true,
+    includeIfNull: true,
+  )
+
+
+  final String? email;
+
+
+
+  @JsonKey(
+    
+    name: r'role',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String role;
+
+
+
+  @JsonKey(
+    
+    name: r'phoneNumber',
+    required: true,
+    includeIfNull: true,
+  )
+
+
+  final String? phoneNumber;
+
+
+
+  @JsonKey(
+    
+    name: r'lowBattery',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final num lowBattery;
+
+
+
+  @JsonKey(
+    
+    name: r'createdAt',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final DateTime createdAt;
+
+
+
+  @JsonKey(
+    
+    name: r'updatedAt',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final DateTime updatedAt;
+
+
+
+
+
+    @override
+    bool operator ==(Object other) => identical(this, other) || other is User &&
+      other.id == id &&
+      other.firstName == firstName &&
+      other.lastName == lastName &&
+      other.email == email &&
+      other.role == role &&
+      other.phoneNumber == phoneNumber &&
+      other.lowBattery == lowBattery &&
+      other.createdAt == createdAt &&
+      other.updatedAt == updatedAt;
+
+    @override
+    int get hashCode =>
+        id.hashCode +
+        firstName.hashCode +
+        (lastName == null ? 0 : lastName.hashCode) +
+        (email == null ? 0 : email.hashCode) +
+        role.hashCode +
+        (phoneNumber == null ? 0 : phoneNumber.hashCode) +
+        lowBattery.hashCode +
+        createdAt.hashCode +
+        updatedAt.hashCode;
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+
+}
+
