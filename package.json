@@ -17,7 +17,7 @@
     "openapi:check": "turbo run openapi:check",
     "openapi:emit": "echo \"Error: Create script for emiting openapi spec\" && exit 0",
     "openapi:client:web": "openapi-typescript apps/backend/api/openapi.json --output packages/api-client-web/index.ts",
-    "openapi:client:mobile": "npm run openapi:emit && rimraf apps/mobile/lib/api && openapi-generator-cli generate --config apps/mobile/openapi-config.yaml",
+    "openapi:client:mobile": "npm run openapi:emit && rimraf packages/lumisovellus_api && openapi-generator-cli generate --config apps/mobile/openapi-config.yaml",
     "verify": "turbo run openapi:check lint typecheck test build",
     "act:push:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/push-to-frontend.yml -n push",
     "act:pr:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-frontend.yml -n pull_request",

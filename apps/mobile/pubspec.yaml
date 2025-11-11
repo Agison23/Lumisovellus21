@@ -56,6 +56,9 @@ dependencies:
   url_launcher: ^6.3.2
   external_app_launcher: ^4.0.3
   country_flags: ^4.1.0
+  dio: ^5.9.0
+  lumisovellus_api:
+    path: ../../packages/lumisovellus_api
 
 dev_dependencies:
   flutter_test:

@@ -20,9 +20,9 @@ class GuideUpdateRequestOutput {
 
      this.description,
 
-     this.primarySnowTypeIds = [],
+     this.primarySnowTypeIds = const [],
 
-     this.secondarySnowTypeIds = [],
+     this.secondarySnowTypeIds = const [],
   });
 
   @JsonKey(
