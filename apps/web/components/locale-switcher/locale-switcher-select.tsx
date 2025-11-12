@@ -1,25 +1,27 @@
-"use client"
+"use client";
+
 import { Language } from "iconoir-react";
-import { useTransition } from "react";
+import React, { useTransition } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Locale } from "@/i18n/config";
 import { setUserLocale } from "@/i18n/locale";
 
 type Props = {
   defaultValue: string;
-  items: Array<{value: string; label: string}>;
+  items: Array<{ value: string; label: string }>;
   label: string;
-}
+};
 
-export function LocaleSwitcherSelect({defaultValue, items, label}: Props) {
+export function LocaleSwitcherSelect({ defaultValue, items, label }: Props) {
   const [isPending, startTransition] = useTransition();
 
   function onChange(value: string) {
     const locale = value as Locale;
     startTransition(() => {
       setUserLocale(locale);
-    })
+    });
   }
+
   return (
     <div className="relative">
       <Select defaultValue={defaultValue} onValueChange={onChange} disabled={isPending}>
@@ -41,5 +43,5 @@ export function LocaleSwitcherSelect({defaultValue, items, label}: Props) {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

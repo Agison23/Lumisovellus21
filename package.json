@@ -13,7 +13,7 @@
     "lint:fix": "turbo run lint:fix",
     "lint:heavy": "turbo run lint:heavy",
     "typecheck": "turbo run typecheck",
-    "postinstall": "npx turbo run pubget",
+    "postinstall": "npx turbo run pubget --filter=!mobile",
     "openapi:check": "turbo run openapi:check",
     "openapi:emit": "echo \"Error: Create script for emiting openapi spec\" && exit 1",
     "openapi:client:web": "openapi-typescript apps/backend/api/openapi.json --output packages/api-client-web/index.ts",
