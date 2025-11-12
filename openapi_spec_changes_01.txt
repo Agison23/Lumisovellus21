@@ -1,0 +1,819 @@
+openapi: 3.1.1
+info:
+  title: Help API
+  version: 1.1.0
+  description: API for managing help events and user statuses.
+
+components:
+  schemas:      
+    UserStatus:
+      type: object
+      description: |
+        Represents the latest known status of a user's device.
+        This data is **pushed** from the mobile client to the server
+        whenever the app detects a change (location, battery, etc.).
+      required:
+        - location
+        - batteryLevel
+      properties:
+        location:
+          $ref: '#/components/schemas/Location'
+        batteryLevel:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+
+    Rescuee:
+      type: object
+      required:
+        - userId
+        - needType
+      description: |
+        The individual requesting help. 
+        Location and battery data are from the user's latest `/users/{deviceId}/status` update.
+      properties:
+        userId:
+          type: string
+        needType:
+          $ref: '#/components/schemas/HelpNeedType'
+        userStatus:
+          $ref: '#/components/schemas/UserStatus'
+
+    Location:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - accuracy
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        accuracy:
+          type: number
+          format: double
+          description: Accuracy in meters
+
+    HelpNeedType:
+      type: string
+      enum:
+        - health
+        - equipment
+        - lost
+
+    HelpEventStatus:
+      type: string
+      enum:
+        - active
+        - completed
+        - cancelled
+
+    HelpEventCreate:
+      type: object
+      required:
+        - needType
+        - location
+      properties:
+        needType:
+          $ref: '#/components/schemas/HelpNeedType'
+        location:
+          $ref: '#/components/schemas/Location'
+
+    HelpEventViewSummary:
+      type: object
+      required:
+        - eventId
+        - needType
+        - status
+        - location
+        - rescuerCount
+        - createdAt
+      properties:
+        eventId:
+          type: string
+        rescuee:
+          $ref: '#/components/schemas/Rescuee'
+        status:
+          $ref: '#/components/schemas/HelpEventStatus'
+        rescuerCount:
+          type: integer
+          description: Number of rescuers who have accepted
+        createdAt:
+          type: string
+          format: date-time
+
+    HelpEventParticipation:
+      type: object
+      required:
+        - acceptanceId
+        - eventId
+        - responderId
+        - acceptedAt
+      properties:
+        acceptanceId:
+          type: string
+        eventId:
+          type: string
+        responderId:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+          nullable: true
+        acceptedAt:
+          type: string
+          format: date-time
+        withdrawnAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    HelpEventViewRescuee:
+      type: object
+      required:
+        - eventId
+        - status
+        - rescuee
+        - acceptedRescuers
+        - createdAt
+      properties:
+        eventId:
+          type: string
+        status:
+          $ref: '#/components/schemas/HelpEventStatus'
+        rescuee:
+          $ref: '#/components/schemas/Rescuee'
+        acceptedRescuers:
+          type: array
+          items:
+            $ref: '#/components/schemas/HelpEventParticipation'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    AcceptRequestBody:
+      type: object
+      required:
+        - location
+      properties:
+        location:
+          $ref: '#/components/schemas/Location'
+
+    HelpEventViewRescuer:
+      type: object
+      required:
+        - eventId
+        - status
+        - rescuee
+        - rescuerCount
+      properties:
+        eventId:
+          type: string
+        status:
+          $ref: '#/components/schemas/HelpEventStatus'
+        rescuee:
+          $ref: '#/components/schemas/Rescuee'
+        rescuerCount:
+          type: integer
+
+    HelpEventUpdate:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/HelpEventStatus'
+
+    GuideUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+          nullable: true
+        primarySnowTypeIds:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+        secondarySnowTypeIds:
+          type: array
+          maxItems: 2
+          items:
+            type: string
+
+    UserReview:
+      type: object
+      required:
+        - submittedAt
+        - snowTypeId
+        - hazards
+      properties:
+        submittedAt:
+          type: string
+          format: date-time
+        snowTypeId:
+          type: string
+        hazards:
+          type: array
+          items:
+            type: string
+
+    ObservationItem:
+      type: object
+      required:
+        - segmentId
+        - userReviews
+      properties:
+        segmentId:
+          type: string
+        guideUpdate:
+          allOf:
+            - $ref: '#/components/schemas/GuideUpdate'
+          nullable: true
+        userReviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserReview'
+
+    SegmentInput:
+      type: object
+      required:
+        - name
+        - terrain
+        - points
+        - avalancheDanger
+      properties:
+        name:
+          type: string
+          description: The name of the segment
+        terrain:
+          type: string
+          description: The terrain of the segment
+        points:
+          type: array
+          description: Array of coordinate points defining the segment
+          items:
+            $ref: '#/components/schemas/Point'
+        isLowerSegment:
+          type: string
+          nullable: true
+          description: The ID of the lower segment, or null if there is no lower segment
+        avalancheDanger:
+          type: boolean
+          description: Indicates if there is an avalanche danger in the segment
+    
+    Segment:
+      type: object
+      required:
+        - id
+        - name
+        - terrain
+        - points
+        - avalancheDanger
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the segment
+        name:
+          type: string
+          description: The name of the segment
+        terrain:
+          type: string
+          description: The terrain of the segment
+        points:
+          type: array
+          description: Array of coordinate points defining the segment
+          items:
+            $ref: '#/components/schemas/Point'
+        isLowerSegment:
+          type: string
+          nullable: true
+          description: The ID of the lower segment, or null if there is no lower segment
+        avalancheDanger:
+          type: boolean
+          description: Indicates if there is an avalanche danger in the segment
+        guideUpdate:
+          nullable: true
+          $ref: "#/components/schemas/GuideUpdate"
+        userReviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserReview"
+
+    Point:
+      type: object
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+          format: double
+          description: Latitude coordinate
+        lng:
+          type: number
+          format: double
+          description: Longitude coordinate
+
+    SegmentResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Segment'
+
+    SegmentsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Segment'
+    
+
+paths:
+  paths:
+  /users/{deviceId}/status:
+    post:
+      summary: Push user device status update
+      description: |
+        **Push-based update**.  
+        The mobile client sends this to update its current device status.  
+      operationId: pushUserStatus
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatus'
+      responses:
+        '200':
+          description: Device status received and broadcast successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receivedAt:
+                    type: string
+                    format: date-time
+                    description: When the server received the update
+  /help/events:
+    post:
+      summary: Create a new help event
+      operationId: createHelpEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HelpEventCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelpEventViewRescuee'
+
+  /help/events/nearby:
+    get:
+      summary: List nearby active help events
+      description: |
+        Returns a list of active help events near the user's current location.  
+      operationId: listNearbyHelpEvents
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: accuracy
+          in: query
+          schema:
+            type: number
+            format: double
+            default: 3000
+            description: Search radius in meters
+      responses:
+        '200':
+          description: List of nearby active help events (summary view)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HelpEventViewSummary'
+
+  /help/events/{eventId}/acceptance:
+    post:
+      summary: Accept an active help event (join rescue)
+      description: |
+        **Push-based update**  
+        Rescuer accepting help event will update the event’s state, 
+        and notifies the rescuee and other active rescuers in real time.  
+
+      operationId: acceptHelpEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcceptRequestBody'
+      responses:
+        '200':
+          description: Accepted
+
+    delete:
+      summary: Withdraw from accepted help event
+      operationId: withdrawHelpEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully withdrawn
+
+  /help/events/{eventId}/view:
+    get:
+      summary: Context-aware HelpEvent view
+      operationId: getRescueEventView
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Varies depending on caller role
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/HelpEventViewRescuee'
+                  - $ref: '#/components/schemas/HelpEventViewRescuer'
+
+  /help/events/{eventId}:
+    patch:
+      summary: Update a help event (cancel or complete)
+      operationId: updateHelpEvent
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HelpEventUpdate'
+            examples:
+              cancel:
+                summary: Cancel event
+                value:
+                  status: cancelled
+              complete:
+                summary: Mark event as completed
+                value:
+                  status:
+
+  /help/events/{eventId}/stream:
+    get:
+      summary: Real-time event updates (WebSocket)
+      description: |
+        Opens a **WebSocket** stream that delivers live updates to all
+        participants of the help event.
+
+        The client must send **no initial message**; the server begins streaming.
+
+        ## Example Broadcast Messages:
+        ### Location Visibility Rules
+        - **Rescuee** receives **all** location updates from participating rescuers.
+        - **Rescuer** receives **only the rescuee’s** location updates.
+        - **Rescuer never receives other rescuers' locations** (privacy).
+
+        ### Rescuer Joined
+        ```json
+        {
+          "type": "rescuer_joined",
+          "userId": "user_123",
+          "acceptedAt": "2025-11-05T12:00:00Z"
+        }
+        ```
+
+        ### Rescuer Withdrew
+        ```json
+        {
+          "type": "rescuer_withdrew",
+          "userId": "user_567"
+        }
+        ```
+
+        ### Location Update
+        ```json
+        {
+          "type": "location_update",
+          "userId": "rescuer_42",
+          "location": { "latitude": 60.19, "longitude": 24.94, "accuracy": 12.5 }
+        }
+        ```
+
+        ### Event Status Change (e.g., cancelled or completed)
+        ```json
+        {
+          "type": "event_status_changed",
+          "status": "cancelled"
+        }
+        ```
+
+        ### Rescuee Battery Low
+        ```json
+        {
+          "type": "battery_level_changed",
+          "userId": "rescuee_91",
+          "batteryLevel": 12
+        }
+        ```
+
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "101":
+          description: Switching to WebSocket protocol
+
+  /api/v1/observations:
+    get:
+      summary: List recent observations
+      operationId: listObservations
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 3
+        - name: limit
+          in: query
+          description: User review count limit
+          required: false
+          schema:
+            type: number
+            default: 3
+      responses:
+        '200':
+          description: Observations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationItem'
+  
+  /api/v1/segments/{id}:
+    put:
+      tags:
+        - segments
+      summary: Update an existing segment
+      description: Updates a segment by ID. Requires admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the segment to Update
+      requestBody:
+        description: Updated segment data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentInput'
+      responses:
+        '200':
+          description: Segment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentResponse'
+        400':
+          description: Bad request - missing required fields or invalid data
+
+        '403':
+          description: Forbidden - user does not have admin role
+
+        '404':
+          description: Not found - segment with specified ID does not exist
+
+    delete:
+      tags:
+        - segments
+      summary: Delete a segment
+      description: Deletes a segment by ID. Requires admin role.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the segment to delete
+      responses:
+        '204':
+          description: Segment deleted successfully
+        '403':
+          description: Forbidden - user does not have admin role
+        '404':
+          description: Not found - segment with specified ID does not exist
+    
+  /api/v1/segments:
+    get:
+      tags:
+        - segments
+      summary: Get segments with optional bounding box filter
+      description: Retrieves segments, optionally filtered by a bounding box
+      parameters:
+        - name: minLat
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Minimum latitude of bounding box
+        - name: minLng
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Minimum longitude of bounding box
+        - name: maxLat
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Maximum latitude of bounding box
+        - name: maxLng
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Maximum longitude of bounding box
+      responses:
+        '200':
+          description: Segments retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentsResponse'
+        '400':
+          description: Bad request - invalid bounding box parameters
+    post:
+      tags:
+        - segments
+      summary: Create a new segment
+      description: Creates a new segment. Requires admin role.
+      requestBody:
+        description: New segment data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentInput'
+      responses:
+        '201':
+          description: Segment created successfully
+        '400':
+          description: Bad request - missing required fields or invalid data
+        '403':
+          description: Forbidden - user does not have admin role
+
+
+  /api/v1/segments/{id}/observations:
+    get:
+      summary: List observations for a segment
+      operationId: listSegmentObservations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: User review count limit
+          schema:
+            type: number
+            default: 3
+        - name: days
+          in: query
+          schema:
+            type: number
+            default: 3
+      responses:
+        '200':
+          description: Observations for the segment
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationItem'
+
+  /api/v1/segments/{id}/guideUpdate:
+    post:
+      summary: Create or update guide information for a segment
+      operationId: createGuideUpdate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuideUpdate'
+      responses:
+        '201':
+          description: Guide update created or updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuideUpdate'
+
+  /api/v1/reviews/all:
+    get:
+      summary: Paginated list of all user reviews
+      operationId: listAllUserReviewsPaginated
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+      responses:
+        '200':
+          description: Paginated list of user reviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  total:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserReview'

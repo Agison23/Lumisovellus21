@@ -1,51 +1,57 @@
+import { randomUUID } from 'crypto';
 import { BaseService } from '../BaseService';
 import {
-  HelpRequestCreate,
+  HelpEventCreate,
+  HelpEventLocation,
+  HelpEventParticipation,
+  HelpEventRescueeView,
+  HelpEventRescuerView,
+  HelpEventStatus,
+  HelpEventSummary,
+  HelpNeedType,
   HelpRequest,
-  HelpResponseUpdate,
-  NearbyUser,
-  HelpRequestHelper,
+  Rescuee,
 } from '../../types';
 
+type NearbyUserWithLocation = {
+  id: string;
+  helpGiver: string;
+  helpRequester: string;
+  state: number;
+  acceptedAt: Date | null;
+  acceptedLatitude: number | null;
+  acceptedLongitude: number | null;
+  acceptedAccuracy: number | null;
+  updatedAt: Date;
+};
+
 export class HelpService extends BaseService {
-  /**
-   * Calculate distance between two GPS coordinates using Haversine formula
-   * @param lat1 Latitude of first point
-   * @param lon1 Longitude of first point
-   * @param lat2 Latitude of second point
-   * @param lon2 Longitude of second point
-   * @returns Distance in kilometers
-   */
+  private readonly MAX_DISTANCE_KM = 30;
+  private readonly DEFAULT_LOCATION_ACCURACY = 50;
+
+  private toRadians(degrees: number): number {
+    return degrees * (Math.PI / 180);
+  }
+
   private calculateDistance(
     lat1: number,
     lon1: number,
     lat2: number,
     lon2: number
   ): number {
-    const R = 6371; // Earth's radius in kilometers
+    const R = 6371;
     const dLat = this.toRadians(lat2 - lat1);
     const dLon = this.toRadians(lon2 - lon1);
-
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.toRadians(lat1)) *
         Math.cos(this.toRadians(lat2)) *
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
-
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
 
-  private toRadians(degrees: number): number {
-    return degrees * (Math.PI / 180);
-  }
-
-  /**
-   * Parse GPS coordinates from string format "lat,lon"
-   * @param gpsCoord GPS coordinate string
-   * @returns Object with latitude and longitude
-   */
   private parseGPSCoordinates(gpsCoord: string): { lat: number; lon: number } {
     const [lat, lon] = gpsCoord
       .split(',')
@@ -53,36 +59,208 @@ export class HelpService extends BaseService {
     return { lat, lon };
   }
 
-  /**
-   * Find nearby users based on GPS coordinates and distance
-   * @param requesterGPS GPS coordinates of help requester
-   * @param maxDistance Maximum distance in kilometers
-   * @param timeWindow Time window in seconds (default: 2 hours)
-   * @returns Array of nearby users with distance information
-   */
+  private normalizeNeedType(value: string): HelpNeedType {
+    switch (value) {
+      case 'seriousEmerg':
+      case 'health':
+        return 'health';
+      case 'minorHelp':
+      case 'equipment':
+        return 'equipment';
+      case 'lost':
+      case 'help':
+        return 'lost';
+      default:
+        return 'equipment';
+    }
+  }
+
+  private toHelpEventLocation(
+    gpsCoord: string,
+    accuracy?: number | null
+  ): HelpEventLocation {
+    const { lat, lon } = this.parseGPSCoordinates(gpsCoord);
+    return {
+      latitude: lat,
+      longitude: lon,
+      accuracy: accuracy ?? this.DEFAULT_LOCATION_ACCURACY,
+    };
+  }
+
+  private mapBatteryLevel(lowBattery: number | null | undefined): number | null {
+    if (typeof lowBattery === 'number') {
+      return lowBattery > 0 ? 15 : 85;
+    }
+    return null;
+  }
+
+  private async findRecentLocation(userId: string) {
+    return this.prisma.locationData.findFirst({
+      where: { userId },
+      orderBy: { timestamp: 'desc' },
+    });
+  }
+
+  private async buildRescuee(helpRequest: HelpRequest): Promise<Rescuee> {
+    const fallbackLocation = this.toHelpEventLocation(
+      helpRequest.gpsCoord,
+      helpRequest.locationAccuracy
+    );
+
+    const [user, recentLocation] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: helpRequest.userId },
+        select: {
+          id: true,
+          lowBattery: true,
+        },
+      }),
+      this.findRecentLocation(helpRequest.userId),
+    ]);
+
+    const location =
+      recentLocation !== null
+        ? this.toHelpEventLocation(recentLocation.gpsCoord, null)
+        : fallbackLocation;
+
+    return {
+      userId: helpRequest.userId,
+      needType: this.normalizeNeedType(helpRequest.helpType),
+      userStatus: {
+        location,
+        batteryLevel: this.mapBatteryLevel(user?.lowBattery ?? null),
+      },
+    };
+  }
+
+  private async buildAcceptedRescuers(
+    helpRequest: HelpRequest
+  ): Promise<HelpEventParticipation[]> {
+    const participants = await this.prisma.nearbyUser.findMany({
+      where: { helpRequester: helpRequest.userId, state: 1 },
+      orderBy: { acceptedAt: 'asc' },
+    });
+
+    return Promise.all(
+      participants.map(async (participant) => {
+        const castParticipant = participant as NearbyUserWithLocation;
+        let location =
+          this.formatLocationFromNearbyUser(castParticipant) ?? null;
+
+        if (!location) {
+          const recentLocation = await this.findRecentLocation(
+            castParticipant.helpGiver
+          );
+          if (recentLocation) {
+            location = this.toHelpEventLocation(recentLocation.gpsCoord, null);
+          }
+        }
+
+        return {
+          acceptanceId: castParticipant.id,
+          eventId: helpRequest.id,
+          responderId: castParticipant.helpGiver,
+          location,
+          acceptedAt: (
+            castParticipant.acceptedAt ?? castParticipant.updatedAt
+          ).toISOString(),
+        };
+      })
+    );
+  }
+
+  private formatLocationFromNearbyUser(
+    record: NearbyUserWithLocation
+  ): HelpEventLocation | null {
+    if (
+      record.acceptedLatitude === null ||
+      record.acceptedLongitude === null
+    ) {
+      return null;
+    }
+
+    return {
+      latitude: record.acceptedLatitude,
+      longitude: record.acceptedLongitude,
+      accuracy:
+        record.acceptedAccuracy ?? this.DEFAULT_LOCATION_ACCURACY,
+    };
+  }
+
+  private async getHelpRequestById(eventId: string): Promise<HelpRequest> {
+    const helpRequest = await this.prisma.helpRequest.findUnique({
+      where: { id: eventId },
+    });
+    if (!helpRequest) {
+      throw new Error('Help event not found');
+    }
+    return helpRequest;
+  }
+
+  private async buildSummary(
+    helpRequest: HelpRequest
+  ): Promise<HelpEventSummary> {
+    const [rescuee, rescuerCount] = await Promise.all([
+      this.buildRescuee(helpRequest),
+      this.prisma.nearbyUser.count({
+        where: { helpRequester: helpRequest.userId, state: 1 },
+      }),
+    ]);
+
+    return {
+      eventId: helpRequest.id,
+      status: helpRequest.status,
+      rescuee,
+      location: this.toHelpEventLocation(
+        helpRequest.gpsCoord,
+        helpRequest.locationAccuracy
+      ),
+      rescuerCount,
+      createdAt: helpRequest.createdAt.toISOString(),
+    };
+  }
+
+  private async buildRescueeView(
+    helpRequest: HelpRequest
+  ): Promise<HelpEventRescueeView> {
+    const [summary, acceptedRescuers] = await Promise.all([
+      this.buildSummary(helpRequest),
+      this.buildAcceptedRescuers(helpRequest),
+    ]);
+
+    return {
+      ...summary,
+      acceptedRescuers,
+      updatedAt: helpRequest.updatedAt?.toISOString() ?? null,
+    };
+  }
+
+  private async buildRescuerView(
+    helpRequest: HelpRequest
+  ): Promise<HelpEventRescuerView> {
+    const summary = await this.buildSummary(helpRequest);
+    return summary;
+  }
+
   private async findNearbyUsers(
     requesterGPS: string,
     maxDistance: number,
     timeWindow: number = 7200
-  ): Promise<Array<{ userId: string; distance: number; user: any }>> {
+  ): Promise<Array<{ userId: string; distance: number }>> {
     const requesterCoords = this.parseGPSCoordinates(requesterGPS);
     const timeThreshold = Math.floor(Date.now() / 1000) - timeWindow;
 
-    // Get all users with recent location data
     const recentUsers = await this.prisma.locationData.findMany({
       where: {
         timestamp: { gte: timeThreshold },
       },
-      include: {
-        user: true,
-      },
       orderBy: {
         timestamp: 'desc',
       },
+      distinct: ['userId'],
     });
 
-    const nearbyUsers: Array<{ userId: string; distance: number; user: any }> =
-      [];
+    const nearbyUsers: Array<{ userId: string; distance: number }> = [];
 
     for (const locationData of recentUsers) {
       try {
@@ -97,259 +275,255 @@ export class HelpService extends BaseService {
         if (distance <= maxDistance) {
           nearbyUsers.push({
             userId: locationData.userId,
-            distance: Math.round(distance * 100) / 100, // Round to 2 decimal places
-            user: locationData.user,
+            distance: Math.round(distance * 100) / 100,
           });
         }
       } catch (error) {
-        // Skip invalid GPS coordinates
         console.warn(
           `Invalid GPS coordinates for user ${locationData.userId}: ${locationData.gpsCoord}`
         );
       }
     }
 
-    // Sort by distance (closest first)
     return nearbyUsers.sort((a, b) => a.distance - b.distance);
   }
 
-  async createHelpRequest(
-    helpData: HelpRequestCreate & { userId: string }
-  ): Promise<{ nearbyUsers: number; nearbyUsersList?: NearbyUser[] }> {
+  async createHelpEvent(
+    userId: string,
+    helpData: HelpEventCreate
+  ): Promise<HelpEventRescueeView> {
     try {
-      const userId = helpData.userId;
+      const gpsCoord = `${helpData.location.latitude},${helpData.location.longitude}`;
 
-      // Create or update help request
-      await this.prisma.helpRequest.upsert({
-        where: { userId: userId },
+      const helpRequest = await this.prisma.helpRequest.upsert({
+        where: { userId },
         update: {
-          timestamp: parseInt(helpData.timestamp.toString()),
-          gpsCoord: helpData.gpsCoord,
-          helpType: helpData.helpType,
+          timestamp: helpData.timestamp,
+          gpsCoord,
+          helpType: helpData.needType,
           roomId: helpData.chatRoomId,
+          status: 'active',
+          locationAccuracy: helpData.location.accuracy ?? null,
           updatedAt: new Date(),
         },
         create: {
-          id: crypto.randomUUID(),
-          userId: userId,
-          timestamp: parseInt(helpData.timestamp.toString()),
-          gpsCoord: helpData.gpsCoord,
-          helpType: helpData.helpType,
+          id: randomUUID(),
+          userId,
+          timestamp: helpData.timestamp,
+          gpsCoord,
+          helpType: helpData.needType,
           roomId: helpData.chatRoomId,
+          status: 'active',
+          locationAccuracy: helpData.location.accuracy ?? null,
         },
       });
 
-      // Set nearby radius to 30km for all help types
-      const maxDistance = 30; // 30km radius for all help requests
+      // Reset previous notifications
+      await this.prisma.nearbyUser.deleteMany({
+        where: { helpRequester: userId, state: 0 },
+      });
 
-      // Find nearby users using proper distance calculation
       const nearbyUsers = await this.findNearbyUsers(
-        helpData.gpsCoord,
-        maxDistance,
-        7200 // 2 hours
+        gpsCoord,
+        this.MAX_DISTANCE_KM,
+        7200
       );
 
-      // Filter out the help requester themselves
-      const otherNearbyUsers = nearbyUsers.filter(
-        (user) => user.userId !== userId
+      const candidateUsers = nearbyUsers.filter(
+        (candidate) => candidate.userId !== userId
       );
 
-      // Create nearby user entries for help coordination
-      const createdNearbyUsers: NearbyUser[] = [];
-      for (const nearbyUser of otherNearbyUsers) {
+      for (const candidate of candidateUsers) {
         try {
-          await this.prisma.nearbyUser.create({
-            data: {
-              id: crypto.randomUUID(),
-              helpGiver: nearbyUser.userId,
+          await this.prisma.nearbyUser.upsert({
+            where: {
+              helpGiver_helpRequester: {
+                helpGiver: candidate.userId,
+                helpRequester: userId,
+              },
+            },
+            update: {
+              state: 0,
+              acceptedAt: null,
+              acceptedLatitude: null,
+              acceptedLongitude: null,
+              acceptedAccuracy: null,
+            },
+            create: {
+              id: randomUUID(),
+              helpGiver: candidate.userId,
               helpRequester: userId,
-              state: 0, // Pending
+              state: 0,
             },
           });
-          createdNearbyUsers.push({
-            userId: nearbyUser.userId,
-            distance: nearbyUser.distance,
-          });
         } catch (error) {
-          // Ignore duplicate entries
           console.warn(`Failed to create help notification: ${error}`);
         }
       }
 
-      return {
-        nearbyUsers: createdNearbyUsers.length,
-        nearbyUsersList: createdNearbyUsers,
-      };
+      return this.buildRescueeView(helpRequest);
     } catch (error) {
       return await this.handleDatabaseError(error);
     }
   }
 
-  async getAllHelpRequests(): Promise<HelpRequest[]> {
+  async listNearbyHelpEvents(
+    lat: number,
+    lng: number,
+    accuracyMeters: number = 3000
+  ): Promise<HelpEventSummary[]> {
     try {
+      const radiusKm = accuracyMeters / 1000;
       const helpRequests = await this.prisma.helpRequest.findMany({
-        orderBy: {
-          timestamp: 'desc',
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              phoneNumber: true,
-              lowBattery: true,
-            },
+        where: { status: 'active' },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      const summaries: HelpEventSummary[] = [];
+
+      for (const helpRequest of helpRequests) {
+        const location = this.toHelpEventLocation(
+          helpRequest.gpsCoord,
+          helpRequest.locationAccuracy
+        );
+        const distance = this.calculateDistance(
+          lat,
+          lng,
+          location.latitude,
+          location.longitude
+        );
+
+        if (distance <= radiusKm) {
+          summaries.push(await this.buildSummary(helpRequest));
+        }
+      }
+
+      return summaries;
+    } catch (error) {
+      return await this.handleDatabaseError(error);
+    }
+  }
+
+  async getHelpEventView(
+    eventId: string,
+    viewerId: string
+  ): Promise<HelpEventRescueeView | HelpEventRescuerView> {
+    try {
+      const helpRequest = await this.getHelpRequestById(eventId);
+
+      if (viewerId === helpRequest.userId) {
+        return this.buildRescueeView(helpRequest);
+      }
+
+      const participant = await this.prisma.nearbyUser.findUnique({
+        where: {
+          helpGiver_helpRequester: {
+            helpGiver: viewerId,
+            helpRequester: helpRequest.userId,
           },
         },
       });
 
-      return helpRequests;
+      if (!participant) {
+        throw new Error('Viewer is not part of this help event');
+      }
+
+      return this.buildRescuerView(helpRequest);
     } catch (error) {
       return await this.handleDatabaseError(error);
     }
   }
 
-  async updateHelpResponse(
-    responseData: HelpResponseUpdate
-  ): Promise<{ status: string }> {
+  async acceptHelpEvent(
+    eventId: string,
+    responderId: string,
+    location: HelpEventLocation
+  ): Promise<HelpEventRescuerView> {
     try {
+      const helpRequest = await this.getHelpRequestById(eventId);
+
+      if (helpRequest.userId === responderId) {
+        throw new Error('Rescuee cannot accept their own help event');
+      }
+
+      await this.prisma.nearbyUser.upsert({
+        where: {
+          helpGiver_helpRequester: {
+            helpGiver: responderId,
+            helpRequester: helpRequest.userId,
+          },
+        },
+        update: {
+          state: 1,
+          acceptedAt: new Date(),
+          acceptedLatitude: location.latitude,
+          acceptedLongitude: location.longitude,
+          acceptedAccuracy: location.accuracy ?? this.DEFAULT_LOCATION_ACCURACY,
+        },
+        create: {
+          id: randomUUID(),
+          helpGiver: responderId,
+          helpRequester: helpRequest.userId,
+          state: 1,
+          acceptedAt: new Date(),
+          acceptedLatitude: location.latitude,
+          acceptedLongitude: location.longitude,
+          acceptedAccuracy: location.accuracy ?? this.DEFAULT_LOCATION_ACCURACY,
+        },
+      });
+
+      return this.buildRescuerView(helpRequest);
+    } catch (error) {
+      return await this.handleDatabaseError(error);
+    }
+  }
+
+  async withdrawHelpEvent(
+    eventId: string,
+    responderId: string
+  ): Promise<HelpEventRescuerView> {
+    try {
+      const helpRequest = await this.getHelpRequestById(eventId);
+
       await this.prisma.nearbyUser.update({
         where: {
           helpGiver_helpRequester: {
-            helpGiver: responseData.helpGiver,
-            helpRequester: responseData.helpRequester,
+            helpGiver: responderId,
+            helpRequester: helpRequest.userId,
           },
         },
         data: {
-          state: responseData.state,
-          updatedAt: new Date(),
+          state: 2,
+          acceptedAt: null,
+          acceptedLatitude: null,
+          acceptedLongitude: null,
+          acceptedAccuracy: null,
         },
       });
 
-      return { status: 'ok' };
+      return this.buildRescuerView(helpRequest);
     } catch (error) {
       return await this.handleDatabaseError(error);
     }
   }
 
-  /**
-   * Get users who can help with a specific help request
-   * @param helpRequestId The ID of the help request
-   * @returns Array of users who can help with their status and distance
-   */
-  async getHelpRequestHelpers(
-    helpRequestId: string
-  ): Promise<HelpRequestHelper[]> {
+  async updateHelpEventStatus(
+    eventId: string,
+    userId: string,
+    status: HelpEventStatus
+  ): Promise<HelpEventRescueeView> {
     try {
-      // First, get the help request to verify it exists
-      const helpRequest = await this.prisma.helpRequest.findUnique({
-        where: { id: helpRequestId },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-        },
-      });
-
-      if (!helpRequest) {
-        return []; // Return empty array for non-existent help request
+      const helpRequest = await this.getHelpRequestById(eventId);
+      if (helpRequest.userId !== userId) {
+        throw new Error('Only the rescuee can update the help event');
       }
 
-      // Get all nearby users for this help request
-      const nearbyUsers = await this.prisma.nearbyUser.findMany({
-        where: { helpRequester: helpRequest.userId },
-        include: {
-          giver: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              phoneNumber: true,
-              lowBattery: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'asc', // Order by when they were notified
-        },
+      const updated = await this.prisma.helpRequest.update({
+        where: { id: eventId },
+        data: { status },
       });
 
-      // Get the most recent location data for each helper to calculate distance
-      const helperIds = nearbyUsers.map((nu) => nu.helpGiver);
-      const recentLocations = await this.prisma.locationData.findMany({
-        where: {
-          userId: { in: helperIds },
-          timestamp: { gte: Math.floor(Date.now() / 1000) - 7200 }, // Last 2 hours
-        },
-        orderBy: {
-          timestamp: 'desc',
-        },
-        distinct: ['userId'], // Get only the most recent location per user
-      });
-
-      // Create a map of user ID to their most recent location
-      const locationMap = new Map();
-      recentLocations.forEach((loc) => {
-        locationMap.set(loc.userId, loc);
-      });
-
-      // Calculate distances and format response
-      const helpers = nearbyUsers.map((nearbyUser) => {
-        const user = nearbyUser.giver;
-        const recentLocation = locationMap.get(user.id);
-
-        let distance = 0;
-        if (recentLocation) {
-          try {
-            const requesterCoords = this.parseGPSCoordinates(
-              helpRequest.gpsCoord
-            );
-            const helperCoords = this.parseGPSCoordinates(
-              recentLocation.gpsCoord
-            );
-            distance = this.calculateDistance(
-              requesterCoords.lat,
-              requesterCoords.lon,
-              helperCoords.lat,
-              helperCoords.lon
-            );
-          } catch (error) {
-            console.warn(`Invalid GPS coordinates for user ${user.id}`);
-            distance = -1; // Indicate invalid coordinates
-          }
-        } else {
-          distance = -1; // No recent location data
-        }
-
-        return {
-          userId: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phoneNumber: user.phoneNumber,
-          distance: Math.round(distance * 100) / 100, // Round to 2 decimal places
-          state: nearbyUser.state,
-          lowBattery: user.lowBattery,
-          lastSeen: recentLocation
-            ? new Date(recentLocation.timestamp * 1000)
-            : new Date(0),
-        };
-      });
-
-      // Sort by state (pending first), then by distance
-      return helpers.sort((a, b) => {
-        if (a.state !== b.state) {
-          return a.state - b.state; // 0 (pending) comes first
-        }
-        if (a.distance === -1 && b.distance === -1) return 0;
-        if (a.distance === -1) return 1; // No location data goes last
-        if (b.distance === -1) return -1;
-        return a.distance - b.distance; // Closer users first
-      });
+      return this.buildRescueeView(updated);
     } catch (error) {
       return await this.handleDatabaseError(error);
     }

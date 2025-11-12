@@ -1,18 +1,62 @@
 import { BaseService } from '../BaseService';
-import { Segment, SegmentUpdate, GuideUpdate, UserReviewItem, HazardType } from '../../types';
+import { Segment, GuideUpdate, UserReviewItem, HazardType } from '../../types';
 
 export interface SegmentQueryParams {
   bbox?: string; // Format: "minLat,minLng,maxLat,maxLng"
+  minLat?: number;
+  minLng?: number;
+  maxLat?: number;
+  maxLng?: number;
   search?: string;
   updatedSince?: string; // ISO 8601 date string
 }
 
 export class SegmentsService extends BaseService {
+  private resolveBoundingBox(
+    queryParams?: SegmentQueryParams
+  ): [number, number, number, number] | null {
+    if (!queryParams) {
+      return null;
+    }
+
+    const hasSeparateParams =
+      typeof queryParams.minLat === 'number' &&
+      typeof queryParams.minLng === 'number' &&
+      typeof queryParams.maxLat === 'number' &&
+      typeof queryParams.maxLng === 'number' &&
+      !Number.isNaN(queryParams.minLat) &&
+      !Number.isNaN(queryParams.minLng) &&
+      !Number.isNaN(queryParams.maxLat) &&
+      !Number.isNaN(queryParams.maxLng);
+
+    if (hasSeparateParams) {
+      return [
+        queryParams.minLat!,
+        queryParams.minLng!,
+        queryParams.maxLat!,
+        queryParams.maxLng!,
+      ];
+    }
+
+    if (queryParams.bbox) {
+      const bboxParts = queryParams.bbox.split(',').map(Number);
+      if (bboxParts.length === 4 && bboxParts.every((num) => !isNaN(num))) {
+        // Interpret bbox according to OGC order: minLng,minLat,maxLng,maxLat
+        const [minLng, minLat, maxLng, maxLat] = bboxParts;
+        return [minLat, minLng, maxLat, maxLng];
+      }
+    }
+
+    return null;
+  }
 
   /**
    * Get the latest guide update (SnowUpdate created by admin) for a segment
    */
-  private async getGuideUpdateForSegment(segmentId: string): Promise<GuideUpdate | null> {
+  private async getGuideUpdateForSegment(
+    segmentId: string,
+    since?: Date
+  ): Promise<GuideUpdate | null> {
     try {
       // First, find admin users who created updates for this segment
       const adminUsers = await this.prisma.user.findMany({
@@ -31,6 +75,13 @@ export class SegmentsService extends BaseService {
           segment: segmentId,
           status: 'ACTIVE',
           creator: { in: adminUserIds },
+          ...(since
+            ? {
+                time: {
+                  gte: since,
+                },
+              }
+            : {}),
         },
         orderBy: { time: 'desc' },
         include: {
@@ -71,14 +122,17 @@ export class SegmentsService extends BaseService {
   /**
    * Get user reviews for a segment (limited to 3 most recent)
    */
-  private async getUserReviewsForSegment(segmentId: string): Promise<UserReviewItem[]> {
+  private async getUserReviewsForSegment(
+    segmentId: string,
+    limit: number = 3
+  ): Promise<UserReviewItem[]> {
     try {
       const reviews = await this.prisma.userReview.findMany({
         where: {
           segment: segmentId,
         },
         orderBy: { time: 'desc' },
-        take: 3,
+        take: limit,
       });
 
       return reviews.map((review) => {
@@ -116,14 +170,7 @@ export class SegmentsService extends BaseService {
         },
       });
 
-      // Parse bounding box if provided
-      let bboxParams: [number, number, number, number] | null = null;
-      if (queryParams?.bbox) {
-        const bboxParts = queryParams.bbox.split(',').map(Number);
-        if (bboxParts.length === 4 && bboxParts.every((num) => !isNaN(num))) {
-          bboxParams = [bboxParts[0], bboxParts[1], bboxParts[2], bboxParts[3]];
-        }
-      }
+      const bboxParams = this.resolveBoundingBox(queryParams);
 
       // Parse updatedSince date if provided
       let updatedSinceDate: Date | null = null;
@@ -211,102 +258,6 @@ export class SegmentsService extends BaseService {
         });
 
       return transformedSegments;
-    } catch (error) {
-      return await this.handleDatabaseError(error);
-    }
-  }
-
-  async getSegmentUpdates(
-    segmentId: string,
-    limit: number = 3,
-    days: number = 3
-  ): Promise<any[]> {
-    try {
-      const where: any = { 
-        status: 'ACTIVE',
-        segment: segmentId 
-      };
-
-      // Apply days filter
-      const daysAgo = new Date();
-      daysAgo.setDate(daysAgo.getDate() - days);
-      where.time = { gte: daysAgo };
-
-      const updates = await this.prisma.snowUpdate.findMany({
-        where,
-        include: {
-          segmentRel: true,
-          creatorRel: {
-            select: { firstName: true, lastName: true },
-          },
-          snowConditions: {
-            include: {
-              snowTypeRel: true,
-            },
-          },
-          reviewReferences: {
-            include: {
-              reviewRel: true,
-            },
-          },
-        },
-        orderBy: { time: 'desc' },
-        take: limit,
-      });
-
-      // Fetch secondary snow types separately for conditions that have them
-      const secondarySnowTypeIds = new Set<string>();
-      updates.forEach((update) => {
-        update.snowConditions.forEach((condition) => {
-          if (condition.secondarySnowType) {
-            secondarySnowTypeIds.add(condition.secondarySnowType);
-          }
-        });
-      });
-
-      const secondarySnowTypesMap = new Map<string, string>();
-      if (secondarySnowTypeIds.size > 0) {
-        const secondarySnowTypes = await this.prisma.snowType.findMany({
-          where: {
-            id: { in: Array.from(secondarySnowTypeIds) },
-          },
-          select: { id: true, name: true },
-        });
-        secondarySnowTypes.forEach((st) => {
-          secondarySnowTypesMap.set(st.id, st.name);
-        });
-      }
-
-      return updates.map((update) => ({
-        id: update.id,
-        segment: update.segment,
-        time: update.time,
-        description: update.description,
-        weather: update.weather,
-        temperature: update.temperature,
-        windSpeed: update.windSpeed,
-        visibility: update.visibility,
-        status: update.status,
-        priority: update.priority,
-        creator: update.creatorRel,
-        segmentName: update.segmentRel.name,
-        snowConditions: update.snowConditions.map((condition) => ({
-          id: condition.id,
-          snowType: condition.snowTypeRel?.name,
-          secondarySnowType: condition.secondarySnowType
-            ? secondarySnowTypesMap.get(condition.secondarySnowType) || null
-            : null,
-          layer: condition.layer,
-          depth: condition.depth,
-          coverage: condition.coverage,
-          quality: condition.quality,
-          hardness: condition.hardness,
-          moisture: condition.moisture,
-          notes: condition.notes,
-          createdAt: condition.createdAt,
-        })),
-        reviewReferences: update.reviewReferences,
-      }));
     } catch (error) {
       return await this.handleDatabaseError(error);
     }
@@ -464,117 +415,4 @@ export class SegmentsService extends BaseService {
     }
   }
 
-  async getAllUpdates(
-    days: number = 3,
-    options?: {
-      segmentId?: string;
-      updatedSince?: string;
-      from?: string;
-      to?: string;
-    }
-  ): Promise<any[]> {
-    try {
-      const where: any = { status: 'ACTIVE' };
-
-      if (options?.segmentId) {
-        where.segment = options.segmentId;
-      }
-
-      // Determine time filter precedence: from/to > updatedSince > days
-      if (options?.from || options?.to) {
-        const fromDate = options.from ? new Date(options.from) : undefined;
-        const toDate = options.to ? new Date(options.to) : undefined;
-        where.time = {
-          ...(fromDate && !isNaN(fromDate.getTime()) ? { gte: fromDate } : {}),
-          ...(toDate && !isNaN(toDate.getTime()) ? { lte: toDate } : {}),
-        };
-      } else if (options?.updatedSince) {
-        const sinceDate = new Date(options.updatedSince);
-        if (!isNaN(sinceDate.getTime())) {
-          where.time = { gte: sinceDate };
-        }
-      } else {
-        const daysAgo = new Date();
-        daysAgo.setDate(daysAgo.getDate() - days);
-        where.time = { gte: daysAgo };
-      }
-
-      const updates = await this.prisma.snowUpdate.findMany({
-        where,
-        include: {
-          segmentRel: true,
-          creatorRel: {
-            select: { firstName: true, lastName: true },
-          },
-          snowConditions: {
-            include: {
-              snowTypeRel: true,
-            },
-          },
-          reviewReferences: {
-            include: {
-              reviewRel: true,
-            },
-          },
-        },
-        orderBy: { time: 'desc' },
-      });
-
-      // Fetch secondary snow types separately for conditions that have them
-      const secondarySnowTypeIds = new Set<string>();
-      updates.forEach((update) => {
-        update.snowConditions.forEach((condition) => {
-          if (condition.secondarySnowType) {
-            secondarySnowTypeIds.add(condition.secondarySnowType);
-          }
-        });
-      });
-
-      const secondarySnowTypesMap = new Map<string, string>();
-      if (secondarySnowTypeIds.size > 0) {
-        const secondarySnowTypes = await this.prisma.snowType.findMany({
-          where: {
-            id: { in: Array.from(secondarySnowTypeIds) },
-          },
-          select: { id: true, name: true },
-        });
-        secondarySnowTypes.forEach((st) => {
-          secondarySnowTypesMap.set(st.id, st.name);
-        });
-      }
-
-      return updates.map((update) => ({
-        id: update.id,
-        segment: update.segment,
-        time: update.time,
-        description: update.description,
-        weather: update.weather,
-        temperature: update.temperature,
-        windSpeed: update.windSpeed,
-        visibility: update.visibility,
-        status: update.status,
-        priority: update.priority,
-        creator: update.creatorRel,
-        segmentName: update.segmentRel.name,
-        snowConditions: update.snowConditions.map((condition) => ({
-          id: condition.id,
-          snowType: condition.snowTypeRel?.name,
-          secondarySnowType: condition.secondarySnowType
-            ? secondarySnowTypesMap.get(condition.secondarySnowType) || null
-            : null,
-          layer: condition.layer,
-          depth: condition.depth,
-          coverage: condition.coverage,
-          quality: condition.quality,
-          hardness: condition.hardness,
-          moisture: condition.moisture,
-          notes: condition.notes,
-          createdAt: condition.createdAt,
-        })),
-        reviewReferences: update.reviewReferences,
-      }));
-    } catch (error) {
-      return await this.handleDatabaseError(error);
-    }
-  }
 }

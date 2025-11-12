@@ -9,23 +9,31 @@ import {
   resetPasswordSchema,
   segmentIdSchema,
   segmentQuerySchema,
-  segmentUpdatesQuerySchema,
-  updatesQuerySchema,
   reviewSchema,
   deviceIdSchema,
   locationUpdateSchema,
   batteryUpdateSchema,
   roleUpdateSchema,
-  helpRequestSchema,
-  helpResponseSchema,
+  helpEventCreateSchema,
+  helpEventNearbyQuerySchema,
+  helpEventAcceptanceSchema,
+  helpEventStatusUpdateSchema,
+  helpEventRescueeViewSchema,
+  helpEventRescuerViewSchema,
+  helpEventSummarySchema,
   querySchema,
   createSnowTypeSchema,
   snowTypeIdSchema,
   addSecondarySnowTypesSchema,
   guideUpdateSchema,
   observationSchema,
-  segmentUpdateSchema,
   reviewsQuerySchema,
+  segmentObservationQuerySchema,
+  weatherAverageQuerySchema,
+  weatherMinimumQuerySchema,
+  weatherMaximumQuerySchema,
+  weatherChangeQuerySchema,
+  weatherFilterDaysQuerySchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -122,6 +130,59 @@ const userSchema = z
     updatedAt: z.string().datetime(),
   })
   .meta({ id: 'User' });
+
+const helpEventIdParams = z
+  .object({
+    eventId: z
+      .string()
+      .meta({ description: 'Help event identifier', example: 'event_123' }),
+  })
+  .meta({ id: 'HelpEventIdParams' });
+
+const weatherLocationSchema = z
+  .object({
+    name: z.string().meta({ description: 'Location name', example: 'Pallastunturi' }),
+    latitude: z.number().meta({ description: 'Latitude in decimal degrees', example: 68.066 }),
+    longitude: z.number().meta({ description: 'Longitude in decimal degrees', example: 24.133 }),
+  })
+  .meta({ id: 'WeatherLocation' });
+
+const weatherPeriodSchema = z
+  .object({
+    start: z.string().datetime().meta({ description: 'Start of the look-back window' }),
+    end: z.string().datetime().meta({ description: 'End of the look-back window (now)' }),
+  })
+  .meta({ id: 'WeatherPeriod' });
+
+const weatherMetricSchema = z
+  .object({
+    type: z.enum(['average', 'minimum', 'maximum', 'change']).meta({ description: 'Metric type' }),
+    item: z.string().meta({ description: 'Weather item', example: 'windSpeed' }),
+    value: z.number().meta({ description: 'Calculated value for the metric' }),
+    unit: z.string().meta({ description: 'Unit of measurement', example: 'metersPerSecond' }),
+    days: z.number().int().meta({ description: 'Number of days included in the window' }),
+    period: weatherPeriodSchema,
+    location: weatherLocationSchema,
+  })
+  .meta({ id: 'WeatherMetric' });
+
+const weatherFilterDaysResponseSchema = z
+  .object({
+    item: z.literal('temperature').meta({ description: 'Weather item used for filtering' }),
+    threshold: z.number().meta({ description: 'Threshold for the average temperature' }),
+    days: z.number().int().meta({ description: 'Number of days inspected' }),
+    period: weatherPeriodSchema,
+    location: weatherLocationSchema,
+    matches: z
+      .array(
+        z.object({
+          date: z.string().datetime().meta({ description: 'Date in ISO format' }),
+          averageTemperature: z.number().meta({ description: 'Daily average temperature in Celsius' }),
+        })
+      )
+      .meta({ description: 'Dates matching the filter' }),
+  })
+  .meta({ id: 'WeatherFilterDaysResponse' });
 
 // OpenAPI routes definition
 export const openApiRoutes = {
@@ -344,22 +405,6 @@ export const openApiRoutes = {
     },
   },
 
-  '/api/v1/segments/{id}/updates': {
-    get: {
-      summary: 'Get latest updates for a segment',
-      description: 'Retrieve the most recent updates for a specific segment',
-      tags: ['Segments'],
-      requestParams: {
-        path: segmentIdSchema,
-        query: segmentUpdatesQuerySchema,
-      },
-      responses: {
-        '200': createSuccessResponse(z.array(segmentUpdateSchema), 'Updates retrieved successfully'),
-        ...createErrorResponses(),
-      },
-    },
-  },
-
   '/api/v1/segments/{id}/guideUpdate': {
     post: {
       summary: 'Create or update a guide update for a segment (Admin only)',
@@ -386,24 +431,6 @@ export const openApiRoutes = {
             secondarySnowTypeIds: z.array(z.string().uuid()),
           }),
           'Guide update created/updated successfully'
-        ),
-        ...createErrorResponses(),
-      },
-    },
-  },
-
-  '/api/v1/updates': {
-    get: {
-      summary: 'Get updates for segments',
-      description: 'Get updates filtered by updatedSince or time range; include review details.',
-      tags: ['Updates'],
-      requestParams: {
-        query: updatesQuerySchema,
-      },
-      responses: {
-        '200': createSuccessResponse(
-          z.array(segmentUpdateSchema),
-          'Updates retrieved successfully, with review details included'
         ),
         ...createErrorResponses(),
       },
@@ -493,6 +520,22 @@ export const openApiRoutes = {
       },
       responses: {
         '200': createSuccessResponse(z.array(observationSchema), 'Observations retrieved successfully'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/api/v1/segments/{id}/observations': {
+    get: {
+      summary: 'Get observations for a specific segment',
+      description: 'Retrieve guide updates and user reviews for a specific segment within the requested time window.',
+      tags: ['Reviews'],
+      requestParams: {
+        path: segmentIdSchema,
+        query: segmentObservationQuerySchema,
+      },
+      responses: {
+        '200': createSuccessResponse(observationSchema, 'Segment observations retrieved successfully'),
         ...createErrorResponses(),
       },
     },
@@ -699,142 +742,221 @@ export const openApiRoutes = {
   },
 
   // Help request routes
-  '/api/v1/help-requests': {
+  // Help events
+  '/help/events': {
     post: {
-      summary: 'Create help request',
-      description: 'Create a help request for emergency or assistance',
-      tags: ['Help Requests'],
+      summary: 'Create a new help event',
+      tags: ['Help Events'],
       security: [{ BearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
           'application/json': {
-            schema: helpRequestSchema,
+            schema: helpEventCreateSchema,
           },
         },
       },
       responses: {
-        '200': createSuccessResponse(
-          z.object({
-            status: z.string(),
-            nearbyUsers: z.number(),
-          }),
-          'Help request created successfully'
-        ),
-        ...createErrorResponses(),
-      },
-    },
-    get: {
-      summary: 'Get help requests',
-      description: 'Retrieve all help requests for rescue interface',
-      tags: ['Help Requests'],
-      security: [{ BearerAuth: [] }],
-      responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Help requests retrieved successfully'),
-        ...createErrorResponses(),
-      },
-    },
-  },
-
-  '/api/v1/help-responses': {
-    post: {
-      summary: 'Update help response',
-      description: 'Update the response status for a help request',
-      tags: ['Help Requests'],
-      security: [{ BearerAuth: [] }],
-      requestBody: {
-        required: true,
-        content: {
-          'application/json': {
-            schema: helpResponseSchema,
-          },
-        },
-      },
-      responses: {
-        '200': createSuccessResponse(
-          z.object({ status: z.string() }),
-          'Help response updated successfully'
+        '201': createSuccessResponse(
+          helpEventRescueeViewSchema,
+          'Help event created successfully'
         ),
         ...createErrorResponses(),
       },
     },
   },
 
-  '/api/v1/help-requests/{id}/helpers': {
+  '/help/events/nearby': {
     get: {
-      summary: 'Get users who can help with a specific help request',
-      description:
-        'Retrieve all users who have been notified about a help request with their status and distance',
-      tags: ['Help Requests'],
+      summary: 'List nearby help events',
+      tags: ['Help Events'],
       security: [{ BearerAuth: [] }],
       requestParams: {
-        path: z.object({
-          id: z.string().meta({ description: 'Help request ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
-        }),
+        query: helpEventNearbyQuerySchema,
       },
       responses: {
         '200': createSuccessResponse(
-          z.array(
-            z.object({
-              userId: z.string(),
-              firstName: z.string(),
-              lastName: z.string().nullable(),
-              phoneNumber: z.string().nullable(),
-              distance: z.number(),
-              state: z.number(),
-              lowBattery: z.number(),
-              lastSeen: z.string().datetime(),
-            })
-          ),
-          'Help request helpers retrieved successfully'
+          z.array(helpEventSummarySchema),
+          'Nearby help events retrieved successfully'
         ),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/help/events/{eventId}/view': {
+    get: {
+      summary: 'Get help event view',
+      tags: ['Help Events'],
+      security: [{ BearerAuth: [] }],
+      requestParams: {
+        path: helpEventIdParams,
+      },
+      responses: {
+        '200': createSuccessResponse(
+          z.union([helpEventRescueeViewSchema, helpEventRescuerViewSchema]),
+          'Help event view retrieved successfully'
+        ),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/help/events/{eventId}/acceptance': {
+    post: {
+      summary: 'Accept help event',
+      tags: ['Help Events'],
+      security: [{ BearerAuth: [] }],
+      requestParams: {
+        path: helpEventIdParams,
+      },
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: helpEventAcceptanceSchema,
+          },
+        },
+      },
+      responses: {
+        '200': createSuccessResponse(
+          helpEventRescuerViewSchema,
+          'Rescuer joined the help event'
+        ),
+        ...createErrorResponses(),
+      },
+    },
+    delete: {
+      summary: 'Withdraw from help event',
+      tags: ['Help Events'],
+      security: [{ BearerAuth: [] }],
+      requestParams: {
+        path: helpEventIdParams,
+      },
+      responses: {
+        '200': createSuccessResponse(
+          helpEventRescuerViewSchema,
+          'Rescuer withdrew from the help event'
+        ),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/help/events/{eventId}': {
+    patch: {
+      summary: 'Update help event status',
+      tags: ['Help Events'],
+      security: [{ BearerAuth: [] }],
+      requestParams: {
+        path: helpEventIdParams,
+      },
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: helpEventStatusUpdateSchema,
+          },
+        },
+      },
+      responses: {
+        '200': createSuccessResponse(
+          helpEventRescueeViewSchema,
+          'Help event status updated successfully'
+        ),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/help/events/{eventId}/stream': {
+    get: {
+      summary: 'Stream help event updates',
+      tags: ['Help Events'],
+      security: [{ BearerAuth: [] }],
+      requestParams: {
+        path: helpEventIdParams,
+      },
+      responses: {
+        '501': {
+          description: 'Streaming not yet implemented',
+        },
         ...createErrorResponses(),
       },
     },
   },
 
   // Weather routes
-  '/weather': {
+  '/weather/average': {
     get: {
-      summary: 'Get latest weather data',
-      description: 'Returns the most recent weather data from the FMI API',
-      tags: ['Weather'],
-      responses: {
-        '200': createSuccessResponse(z.any(), 'Latest weather data'),
-        ...createErrorResponses(),
-      },
-    },
-  },
-
-  '/weather/history': {
-    get: {
-      summary: 'Get weather history',
-      description: 'Returns historical weather data',
+      summary: 'Average weather metric',
+      description: 'Returns the average for supported weather items within the requested period.',
       tags: ['Weather'],
       requestParams: {
-        query: z.object({
-          limit: z
-            .string()
-            .transform((val) => parseInt(val, 10))
-            .pipe(z.number().int().min(1).max(100))
-            .optional()
-            .meta({ description: 'Maximum number of records to return', example: '100' }),
-        }),
+        query: weatherAverageQuerySchema,
       },
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Weather history'),
+        '200': createSuccessResponse(weatherMetricSchema, 'Average weather metric'),
         ...createErrorResponses(),
       },
     },
   },
 
-  '/weather/update': {
-    post: {
-      summary: 'Manually trigger weather update',
-      description: 'Fetches new weather data from FMI API and saves it to database',
+  '/weather/minimum': {
+    get: {
+      summary: 'Minimum temperature',
+      description: 'Returns the minimum temperature within the requested period.',
       tags: ['Weather'],
+      requestParams: {
+        query: weatherMinimumQuerySchema,
+      },
       responses: {
-        '200': createSuccessResponse(z.any(), 'Weather data updated successfully'),
+        '200': createSuccessResponse(weatherMetricSchema, 'Minimum temperature'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/weather/maximum': {
+    get: {
+      summary: 'Maximum weather metric',
+      description: 'Returns the maximum temperature or wind speed within the requested period.',
+      tags: ['Weather'],
+      requestParams: {
+        query: weatherMaximumQuerySchema,
+      },
+      responses: {
+        '200': createSuccessResponse(weatherMetricSchema, 'Maximum weather metric'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/weather/change': {
+    get: {
+      summary: 'Snow depth change',
+      description: 'Returns the change in snow depth between the start and end of the requested period.',
+      tags: ['Weather'],
+      requestParams: {
+        query: weatherChangeQuerySchema,
+      },
+      responses: {
+        '200': createSuccessResponse(weatherMetricSchema, 'Snow depth change'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
+  '/weather/filterDays': {
+    get: {
+      summary: 'Filter days with average temperature above threshold',
+      description: 'Returns the dates within the requested period where the daily average temperature exceeded the threshold.',
+      tags: ['Weather'],
+      requestParams: {
+        query: weatherFilterDaysQuerySchema,
+      },
+      responses: {
+        '200': createSuccessResponse(weatherFilterDaysResponseSchema, 'Filtered days'),
         ...createErrorResponses(),
       },
     },
