@@ -15,19 +15,17 @@ part 'create_snow_type_request.g.dart';
   explicitToJson: true,
 )
 class CreateSnowTypeRequest {
-  /// Returns a new [CreateSnowTypeRequest] instance.
-  CreateSnowTypeRequest({
-
-    required  this.name,
-
-    required  this.colour,
-
-     this.skiability,
-
-     this.categoryId,
-
-     this.explanation,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [CreateSnowTypeRequest] instance.
+CreateSnowTypeRequest({
+  required  this.name,
+  required  this.colour,
+   this.skiability,
+   this.categoryId,
+   this.explanation,
+});
 
       /// Snow type name
   @JsonKey(

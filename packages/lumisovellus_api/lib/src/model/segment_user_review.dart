@@ -15,17 +15,16 @@ part 'segment_user_review.g.dart';
   explicitToJson: true,
 )
 class SegmentUserReview {
-  /// Returns a new [SegmentUserReview] instance.
-  SegmentUserReview({
-
-    required  this.submittedAt,
-
-    required  this.snowTypeId,
-
-    required  this.secondarySnowTypeId,
-
-    required  this.hazards,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [SegmentUserReview] instance.
+SegmentUserReview({
+  required  this.submittedAt,
+  required  this.snowTypeId,
+  required  this.secondarySnowTypeId,
+  this.hazards = const [],
+});
 
   @JsonKey(
     

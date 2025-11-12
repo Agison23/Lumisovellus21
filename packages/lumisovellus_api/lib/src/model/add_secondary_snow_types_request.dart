@@ -15,11 +15,13 @@ part 'add_secondary_snow_types_request.g.dart';
   explicitToJson: true,
 )
 class AddSecondarySnowTypesRequest {
-  /// Returns a new [AddSecondarySnowTypesRequest] instance.
-  AddSecondarySnowTypesRequest({
-
-    required  this.secondarySnowTypeIds,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [AddSecondarySnowTypesRequest] instance.
+AddSecondarySnowTypesRequest({
+  this.secondarySnowTypeIds = const [],
+});
 
       /// Array of secondary snow type IDs
   @JsonKey(

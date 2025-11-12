@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "pubget": "flutter pub get",
-    "dev": "echo 'no'",
+    "dev": "flutter run",
     "format": "dart format --set-exit-if-changed .",
     "lint": "dart analyze --fatal-infos",
     "typecheck": "dart analyze --fatal-infos",

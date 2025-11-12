@@ -15,11 +15,13 @@ part 'api_v1_users_device_id_location_post200_response_data.g.dart';
   explicitToJson: true,
 )
 class ApiV1UsersDeviceIdLocationPost200ResponseData {
-  /// Returns a new [ApiV1UsersDeviceIdLocationPost200ResponseData] instance.
-  ApiV1UsersDeviceIdLocationPost200ResponseData({
-
-    required  this.status,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1UsersDeviceIdLocationPost200ResponseData] instance.
+ApiV1UsersDeviceIdLocationPost200ResponseData({
+  required  this.status,
+});
 
   @JsonKey(
     

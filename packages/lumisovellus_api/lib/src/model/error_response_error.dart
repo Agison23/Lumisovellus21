@@ -15,15 +15,15 @@ part 'error_response_error.g.dart';
   explicitToJson: true,
 )
 class ErrorResponseError {
-  /// Returns a new [ErrorResponseError] instance.
-  ErrorResponseError({
-
-    required  this.code,
-
-    required  this.message,
-
-     this.details,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ErrorResponseError] instance.
+ErrorResponseError({
+  required  this.code,
+  required  this.message,
+   this.details,
+});
 
       /// Error code
   @JsonKey(

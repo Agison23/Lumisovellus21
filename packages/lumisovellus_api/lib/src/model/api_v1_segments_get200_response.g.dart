@@ -14,9 +14,11 @@ ApiV1SegmentsGet200Response _$ApiV1SegmentsGet200ResponseFromJson(
     success: $checkedConvert('success', (v) => v as bool),
     data: $checkedConvert(
       'data',
-      (v) => (v as List<dynamic>)
-          .map((e) => Segment.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      (v) =>
+          (v as List<dynamic>?)
+              ?.map((e) => Segment.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     ),
     meta: $checkedConvert(
       'meta',

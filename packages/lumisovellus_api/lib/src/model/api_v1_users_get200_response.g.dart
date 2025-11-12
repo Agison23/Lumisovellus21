@@ -14,9 +14,11 @@ ApiV1UsersGet200Response _$ApiV1UsersGet200ResponseFromJson(
     success: $checkedConvert('success', (v) => v as bool),
     data: $checkedConvert(
       'data',
-      (v) => (v as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      (v) =>
+          (v as List<dynamic>?)
+              ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     ),
     meta: $checkedConvert(
       'meta',

@@ -15,15 +15,15 @@ part 'help_response.g.dart';
   explicitToJson: true,
 )
 class HelpResponse {
-  /// Returns a new [HelpResponse] instance.
-  HelpResponse({
-
-    required  this.helpGiver,
-
-    required  this.helpRequester,
-
-    required  this.state,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [HelpResponse] instance.
+HelpResponse({
+  required  this.helpGiver,
+  required  this.helpRequester,
+  required  this.state,
+});
 
       /// User ID of the person providing help
   @JsonKey(

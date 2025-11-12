@@ -13,7 +13,8 @@ AddSecondarySnowTypesRequest _$AddSecondarySnowTypesRequestFromJson(
   final val = AddSecondarySnowTypesRequest(
     secondarySnowTypeIds: $checkedConvert(
       'secondarySnowTypeIds',
-      (v) => (v as List<dynamic>).map((e) => e as String).toList(),
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     ),
   );
   return val;

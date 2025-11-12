@@ -16,23 +16,19 @@ part 'review_reference.g.dart';
   explicitToJson: true,
 )
 class ReviewReference {
-  /// Returns a new [ReviewReference] instance.
-  ReviewReference({
-
-    required  this.id,
-
-    required  this.updateId,
-
-    required  this.reviewId,
-
-    required  this.relevance,
-
-    required  this.notes,
-
-    required  this.createdAt,
-
-    required  this.reviewRel,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ReviewReference] instance.
+ReviewReference({
+  required  this.id,
+  required  this.updateId,
+  required  this.reviewId,
+  required  this.relevance,
+  required  this.notes,
+  required  this.createdAt,
+  required  this.reviewRel,
+});
 
       /// Review reference ID
   @JsonKey(

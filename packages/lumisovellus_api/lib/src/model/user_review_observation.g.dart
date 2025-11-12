@@ -21,7 +21,8 @@ UserReviewObservation _$UserReviewObservationFromJson(
     snowTypeId: $checkedConvert('snowTypeId', (v) => v as String),
     hazards: $checkedConvert(
       'hazards',
-      (v) => (v as List<dynamic>).map((e) => e as String).toList(),
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     ),
   );
   return val;

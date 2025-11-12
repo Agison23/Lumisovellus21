@@ -15,15 +15,15 @@ part 'api_v1_segments_id_reviews_post_request.g.dart';
   explicitToJson: true,
 )
 class ApiV1SegmentsIdReviewsPostRequest {
-  /// Returns a new [ApiV1SegmentsIdReviewsPostRequest] instance.
-  ApiV1SegmentsIdReviewsPostRequest({
-
-    required  this.snowType,
-
-     this.hazards = const [],
-
-     this.comment,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1SegmentsIdReviewsPostRequest] instance.
+ApiV1SegmentsIdReviewsPostRequest({
+  required  this.snowType,
+  this.hazards = const [],
+   this.comment,
+});
 
       /// Snow type ID (UUID)
   @JsonKey(

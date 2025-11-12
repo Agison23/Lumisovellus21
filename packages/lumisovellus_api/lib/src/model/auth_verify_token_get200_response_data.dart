@@ -16,13 +16,14 @@ part 'auth_verify_token_get200_response_data.g.dart';
   explicitToJson: true,
 )
 class AuthVerifyTokenGet200ResponseData {
-  /// Returns a new [AuthVerifyTokenGet200ResponseData] instance.
-  AuthVerifyTokenGet200ResponseData({
-
-    required  this.valid,
-
-    required  this.user,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [AuthVerifyTokenGet200ResponseData] instance.
+AuthVerifyTokenGet200ResponseData({
+  required  this.valid,
+  required  this.user,
+});
 
   @JsonKey(
     

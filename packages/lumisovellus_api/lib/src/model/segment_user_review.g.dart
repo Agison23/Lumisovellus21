@@ -29,7 +29,9 @@ SegmentUserReview _$SegmentUserReviewFromJson(Map<String, dynamic> json) =>
         ),
         hazards: $checkedConvert(
           'hazards',
-          (v) => (v as List<dynamic>).map((e) => e as String).toList(),
+          (v) =>
+              (v as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
         ),
       );
       return val;

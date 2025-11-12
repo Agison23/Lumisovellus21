@@ -14,9 +14,11 @@ ApiV1ObservationsGet200Response _$ApiV1ObservationsGet200ResponseFromJson(
     success: $checkedConvert('success', (v) => v as bool),
     data: $checkedConvert(
       'data',
-      (v) => (v as List<dynamic>)
-          .map((e) => Observation.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      (v) =>
+          (v as List<dynamic>?)
+              ?.map((e) => Observation.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     ),
     meta: $checkedConvert(
       'meta',

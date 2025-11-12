@@ -15,19 +15,17 @@ part 'api_v1_users_id_put_request.g.dart';
   explicitToJson: true,
 )
 class ApiV1UsersIdPutRequest {
-  /// Returns a new [ApiV1UsersIdPutRequest] instance.
-  ApiV1UsersIdPutRequest({
-
-     this.firstName,
-
-     this.lastName,
-
-     this.email,
-
-     this.phoneNumber,
-
-     this.role,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1UsersIdPutRequest] instance.
+ApiV1UsersIdPutRequest({
+   this.firstName,
+   this.lastName,
+   this.email,
+   this.phoneNumber,
+   this.role,
+});
 
       /// User first name
   @JsonKey(

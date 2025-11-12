@@ -32,9 +32,11 @@ Segment _$SegmentFromJson(Map<String, dynamic> json) =>
         ),
         points: $checkedConvert(
           'points',
-          (v) => (v as List<dynamic>)
-              .map((e) => SegmentPoint.fromJson(e as Map<String, dynamic>))
-              .toList(),
+          (v) =>
+              (v as List<dynamic>?)
+                  ?.map((e) => SegmentPoint.fromJson(e as Map<String, dynamic>))
+                  .toList() ??
+              const [],
         ),
         guideUpdate: $checkedConvert(
           'guideUpdate',
@@ -44,9 +46,14 @@ Segment _$SegmentFromJson(Map<String, dynamic> json) =>
         ),
         userReviews: $checkedConvert(
           'userReviews',
-          (v) => (v as List<dynamic>)
-              .map((e) => SegmentUserReview.fromJson(e as Map<String, dynamic>))
-              .toList(),
+          (v) =>
+              (v as List<dynamic>?)
+                  ?.map(
+                    (e) =>
+                        SegmentUserReview.fromJson(e as Map<String, dynamic>),
+                  )
+                  .toList() ??
+              const [],
         ),
       );
       return val;

@@ -15,19 +15,17 @@ part 'auth_response_user.g.dart';
   explicitToJson: true,
 )
 class AuthResponseUser {
-  /// Returns a new [AuthResponseUser] instance.
-  AuthResponseUser({
-
-    required  this.id,
-
-    required  this.firstName,
-
-    required  this.lastName,
-
-    required  this.email,
-
-    required  this.role,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [AuthResponseUser] instance.
+AuthResponseUser({
+  required  this.id,
+  required  this.firstName,
+  required  this.lastName,
+  required  this.email,
+  required  this.role,
+});
 
   @JsonKey(
     

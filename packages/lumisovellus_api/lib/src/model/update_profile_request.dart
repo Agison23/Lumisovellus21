@@ -15,17 +15,16 @@ part 'update_profile_request.g.dart';
   explicitToJson: true,
 )
 class UpdateProfileRequest {
-  /// Returns a new [UpdateProfileRequest] instance.
-  UpdateProfileRequest({
-
-     this.firstName,
-
-     this.lastName,
-
-     this.email,
-
-     this.phoneNumber,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [UpdateProfileRequest] instance.
+UpdateProfileRequest({
+   this.firstName,
+   this.lastName,
+   this.email,
+   this.phoneNumber,
+});
 
       /// User first name
   @JsonKey(

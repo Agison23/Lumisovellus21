@@ -15,13 +15,14 @@ part 'health_get200_response_meta.g.dart';
   explicitToJson: true,
 )
 class HealthGet200ResponseMeta {
-  /// Returns a new [HealthGet200ResponseMeta] instance.
-  HealthGet200ResponseMeta({
-
-    required  this.timestamp,
-
-     this.message,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [HealthGet200ResponseMeta] instance.
+HealthGet200ResponseMeta({
+  required  this.timestamp,
+   this.message,
+});
 
       /// Response timestamp
   @JsonKey(

@@ -24,11 +24,13 @@ _$ApiV1SegmentsIdGuideUpdatePost200ResponseDataFromJson(
     description: $checkedConvert('description', (v) => v as String?),
     primarySnowTypeIds: $checkedConvert(
       'primarySnowTypeIds',
-      (v) => (v as List<dynamic>).map((e) => e as String).toList(),
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     ),
     secondarySnowTypeIds: $checkedConvert(
       'secondarySnowTypeIds',
-      (v) => (v as List<dynamic>).map((e) => e as String).toList(),
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     ),
   );
   return val;

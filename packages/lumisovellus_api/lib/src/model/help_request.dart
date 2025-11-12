@@ -15,19 +15,17 @@ part 'help_request.g.dart';
   explicitToJson: true,
 )
 class HelpRequest {
-  /// Returns a new [HelpRequest] instance.
-  HelpRequest({
-
-    required  this.timestamp,
-
-    required  this.deviceId,
-
-    required  this.gpsCoord,
-
-    required  this.helpType,
-
-    required  this.chatRoomId,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [HelpRequest] instance.
+HelpRequest({
+  required  this.timestamp,
+  required  this.deviceId,
+  required  this.gpsCoord,
+  required  this.helpType,
+  required  this.chatRoomId,
+});
 
       /// Unix timestamp
           // maximum: 9007199254740991

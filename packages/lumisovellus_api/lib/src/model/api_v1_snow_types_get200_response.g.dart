@@ -14,7 +14,8 @@ ApiV1SnowTypesGet200Response _$ApiV1SnowTypesGet200ResponseFromJson(
     success: $checkedConvert('success', (v) => v as bool),
     data: $checkedConvert(
       'data',
-      (v) => (v as List<dynamic>).map((e) => e as Object).toList(),
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as Object).toList() ?? const [],
     ),
     meta: $checkedConvert(
       'meta',

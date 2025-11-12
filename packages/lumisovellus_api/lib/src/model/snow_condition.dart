@@ -15,31 +15,23 @@ part 'snow_condition.g.dart';
   explicitToJson: true,
 )
 class SnowCondition {
-  /// Returns a new [SnowCondition] instance.
-  SnowCondition({
-
-    required  this.id,
-
-    required  this.snowType,
-
-    required  this.secondarySnowType,
-
-    required  this.layer,
-
-    required  this.depth,
-
-    required  this.coverage,
-
-    required  this.quality,
-
-    required  this.hardness,
-
-    required  this.moisture,
-
-    required  this.notes,
-
-    required  this.createdAt,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [SnowCondition] instance.
+SnowCondition({
+  required  this.id,
+  required  this.snowType,
+  required  this.secondarySnowType,
+  required  this.layer,
+  required  this.depth,
+  required  this.coverage,
+  required  this.quality,
+  required  this.hardness,
+  required  this.moisture,
+  required  this.notes,
+  required  this.createdAt,
+});
 
       /// Snow condition ID
   @JsonKey(

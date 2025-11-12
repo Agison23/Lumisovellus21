@@ -15,19 +15,17 @@ part 'register_request.g.dart';
   explicitToJson: true,
 )
 class RegisterRequest {
-  /// Returns a new [RegisterRequest] instance.
-  RegisterRequest({
-
-    required  this.firstName,
-
-     this.lastName,
-
-    required  this.email,
-
-    required  this.password,
-
-     this.role,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [RegisterRequest] instance.
+RegisterRequest({
+  required  this.firstName,
+   this.lastName,
+  required  this.email,
+  required  this.password,
+   this.role,
+});
 
       /// User first name
   @JsonKey(

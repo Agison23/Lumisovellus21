@@ -18,37 +18,26 @@ part 'segment_update.g.dart';
   explicitToJson: true,
 )
 class SegmentUpdate {
-  /// Returns a new [SegmentUpdate] instance.
-  SegmentUpdate({
-
-    required  this.id,
-
-    required  this.segment,
-
-    required  this.time,
-
-    required  this.description,
-
-    required  this.weather,
-
-    required  this.temperature,
-
-    required  this.windSpeed,
-
-    required  this.visibility,
-
-    required  this.status,
-
-    required  this.priority,
-
-    required  this.creator,
-
-    required  this.segmentName,
-
-    required  this.snowConditions,
-
-    required  this.reviewReferences,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [SegmentUpdate] instance.
+SegmentUpdate({
+  required  this.id,
+  required  this.segment,
+  required  this.time,
+  required  this.description,
+  required  this.weather,
+  required  this.temperature,
+  required  this.windSpeed,
+  required  this.visibility,
+  required  this.status,
+  required  this.priority,
+  required  this.creator,
+  required  this.segmentName,
+  this.snowConditions = const [],
+  this.reviewReferences = const [],
+});
 
       /// Update ID
   @JsonKey(

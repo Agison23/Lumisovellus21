@@ -16,9 +16,13 @@ _$ApiV1SegmentsIdUpdatesGet200ResponseFromJson(Map<String, dynamic> json) =>
         success: $checkedConvert('success', (v) => v as bool),
         data: $checkedConvert(
           'data',
-          (v) => (v as List<dynamic>)
-              .map((e) => SegmentUpdate.fromJson(e as Map<String, dynamic>))
-              .toList(),
+          (v) =>
+              (v as List<dynamic>?)
+                  ?.map(
+                    (e) => SegmentUpdate.fromJson(e as Map<String, dynamic>),
+                  )
+                  .toList() ??
+              const [],
         ),
         meta: $checkedConvert(
           'meta',

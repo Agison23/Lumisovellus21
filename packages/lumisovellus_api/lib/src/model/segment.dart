@@ -18,25 +18,20 @@ part 'segment.g.dart';
   explicitToJson: true,
 )
 class Segment {
-  /// Returns a new [Segment] instance.
-  Segment({
-
-    required  this.id,
-
-    required  this.name,
-
-    required  this.terrain,
-
-    required  this.avalancheDanger,
-
-    required  this.isLowerSegment,
-
-    required  this.points,
-
-    required  this.guideUpdate,
-
-    required  this.userReviews,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [Segment] instance.
+Segment({
+  required  this.id,
+  required  this.name,
+  required  this.terrain,
+  required  this.avalancheDanger,
+  required  this.isLowerSegment,
+  this.points = const [],
+  required  this.guideUpdate,
+  this.userReviews = const [],
+});
 
       /// Segment ID
   @JsonKey(
@@ -89,6 +84,8 @@ class Segment {
 
 
 
+          // minimum: -9007199254740991
+          // maximum: 9007199254740991
   @JsonKey(
     
     name: r'isLowerSegment',

@@ -15,15 +15,15 @@ part 'guide_update_request.g.dart';
   explicitToJson: true,
 )
 class GuideUpdateRequest {
-  /// Returns a new [GuideUpdateRequest] instance.
-  GuideUpdateRequest({
-
-     this.description,
-
-     this.primarySnowTypeIds = const [],
-
-     this.secondarySnowTypeIds = const [],
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [GuideUpdateRequest] instance.
+GuideUpdateRequest({
+   this.description,
+  this.primarySnowTypeIds = const [],
+  this.secondarySnowTypeIds = const [],
+});
 
       /// Description of the guide update
   @JsonKey(

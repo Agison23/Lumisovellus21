@@ -15,15 +15,15 @@ part 'user_review_observation.g.dart';
   explicitToJson: true,
 )
 class UserReviewObservation {
-  /// Returns a new [UserReviewObservation] instance.
-  UserReviewObservation({
-
-    required  this.submittedAt,
-
-    required  this.snowTypeId,
-
-    required  this.hazards,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [UserReviewObservation] instance.
+UserReviewObservation({
+  required  this.submittedAt,
+  required  this.snowTypeId,
+  this.hazards = const [],
+});
 
       /// When the review was submitted
   @JsonKey(

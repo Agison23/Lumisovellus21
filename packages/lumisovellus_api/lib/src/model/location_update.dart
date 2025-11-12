@@ -15,19 +15,17 @@ part 'location_update.g.dart';
   explicitToJson: true,
 )
 class LocationUpdate {
-  /// Returns a new [LocationUpdate] instance.
-  LocationUpdate({
-
-    required  this.timestamp,
-
-    required  this.firstName,
-
-     this.lastName,
-
-    required  this.gpsCoord,
-
-     this.phoneNumber,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [LocationUpdate] instance.
+LocationUpdate({
+  required  this.timestamp,
+  required  this.firstName,
+   this.lastName,
+  required  this.gpsCoord,
+   this.phoneNumber,
+});
 
       /// Unix timestamp
           // maximum: 9007199254740991

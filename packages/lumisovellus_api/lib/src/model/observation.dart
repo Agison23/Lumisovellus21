@@ -17,15 +17,15 @@ part 'observation.g.dart';
   explicitToJson: true,
 )
 class Observation {
-  /// Returns a new [Observation] instance.
-  Observation({
-
-    required  this.segmentId,
-
-    required  this.guideUpdate,
-
-    required  this.userReviews,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [Observation] instance.
+Observation({
+  required  this.segmentId,
+  required  this.guideUpdate,
+  this.userReviews = const [],
+});
 
       /// Segment ID
   @JsonKey(

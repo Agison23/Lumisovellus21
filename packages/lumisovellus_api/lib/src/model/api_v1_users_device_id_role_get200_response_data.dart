@@ -15,13 +15,14 @@ part 'api_v1_users_device_id_role_get200_response_data.g.dart';
   explicitToJson: true,
 )
 class ApiV1UsersDeviceIdRoleGet200ResponseData {
-  /// Returns a new [ApiV1UsersDeviceIdRoleGet200ResponseData] instance.
-  ApiV1UsersDeviceIdRoleGet200ResponseData({
-
-    required  this.role,
-
-    required  this.permissions,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1UsersDeviceIdRoleGet200ResponseData] instance.
+ApiV1UsersDeviceIdRoleGet200ResponseData({
+  required  this.role,
+  required  this.permissions,
+});
 
   @JsonKey(
     

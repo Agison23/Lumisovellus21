@@ -17,15 +17,15 @@ part 'health_get200_response.g.dart';
   explicitToJson: true,
 )
 class HealthGet200Response {
-  /// Returns a new [HealthGet200Response] instance.
-  HealthGet200Response({
-
-    required  this.success,
-
-    required  this.data,
-
-    required  this.meta,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [HealthGet200Response] instance.
+HealthGet200Response({
+  required  this.success,
+  required  this.data,
+  required  this.meta,
+});
 
       /// Indicates if the request was successful
   @JsonKey(

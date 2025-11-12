@@ -15,11 +15,13 @@ part 'battery_update.g.dart';
   explicitToJson: true,
 )
 class BatteryUpdate {
-  /// Returns a new [BatteryUpdate] instance.
-  BatteryUpdate({
-
-    required  this.batteryStatus,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [BatteryUpdate] instance.
+BatteryUpdate({
+  required  this.batteryStatus,
+});
 
       /// Battery status
   @JsonKey(

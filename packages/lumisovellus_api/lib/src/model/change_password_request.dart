@@ -15,13 +15,14 @@ part 'change_password_request.g.dart';
   explicitToJson: true,
 )
 class ChangePasswordRequest {
-  /// Returns a new [ChangePasswordRequest] instance.
-  ChangePasswordRequest({
-
-    required  this.currentPassword,
-
-    required  this.newPassword,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ChangePasswordRequest] instance.
+ChangePasswordRequest({
+  required  this.currentPassword,
+  required  this.newPassword,
+});
 
       /// Current password
   @JsonKey(

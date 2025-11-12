@@ -15,25 +15,20 @@ part 'api_v1_help_requests_id_helpers_get200_response_data_inner.g.dart';
   explicitToJson: true,
 )
 class ApiV1HelpRequestsIdHelpersGet200ResponseDataInner {
-  /// Returns a new [ApiV1HelpRequestsIdHelpersGet200ResponseDataInner] instance.
-  ApiV1HelpRequestsIdHelpersGet200ResponseDataInner({
-
-    required  this.userId,
-
-    required  this.firstName,
-
-    required  this.lastName,
-
-    required  this.phoneNumber,
-
-    required  this.distance,
-
-    required  this.state,
-
-    required  this.lowBattery,
-
-    required  this.lastSeen,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1HelpRequestsIdHelpersGet200ResponseDataInner] instance.
+ApiV1HelpRequestsIdHelpersGet200ResponseDataInner({
+  required  this.userId,
+  required  this.firstName,
+  required  this.lastName,
+  required  this.phoneNumber,
+  required  this.distance,
+  required  this.state,
+  required  this.lowBattery,
+  required  this.lastSeen,
+});
 
   @JsonKey(
     

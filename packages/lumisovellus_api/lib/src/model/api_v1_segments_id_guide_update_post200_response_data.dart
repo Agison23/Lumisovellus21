@@ -15,15 +15,15 @@ part 'api_v1_segments_id_guide_update_post200_response_data.g.dart';
   explicitToJson: true,
 )
 class ApiV1SegmentsIdGuideUpdatePost200ResponseData {
-  /// Returns a new [ApiV1SegmentsIdGuideUpdatePost200ResponseData] instance.
-  ApiV1SegmentsIdGuideUpdatePost200ResponseData({
-
-    required  this.description,
-
-    required  this.primarySnowTypeIds,
-
-    required  this.secondarySnowTypeIds,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [ApiV1SegmentsIdGuideUpdatePost200ResponseData] instance.
+ApiV1SegmentsIdGuideUpdatePost200ResponseData({
+  required  this.description,
+  this.primarySnowTypeIds = const [],
+  this.secondarySnowTypeIds = const [],
+});
 
   @JsonKey(
     

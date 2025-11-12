@@ -15,11 +15,13 @@ part 'auth_reset_password_post200_response_data.g.dart';
   explicitToJson: true,
 )
 class AuthResetPasswordPost200ResponseData {
-  /// Returns a new [AuthResetPasswordPost200ResponseData] instance.
-  AuthResetPasswordPost200ResponseData({
-
-    required  this.message,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [AuthResetPasswordPost200ResponseData] instance.
+AuthResetPasswordPost200ResponseData({
+  required  this.message,
+});
 
   @JsonKey(
     

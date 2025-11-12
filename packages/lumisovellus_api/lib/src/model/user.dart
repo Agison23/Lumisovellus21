@@ -15,27 +15,21 @@ part 'user.g.dart';
   explicitToJson: true,
 )
 class User {
-  /// Returns a new [User] instance.
-  User({
-
-    required  this.id,
-
-    required  this.firstName,
-
-    required  this.lastName,
-
-    required  this.email,
-
-    required  this.role,
-
-    required  this.phoneNumber,
-
-    required  this.lowBattery,
-
-    required  this.createdAt,
-
-    required  this.updatedAt,
-  });
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [User] instance.
+User({
+  required  this.id,
+  required  this.firstName,
+  required  this.lastName,
+  required  this.email,
+  required  this.role,
+  required  this.phoneNumber,
+  required  this.lowBattery,
+  required  this.createdAt,
+  required  this.updatedAt,
+});
 
   @JsonKey(
     
