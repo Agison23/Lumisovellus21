@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
@@ -11,9 +12,10 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 // Replace with your preferred state management/localization solution as needed.
 final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
-  const token = String.fromEnvironment('ACCESS_TOKEN');
+  final token = dotenv.env['ACCESS_TOKEN'] ?? '';
   MapboxOptions.setAccessToken(token);
 
   runApp(const ProviderScope(child: MyApp()));

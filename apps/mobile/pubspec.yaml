@@ -57,6 +57,7 @@ dependencies:
   external_app_launcher: ^4.0.3
   country_flags: ^4.1.0
   dio: ^5.9.0
+  flutter_dotenv: ^6.0.0
   lumisovellus_api:
     path: ../../packages/lumisovellus_api
 
@@ -94,6 +95,7 @@ flutter:
     - assets/icons/
     - assets/icons/lumilogot/
     - assets/icons/skiability/
+    - .env
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
