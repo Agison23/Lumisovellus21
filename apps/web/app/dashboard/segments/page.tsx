@@ -1,11 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { fetchAreas } from "@/lib/map/loaders";
-import { InteractiveAreaFeature } from "@/lib/map/mock-data";
 import {
 	Dialog,
 	DialogDescription,
@@ -17,6 +10,12 @@ import { Edit, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { fetchAreas } from "@/lib/map/loaders";
+import { InteractiveAreaFeature } from "@/lib/map/mock-data";
 
 export default function DashboardPage() {
 	const t = useTranslations("Dashboard.SegmentsPage");

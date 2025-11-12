@@ -1,19 +1,15 @@
 "use client";
+import { Clipboard, House, LandPlot, Users } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarGroup,
-	SidebarGroupLabel,
-	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarTrigger,
 } from "../ui/sidebar";
-import Link from "next/link";
-import { Clipboard, House, LandPlot, Users } from "lucide-react";
-import { useState } from "react";
 type SidebarLink = {
 	href: string;
 	label: string;

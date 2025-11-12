@@ -1,10 +1,10 @@
 "use client";
-import { DashboardSidebar } from "@/components/dashboard/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
 	children,
