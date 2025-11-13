@@ -20,10 +20,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   MapboxMap? _map;
 
   Future<void> _goToUserLocation() async {
-    final api = ref.watch(apiClientProvider);
-    final res = await api.segments.apiV1SegmentsGet();
-
-    print('#-SEGMENTS: ${res.data?.data}');
     final enabled = await geo.Geolocator.isLocationServiceEnabled();
     if (!enabled) return;
 
@@ -55,24 +51,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final areasMgr = ref.watch(areasLayerManagerProvider);
     final snowTypes = ref.watch(snowTypesNotifierProvider).value ?? const [];
 
-    final s = ref.watch(interactiveAreaNotifierProvider).value;
-    final features = (s?.fc?['features'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
-    final selected = features.firstWhereOrNull((f) {
-      final id = f['id']?.toString() ?? ((f['properties'] as Map?)?['id']?.toString());
-      return id == s?.selectedId;
-    });
+    final s = ref.watch(segmentsNotifierProvider).value;
+    final segments = s?.segments ?? const [];
+    final selectedSegment = segments.firstWhereOrNull((seg) => seg.id == s?.selectedId);
 
-    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.selectedId), (_, id) {
-      areasMgr.setSelectedId(id);
-    });
+    ref.listen(
+      segmentsNotifierProvider.select((a) => a.value?.selectedId),
+      (_, id) => areasMgr.setSelectedId(id),
+    );
 
-    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.hoveredId), (_, id) {
-      areasMgr.setHoveredId(id);
-    });
+    ref.listen(
+      segmentsNotifierProvider.select((a) => a.value?.hoveredId),
+      (_, id) => areasMgr.setHoveredId(id),
+    );
 
-    ref.listen(interactiveAreaNotifierProvider.select((a) => a.value?.fc), (_, fc) {
-      if (fc != null) areasMgr.setData(fc);
-    });
+    ref.listen(
+      segmentsNotifierProvider.select((a) => a.value?.segments),
+      (_, segs) {
+        if (segs != null) areasMgr.setData(segs);
+      },
+    );
 
     return Scaffold(
       body: Stack(
@@ -95,7 +93,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               final features = await _map!.queryRenderedFeatures(geometry, options);
 
               final first = features.firstOrNull;
-              final notifier = ref.read(interactiveAreaNotifierProvider.notifier);
+              final notifier = ref.read(segmentsNotifierProvider.notifier);
               if (first == null) {
                 await areasMgr.setSelectedId(null);
                 notifier.select(null);
@@ -119,64 +117,56 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   scrollEnabled: true,
                 ),
               );
-
-              // await controller.setBounds(
-              //   CameraBoundsOptions(
-              //     bounds: CoordinateBounds(
-              //       southwest: Point(coordinates: Position(23.725, 67.970)),
-              //       northeast: Point(coordinates: Position(24.334, 68.162)),
-              //       infiniteBounds: false,
-              //     ),
-              //     minZoom: 7,
-              //     maxZoom: 18,
-              //   ),
-              // );
             },
             onStyleLoadedListener: (_) async {
-              await _map?.location.updateSettings(LocationComponentSettings(
-                enabled: true,
-                pulsingEnabled: true,
-              ));
-              final v = ref.read(interactiveAreaNotifierProvider).value;
+              await _map?.location.updateSettings(
+                LocationComponentSettings(
+                  enabled: true,
+                  pulsingEnabled: true,
+                ),
+              );
+              final v = ref.read(segmentsNotifierProvider).value;
               await areasMgr.onStyleLoaded();
-              if (v?.fc != null) await areasMgr.setData(v!.fc!);
+              if (v?.segments != null) await areasMgr.setData(v!.segments!);
               await areasMgr.setSelectedId(v?.selectedId);
               await areasMgr.setHoveredId(v?.hoveredId);
             },
           ),
 
-           if (!isOnline)
-             Positioned(
-               left: 0, right: 0, bottom: 100,
-               child: Center(
-                 child: Container(
-                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                   decoration: BoxDecoration(
-                     color: Colors.black.withOpacity(0.6),
-                     borderRadius: BorderRadius.circular(8),
-                   ),
-                   child: Text(
-                     t.mapOfflineModeMessage,
-                     style: const TextStyle(color: Colors.white),
-                   ),
-                 ),
-               ),
-             ),
-             
-          if (selected != null)
+          if (!isOnline)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 100,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    t.mapOfflineModeMessage,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+
+          if (selectedSegment != null)
             Positioned(
               top: 32,
               left: 16,
               child: AreaCard(
                 t: t,
-                name: (selected['properties'] as Map?)?['name']?.toString() ?? '',
-                terrain: (selected['properties'] as Map?)?['terrain']?.toString() ?? '',
-                danger: ((selected['properties'] as Map?)?['avalancheDanger'] == true)
+                name: selectedSegment.name,
+                terrain: selectedSegment.terrain,
+                danger: selectedSegment.avalancheDanger
                     ? t.avalancheWarning
                     : t.noAvalancheWarning,
                 snowTypes: snowTypes,
                 onAdd: () {},
-                onClose: () => ref.read(interactiveAreaNotifierProvider.notifier).select(null),
+                onClose: () => ref.read(segmentsNotifierProvider.notifier).select(null),
               ),
             ),
 
@@ -185,7 +175,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             left: 16,
             child: FilterButton(t: t),
           ),
-          
+
           Positioned(
             bottom: 16,
             right: 16,
