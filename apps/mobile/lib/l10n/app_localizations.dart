@@ -672,6 +672,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'W'**
   String get coordinateDirectionWest;
+
+  /// No description provided for @sensors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensors'**
+  String get sensors;
+
+  /// No description provided for @segments.
+  ///
+  /// In en, this message translates to:
+  /// **'Segments'**
+  String get segments;
 }
 
 class _AppLocalizationsDelegate

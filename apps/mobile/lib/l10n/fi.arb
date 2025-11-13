@@ -95,5 +95,7 @@
   "coordinateDirectionNorth": "P",
   "coordinateDirectionSouth": "E",
   "coordinateDirectionEast": "I",
-  "coordinateDirectionWest": "L"
+  "coordinateDirectionWest": "L",
+  "sensors": "Anturit",
+  "segments": "Segmentit"
 }

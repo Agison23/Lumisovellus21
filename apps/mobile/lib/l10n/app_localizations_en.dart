@@ -320,4 +320,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coordinateDirectionWest => 'W';
+
+  @override
+  String get sensors => 'Sensors';
+
+  @override
+  String get segments => 'Segments';
 }
