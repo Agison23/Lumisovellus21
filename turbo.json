@@ -26,6 +26,9 @@
       "dependsOn": ["^transit"]
     },
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
+    "lint:fix": { "outputs": [], "dependsOn": ["^lint:fix"] },
+    "format": { "outputs": [] },
+    "format:check": { "outputs": [] },
     "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
     "pubget": { "cache": false },
     "openapi:emit": {

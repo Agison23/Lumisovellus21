@@ -1,0 +1,145 @@
+name: Backend Tests
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts 
+
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Setup test database
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+          NODE_ENV: test
+          PORT: 3001
+          JWT_SECRET: test_jwt_secret_key_for_testing_only
+          MYSQL_ROOT_PASSWORD: testpassword
+        run: |
+          # Wait a moment for MySQL to be ready
+          sleep 10
+
+          # Push database schema
+          npx prisma db push
+
+      - name: Run tests with coverage
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+          NODE_ENV: test
+          PORT: 3001
+          JWT_SECRET: test_jwt_secret_key_for_testing_only
+          MYSQL_ROOT_PASSWORD: testpassword
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: apps/backend/coverage/lcov.info
+          delete-old-comments: true
+
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: Run security audit
+        working-directory: apps/backend
+        run: npm audit --audit-level=high
+
+      - name: Run dependency check
+        working-directory: apps/backend
+        run: npx audit-ci --config audit-ci.json
+        continue-on-error: true
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, security-audit]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Build application
+        working-directory: apps/backend
+        run: npm run build
