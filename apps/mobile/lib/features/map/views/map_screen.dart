@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
-import 'package:lumisovellus/core/network/connectivity_provider.dart';
+import 'package:lumisovellus/core/network/providers.dart';
 import '../providers.dart';
 import 'widgets/area_card.dart';
 import 'widgets/filter_button.dart';
@@ -20,6 +20,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   MapboxMap? _map;
 
   Future<void> _goToUserLocation() async {
+    final api = ref.watch(apiClientProvider);
+    final res = await api.segments.apiV1SegmentsGet();
+
+    print('#-SEGMENTS: ${res.data?.data}');
     final enabled = await geo.Geolocator.isLocationServiceEnabled();
     if (!enabled) return;
 
