@@ -134,11 +134,14 @@ The following existing routes now require authentication:
 - `GET /api/v1/users/:deviceId/role` - Get user role
 - `POST /api/v1/users/:deviceId/role` - Update user role (Admin only)
 
-### Help Routes
+### Help Event Routes
 
-- `POST /api/v1/help-requests` - Create help request
-- `GET /api/v1/help-requests` - Get help requests (Admin/Rescue only)
-- `POST /api/v1/help-responses` - Update help response
+- `POST /help/events` - Start a new help event (rescuee)
+- `GET /help/events/nearby` - List active events near the caller
+- `GET /help/events/{eventId}/view` - Contextual event view (rescuee vs. rescuer)
+- `POST /help/events/{eventId}/acceptance` - Join an event as rescuer (DELETE to withdraw)
+- `PATCH /help/events/{eventId}` - Rescuee updates status (active/completed/cancelled)
+- `GET /help/events/{eventId}/stream` - Reserved for upcoming realtime channel
 
 ## User Roles
 

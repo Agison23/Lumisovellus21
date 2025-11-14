@@ -120,20 +120,22 @@ Users
 - PUT `/api/v1/users/:id` (Auth + Admin): Update user fields (name, email, role, phone) by ID.
 - DELETE `/api/v1/users/:id` (Auth + Admin): Delete user account and related data by ID.
 
-Segments & Updates
-- GET `/api/v1/segments`: List segments; supports `bbox`, `search`, and `updatedSince` filters. By default the segement coordinates of previous system would be present.
-- GET `/api/v1/segments/:id/updates`: Latest updates for a given segment ID.
-- GET `/api/v1/updates`: Time-window or `updatedSince` filtered segment updates; includes review details when available.
+Segments & Observations
+- GET `/api/v1/segments`: List segments; supports either `bbox` (OGC order `minLng,minLat,maxLng,maxLat`) or explicit `minLat|minLng|maxLat|maxLng` filters plus `search`/`updatedSince`. Each segment includes up to 3 of the latest user reviews and the most recent guide update, if available.
+- GET `/api/v1/segments/:id/observations`: Combined guide update and recent user reviews for a single segment; accepts `days` (default 3) and `limit` (default 3) query parameters.
+- POST `/api/v1/segments/:id/guideUpdate` (Auth + Admin): Create or replace the active guide update for a segment with up to two primary/secondary snow types.
 
 Reviews
 - GET `/api/v1/snow-types`: Enumerate allowed snow/surface types for reviews.
-- GET `/api/v1/observations`: Latest observations (reviews and guide updates) across segments; optional `days` (default 3), `page`, `pageSize`, `limit`.
-- GET `/api/v1/reviews/all`: All reviews in a window; optional `days` (default 7).
+- GET `/api/v1/observations`: Latest observations (reviews and guide updates) across segments; supports `days` (default 3), `limit`, `page`, and `pageSize`.
+- GET `/api/v1/segments/:id/observations`: Same observation payload scoped to a single segment; accepts `days`/`limit` query params.
 - POST `/api/v1/segments/:id/reviews` (Auth): Create a review for a segment with rating/comments.
 
-Help Requests
-- POST `/api/v1/help-requests` (Auth): Create a help request; triggers notifications to nearby users within ~30 km and stores request metadata.
-- GET `/api/v1/help-requests` (Auth): List active help requests for the rescue operator interface.
-- POST `/api/v1/help-responses` (Auth): Update a helper's response state (pending/accepted/declined/completed) for a specific request.
-- GET `/api/v1/help-requests/:id/helpers` (Auth): For a request, list notified helpers including distance, state, battery, and last-seen timestamps.
+Help Events
+- POST `/help/events` (Auth): Start a new help event (need type + location) and notify nearby users.
+- GET `/help/events/nearby` (Auth): List active events within a configurable radius of the caller.
+- GET `/help/events/{eventId}/view` (Auth): Context-aware view (rescuee vs. rescuer) with participants and latest status.
+- POST `/help/events/{eventId}/acceptance` + DELETE `/help/events/{eventId}/acceptance` (Auth): Join or withdraw from an event as a rescuer.
+- PATCH `/help/events/{eventId}` (Auth): Rescuee cancels or completes the event.
+- GET `/help/events/{eventId}/stream` (Auth): Reserved for the upcoming push/streaming channel (currently returns 501).
 
