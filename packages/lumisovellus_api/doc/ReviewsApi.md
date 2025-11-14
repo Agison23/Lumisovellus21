@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost:3001*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**apiV1ObservationsGet**](ReviewsApi.md#apiv1observationsget) | **GET** /api/v1/observations | Get observations for all segments
+[**apiV1SegmentsIdObservationsGet**](ReviewsApi.md#apiv1segmentsidobservationsget) | **GET** /api/v1/segments/{id}/observations | Get observations for a specific segment
 [**apiV1SegmentsIdReviewsPost**](ReviewsApi.md#apiv1segmentsidreviewspost) | **POST** /api/v1/segments/{id}/reviews | Create a review for a segment
 
 
@@ -50,6 +51,53 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ApiV1ObservationsGet200Response**](ApiV1ObservationsGet200Response.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **apiV1SegmentsIdObservationsGet**
+> ApiV1SegmentsIdObservationsGet200Response apiV1SegmentsIdObservationsGet(id, days, limit)
+
+Get observations for a specific segment
+
+Retrieve guide updates and user reviews for a specific segment within the requested time window.
+
+### Example
+```dart
+import 'package:lumisovellus_api/api.dart';
+
+final api = LumisovellusApi().getReviewsApi();
+final String id = 550e8400-e29b-41d4-a716-446655440000; // String | Segment ID (UUID)
+final String days = 3; // String | Number of days to look back for this segment
+final String limit = 3; // String | Maximum number of user reviews to include
+
+try {
+    final response = api.apiV1SegmentsIdObservationsGet(id, days, limit);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling ReviewsApi->apiV1SegmentsIdObservationsGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **String**| Segment ID (UUID) | 
+ **days** | **String**| Number of days to look back for this segment | [optional] 
+ **limit** | **String**| Maximum number of user reviews to include | [optional] 
+
+### Return type
+
+[**ApiV1SegmentsIdObservationsGet200Response**](ApiV1SegmentsIdObservationsGet200Response.md)
 
 ### Authorization
 

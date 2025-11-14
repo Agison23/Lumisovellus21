@@ -708,7 +708,7 @@ export const segmentSchema = z.object({
   name: z.string().meta({ description: 'Segment name' }),
   terrain: z.string().meta({ description: 'Terrain description' }),
   avalancheDanger: z.boolean(),
-  isLowerSegment: z.number().int().nullable(),
+  isLowerSegment: z.string().nullable(),
   points: z.array(pointSchema).min(1).meta({ description: 'Polygon or polyline of the segment' }),
   guideUpdate: guideUpdateSchema.nullable(),
   userReviews: z.array(
