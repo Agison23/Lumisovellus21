@@ -95,50 +95,143 @@ async function main() {
     },
   });
 
-  // Create snow types (from legacy web system)
+  // Create snow types (from mock-data.ts)
+  // Primary snow types (isPrimary: true) - these are the main categories
+  // Secondary snow types (isPrimary: false) - these are subtypes
   const snowTypes = [
     {
-      name: 'Uusi lumi',
-      colour: '#FFFFFF',
-      skiability: 5,
-      categoryId: 1,
-      explanation: 'Tuore, pehmeä lumi',
-    },
-    {
-      name: 'Kova lumi',
-      colour: '#E0E0E0',
+      name: 'Korppu',
+      colour: '#3838a0',
       skiability: 3,
-      categoryId: 1,
-      explanation: 'Kovettunutta lunta',
+      isPrimary: true,
+      explanation: 'Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.',
     },
     {
-      name: 'Jäinen lumi',
-      colour: '#B0C4DE',
+      name: 'Sohjo',
+      colour: '#919394',
       skiability: 2,
-      categoryId: 1,
-      explanation: 'Jäätynyttä lunta',
+      isPrimary: true,
+      explanation: 'Vesipitoinen ja osittain sulanut lumi suojasäällä.',
     },
     {
-      name: 'Märkä lumi',
-      colour: '#87CEEB',
-      skiability: 1,
-      categoryId: 1,
-      explanation: 'Märkää, raskasta lunta',
+      name: 'Jää',
+      colour: '#34929A',
+      skiability: 2,
+      isPrimary: true,
+      explanation: 'Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.',
     },
     {
-      name: 'Harsi',
-      colour: '#F0F8FF',
+      name: 'Uusi lumi',
+      colour: '#5AABED',
       skiability: 4,
-      categoryId: 2,
-      explanation: 'Pinta harsia',
+      isPrimary: true,
+      explanation: 'Vastasatanut pehmeä lumi.',
     },
     {
-      name: 'Kuura',
-      colour: '#F5F5F5',
+      name: 'Tuulen pieksemä lumi',
+      colour: '#7C759F',
       skiability: 3,
-      categoryId: 2,
-      explanation: 'Kuurakerros',
+      isPrimary: true,
+      explanation: 'Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.',
     },
+    {
+      name: 'Vähäinen lumi',
+      colour: '#6D4F32',
+      skiability: null,
+      isPrimary: true,
+      explanation: '',
+    },
+    {
+      name: 'Lumeton maa',
+      colour: '#000000',
+      skiability: null,
+      isPrimary: true,
+      explanation: '',
+    },
+    {
+      name: 'Vitilumi',
+      colour: '#5AABED',
+      skiability: 5,
+      isPrimary: false,
+      explanation: 'Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.',
+    },
+    {
+      name: 'Puuterilumi',
+      colour: '#5AABED',
+      skiability: 5,
+      isPrimary: false,
+      explanation: 'Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.',
+    },
+    {
+      name: 'Märkä uusi lumi',
+      colour: '#5AABED',
+      skiability: 4,
+      isPrimary: false,
+      explanation: 'Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.',
+    },
+    {
+      name: 'Sastrugi',
+      colour: '#7C759F',
+      skiability: 1,
+      isPrimary: false,
+      explanation: 'Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista.',
+    },
+    {
+      name: 'Aaltoileva lumi',
+      colour: '#7C759F',
+      skiability: 4,
+      isPrimary: false,
+      explanation: 'Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa.',
+    },
+    {
+      name: 'Tuiskulumi',
+      colour: '#7C759F',
+      skiability: 4,
+      isPrimary: false,
+      explanation: 'Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.',
+    },
+    {
+      name: 'Ohut korppu',
+      colour: '#3838a0',
+      skiability: 3,
+      isPrimary: false,
+      explanation: 'Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.',
+    },
+    {
+      name: 'Rikkoutuva korppu',
+      colour: '#3838a0',
+      skiability: 2,
+      isPrimary: false,
+      explanation: 'Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.',
+    },
+    {
+      name: 'Kantava korppu',
+      colour: '#3838a0',
+      skiability: 3,
+      isPrimary: false,
+      explanation: 'Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.',
+    },
+    {
+      name: 'Rikkoutuva jää',
+      colour: '#34929A',
+      skiability: 1,
+      isPrimary: false,
+      explanation: 'Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.',
+    },
+    {
+      name: 'Kastuva lumi',
+      colour: '#919394',
+      skiability: 3,
+      isPrimary: false,
+      explanation: 'Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.',
+    },
+    {
+      name: 'Saturoitunut lumi',
+      colour: '#919394',
+      skiability: 2,
+      isPrimary: false,
+      explanation: 'Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi',
+    }
   ];
 
   // Create snow types and store their IDs for secondary relationships
@@ -188,32 +281,31 @@ async function main() {
     }
   };
 
-  // Uusi lumi can have Harsi and Kuura as secondary types
-  await createSecondaryRelationship('Uusi lumi', 'Harsi');
-  await createSecondaryRelationship('Uusi lumi', 'Kuura');
+  // Secondary snow type relationships based on category structure
+  // Korppu (categoryId: null) → subtypes with categoryId: 1
+  await createSecondaryRelationship('Korppu', 'Ohut korppu');
+  await createSecondaryRelationship('Korppu', 'Rikkoutuva korppu');
+  await createSecondaryRelationship('Korppu', 'Kantava korppu');
 
-  // Kova lumi can have Jäinen lumi as secondary type
-  await createSecondaryRelationship('Kova lumi', 'Jäinen lumi');
+  // Sohjo (categoryId: null) → subtypes with categoryId: 2
+  await createSecondaryRelationship('Sohjo', 'Kastuva lumi');
+  await createSecondaryRelationship('Sohjo', 'Saturoitunut lumi');
 
-  // Märkä lumi can have Harsi as secondary type
-  await createSecondaryRelationship('Märkä lumi', 'Harsi');
+  // Jää (categoryId: null) → subtypes with categoryId: 3
+  await createSecondaryRelationship('Jää', 'Rikkoutuva jää');
+
+  // Uusi lumi (categoryId: null) → subtypes with categoryId: 4
+  await createSecondaryRelationship('Uusi lumi', 'Vitilumi');
+  await createSecondaryRelationship('Uusi lumi', 'Puuterilumi');
+  await createSecondaryRelationship('Uusi lumi', 'Märkä uusi lumi');
+
+  // Tuulen pieksemä lumi (categoryId: null) → subtypes with categoryId: 5
+  await createSecondaryRelationship('Tuulen pieksemä lumi', 'Sastrugi');
+  await createSecondaryRelationship('Tuulen pieksemä lumi', 'Aaltoileva lumi');
+  await createSecondaryRelationship('Tuulen pieksemä lumi', 'Tuiskulumi');
 
   // Create segments (Pallas area segments from legacy system)
   const segments = [
-    {
-      id: crypto.randomUUID(),
-      name: 'Metsä',
-      terrain: 'Metsä',
-      avalancheDanger: false,
-      isLowerSegment: null,
-      coordinates: [
-        { order: 0, latitude: 68.2861, longitude: 23.078 },
-        { order: 1, latitude: 67.7465, longitude: 23.128 },
-        { order: 2, latitude: 67.7352, longitude: 25.1663 },
-        { order: 3, latitude: 68.3988, longitude: 25.1919 },
-        { order: 4, latitude: 68.2861, longitude: 23.078 },
-      ],
-    },
     {
       id: crypto.randomUUID(),
       name: 'Laukukero Pohjoisseinä',
@@ -274,21 +366,6 @@ async function main() {
         { order: 9, latitude: 68.0806, longitude: 24.0498 },
         { order: 10, latitude: 68.0759, longitude: 24.0576 },
         { order: 11, latitude: 68.0749, longitude: 24.0536 },
-      ],
-    },
-    {
-      id: crypto.randomUUID(),
-      name: 'Paratiisikuru',
-      terrain: 'Tuulikangas, keskellä rehevä katajainen joenuoma',
-      avalancheDanger: false,
-      isLowerSegment: null,
-      coordinates: [
-        { order: 0, latitude: 68.067, longitude: 24.0398 },
-        { order: 1, latitude: 68.0681, longitude: 24.0413 },
-        { order: 2, latitude: 68.0749, longitude: 24.0536 },
-        { order: 3, latitude: 68.0747, longitude: 24.0383 },
-        { order: 4, latitude: 68.0702, longitude: 24.021 },
-        { order: 5, latitude: 68.067, longitude: 24.0398 },
       ],
     },
     {
@@ -626,9 +703,9 @@ async function main() {
   if (testSegment && snowTypes_list_for_test.length >= 4) {
     // Create a guide update with 2 primary and 2 secondary snow types
     const primary1 = createdSnowTypes['Uusi lumi'];
-    const primary2 = createdSnowTypes['Kova lumi'];
-    const secondary1 = createdSnowTypes['Harsi'];
-    const secondary2 = createdSnowTypes['Kuura'];
+    const primary2 = createdSnowTypes['Korppu'];
+    const secondary1 = createdSnowTypes['Vitilumi'];
+    const secondary2 = createdSnowTypes['Ohut korppu'];
 
     if (primary1 && primary2 && secondary1 && secondary2) {
       await prisma.snowUpdate.create({

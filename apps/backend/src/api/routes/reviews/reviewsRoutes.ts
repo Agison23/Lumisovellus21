@@ -9,8 +9,8 @@ const reviewsController = new ReviewsController();
  * @swagger
  * /api/v1/snow-types:
  *   get:
- *     summary: Get all snow types
- *     description: Retrieve all available snow types for reviews
+ *     summary: Get all primary snow types
+ *     description: Retrieve all primary snow types (isPrimary: true) for reviews. Each primary snow type includes an array of its secondary snow types.
  *     tags: [Snow Types]
  *     responses:
  *       200:
@@ -27,6 +27,26 @@ const reviewsController = new ReviewsController();
  *                   type: array
  *                   items:
  *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       colour:
+ *                         type: string
+ *                       skiability:
+ *                         type: integer
+ *                         nullable: true
+ *                       isPrimary:
+ *                         type: boolean
+ *                       explanation:
+ *                         type: string
+ *                         nullable: true
+ *                       secondaryTypes:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           description: Array of secondary snow types for this snow type
  *                 meta:
  *                   type: object
  *                   properties:

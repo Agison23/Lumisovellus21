@@ -60,7 +60,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            isPrimary: true,
             explanation: 'Fresh powder snow',
           },
           {
@@ -68,7 +68,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            isPrimary: true,
             explanation: 'Hard ice surface',
           },
         ],
@@ -90,8 +90,9 @@ describe('Reviews API Integration Tests', () => {
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
-        categoryId: 1,
+        isPrimary: true,
         explanation: 'Fresh powder snow',
+        secondaryTypes: [],
       });
     });
 
@@ -133,7 +134,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            isPrimary: true,
             explanation: 'Fresh powder',
           },
           {
@@ -141,7 +142,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            isPrimary: true,
             explanation: 'Hard ice',
           },
         ],
@@ -241,6 +242,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Test Snow',
           colour: '#FFFFFF',
           skiability: 5,
+          isPrimary: true,
         },
       });
 
@@ -306,6 +308,7 @@ describe('Reviews API Integration Tests', () => {
           id: 'segment-snow',
           name: 'Powder',
           colour: '#FFFFFF',
+          isPrimary: true,
         },
       });
 
@@ -378,7 +381,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          isPrimary: true,
           explanation: 'Fresh powder',
         },
       });
@@ -390,7 +393,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Ice',
           colour: '#CCCCCC',
           skiability: 1,
-          categoryId: 2,
+          isPrimary: false,
           explanation: 'Hard ice',
         },
       });
@@ -454,7 +457,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          isPrimary: true,
           explanation: 'Fresh powder',
         },
       });
@@ -465,7 +468,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Harsi',
           colour: '#F0F0F0',
           skiability: 4,
-          categoryId: 2,
+          isPrimary: false,
           explanation: 'Surface hoar',
         },
       });

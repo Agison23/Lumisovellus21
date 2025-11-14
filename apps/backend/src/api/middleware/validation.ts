@@ -556,12 +556,9 @@ export const createSnowTypeSchema = z
       .optional()
       .nullable()
       .meta({ description: 'Skiability rating (1-5)' }),
-    categoryId: z
-      .number()
-      .int()
-      .optional()
-      .nullable()
-      .meta({ description: 'Category ID' }),
+    isPrimary: z
+      .boolean()
+      .meta({ description: 'Whether this is a primary snow type (true) or secondary snow type (false)' }),
     explanation: z
       .string()
       .max(5000)
@@ -607,6 +604,10 @@ export const guideUpdateSchema = z
       .max(2, 'Maximum 2 secondary snow types allowed')
       .default([])
       .meta({ description: 'Array of secondary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+    hazards: z
+      .array(hazardSchema)
+      .default([])
+      .meta({ description: 'Array of hazards found on the trail (e.g., ["stones", "branches"])', example: ['stones'] }),
   })
   .meta({ id: 'GuideUpdateRequest' });
 

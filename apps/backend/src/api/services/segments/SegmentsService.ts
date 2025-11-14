@@ -106,11 +106,19 @@ export class SegmentsService extends BaseService {
         }
       }
 
+      // Parse hazards from JSON if it exists
+      const hazards = (guideUpdate as any).hazards
+        ? (Array.isArray((guideUpdate as any).hazards)
+            ? ((guideUpdate as any).hazards as HazardType[])
+            : JSON.parse((guideUpdate as any).hazards as string))
+        : [];
+
       // Limit to max 2 each
       return {
         description: guideUpdate.description,
         primarySnowTypeIds: primarySnowTypeIds.slice(0, 2),
         secondarySnowTypeIds: secondarySnowTypeIds.slice(0, 2),
+        hazards: hazards,
       };
     } catch (error) {
       // If there's an error, return null rather than failing the entire request
@@ -274,6 +282,7 @@ export class SegmentsService extends BaseService {
       description: string | null;
       primarySnowTypeIds: string[];
       secondarySnowTypeIds: string[];
+      hazards: HazardType[];
     }
   ): Promise<GuideUpdate> {
     try {
@@ -392,6 +401,7 @@ export class SegmentsService extends BaseService {
           status: 'ACTIVE',
           priority: 1,
           time: new Date(),
+          ...(guideUpdateData.hazards.length > 0 && { hazards: guideUpdateData.hazards }),
           snowConditions: {
             create: conditionsToCreate,
           },
@@ -399,13 +409,14 @@ export class SegmentsService extends BaseService {
         include: {
           snowConditions: true,
         },
-      });
+      } as any);
 
       // Return the guide update in the expected format
       return {
         description: newUpdate.description,
         primarySnowTypeIds: guideUpdateData.primarySnowTypeIds,
         secondarySnowTypeIds: guideUpdateData.secondarySnowTypeIds,
+        hazards: guideUpdateData.hazards,
       };
     } catch (error) {
       if (error instanceof Error) {

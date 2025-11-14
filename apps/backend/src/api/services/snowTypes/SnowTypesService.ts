@@ -5,7 +5,7 @@ export interface CreateSnowTypeRequest {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  isPrimary: boolean;
   explanation?: string | null;
 }
 
@@ -36,7 +36,7 @@ export class SnowTypesService extends BaseService {
           name: data.name,
           colour: normalizedColour,
           skiability: data.skiability ?? null,
-          categoryId: data.categoryId ?? null,
+          isPrimary: data.isPrimary,
           explanation: data.explanation ?? null,
         },
       });
@@ -46,7 +46,7 @@ export class SnowTypesService extends BaseService {
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        categoryId: snowType.categoryId,
+        isPrimary: snowType.isPrimary,
         explanation: snowType.explanation,
       };
     } catch (error: any) {
@@ -136,7 +136,7 @@ export class SnowTypesService extends BaseService {
                   name: true,
                   colour: true,
                   skiability: true,
-                  categoryId: true,
+                  isPrimary: true,
                   explanation: true,
                 },
               },
@@ -156,10 +156,17 @@ export class SnowTypesService extends BaseService {
         name: updatedSnowType.name,
         colour: updatedSnowType.colour,
         skiability: updatedSnowType.skiability,
-        categoryId: updatedSnowType.categoryId,
+        isPrimary: updatedSnowType.isPrimary,
         explanation: updatedSnowType.explanation,
         secondaryTypes: updatedSnowType.primarySnowTypes.map(
-          (rel) => rel.secondarySnowType
+          (rel) => ({
+            id: rel.secondarySnowType.id,
+            name: rel.secondarySnowType.name,
+            colour: rel.secondarySnowType.colour,
+            skiability: rel.secondarySnowType.skiability,
+            isPrimary: rel.secondarySnowType.isPrimary,
+            explanation: rel.secondarySnowType.explanation,
+          })
         ),
       };
     } catch (error: any) {
@@ -183,7 +190,7 @@ export class SnowTypesService extends BaseService {
                   name: true,
                   colour: true,
                   skiability: true,
-                  categoryId: true,
+                  isPrimary: true,
                   explanation: true,
                 },
               },
@@ -203,10 +210,17 @@ export class SnowTypesService extends BaseService {
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        categoryId: snowType.categoryId,
+        isPrimary: snowType.isPrimary,
         explanation: snowType.explanation,
         secondaryTypes: snowType.primarySnowTypes.map(
-          (rel) => rel.secondarySnowType
+          (rel) => ({
+            id: rel.secondarySnowType.id,
+            name: rel.secondarySnowType.name,
+            colour: rel.secondarySnowType.colour,
+            skiability: rel.secondarySnowType.skiability,
+            isPrimary: rel.secondarySnowType.isPrimary,
+            explanation: rel.secondarySnowType.explanation,
+          })
         ),
       };
     } catch (error: any) {

@@ -131,6 +131,13 @@ router.get('/api/v1/segments', segmentsController.getAllSegments);
  *                 maxItems: 2
  *                 description: Array of secondary snow type IDs (max 2)
  *                 example: ["uuid1", "uuid2"]
+ *               hazards:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [stones, branches]
+ *                 description: Array of hazards found on the trail (e.g., ["stones", "branches"])
+ *                 example: ["stones"]
  *     responses:
  *       200:
  *         description: Guide update created/updated successfully
@@ -153,6 +160,10 @@ router.get('/api/v1/segments', segmentsController.getAllSegments);
  *                       items:
  *                         type: string
  *                     secondarySnowTypeIds:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     hazards:
  *                       type: array
  *                       items:
  *                         type: string
