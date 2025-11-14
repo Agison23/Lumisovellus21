@@ -7,14 +7,14 @@ import reactHooks from "eslint-plugin-react-hooks";
 import nextPlugin from "@next/eslint-plugin-next";
 
 export default [
-  { ignores: ["**/node_modules/**","**/dist/**","**/.next/**","**/coverage/**"] },
+  { ignores: ["**/node_modules/**","**/dist/**","**/.next/**","**/coverage/**", "**/vitest-results/**"] },
   js.configs.recommended,
   ...ts.configs.recommended,
   react.configs.flat.recommended,
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
-    plugins: { 
-      import: importPlugin, 
+    plugins: {
+      import: importPlugin,
       "unused-imports": unused,
       react,
       "react-hooks": reactHooks,

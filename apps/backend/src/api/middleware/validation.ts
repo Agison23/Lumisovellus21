@@ -697,3 +697,28 @@ export const segmentUpdateSchema = z
     reviewReferences: z.array(reviewReferenceSchema).meta({ description: 'Review references associated with this update' }),
   })
   .meta({ id: 'SegmentUpdate' });
+
+const pointSchema = z.object({
+  lat: z.number().meta({ description: 'Latitude', example: 68.0309 }),
+  lng: z.number().meta({ description: 'Longitude', example: 24.1142 }),
+}).meta({ id: 'SegmentPoint' })
+
+export const segmentSchema = z.object({
+  id: z.string().uuid().meta({ description: 'Segment ID' }),
+  name: z.string().meta({ description: 'Segment name' }),
+  terrain: z.string().meta({ description: 'Terrain description' }),
+  avalancheDanger: z.boolean(),
+  isLowerSegment: z.number().int().nullable(),
+  points: z.array(pointSchema).min(1).meta({ description: 'Polygon or polyline of the segment' }),
+  guideUpdate: guideUpdateSchema.nullable(),
+  userReviews: z.array(
+    z.object({
+      submittedAt: z.string().datetime(),
+      snowTypeId: z.string().uuid(),
+      secondarySnowTypeId: z.string().uuid().nullable(),
+      hazards: z.array(z.string()),
+    }).meta({ id: 'SegmentUserReview' })
+  ),
+}).meta({ id: 'Segment' })
+
+export const segmentsSchema = z.array(segmentSchema)

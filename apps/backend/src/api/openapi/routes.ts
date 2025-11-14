@@ -34,6 +34,7 @@ import {
   weatherMaximumQuerySchema,
   weatherChangeQuerySchema,
   weatherFilterDaysQuerySchema,
+  segmentSchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -397,11 +398,11 @@ export const openApiRoutes = {
       },
       responses: {
         '200': createSuccessResponse(
-          z.array(z.any()),
+          z.array(segmentSchema),               // ← inline array of Segment
           'Segments retrieved successfully'
         ),
         ...createErrorResponses(),
-      },
+      }
     },
   },
 

@@ -36,7 +36,7 @@
     },
     "openapi:client:mobile": {
       "dependsOn": ["openapi:emit"],
-      "outputs": ["apps/mobile/lib/api/**"]
+      "outputs": ["packages/lumisovellus_api/**"]
     }
   }
 }
