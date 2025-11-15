@@ -120,7 +120,7 @@ export interface SnowType {
   name: string;
   colour: string;
   skiability?: number | null;
-  isPrimary: boolean;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
   secondaryTypes?: SnowType[];
 }
@@ -129,7 +129,7 @@ export interface CreateSnowTypeRequest {
   name: string;
   colour: string;
   skiability?: number | null;
-  isPrimary: boolean;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
 }
 

@@ -556,9 +556,12 @@ export const createSnowTypeSchema = z
       .optional()
       .nullable()
       .meta({ description: 'Skiability rating (1-5)' }),
-    isPrimary: z
-      .boolean()
-      .meta({ description: 'Whether this is a primary snow type (true) or secondary snow type (false)' }),
+    primarySnowTypeId: z
+      .string()
+      .uuid('Invalid primary snow type ID format')
+      .nullable()
+      .optional()
+      .meta({ description: 'Primary snow type ID. NULL for primary snow types, UUID for secondary snow types', example: null }),
     explanation: z
       .string()
       .max(5000)

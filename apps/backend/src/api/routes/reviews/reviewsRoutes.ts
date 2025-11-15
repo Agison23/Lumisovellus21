@@ -7,60 +7,6 @@ const reviewsController = new ReviewsController();
 
 /**
  * @swagger
- * /api/v1/snow-types:
- *   get:
- *     summary: Get all primary snow types
- *     description: Retrieve all primary snow types (isPrimary: true) for reviews. Each primary snow type includes an array of its secondary snow types.
- *     tags: [Snow Types]
- *     responses:
- *       200:
- *         description: Snow types retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                       name:
- *                         type: string
- *                       colour:
- *                         type: string
- *                       skiability:
- *                         type: integer
- *                         nullable: true
- *                       isPrimary:
- *                         type: boolean
- *                       explanation:
- *                         type: string
- *                         nullable: true
- *                       secondaryTypes:
- *                         type: array
- *                         items:
- *                           type: object
- *                           description: Array of secondary snow types for this snow type
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
-
-/**
- * @swagger
  * /api/v1/observations:
  *   get:
  *     summary: Get observations for all segments

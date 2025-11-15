@@ -442,8 +442,8 @@ export const openApiRoutes = {
   // Review routes
   '/api/v1/snow-types': {
     get: {
-      summary: 'Get all primary snow types',
-      description: 'Retrieve all primary snow types (isPrimary: true) for reviews. Each primary snow type includes an array of its secondary snow types.',
+      summary: 'Get all snow types (primary and secondary)',
+      description: 'Retrieve all snow types including both primary and secondary snow types in a flat list.',
       tags: ['Snow Types'],
       responses: {
         '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
@@ -464,7 +464,7 @@ export const openApiRoutes = {
               name: 'Powder',
               colour: '#FFFFFF',
               skiability: 5,
-              isPrimary: true,
+              primarySnowTypeId: null,
               explanation: 'Fresh powder snow',
             },
           },
@@ -477,6 +477,18 @@ export const openApiRoutes = {
         '403': createErrorResponses()['403'],
         '409': createErrorResponses()['409'],
         '500': createErrorResponses()['500'],
+      },
+    },
+  },
+
+  '/api/v1/snow-types/primary': {
+    get: {
+      summary: 'Get all primary snow types',
+      description: 'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
+      tags: ['Snow Types'],
+      responses: {
+        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        ...createErrorResponses(),
       },
     },
   },

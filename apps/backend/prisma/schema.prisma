@@ -75,7 +75,7 @@ model SnowType {
   name                          String                @unique @db.VarChar(50)
   colour                        String                @db.VarChar(15)
   skiability                    Int?
-  isPrimary                     Boolean                @default(false) @map("is_primary")
+  primarySnowTypeId             String?               @map("primary_snow_type_id")
   explanation                   String?               @db.Text
   createdAt                     DateTime              @default(now()) @map("created_at")
   updatedAt                     DateTime              @updatedAt @map("updated_at")
@@ -85,7 +85,10 @@ model SnowType {
   secondaryUserReviews          UserReview[]           @relation("ReviewSecondarySnowType")
   primarySnowTypes              SnowTypeSecondary[]   @relation("PrimarySnowType")
   secondarySnowTypes            SnowTypeSecondary[]   @relation("SecondarySnowType")
+  primarySnowType               SnowType?             @relation("PrimarySnowTypeReference", fields: [primarySnowTypeId], references: [id], onDelete: SetNull)
+  secondarySnowTypesRef         SnowType[]            @relation("PrimarySnowTypeReference")
 
+  @@index([primarySnowTypeId], map: "snow_types_primary_snow_type_id_fkey")
   @@map("snowTypes")
 }
 

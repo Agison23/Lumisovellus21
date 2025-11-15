@@ -7,3 +7,6 @@ UPDATE `snowTypes` SET `is_primary` = true WHERE `categoryId` IS NULL;
 -- DropTable: Remove categoryId column
 ALTER TABLE `snowTypes` DROP COLUMN `categoryId`;
 
+
+
+

@@ -7,7 +7,7 @@ export class ReviewsService extends BaseService {
     try {
       const snowTypes = await this.prisma.snowType.findMany({
         where: {
-          isPrimary: true,
+          primarySnowTypeId: null,
         },
         include: {
           primarySnowTypes: {
@@ -23,14 +23,14 @@ export class ReviewsService extends BaseService {
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        isPrimary: snowType.isPrimary,
+        primarySnowTypeId: snowType.primarySnowTypeId,
         explanation: snowType.explanation,
         secondaryTypes: snowType.primarySnowTypes.map((rel) => ({
           id: rel.secondarySnowType.id.toString(),
           name: rel.secondarySnowType.name,
           colour: rel.secondarySnowType.colour,
           skiability: rel.secondarySnowType.skiability,
-          isPrimary: rel.secondarySnowType.isPrimary,
+          primarySnowTypeId: rel.secondarySnowType.primarySnowTypeId,
           explanation: rel.secondarySnowType.explanation,
         })),
       }));
