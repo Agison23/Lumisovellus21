@@ -412,7 +412,7 @@ export const openApiRoutes = {
       description:
         'Creates a new guide update or updates the existing one for a segment. Only admins can create guide updates.',
       tags: ['Segments'],
-      security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       requestParams: {
         path: segmentIdSchema,
       },
@@ -430,6 +430,7 @@ export const openApiRoutes = {
             description: z.string().nullable(),
             primarySnowTypeIds: z.array(z.string().uuid()),
             secondarySnowTypeIds: z.array(z.string().uuid()),
+            hazards: z.array(z.string()),
           }),
           'Guide update created/updated successfully'
         ),
@@ -441,8 +442,8 @@ export const openApiRoutes = {
   // Review routes
   '/api/v1/snow-types': {
     get: {
-      summary: 'Get all snow types',
-      description: 'Retrieve all available snow types for reviews',
+      summary: 'Get all snow types (primary and secondary)',
+      description: 'Retrieve all snow types including both primary and secondary snow types in a flat list.',
       tags: ['Snow Types'],
       responses: {
         '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
@@ -453,7 +454,7 @@ export const openApiRoutes = {
       summary: 'Create a new snow type',
       description: 'Create a new snow type with the provided information. Requires authentication and admin role.',
       tags: ['Snow Types'],
-      security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
@@ -463,7 +464,7 @@ export const openApiRoutes = {
               name: 'Powder',
               colour: '#FFFFFF',
               skiability: 5,
-              categoryId: 1,
+              primarySnowTypeId: null,
               explanation: 'Fresh powder snow',
             },
           },
@@ -480,12 +481,24 @@ export const openApiRoutes = {
     },
   },
 
+  '/api/v1/snow-types/primary': {
+    get: {
+      summary: 'Get all primary snow types',
+      description: 'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
+      tags: ['Snow Types'],
+      responses: {
+        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        ...createErrorResponses(),
+      },
+    },
+  },
+
   '/api/v1/snow-types/{id}/secondary': {
     post: {
       summary: 'Add secondary snow types to a snow type',
       description: 'Associate one or more existing snow types as secondary types for the specified snow type. All entities are SnowTypes - "secondary" refers only to the relationship. Requires authentication and admin role.',
       tags: ['Snow Types'],
-      security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       requestParams: {
         path: snowTypeIdSchema,
       },

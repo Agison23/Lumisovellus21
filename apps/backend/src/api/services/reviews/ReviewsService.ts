@@ -5,15 +5,34 @@ export class ReviewsService extends BaseService {
 
   async getAllSnowTypes(): Promise<SnowType[]> {
     try {
-      const snowTypes = await this.prisma.snowType.findMany();
+      const snowTypes = await this.prisma.snowType.findMany({
+        where: {
+          primarySnowTypeId: null,
+        },
+        include: {
+          primarySnowTypes: {
+            include: {
+              secondarySnowType: true,
+            },
+          },
+        },
+      });
 
       return snowTypes.map((snowType) => ({
         id: snowType.id.toString(),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        categoryId: snowType.categoryId,
+        primarySnowTypeId: snowType.primarySnowTypeId,
         explanation: snowType.explanation,
+        secondaryTypes: snowType.primarySnowTypes.map((rel) => ({
+          id: rel.secondarySnowType.id.toString(),
+          name: rel.secondarySnowType.name,
+          colour: rel.secondarySnowType.colour,
+          skiability: rel.secondarySnowType.skiability,
+          primarySnowTypeId: rel.secondarySnowType.primarySnowTypeId,
+          explanation: rel.secondarySnowType.explanation,
+        })),
       }));
     } catch (error) {
       return await this.handleDatabaseError(error);
@@ -76,11 +95,19 @@ export class ReviewsService extends BaseService {
         }
       }
 
+      // Parse hazards from JSON if it exists
+      const hazards = (guideUpdate as any).hazards
+        ? (Array.isArray((guideUpdate as any).hazards)
+            ? ((guideUpdate as any).hazards as HazardType[])
+            : JSON.parse((guideUpdate as any).hazards as string))
+        : [];
+
       // Limit to max 2 each
       return {
         description: guideUpdate.description,
         primarySnowTypeIds: primarySnowTypeIds.slice(0, 2),
         secondarySnowTypeIds: secondarySnowTypeIds.slice(0, 2),
+        hazards: hazards,
       };
     } catch (error) {
       // If there's an error, return null rather than failing the entire request

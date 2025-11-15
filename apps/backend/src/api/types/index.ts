@@ -42,6 +42,7 @@ export interface GuideUpdate {
   description: string | null;
   primarySnowTypeIds: string[];
   secondarySnowTypeIds: string[];
+  hazards: HazardType[];
 }
 
 export interface UserReviewItem {
@@ -119,7 +120,7 @@ export interface SnowType {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
   secondaryTypes?: SnowType[];
 }
@@ -128,7 +129,7 @@ export interface CreateSnowTypeRequest {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
 }
 

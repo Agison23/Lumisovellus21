@@ -34,7 +34,7 @@ describe('ReviewsService Unit Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder snow',
           },
           {
@@ -42,7 +42,7 @@ describe('ReviewsService Unit Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice surface',
           },
         ],
@@ -56,16 +56,18 @@ describe('ReviewsService Unit Tests', () => {
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
-        categoryId: 1,
+        primarySnowTypeId: null,
         explanation: 'Fresh powder snow',
+        secondaryTypes: [],
       });
       expect(result[1]).toEqual({
         id: '2',
         name: 'Ice',
         colour: '#CCCCCC',
         skiability: 1,
-        categoryId: 2,
+        primarySnowTypeId: null,
         explanation: 'Hard ice surface',
+        secondaryTypes: [],
       });
     });
 
@@ -106,7 +108,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -223,7 +225,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
         },
       });
 
@@ -281,6 +283,7 @@ describe('ReviewsService Unit Tests', () => {
           id: 'snow-type-observation',
           name: 'Powder',
           colour: '#FFFFFF',
+          primarySnowTypeId: null,
         },
       });
 
@@ -360,7 +363,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -372,7 +375,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Ice',
           colour: '#CCCCCC',
           skiability: 1,
-          categoryId: 2,
+          primarySnowTypeId: '1',
           explanation: 'Hard ice',
         },
       });
@@ -427,7 +430,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -438,7 +441,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Harsi',
           colour: '#F0F0F0',
           skiability: 4,
-          categoryId: 2,
+          primarySnowTypeId: '3',
           explanation: 'Surface hoar',
         },
       });

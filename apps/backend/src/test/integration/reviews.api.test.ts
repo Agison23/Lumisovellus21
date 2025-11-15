@@ -3,12 +3,14 @@ import request from 'supertest';
 import express from 'express';
 import { testPrisma } from '../vitest.setup';
 import reviewsRoutes from '../../api/routes/reviews/reviewsRoutes';
+import snowTypesRoutes from '../../api/routes/snowTypes/snowTypesRoutes';
 import jwt from 'jsonwebtoken';
 
 // Create test app
 const app = express();
 app.use(express.json());
 app.use('/', reviewsRoutes);
+app.use('/', snowTypesRoutes);
 
 // Mock JWT secret for testing
 const JWT_SECRET = 'test_jwt_secret_key_for_testing_only';
@@ -60,7 +62,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder snow',
           },
           {
@@ -68,7 +70,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice surface',
           },
         ],
@@ -85,13 +87,27 @@ describe('Reviews API Integration Tests', () => {
       });
 
       expect(response.body.data).toHaveLength(2);
-      expect(response.body.data[0]).toEqual({
+      
+      // Find the Powder snow type (order may vary)
+      const powderType = response.body.data.find((st: any) => st.id === '1');
+      expect(powderType).toEqual({
         id: '1',
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
-        categoryId: 1,
+        primarySnowTypeId: null,
         explanation: 'Fresh powder snow',
+      });
+      
+      // Find the Ice snow type
+      const iceType = response.body.data.find((st: any) => st.id === '2');
+      expect(iceType).toEqual({
+        id: '2',
+        name: 'Ice',
+        colour: '#CCCCCC',
+        skiability: 1,
+        primarySnowTypeId: null,
+        explanation: 'Hard ice surface',
       });
     });
 
@@ -133,7 +149,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder',
           },
           {
@@ -141,7 +157,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice',
           },
         ],
@@ -241,6 +257,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Test Snow',
           colour: '#FFFFFF',
           skiability: 5,
+          primarySnowTypeId: null,
         },
       });
 
@@ -306,6 +323,7 @@ describe('Reviews API Integration Tests', () => {
           id: 'segment-snow',
           name: 'Powder',
           colour: '#FFFFFF',
+          primarySnowTypeId: null,
         },
       });
 
@@ -378,7 +396,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -390,7 +408,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Ice',
           colour: '#CCCCCC',
           skiability: 1,
-          categoryId: 2,
+          primarySnowTypeId: '1',
           explanation: 'Hard ice',
         },
       });
@@ -454,7 +472,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -465,7 +483,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Harsi',
           colour: '#F0F0F0',
           skiability: 4,
-          categoryId: 2,
+          primarySnowTypeId: '3',
           explanation: 'Surface hoar',
         },
       });

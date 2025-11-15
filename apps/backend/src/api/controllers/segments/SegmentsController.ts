@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
-import { AuthenticatedRequest } from '../../types';
+import { AuthenticatedRequest, HazardType } from '../../types';
 import { segmentQuerySchema } from '../../middleware/validation';
 
 export class SegmentsController {
@@ -51,6 +51,7 @@ export class SegmentsController {
         description: string | null;
         primarySnowTypeIds: string[];
         secondarySnowTypeIds: string[];
+        hazards?: string[];
       } = req.body;
 
       // Validate request body
@@ -58,15 +59,26 @@ export class SegmentsController {
         !Array.isArray(guideUpdateData.primarySnowTypeIds) ||
         !Array.isArray(guideUpdateData.secondarySnowTypeIds)
       ) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'primarySnowTypeIds and secondarySnowTypeIds must be arrays'
         );
         return;
       }
 
+      // Ensure hazards is an array (default to empty array if not provided)
+      if (guideUpdateData.hazards === undefined) {
+        guideUpdateData.hazards = [];
+      } else if (!Array.isArray(guideUpdateData.hazards)) {
+        ApiResponseHandler.validationError(
+          res,
+          'hazards must be an array'
+        );
+        return;
+      }
+
       if (guideUpdateData.primarySnowTypeIds.length > 2) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'Maximum 2 primary snow types allowed'
         );
@@ -74,9 +86,22 @@ export class SegmentsController {
       }
 
       if (guideUpdateData.secondarySnowTypeIds.length > 2) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'Maximum 2 secondary snow types allowed'
+        );
+        return;
+      }
+
+      // Validate hazards are valid HazardType values
+      const validHazards = ['stones', 'branches'];
+      const invalidHazards = guideUpdateData.hazards.filter(
+        (h) => !validHazards.includes(h)
+      );
+      if (invalidHazards.length > 0) {
+        ApiResponseHandler.validationError(
+          res,
+          `Invalid hazard types: ${invalidHazards.join(', ')}. Valid types are: ${validHazards.join(', ')}`
         );
         return;
       }
@@ -84,7 +109,12 @@ export class SegmentsController {
       const guideUpdate = await this.segmentsService.createOrUpdateGuideUpdate(
         id,
         req.user.id,
-        guideUpdateData
+        {
+          description: guideUpdateData.description,
+          primarySnowTypeIds: guideUpdateData.primarySnowTypeIds,
+          secondarySnowTypeIds: guideUpdateData.secondarySnowTypeIds,
+          hazards: guideUpdateData.hazards as HazardType[],
+        }
       );
       ApiResponseHandler.success(res, guideUpdate);
     }

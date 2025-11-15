@@ -5,7 +5,7 @@ export interface CreateSnowTypeRequest {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
 }
 
@@ -30,13 +30,32 @@ export class SnowTypesService extends BaseService {
       // Normalize colour format (ensure it starts with #)
       const normalizedColour = data.colour.startsWith('#') ? data.colour : `#${data.colour}`;
 
+      // If primarySnowTypeId is provided, verify it exists and is a primary type (has null primarySnowTypeId)
+      if (data.primarySnowTypeId) {
+        const primaryType = await this.prisma.snowType.findUnique({
+          where: { id: data.primarySnowTypeId },
+        });
+
+        if (!primaryType) {
+          const error: any = new Error('Primary snow type not found');
+          error.statusCode = 404;
+          throw error;
+        }
+
+        if (primaryType.primarySnowTypeId !== null) {
+          const error: any = new Error('Cannot use a secondary snow type as primary snow type');
+          error.statusCode = 400;
+          throw error;
+        }
+      }
+
       const snowType = await this.prisma.snowType.create({
         data: {
           id: crypto.randomUUID(),
           name: data.name,
           colour: normalizedColour,
           skiability: data.skiability ?? null,
-          categoryId: data.categoryId ?? null,
+          primarySnowTypeId: data.primarySnowTypeId ?? null,
           explanation: data.explanation ?? null,
         },
       });
@@ -46,7 +65,7 @@ export class SnowTypesService extends BaseService {
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        categoryId: snowType.categoryId,
+        primarySnowTypeId: snowType.primarySnowTypeId,
         explanation: snowType.explanation,
       };
     } catch (error: any) {
@@ -136,7 +155,7 @@ export class SnowTypesService extends BaseService {
                   name: true,
                   colour: true,
                   skiability: true,
-                  categoryId: true,
+                  primarySnowTypeId: true,
                   explanation: true,
                 },
               },
@@ -156,10 +175,17 @@ export class SnowTypesService extends BaseService {
         name: updatedSnowType.name,
         colour: updatedSnowType.colour,
         skiability: updatedSnowType.skiability,
-        categoryId: updatedSnowType.categoryId,
+        primarySnowTypeId: updatedSnowType.primarySnowTypeId,
         explanation: updatedSnowType.explanation,
         secondaryTypes: updatedSnowType.primarySnowTypes.map(
-          (rel) => rel.secondarySnowType
+          (rel) => ({
+            id: rel.secondarySnowType.id,
+            name: rel.secondarySnowType.name,
+            colour: rel.secondarySnowType.colour,
+            skiability: rel.secondarySnowType.skiability,
+            primarySnowTypeId: rel.secondarySnowType.primarySnowTypeId,
+            explanation: rel.secondarySnowType.explanation,
+          })
         ),
       };
     } catch (error: any) {
@@ -183,7 +209,7 @@ export class SnowTypesService extends BaseService {
                   name: true,
                   colour: true,
                   skiability: true,
-                  categoryId: true,
+                  primarySnowTypeId: true,
                   explanation: true,
                 },
               },
@@ -203,10 +229,17 @@ export class SnowTypesService extends BaseService {
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
-        categoryId: snowType.categoryId,
+        primarySnowTypeId: snowType.primarySnowTypeId,
         explanation: snowType.explanation,
         secondaryTypes: snowType.primarySnowTypes.map(
-          (rel) => rel.secondarySnowType
+          (rel) => ({
+            id: rel.secondarySnowType.id,
+            name: rel.secondarySnowType.name,
+            colour: rel.secondarySnowType.colour,
+            skiability: rel.secondarySnowType.skiability,
+            primarySnowTypeId: rel.secondarySnowType.primarySnowTypeId,
+            explanation: rel.secondarySnowType.explanation,
+          })
         ),
       };
     } catch (error: any) {
@@ -214,6 +247,70 @@ export class SnowTypesService extends BaseService {
         throw error;
       }
       throw await this.handleDatabaseError(error);
+    }
+  }
+
+  async getAllSnowTypesFlat(): Promise<SnowType[]> {
+    try {
+      // Get primary types first (primarySnowTypeId is null), then secondary types
+      const primaryTypes = await this.prisma.snowType.findMany({
+        where: { primarySnowTypeId: null },
+        orderBy: { name: 'asc' },
+      });
+
+      const secondaryTypes = await this.prisma.snowType.findMany({
+        where: { primarySnowTypeId: { not: null } },
+        orderBy: { name: 'asc' },
+      });
+
+      const allSnowTypes = [...primaryTypes, ...secondaryTypes];
+
+      return allSnowTypes.map((snowType) => ({
+        id: snowType.id,
+        name: snowType.name,
+        colour: snowType.colour,
+        skiability: snowType.skiability,
+        primarySnowTypeId: snowType.primarySnowTypeId,
+        explanation: snowType.explanation,
+      }));
+    } catch (error) {
+      return await this.handleDatabaseError(error);
+    }
+  }
+
+  async getPrimarySnowTypes(): Promise<SnowType[]> {
+    try {
+      const snowTypes = await this.prisma.snowType.findMany({
+        where: {
+          primarySnowTypeId: null,
+        },
+        include: {
+          primarySnowTypes: {
+            include: {
+              secondarySnowType: true,
+            },
+          },
+        },
+      });
+
+      return snowTypes.map((snowType) => ({
+        id: snowType.id.toString(),
+        name: snowType.name,
+        colour: snowType.colour,
+        skiability: snowType.skiability,
+        primarySnowTypeId: snowType.primarySnowTypeId,
+        explanation: snowType.explanation,
+        secondaryTypes: snowType.primarySnowTypes.map((rel) => ({
+          id: rel.secondarySnowType.id.toString(),
+          name: rel.secondarySnowType.name,
+          colour: rel.secondarySnowType.colour,
+          skiability: rel.secondarySnowType.skiability,
+          primarySnowTypeId: rel.secondarySnowType.primarySnowTypeId,
+          explanation: rel.secondarySnowType.explanation,
+        })),
+      }));
+    } catch (error) {
+      return await this.handleDatabaseError(error);
     }
   }
 }

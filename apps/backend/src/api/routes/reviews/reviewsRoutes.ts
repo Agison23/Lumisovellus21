@@ -7,40 +7,6 @@ const reviewsController = new ReviewsController();
 
 /**
  * @swagger
- * /api/v1/snow-types:
- *   get:
- *     summary: Get all snow types
- *     description: Retrieve all available snow types for reviews
- *     tags: [Snow Types]
- *     responses:
- *       200:
- *         description: Snow types retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
-
-/**
- * @swagger
  * /api/v1/observations:
  *   get:
  *     summary: Get observations for all segments
