@@ -35,6 +35,9 @@ import {
   weatherChangeQuerySchema,
   weatherFilterDaysQuerySchema,
   segmentSchema,
+  snowTypesSchema,
+  snowTypeSchema,
+  primarySnowTypeWithSecondariesSchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -443,10 +446,14 @@ export const openApiRoutes = {
   '/api/v1/snow-types': {
     get: {
       summary: 'Get all snow types (primary and secondary)',
-      description: 'Retrieve all snow types including both primary and secondary snow types in a flat list.',
+      description:
+        'Retrieve all snow types including both primary and secondary snow types in a flat list.',
       tags: ['Snow Types'],
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        '200': createSuccessResponse(
+          snowTypesSchema,
+          'Snow types retrieved successfully'
+        ),
         ...createErrorResponses(),
       },
     },
@@ -471,7 +478,10 @@ export const openApiRoutes = {
         },
       },
       responses: {
-        '201': createSuccessResponse(z.any(), 'Snow type created successfully'),
+        '201': createSuccessResponse(
+          snowTypeSchema,
+          'Snow type created successfully'
+        ),
         '400': createErrorResponses()['400'],
         '401': createErrorResponses()['401'],
         '403': createErrorResponses()['403'],
@@ -484,10 +494,14 @@ export const openApiRoutes = {
   '/api/v1/snow-types/primary': {
     get: {
       summary: 'Get all primary snow types',
-      description: 'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
+      description:
+        'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
       tags: ['Snow Types'],
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        '200': createSuccessResponse(
+          z.array(primarySnowTypeWithSecondariesSchema),
+          'Snow types retrieved successfully'
+        ),
         ...createErrorResponses(),
       },
     },

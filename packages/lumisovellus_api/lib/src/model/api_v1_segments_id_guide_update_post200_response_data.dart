@@ -23,6 +23,7 @@ ApiV1SegmentsIdGuideUpdatePost200ResponseData({
   required  this.description,
   this.primarySnowTypeIds = const [],
   this.secondarySnowTypeIds = const [],
+  this.hazards = const [],
 });
 
   @JsonKey(
@@ -61,19 +62,33 @@ ApiV1SegmentsIdGuideUpdatePost200ResponseData({
 
 
 
+  @JsonKey(
+    
+    name: r'hazards',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final List<String> hazards;
+
+
+
 
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is ApiV1SegmentsIdGuideUpdatePost200ResponseData &&
       other.description == description &&
       other.primarySnowTypeIds == primarySnowTypeIds &&
-      other.secondarySnowTypeIds == secondarySnowTypeIds;
+      other.secondarySnowTypeIds == secondarySnowTypeIds &&
+      other.hazards == hazards;
 
     @override
     int get hashCode =>
         (description == null ? 0 : description.hashCode) +
         primarySnowTypeIds.hashCode +
-        secondarySnowTypeIds.hashCode;
+        secondarySnowTypeIds.hashCode +
+        hazards.hashCode;
 
   factory ApiV1SegmentsIdGuideUpdatePost200ResponseData.fromJson(Map<String, dynamic> json) => _$ApiV1SegmentsIdGuideUpdatePost200ResponseDataFromJson(json);
 

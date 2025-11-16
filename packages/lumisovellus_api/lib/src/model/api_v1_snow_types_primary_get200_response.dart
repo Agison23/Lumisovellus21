@@ -3,11 +3,11 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lumisovellus_api/src/model/snow_type.dart';
+import 'package:lumisovellus_api/src/model/primary_snow_type_with_secondaries.dart';
 import 'package:lumisovellus_api/src/model/health_get200_response_meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'api_v1_snow_types_get200_response.g.dart';
+part 'api_v1_snow_types_primary_get200_response.g.dart';
 
 
 @JsonSerializable(
@@ -16,12 +16,12 @@ part 'api_v1_snow_types_get200_response.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ApiV1SnowTypesGet200Response {
+class ApiV1SnowTypesPrimaryGet200Response {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [ApiV1SnowTypesGet200Response] instance.
-ApiV1SnowTypesGet200Response({
+/// Returns a new [ApiV1SnowTypesPrimaryGet200Response] instance.
+ApiV1SnowTypesPrimaryGet200Response({
   required  this.success,
   this.data = const [],
   required  this.meta,
@@ -40,7 +40,6 @@ ApiV1SnowTypesGet200Response({
 
 
 
-      /// List of snow types
   @JsonKey(
     
     name: r'data',
@@ -49,7 +48,7 @@ ApiV1SnowTypesGet200Response({
   )
 
 
-  final List<SnowType> data;
+  final List<PrimarySnowTypeWithSecondaries> data;
 
 
 
@@ -68,7 +67,7 @@ ApiV1SnowTypesGet200Response({
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is ApiV1SnowTypesGet200Response &&
+    bool operator ==(Object other) => identical(this, other) || other is ApiV1SnowTypesPrimaryGet200Response &&
       other.success == success &&
       other.data == data &&
       other.meta == meta;
@@ -79,9 +78,9 @@ ApiV1SnowTypesGet200Response({
         data.hashCode +
         meta.hashCode;
 
-  factory ApiV1SnowTypesGet200Response.fromJson(Map<String, dynamic> json) => _$ApiV1SnowTypesGet200ResponseFromJson(json);
+  factory ApiV1SnowTypesPrimaryGet200Response.fromJson(Map<String, dynamic> json) => _$ApiV1SnowTypesPrimaryGet200ResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ApiV1SnowTypesGet200ResponseToJson(this);
+  Map<String, dynamic> toJson() => _$ApiV1SnowTypesPrimaryGet200ResponseToJson(this);
 
   @override
   String toString() {

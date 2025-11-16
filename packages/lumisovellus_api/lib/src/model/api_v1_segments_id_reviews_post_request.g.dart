@@ -18,12 +18,7 @@ ApiV1SegmentsIdReviewsPostRequest _$ApiV1SegmentsIdReviewsPostRequestFromJson(
       'hazards',
       (v) =>
           (v as List<dynamic>?)
-              ?.map(
-                (e) => $enumDecode(
-                  _$ApiV1SegmentsIdReviewsPostRequestHazardsEnumEnumMap,
-                  e,
-                ),
-              )
+              ?.map((e) => $enumDecode(_$HazardEnumMap, e))
               .toList() ??
           [],
     ),
@@ -36,13 +31,8 @@ Map<String, dynamic> _$ApiV1SegmentsIdReviewsPostRequestToJson(
   ApiV1SegmentsIdReviewsPostRequest instance,
 ) => <String, dynamic>{
   'snowType': instance.snowType,
-  'hazards': ?instance.hazards
-      ?.map((e) => _$ApiV1SegmentsIdReviewsPostRequestHazardsEnumEnumMap[e]!)
-      .toList(),
+  'hazards': ?instance.hazards?.map((e) => _$HazardEnumMap[e]!).toList(),
   'comment': ?instance.comment,
 };
 
-const _$ApiV1SegmentsIdReviewsPostRequestHazardsEnumEnumMap = {
-  ApiV1SegmentsIdReviewsPostRequestHazardsEnum.stones: 'stones',
-  ApiV1SegmentsIdReviewsPostRequestHazardsEnum.branches: 'branches',
-};
+const _$HazardEnumMap = {Hazard.stones: 'stones', Hazard.branches: 'branches'};

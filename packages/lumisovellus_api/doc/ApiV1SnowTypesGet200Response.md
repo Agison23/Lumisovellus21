@@ -9,7 +9,7 @@ import 'package:lumisovellus_api/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **success** | **bool** | Indicates if the request was successful | 
-**data** | **List&lt;Object&gt;** |  | 
+**data** | [**List&lt;SnowType&gt;**](SnowType.md) | List of snow types | 
 **meta** | [**HealthGet200ResponseMeta**](HealthGet200ResponseMeta.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -88,9 +88,10 @@ Class | Method | HTTP request | Description
 [*ReviewsApi*](doc/ReviewsApi.md) | [**apiV1SegmentsIdReviewsPost**](doc/ReviewsApi.md#apiv1segmentsidreviewspost) | **POST** /api/v1/segments/{id}/reviews | Create a review for a segment
 [*SegmentsApi*](doc/SegmentsApi.md) | [**apiV1SegmentsGet**](doc/SegmentsApi.md#apiv1segmentsget) | **GET** /api/v1/segments | Get all segments
 [*SegmentsApi*](doc/SegmentsApi.md) | [**apiV1SegmentsIdGuideUpdatePost**](doc/SegmentsApi.md#apiv1segmentsidguideupdatepost) | **POST** /api/v1/segments/{id}/guideUpdate | Create or update a guide update for a segment (Admin only)
-[*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesGet**](doc/SnowTypesApi.md#apiv1snowtypesget) | **GET** /api/v1/snow-types | Get all snow types
+[*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesGet**](doc/SnowTypesApi.md#apiv1snowtypesget) | **GET** /api/v1/snow-types | Get all snow types (primary and secondary)
 [*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesIdSecondaryPost**](doc/SnowTypesApi.md#apiv1snowtypesidsecondarypost) | **POST** /api/v1/snow-types/{id}/secondary | Add secondary snow types to a snow type
 [*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesPost**](doc/SnowTypesApi.md#apiv1snowtypespost) | **POST** /api/v1/snow-types | Create a new snow type
+[*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesPrimaryGet**](doc/SnowTypesApi.md#apiv1snowtypesprimaryget) | **GET** /api/v1/snow-types/primary | Get all primary snow types
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdBatteryPost**](doc/UsersApi.md#apiv1usersdeviceidbatterypost) | **POST** /api/v1/users/{deviceId}/battery | Update battery status
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdLocationPost**](doc/UsersApi.md#apiv1usersdeviceidlocationpost) | **POST** /api/v1/users/{deviceId}/location | Update mobile user location
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdRoleGet**](doc/UsersApi.md#apiv1usersdeviceidroleget) | **GET** /api/v1/users/{deviceId}/role | Get user role
@@ -116,7 +117,9 @@ Class | Method | HTTP request | Description
  - [ApiV1SegmentsIdObservationsGet200Response](doc/ApiV1SegmentsIdObservationsGet200Response.md)
  - [ApiV1SegmentsIdReviewsPostRequest](doc/ApiV1SegmentsIdReviewsPostRequest.md)
  - [ApiV1SnowTypesGet200Response](doc/ApiV1SnowTypesGet200Response.md)
+ - [ApiV1SnowTypesIdSecondaryPost200Response](doc/ApiV1SnowTypesIdSecondaryPost200Response.md)
  - [ApiV1SnowTypesPost201Response](doc/ApiV1SnowTypesPost201Response.md)
+ - [ApiV1SnowTypesPrimaryGet200Response](doc/ApiV1SnowTypesPrimaryGet200Response.md)
  - [ApiV1UsersDeviceIdLocationPost200Response](doc/ApiV1UsersDeviceIdLocationPost200Response.md)
  - [ApiV1UsersDeviceIdLocationPost200ResponseData](doc/ApiV1UsersDeviceIdLocationPost200ResponseData.md)
  - [ApiV1UsersDeviceIdRoleGet200Response](doc/ApiV1UsersDeviceIdRoleGet200Response.md)
@@ -140,6 +143,7 @@ Class | Method | HTTP request | Description
  - [ErrorResponseMeta](doc/ErrorResponseMeta.md)
  - [GuideUpdateRequest](doc/GuideUpdateRequest.md)
  - [GuideUpdateRequestOutput](doc/GuideUpdateRequestOutput.md)
+ - [Hazard](doc/Hazard.md)
  - [HealthGet200Response](doc/HealthGet200Response.md)
  - [HealthGet200ResponseMeta](doc/HealthGet200ResponseMeta.md)
  - [HealthResponse](doc/HealthResponse.md)
@@ -162,6 +166,7 @@ Class | Method | HTTP request | Description
  - [LocationUpdate](doc/LocationUpdate.md)
  - [LoginRequest](doc/LoginRequest.md)
  - [Observation](doc/Observation.md)
+ - [PrimarySnowTypeWithSecondaries](doc/PrimarySnowTypeWithSecondaries.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegisterRequest](doc/RegisterRequest.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
@@ -169,6 +174,7 @@ Class | Method | HTTP request | Description
  - [Segment](doc/Segment.md)
  - [SegmentPoint](doc/SegmentPoint.md)
  - [SegmentUserReview](doc/SegmentUserReview.md)
+ - [SnowType](doc/SnowType.md)
  - [UpdateProfileRequest](doc/UpdateProfileRequest.md)
  - [User](doc/User.md)
  - [UserReviewObservation](doc/UserReviewObservation.md)

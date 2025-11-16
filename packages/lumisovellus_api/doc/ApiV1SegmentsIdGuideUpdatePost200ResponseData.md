@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **description** | **String** |  | 
 **primarySnowTypeIds** | **List&lt;String&gt;** |  | 
 **secondarySnowTypeIds** | **List&lt;String&gt;** |  | 
+**hazards** | **List&lt;String&gt;** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

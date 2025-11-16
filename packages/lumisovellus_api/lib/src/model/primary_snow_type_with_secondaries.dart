@@ -3,9 +3,10 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lumisovellus_api/src/model/snow_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'create_snow_type_request.g.dart';
+part 'primary_snow_type_with_secondaries.g.dart';
 
 
 @JsonSerializable(
@@ -14,18 +15,33 @@ part 'create_snow_type_request.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class CreateSnowTypeRequest {
+class PrimarySnowTypeWithSecondaries {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [CreateSnowTypeRequest] instance.
-CreateSnowTypeRequest({
+/// Returns a new [PrimarySnowTypeWithSecondaries] instance.
+PrimarySnowTypeWithSecondaries({
+  required  this.id,
   required  this.name,
   required  this.colour,
    this.skiability,
    this.primarySnowTypeId,
    this.explanation,
+  this.secondarySnowTypes = const [],
 });
+
+      /// Snow type ID (UUID)
+  @JsonKey(
+    
+    name: r'id',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String id;
+
+
 
       /// Snow type name
   @JsonKey(
@@ -53,7 +69,7 @@ CreateSnowTypeRequest({
 
 
 
-      /// Skiability rating (1-5)
+      /// Skiability rating (1-5), nullable
           // minimum: 1
           // maximum: 5
   @JsonKey(
@@ -94,27 +110,44 @@ CreateSnowTypeRequest({
 
 
 
+      /// Secondary snow types for this primary type
+  @JsonKey(
+    
+    name: r'secondarySnowTypes',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final List<SnowType> secondarySnowTypes;
+
+
+
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is CreateSnowTypeRequest &&
+    bool operator ==(Object other) => identical(this, other) || other is PrimarySnowTypeWithSecondaries &&
+      other.id == id &&
       other.name == name &&
       other.colour == colour &&
       other.skiability == skiability &&
       other.primarySnowTypeId == primarySnowTypeId &&
-      other.explanation == explanation;
+      other.explanation == explanation &&
+      other.secondarySnowTypes == secondarySnowTypes;
 
     @override
     int get hashCode =>
+        id.hashCode +
         name.hashCode +
         colour.hashCode +
         (skiability == null ? 0 : skiability.hashCode) +
         (primarySnowTypeId == null ? 0 : primarySnowTypeId.hashCode) +
-        (explanation == null ? 0 : explanation.hashCode);
+        (explanation == null ? 0 : explanation.hashCode) +
+        secondarySnowTypes.hashCode;
 
-  factory CreateSnowTypeRequest.fromJson(Map<String, dynamic> json) => _$CreateSnowTypeRequestFromJson(json);
+  factory PrimarySnowTypeWithSecondaries.fromJson(Map<String, dynamic> json) => _$PrimarySnowTypeWithSecondariesFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CreateSnowTypeRequestToJson(this);
+  Map<String, dynamic> toJson() => _$PrimarySnowTypeWithSecondariesToJson(this);
 
   @override
   String toString() {

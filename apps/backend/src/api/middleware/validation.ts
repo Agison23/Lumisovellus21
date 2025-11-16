@@ -13,10 +13,8 @@ const weatherDaysSchema = z
 
 export const weatherItemSchema = z
   .enum(['temperature', 'windSpeed', 'windDirection', 'snowDepth'], {
-    errorMap: () => ({
-      message:
-        'Invalid item. Allowed values: temperature, windSpeed, windDirection, snowDepth',
-    }),
+    message:
+      'Invalid item. Allowed values: temperature, windSpeed, windDirection, snowDepth',
   })
   .meta({
     description: 'Weather item to aggregate',
@@ -187,11 +185,9 @@ export const segmentIdSchema = z
 // Review validation
 const hazardSchema = z
   .enum(['stones', 'branches'], {
-    errorMap: () => ({
-      message: 'Invalid hazard type. Must be one of: stones, branches',
-    }),
+    message: 'Invalid hazard type. Must be one of: stones, branches',
   })
-  .meta({ description: 'Hazard type found on the trail', example: 'stones' });
+  .meta({ id: 'Hazard', description: 'Hazard type found on the trail', example: 'stones' });
 
 export const reviewSchema = z
   .object({
@@ -588,6 +584,59 @@ export const addSecondarySnowTypesSchema = z
       .meta({ description: 'Array of secondary snow type IDs', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
   })
   .meta({ id: 'AddSecondarySnowTypesRequest' });
+
+export const snowTypeSchema = z
+  .object({
+    id: z
+      .string()
+      .uuid('Invalid snow type ID format')
+      .meta({ description: 'Snow type ID (UUID)', example: '72209550-799c-4a33-99ab-ca2c396f16d7' }),
+    name: z
+      .string()
+      .meta({ description: 'Snow type name', example: 'Puuterilumi' }),
+    colour: z
+      .string()
+      .meta({ description: 'Snow type colour in hex format', example: '#5AABED' }),
+    skiability: z
+      .number()
+      .int()
+      .min(1)
+      .max(5)
+      .nullable()
+      .optional()
+      .meta({ description: 'Skiability rating (1-5), nullable', example: 4 }),
+    primarySnowTypeId: z
+      .string()
+      .uuid('Invalid primary snow type ID format')
+      .nullable()
+      .optional()
+      .meta({
+        description:
+          'Primary snow type ID. NULL for primary snow types, UUID for secondary snow types',
+        example: null,
+      }),
+    explanation: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({
+        description: 'Explanation of the snow type',
+        example: 'Vastasatanut irtonainen, höyhenenkevyt lumi.',
+      }),
+  })
+  .meta({ id: 'SnowType' });
+
+export const snowTypesSchema = z
+  .array(snowTypeSchema)
+  .meta({ id: 'SnowTypes', description: 'List of snow types' });
+
+export const primarySnowTypeWithSecondariesSchema = snowTypeSchema
+  .extend({
+    secondarySnowTypes: z
+      .array(snowTypeSchema)
+      .meta({ description: 'Secondary snow types for this primary type' }),
+  })
+  .meta({ id: 'PrimarySnowTypeWithSecondaries' });
 
 // Guide Update validation
 export const guideUpdateSchema = z

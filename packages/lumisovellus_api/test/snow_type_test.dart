@@ -1,12 +1,18 @@
 import 'package:test/test.dart';
 import 'package:lumisovellus_api/lumisovellus_api.dart';
 
-// tests for CreateSnowTypeRequest
+// tests for SnowType
 void main() {
-  final CreateSnowTypeRequest? instance = /* CreateSnowTypeRequest(...) */ null;
+  final SnowType? instance = /* SnowType(...) */ null;
   // TODO add properties to the entity
 
-  group(CreateSnowTypeRequest, () {
+  group(SnowType, () {
+    // Snow type ID (UUID)
+    // String id
+    test('to test the property `id`', () async {
+      // TODO
+    });
+
     // Snow type name
     // String name
     test('to test the property `name`', () async {
@@ -19,7 +25,7 @@ void main() {
       // TODO
     });
 
-    // Skiability rating (1-5)
+    // Skiability rating (1-5), nullable
     // int skiability
     test('to test the property `skiability`', () async {
       // TODO

@@ -5,7 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:json_annotation/json_annotation.dart';
 
-part 'create_snow_type_request.g.dart';
+part 'snow_type.g.dart';
 
 
 @JsonSerializable(
@@ -14,18 +14,32 @@ part 'create_snow_type_request.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class CreateSnowTypeRequest {
+class SnowType {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [CreateSnowTypeRequest] instance.
-CreateSnowTypeRequest({
+/// Returns a new [SnowType] instance.
+SnowType({
+  required  this.id,
   required  this.name,
   required  this.colour,
    this.skiability,
    this.primarySnowTypeId,
    this.explanation,
 });
+
+      /// Snow type ID (UUID)
+  @JsonKey(
+    
+    name: r'id',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String id;
+
+
 
       /// Snow type name
   @JsonKey(
@@ -53,7 +67,7 @@ CreateSnowTypeRequest({
 
 
 
-      /// Skiability rating (1-5)
+      /// Skiability rating (1-5), nullable
           // minimum: 1
           // maximum: 5
   @JsonKey(
@@ -97,7 +111,8 @@ CreateSnowTypeRequest({
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is CreateSnowTypeRequest &&
+    bool operator ==(Object other) => identical(this, other) || other is SnowType &&
+      other.id == id &&
       other.name == name &&
       other.colour == colour &&
       other.skiability == skiability &&
@@ -106,15 +121,16 @@ CreateSnowTypeRequest({
 
     @override
     int get hashCode =>
+        id.hashCode +
         name.hashCode +
         colour.hashCode +
         (skiability == null ? 0 : skiability.hashCode) +
         (primarySnowTypeId == null ? 0 : primarySnowTypeId.hashCode) +
         (explanation == null ? 0 : explanation.hashCode);
 
-  factory CreateSnowTypeRequest.fromJson(Map<String, dynamic> json) => _$CreateSnowTypeRequestFromJson(json);
+  factory SnowType.fromJson(Map<String, dynamic> json) => _$SnowTypeFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CreateSnowTypeRequestToJson(this);
+  Map<String, dynamic> toJson() => _$SnowTypeToJson(this);
 
   @override
   String toString() {
