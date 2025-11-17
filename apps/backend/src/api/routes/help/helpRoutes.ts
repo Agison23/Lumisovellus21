@@ -1,208 +1,227 @@
 import { Router } from 'express';
 import { HelpController } from '../../controllers/help/HelpController';
-import { authenticateToken, requireRole } from '../../middleware/auth';
+import { authenticateToken } from '../../middleware/auth';
 
 const router = Router();
 const helpController = new HelpController();
 
 /**
  * @swagger
- * /api/v1/help-requests:
+ * /help/events:
  *   post:
- *     summary: Create help request
- *     description: Create a help request for emergency or assistance
- *     tags: [Help Requests]
+ *     summary: Create a new help event
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/HelpRequest'
+ *             $ref: '#/components/schemas/HelpEventCreate'
  *     responses:
- *       200:
- *         description: Help request created successfully
+ *       201:
+ *         description: Help event created successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     status:
- *                       type: string
- *                       example: ok
- *                     nearbyUsers:
- *                       type: number
- *                       description: Number of nearby users found
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
+ *               $ref: '#/components/schemas/HelpEventRescueeView'
  */
-router.post(
-  '/api/v1/help-requests',
-  authenticateToken,
-  helpController.createHelpRequest
-);
+router.post('/help/events', authenticateToken, helpController.createHelpEvent);
 
 /**
  * @swagger
- * /api/v1/help-requests:
+ * /help/events/nearby:
  *   get:
- *     summary: Get help requests
- *     description: Retrieve all help requests for rescue interface
- *     tags: [Help Requests]
+ *     summary: List nearby active help events
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: lat
+ *         required: true
+ *         schema:
+ *           type: number
+ *           format: double
+ *       - in: query
+ *         name: lng
+ *         required: true
+ *         schema:
+ *           type: number
+ *           format: double
+ *       - in: query
+ *         name: accuracy
+ *         schema:
+ *           type: integer
+ *           default: 3000
+ *           description: Search radius in meters
  *     responses:
  *       200:
- *         description: Help requests retrieved successfully
+ *         description: List of nearby help events
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/HelpRequest'
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/HelpEventSummary'
  */
 router.get(
-  '/api/v1/help-requests',
+  '/help/events/nearby',
   authenticateToken,
-  helpController.getAllHelpRequests
+  helpController.listNearbyHelpEvents
 );
 
 /**
  * @swagger
- * /api/v1/help-responses:
- *   post:
- *     summary: Update help response
- *     description: Update the response status for a help request
- *     tags: [Help Requests]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               helpGiver:
- *                 type: string
- *               helpRequester:
- *                 type: string
- *               state:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Help response updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     status:
- *                       type: string
- *                       example: ok
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- */
-router.post(
-  '/api/v1/help-responses',
-  authenticateToken,
-  helpController.updateHelpResponse
-);
-
-/**
- * @swagger
- * /api/v1/help-requests/{id}/helpers:
+ * /help/events/{eventId}/view:
  *   get:
- *     summary: Get users who can help with a specific help request
- *     description: Retrieve all users who have been notified about a help request with their status and distance
- *     tags: [Help Requests]
+ *     summary: Get a help event view for the current user
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: eventId
  *         required: true
  *         schema:
  *           type: string
- *         description: Help request ID
  *     responses:
  *       200:
- *         description: Help request helpers retrieved successfully
+ *         description: Context-aware help event view
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       userId:
- *                         type: string
- *                       firstName:
- *                         type: string
- *                       lastName:
- *                         type: string
- *                       phoneNumber:
- *                         type: string
- *                       distance:
- *                         type: number
- *                         description: Distance in kilometers (-1 if no location data)
- *                       state:
- *                         type: integer
- *                         description: Response state (0: Pending, 1: Accepted, 2: Declined, 3: Completed)
- *                       lowBattery:
- *                         type: integer
- *                         description: Battery status (0: Normal, 1: Low)
- *                       lastSeen:
- *                         type: string
- *                         format: date-time
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       404:
- *         description: Help request not found
- *       500:
- *         description: Internal server error
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/HelpEventRescueeView'
+ *                 - $ref: '#/components/schemas/HelpEventRescuerView'
+ *       403:
+ *         description: User is not part of this event
  */
 router.get(
-  '/api/v1/help-requests/:id/helpers',
+  '/help/events/:eventId/view',
   authenticateToken,
-  helpController.getHelpRequestHelpers
+  helpController.getHelpEventView
+);
+
+/**
+ * @swagger
+ * /help/events/{eventId}/acceptance:
+ *   post:
+ *     summary: Accept (join) a help event
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/HelpEventAcceptance'
+ *     responses:
+ *       200:
+ *         description: Updated help event view for the rescuer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HelpEventRescuerView'
+ */
+router.post(
+  '/help/events/:eventId/acceptance',
+  authenticateToken,
+  helpController.acceptHelpEvent
+);
+
+/**
+ * @swagger
+ * /help/events/{eventId}/acceptance:
+ *   delete:
+ *     summary: Withdraw from a help event
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Updated help event view for the rescuer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HelpEventRescuerView'
+ */
+router.delete(
+  '/help/events/:eventId/acceptance',
+  authenticateToken,
+  helpController.withdrawHelpEvent
+);
+
+/**
+ * @swagger
+ * /help/events/{eventId}:
+ *   patch:
+ *     summary: Update help event status
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/HelpEventStatusUpdate'
+ *     responses:
+ *       200:
+ *         description: Updated help event view for the rescuee
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HelpEventRescueeView'
+ */
+router.patch(
+  '/help/events/:eventId',
+  authenticateToken,
+  helpController.updateHelpEventStatus
+);
+
+/**
+ * @swagger
+ * /help/events/{eventId}/stream:
+ *   get:
+ *     summary: Subscribe to real-time help event updates
+ *     tags: [Help Events]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       501:
+ *         description: Streaming not yet implemented
+ */
+router.get(
+  '/help/events/:eventId/stream',
+  authenticateToken,
+  helpController.streamHelpEvent
 );
 
 export default router;

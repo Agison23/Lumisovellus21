@@ -4,6 +4,81 @@ import { z } from 'zod';
 // Health validation
 export const healthSchema = z.object({});
 
+// Weather validation
+const weatherDaysSchema = z
+  .coerce.number()
+  .int('Days must be an integer')
+  .min(1, 'Days must be at least 1')
+  .max(30, 'Days must be at most 30');
+
+export const weatherItemSchema = z
+  .enum(['temperature', 'windSpeed', 'windDirection', 'snowDepth'], {
+    message:
+      'Invalid item. Allowed values: temperature, windSpeed, windDirection, snowDepth',
+  })
+  .meta({
+    description: 'Weather item to aggregate',
+    example: 'windSpeed',
+  });
+
+export const weatherAverageQuerySchema = z
+  .object({
+    item: z
+      .enum(['windSpeed', 'windDirection'])
+      .meta({ description: 'Weather item to average', example: 'windSpeed' }),
+    days: weatherDaysSchema
+      .default(3)
+      .meta({ description: 'Number of days to include', example: 3 }),
+  })
+  .meta({ id: 'WeatherAverageQuery' });
+
+export const weatherMinimumQuerySchema = z
+  .object({
+    item: z
+      .literal('temperature')
+      .meta({ description: 'Weather item to get minimum for', example: 'temperature' }),
+    days: weatherDaysSchema
+      .default(3)
+      .meta({ description: 'Number of days to include', example: 3 }),
+  })
+  .meta({ id: 'WeatherMinimumQuery' });
+
+export const weatherMaximumQuerySchema = z
+  .object({
+    item: z
+      .enum(['temperature', 'windSpeed'])
+      .meta({ description: 'Weather item to get maximum for', example: 'windSpeed' }),
+    days: weatherDaysSchema
+      .default(3)
+      .meta({ description: 'Number of days to include', example: 3 }),
+  })
+  .meta({ id: 'WeatherMaximumQuery' });
+
+export const weatherChangeQuerySchema = z
+  .object({
+    item: z
+      .literal('snowDepth')
+      .meta({ description: 'Weather item to calculate change for', example: 'snowDepth' }),
+    days: weatherDaysSchema
+      .default(7)
+      .meta({ description: 'Number of days to look back from now', example: 7 }),
+  })
+  .meta({ id: 'WeatherChangeQuery' });
+
+export const weatherFilterDaysQuerySchema = z
+  .object({
+    item: z
+      .literal('temperature')
+      .meta({ description: 'Weather item used for filtering', example: 'temperature' }),
+    threshold: z.coerce
+      .number()
+      .meta({ description: 'Threshold to compare against', example: 0 }),
+    days: weatherDaysSchema
+      .default(3)
+      .meta({ description: 'Number of days to include', example: 3 }),
+  })
+  .meta({ id: 'WeatherFilterDaysQuery' });
+
 // Auth validation schemas
 export const loginSchema = z
   .object({
@@ -110,11 +185,9 @@ export const segmentIdSchema = z
 // Review validation
 const hazardSchema = z
   .enum(['stones', 'branches'], {
-    errorMap: () => ({
-      message: 'Invalid hazard type. Must be one of: stones, branches',
-    }),
+    message: 'Invalid hazard type. Must be one of: stones, branches',
   })
-  .meta({ description: 'Hazard type found on the trail', example: 'stones' });
+  .meta({ id: 'Hazard', description: 'Hazard type found on the trail', example: 'stones' });
 
 export const reviewSchema = z
   .object({
@@ -199,54 +272,130 @@ export const roleUpdateSchema = z
   })
   .meta({ id: 'RoleUpdate' });
 
-// Help request validation
-export const helpRequestSchema = z
+// Help event validation
+export const helpNeedTypeSchema = z
+  .enum(['health', 'equipment', 'lost'])
+  .meta({ description: 'Type of help requested', example: 'health' });
+
+export const helpEventLocationSchema = z
+  .object({
+    latitude: z.number().min(-90).max(90).meta({ description: 'Latitude', example: 65.0121 }),
+    longitude: z.number().min(-180).max(180).meta({ description: 'Longitude', example: 25.4651 }),
+    accuracy: z
+      .number()
+      .nonnegative()
+      .nullable()
+      .meta({ description: 'Location accuracy in meters', example: 25 })
+      .optional(),
+  })
+  .meta({ id: 'HelpEventLocation' });
+
+export const helpEventCreateSchema = z
   .object({
     timestamp: z
       .number()
       .int()
       .positive('Timestamp must be positive')
       .meta({ description: 'Unix timestamp', example: 1640995200 }),
-    deviceId: z
-      .string()
-      .min(1, 'Device ID is required')
-      .meta({ description: 'Device identifier', example: 'device123' }),
-    gpsCoord: z
-      .string()
-      .min(1, 'GPS coordinates are required')
-      .meta({ description: 'GPS coordinates (format: "lat,lng")', example: '65.0121,25.4651' }),
-    helpType: z
-      .enum(['seriousEmerg', 'help'], {
-        errorMap: () => ({
-          message: 'Help type must be either "seriousEmerg" or "help"',
-        }),
-      })
-      .meta({ description: 'Type of help request', example: 'help' }),
+    location: helpEventLocationSchema,
+    needType: helpNeedTypeSchema,
     chatRoomId: z
       .string()
       .min(1, 'Chat room ID is required')
       .meta({ description: 'Chat room identifier', example: 'room123' }),
   })
-  .meta({ id: 'HelpRequest' });
+  .meta({ id: 'HelpEventCreate' });
 
-export const helpResponseSchema = z
+export const helpEventStatusSchema = z
+  .enum(['active', 'completed', 'cancelled'])
+  .meta({ description: 'Help event status', example: 'active' });
+
+export const helpEventNearbyQuerySchema = z
   .object({
-    helpGiver: z
-      .string()
-      .min(1, 'Help giver ID is required')
-      .meta({ description: 'User ID of the person providing help', example: '550e8400-e29b-41d4-a716-446655440001' }),
-    helpRequester: z
-      .string()
-      .min(1, 'Help requester ID is required')
-      .meta({ description: 'User ID of the person requesting help', example: '550e8400-e29b-41d4-a716-446655440002' }),
-    state: z
+    lat: z.coerce
+      .number()
+      .min(-90)
+      .max(90)
+      .meta({ description: 'Latitude of requesting user', example: 65.0121 }),
+    lng: z.coerce
+      .number()
+      .min(-180)
+      .max(180)
+      .meta({ description: 'Longitude of requesting user', example: 25.4651 }),
+    accuracy: z.coerce
+      .number()
+      .int()
+      .min(100)
+      .max(20000)
+      .optional()
+      .meta({ description: 'Search radius in meters', example: 3000 }),
+  })
+  .meta({ id: 'HelpEventNearbyQuery' });
+
+export const helpEventAcceptanceSchema = z
+  .object({
+    location: helpEventLocationSchema,
+  })
+  .meta({ id: 'HelpEventAcceptance' });
+
+export const helpEventStatusUpdateSchema = z
+  .object({
+    status: helpEventStatusSchema,
+  })
+  .meta({ id: 'HelpEventStatusUpdate' });
+
+export const userStatusSchema = z
+  .object({
+    location: helpEventLocationSchema,
+    batteryLevel: z
       .number()
       .int()
       .min(0)
-      .max(3, 'State must be between 0 and 3')
-      .meta({ description: 'Response state (0: Pending, 1: Accepted, 2: Declined, 3: Completed)', example: 0 }),
+      .max(100)
+      .nullable()
+      .meta({ description: 'Battery level percentage', example: 85 }),
   })
-  .meta({ id: 'HelpResponse' });
+  .meta({ id: 'HelpEventUserStatus' });
+
+export const rescueeSchema = z
+  .object({
+    userId: z.string().meta({ description: 'Rescuee user ID' }),
+    needType: helpNeedTypeSchema,
+    userStatus: userStatusSchema,
+  })
+  .meta({ id: 'HelpEventRescuee' });
+
+export const helpEventParticipationSchema = z
+  .object({
+    acceptanceId: z.string().meta({ description: 'Participation entry ID' }),
+    eventId: z.string().meta({ description: 'Help event ID' }),
+    responderId: z.string().meta({ description: 'Rescuer user ID' }),
+    location: helpEventLocationSchema.nullable(),
+    acceptedAt: z.string().datetime().meta({ description: 'Acceptance timestamp' }),
+  })
+  .meta({ id: 'HelpEventParticipation' });
+
+export const helpEventSummarySchema = z
+  .object({
+    eventId: z.string(),
+    status: helpEventStatusSchema,
+    rescuee: rescueeSchema,
+    location: helpEventLocationSchema,
+    rescuerCount: z.number().int(),
+    createdAt: z.string().datetime(),
+  })
+  .meta({ id: 'HelpEventSummary' });
+
+export const helpEventRescueeViewSchema = helpEventSummarySchema
+  .extend({
+    acceptedRescuers: z.array(helpEventParticipationSchema),
+    updatedAt: z.string().datetime().nullable(),
+  })
+  .meta({ id: 'HelpEventRescueeView' });
+
+export const helpEventRescuerViewSchema = helpEventSummarySchema.meta({
+  id: 'HelpEventRescuerView',
+});
 
 // Pagination validation
 export const paginationSchema = z
@@ -298,6 +447,30 @@ export const segmentQuerySchema = z
       .string()
       .optional()
       .meta({ description: 'Bounding box to filter segments (format: "minLat,minLng,maxLat,maxLng")', example: '64.0,25.0,66.0,30.0' }),
+    minLat: z
+      .string()
+      .transform((val) => parseFloat(val))
+      .pipe(z.number())
+      .optional()
+      .meta({ description: 'Minimum latitude of bounding box', example: '64.0' }),
+    minLng: z
+      .string()
+      .transform((val) => parseFloat(val))
+      .pipe(z.number())
+      .optional()
+      .meta({ description: 'Minimum longitude of bounding box', example: '25.0' }),
+    maxLat: z
+      .string()
+      .transform((val) => parseFloat(val))
+      .pipe(z.number())
+      .optional()
+      .meta({ description: 'Maximum latitude of bounding box', example: '66.0' }),
+    maxLng: z
+      .string()
+      .transform((val) => parseFloat(val))
+      .pipe(z.number())
+      .optional()
+      .meta({ description: 'Maximum longitude of bounding box', example: '30.0' }),
     search: z
       .string()
       .optional()
@@ -309,55 +482,6 @@ export const segmentQuerySchema = z
       .meta({ description: 'Return only segments updated since this date (ISO 8601 format)', example: '2024-01-01T00:00:00Z' }),
   })
   .meta({ id: 'SegmentQueryParams' });
-
-// Updates query parameters
-export const segmentUpdatesQuerySchema = z
-  .object({
-    limit: z
-      .string()
-      .transform((val) => parseInt(val, 10))
-      .pipe(z.number().int().min(1))
-      .optional()
-      .meta({ description: 'Maximum number of updates to return', example: '3' }),
-    days: z
-      .string()
-      .transform((val) => parseInt(val, 10))
-      .pipe(z.number().int().min(1))
-      .optional()
-      .meta({ description: 'Number of days to look back', example: '3' }),
-  })
-  .meta({ id: 'SegmentUpdatesQueryParams' });
-
-export const updatesQuerySchema = z
-  .object({
-    days: z
-      .string()
-      .transform((val) => parseInt(val, 10))
-      .pipe(z.number().int().min(1).max(30))
-      .optional()
-      .meta({ description: 'Number of days to look back (ignored if updatedSince/from/to provided)', example: '3' }),
-    segmentId: z
-      .string()
-      .uuid()
-      .optional()
-      .meta({ description: 'Filter updates by a specific segment ID', example: '550e8400-e29b-41d4-a716-446655440000' }),
-    updatedSince: z
-      .string()
-      .datetime()
-      .optional()
-      .meta({ description: 'Return updates since this timestamp (ISO 8601)', example: '2024-01-01T00:00:00Z' }),
-    from: z
-      .string()
-      .datetime()
-      .optional()
-      .meta({ description: 'Start of time range (ISO 8601). If provided, overrides days/updatedSince.', example: '2024-01-01T00:00:00Z' }),
-    to: z
-      .string()
-      .datetime()
-      .optional()
-      .meta({ description: 'End of time range (ISO 8601). If provided, overrides days/updatedSince.', example: '2024-01-31T23:59:59Z' }),
-  })
-  .meta({ id: 'UpdatesQueryParams' });
 
 // Reviews query parameters
 export const reviewsQuerySchema = z
@@ -389,6 +513,23 @@ export const reviewsQuerySchema = z
   })
   .meta({ id: 'ReviewsQueryParams' });
 
+export const segmentObservationQuerySchema = z
+  .object({
+    days: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(30))
+      .optional()
+      .meta({ description: 'Number of days to look back for this segment', example: '3' }),
+    limit: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(10))
+      .optional()
+      .meta({ description: 'Maximum number of user reviews to include', example: '3' }),
+  })
+  .meta({ id: 'SegmentObservationQueryParams' });
+
 // Snow Type validation
 export const createSnowTypeSchema = z
   .object({
@@ -411,12 +552,12 @@ export const createSnowTypeSchema = z
       .optional()
       .nullable()
       .meta({ description: 'Skiability rating (1-5)' }),
-    categoryId: z
-      .number()
-      .int()
-      .optional()
+    primarySnowTypeId: z
+      .string()
+      .uuid('Invalid primary snow type ID format')
       .nullable()
-      .meta({ description: 'Category ID' }),
+      .optional()
+      .meta({ description: 'Primary snow type ID. NULL for primary snow types, UUID for secondary snow types', example: null }),
     explanation: z
       .string()
       .max(5000)
@@ -444,6 +585,59 @@ export const addSecondarySnowTypesSchema = z
   })
   .meta({ id: 'AddSecondarySnowTypesRequest' });
 
+export const snowTypeSchema = z
+  .object({
+    id: z
+      .string()
+      .uuid('Invalid snow type ID format')
+      .meta({ description: 'Snow type ID (UUID)', example: '72209550-799c-4a33-99ab-ca2c396f16d7' }),
+    name: z
+      .string()
+      .meta({ description: 'Snow type name', example: 'Puuterilumi' }),
+    colour: z
+      .string()
+      .meta({ description: 'Snow type colour in hex format', example: '#5AABED' }),
+    skiability: z
+      .number()
+      .int()
+      .min(1)
+      .max(5)
+      .nullable()
+      .optional()
+      .meta({ description: 'Skiability rating (1-5), nullable', example: 4 }),
+    primarySnowTypeId: z
+      .string()
+      .uuid('Invalid primary snow type ID format')
+      .nullable()
+      .optional()
+      .meta({
+        description:
+          'Primary snow type ID. NULL for primary snow types, UUID for secondary snow types',
+        example: null,
+      }),
+    explanation: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({
+        description: 'Explanation of the snow type',
+        example: 'Vastasatanut irtonainen, höyhenenkevyt lumi.',
+      }),
+  })
+  .meta({ id: 'SnowType' });
+
+export const snowTypesSchema = z
+  .array(snowTypeSchema)
+  .meta({ id: 'SnowTypes', description: 'List of snow types' });
+
+export const primarySnowTypeWithSecondariesSchema = snowTypeSchema
+  .extend({
+    secondarySnowTypes: z
+      .array(snowTypeSchema)
+      .meta({ description: 'Secondary snow types for this primary type' }),
+  })
+  .meta({ id: 'PrimarySnowTypeWithSecondaries' });
+
 // Guide Update validation
 export const guideUpdateSchema = z
   .object({
@@ -462,6 +656,10 @@ export const guideUpdateSchema = z
       .max(2, 'Maximum 2 secondary snow types allowed')
       .default([])
       .meta({ description: 'Array of secondary snow type IDs (max 2)', example: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }),
+    hazards: z
+      .array(hazardSchema)
+      .default([])
+      .meta({ description: 'Array of hazards found on the trail (e.g., ["stones", "branches"])', example: ['stones'] }),
   })
   .meta({ id: 'GuideUpdateRequest' });
 
@@ -563,7 +761,7 @@ export const segmentSchema = z.object({
   name: z.string().meta({ description: 'Segment name' }),
   terrain: z.string().meta({ description: 'Terrain description' }),
   avalancheDanger: z.boolean(),
-  isLowerSegment: z.number().int().nullable(),
+  isLowerSegment: z.string().nullable(),
   points: z.array(pointSchema).min(1).meta({ description: 'Polygon or polyline of the segment' }),
   guideUpdate: guideUpdateSchema.nullable(),
   userReviews: z.array(

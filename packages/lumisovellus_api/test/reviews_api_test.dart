@@ -16,11 +16,20 @@ void main() {
       // TODO
     });
 
+    // Get observations for a specific segment
+    //
+    // Retrieve guide updates and user reviews for a specific segment within the requested time window.
+    //
+    //Future<ApiV1SegmentsIdObservationsGet200Response> apiV1SegmentsIdObservationsGet(String id, { String days, String limit }) async
+    test('test apiV1SegmentsIdObservationsGet', () async {
+      // TODO
+    });
+
     // Create a review for a segment
     //
     // Submit a snow condition review for a specific segment
     //
-    //Future<ApiV1SnowTypesPost201Response> apiV1SegmentsIdReviewsPost(String id, ApiV1SegmentsIdReviewsPostRequest apiV1SegmentsIdReviewsPostRequest) async
+    //Future<ApiV1SnowTypesIdSecondaryPost200Response> apiV1SegmentsIdReviewsPost(String id, ApiV1SegmentsIdReviewsPostRequest apiV1SegmentsIdReviewsPostRequest) async
     test('test apiV1SegmentsIdReviewsPost', () async {
       // TODO
     });

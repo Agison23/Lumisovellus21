@@ -30,7 +30,7 @@ void main() {
       // TODO
     });
 
-    // int isLowerSegment
+    // String isLowerSegment
     test('to test the property `isLowerSegment`', () async {
       // TODO
     });

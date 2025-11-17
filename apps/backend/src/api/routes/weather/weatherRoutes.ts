@@ -6,83 +6,149 @@ const weatherController = new WeatherController();
 
 /**
  * @swagger
- * /api/v1/weather:
+ * /api/v1/weather/average:
  *   get:
  *     tags:
  *       - Weather
- *     summary: Get latest weather data
- *     description: Returns the most recent weather data from the FMI API
- *     responses:
- *       200:
- *         description: Latest weather data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   $ref: '#/components/schemas/Weather'
- */
-router.get('/weather', weatherController.getLatestWeather);
-
-/**
- * @swagger
- * /api/v1/weather/history:
- *   get:
- *     tags:
- *       - Weather
- *     summary: Get weather history
- *     description: Returns historical weather data
+ *     summary: Get average weather metric
+ *     description: Returns the rolling average for supported weather items within the requested period.
  *     parameters:
  *       - in: query
- *         name: limit
+ *         name: item
+ *         schema:
+ *           type: string
+ *           enum: [windSpeed, windDirection]
+ *         required: true
+ *         description: Weather item to average.
+ *       - in: query
+ *         name: days
  *         schema:
  *           type: integer
- *           default: 100
- *         description: Maximum number of records to return
+ *           default: 3
+ *         description: Number of whole days in the look-back window.
  *     responses:
  *       200:
- *         description: Weather history
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Weather'
+ *         description: Average computed successfully.
  */
-router.get('/weather/history', weatherController.getWeatherHistory);
+router.get('/weather/average', weatherController.getAverage);
 
 /**
  * @swagger
- * /api/v1/weather/update:
- *   post:
+ * /api/v1/weather/minimum:
+ *   get:
  *     tags:
  *       - Weather
- *     summary: Manually trigger weather update
- *     description: Fetches new weather data from FMI API and saves it to database
+ *     summary: Get minimum weather metric
+ *     description: Returns the rolling minimum temperature within the requested period.
+ *     parameters:
+ *       - in: query
+ *         name: item
+ *         schema:
+ *           type: string
+ *           enum: [temperature]
+ *         required: true
+ *         description: Weather item to inspect.
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           default: 3
+ *         description: Number of whole days in the look-back window.
  *     responses:
  *       200:
- *         description: Weather data updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   $ref: '#/components/schemas/Weather'
+ *         description: Minimum temperature computed successfully.
  */
-router.post('/weather/update', weatherController.updateWeatherNow);
+router.get('/weather/minimum', weatherController.getMinimum);
+
+/**
+ * @swagger
+ * /api/v1/weather/maximum:
+ *   get:
+ *     tags:
+ *       - Weather
+ *     summary: Get maximum weather metric
+ *     description: Returns the rolling maximum temperature or wind speed within the requested period.
+ *     parameters:
+ *       - in: query
+ *         name: item
+ *         schema:
+ *           type: string
+ *           enum: [temperature, windSpeed]
+ *         required: true
+ *         description: Weather item to get the maximum for.
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           default: 3
+ *         description: Number of whole days in the look-back window.
+ *     responses:
+ *       200:
+ *         description: Maximum computed successfully.
+ */
+router.get('/weather/maximum', weatherController.getMaximum);
+
+/**
+ * @swagger
+ * /api/v1/weather/change:
+ *   get:
+ *     tags:
+ *       - Weather
+ *     summary: Get change in snow depth
+ *     description: Returns the change in snow depth between the start and end of the requested period.
+ *     parameters:
+ *       - in: query
+ *         name: item
+ *         schema:
+ *           type: string
+ *           enum: [snowDepth]
+ *         required: true
+ *         description: Weather item to calculate change for.
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           default: 7
+ *         description: Number of whole days in the look-back window.
+ *     responses:
+ *       200:
+ *         description: Change computed successfully.
+ */
+router.get('/weather/change', weatherController.getChange);
+
+/**
+ * @swagger
+ * /api/v1/weather/filterDays:
+ *   get:
+ *     tags:
+ *       - Weather
+ *     summary: Filter days by daily average temperature
+ *     description: Returns the dates where the daily average temperature exceeds the provided threshold.
+ *     parameters:
+ *       - in: query
+ *         name: item
+ *         schema:
+ *           type: string
+ *           enum: [temperature]
+ *         required: true
+ *         description: Weather item used for filtering.
+ *       - in: query
+ *         name: threshold
+ *         schema:
+ *           type: number
+ *           default: 0
+ *         required: true
+ *         description: Threshold temperature in Celsius.
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           default: 3
+ *         description: Number of whole days in the look-back window.
+ *     responses:
+ *       200:
+ *         description: Filtered days returned successfully.
+ */
+router.get('/weather/filterDays', weatherController.filterDays);
 
 export default router;
