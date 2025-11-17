@@ -210,6 +210,7 @@
 			"search": {
 				"placeholder": "Etsi segmenttejä..."
 			},
+			"newButton": "New Segment",
 			"title": "Segmentit",
 			"avalanche": {
 				"avalancheDanger": "Lumivyöryvaroitus: ",
@@ -241,6 +242,33 @@
 				},
 				"success": {
 					"saveSuccessful": "Muutokset tallennettu onnistuneesti."
+				}
+			},
+			"createDialog": {
+				"title": "Luo uusi segmentti",
+				"name": "Nimi",
+				"terrain": "Maasto",
+				"id": "Tunnus",
+				"coordinates": {
+					"title": "Koordinaatit",
+					"latitude": "Leveysaste",
+					"longitude": "Pituusaste",
+					"addCoordinate": "Lisää koordinaatti"
+				},
+				"avalanche": {
+					"title": "Lumivyöry",
+					"toggleAvalancheWarning": "Alue on altis lumivyöryille"
+				},
+				"buttons": {
+					"cancel": "Peruuta",
+					"create": "Luo",
+					"creating": "Luodaan..."
+				},
+				"errors": {
+					"createFailed": "Segmentin luominen epäonnistui. Yritä uudelleen."
+				},
+				"success": {
+					"createSuccessful": "Segmentti luotu onnistuneesti."
 				}
 			},
 			"deleteDialog": {
