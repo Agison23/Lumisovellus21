@@ -287,6 +287,34 @@
     },
     "success": {
       "loginSuccessful": "Sisäänkirjautuminen onnistui."
+    },
+    "links": {
+      "register": "Ei vielä tiliä? Rekisteröidy tästä."
+    }
+  },
+  "RegisterPage": {
+    "title": "Rekisteröidy",
+    "email": "Sähköposti",
+    "firstName": "Etunimi",
+    "lastName": "Sukunimi",
+    "password": "Salasana",
+    "confirmPassword": "Vahvista salasana",
+    "buttons": {
+      "register": "Rekisteröidy",
+      "registering": "Rekisteröidään..."
+    },
+    "errors": {
+      "missingFields": "Täytä kaikki vaaditut kentät.",
+      "invalidCredentials": "Virheellinen sähköposti tai salasana.",
+      "passwordMismatch": "Salasanat eivät täsmää.",
+      "passwordTooWeak": "Salasana on liian heikko, sen on oltava vähintään 8 merkkiä.",
+      "registrationFailed": "Rekisteröinti epäonnistui. Yritä uudelleen myöhemmin."
+    },
+    "success": {
+      "registrationSuccessful": "Rekisteröinti onnistui. Siirrytään..."
+    },
+    "links": {
+      "login": "Onko sinulla jo tili? Kirjaudu sisään tästä."
     }
   }
 }

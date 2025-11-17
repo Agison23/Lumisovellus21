@@ -293,6 +293,34 @@
     },
     "success": {
       "loginSuccessful": "Login successful. Redirecting..."
+    },
+    "links": {
+      "register": "Don't have an account? Register here."
+    }
+  },
+  "RegisterPage": {
+    "title": "Register",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "buttons": {
+      "register": "Register",
+      "registering": "Registering..."
+    },
+    "errors": {
+      "missingFields": "Please fill in all fields.",
+      "invalidCredentials": "Invalid email or password.",
+      "passwordMismatch": "Passwords do not match.",
+      "passwordTooWeak": "Password is too weak, must be at least 8 characters.",
+      "registrationFailed": "Registration failed. Please try again later."
+    },
+    "success": {
+      "registrationSuccessful": "Registration successful. Redirecting..."
+    },
+    "links": {
+      "login": "Already have an account? Log in here."
     }
   }
 }
