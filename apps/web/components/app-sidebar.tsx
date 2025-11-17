@@ -1,5 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import LocaleSwitcher from './locale-switcher';
 import { ThemeToggle } from './theme/theme-toggle';
 import {
@@ -14,11 +15,20 @@ import { useAuth } from '@/hooks/use-auth';
 import { Button } from './ui/button';
 import { LogIn, LogInIcon, LogOut, LogOutIcon } from 'lucide-react';
 import Link from 'next/link';
+import { logoutAction } from '@/app/(auth)/actions';
 
 export default function AppSidebar() {
   const t = useTranslations('Sidebar');
+  const router = useRouter();
   const isLoggedIn = useAuth().isLoggedIn;
   console.log('Sidebar - isLoggedIn:', isLoggedIn);
+
+  const handleLogout = async () => {
+    await logoutAction();
+    router.refresh();
+    router.push('/');
+  };
+
   return (
     <Sidebar
       side="left"
@@ -28,20 +38,28 @@ export default function AppSidebar() {
         <div className="flex gap-2 items-center text-xs w-full flex-wrap">
           <LocaleSwitcher />
           <ThemeToggle />
-          <Link href={isLoggedIn ? '/logout' : '/login'}>
+          {isLoggedIn ? (
             <Button
               variant="outline"
               size="sm"
               className="w-max px-2"
-              aria-label={isLoggedIn ? t('logIn.logOut') : t('logIn.logIn')}
+              aria-label={t('logIn.logOut')}
+              onClick={handleLogout}
             >
-              {isLoggedIn ? (
-                <LogOutIcon className="size-4" />
-              ) : (
-                <LogInIcon className="size-4" />
-              )}
+              <LogOutIcon className="size-4" />
             </Button>
-          </Link>
+          ) : (
+            <Link href="/login">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-max px-2"
+                aria-label={t('logIn.logIn')}
+              >
+                <LogInIcon className="size-4" />
+              </Button>
+            </Link>
+          )}
           <div className="w-full md:hidden flex justify-start items-center z-999 p-2">
             <SidebarTrigger className="bg-background" />
           </div>
