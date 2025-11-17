@@ -25,9 +25,9 @@ void main() {
       // TODO
     });
 
-    // Category ID
-    // int categoryId
-    test('to test the property `categoryId`', () async {
+    // Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
+    // String primarySnowTypeId
+    test('to test the property `primarySnowTypeId`', () async {
       // TODO
     });
 

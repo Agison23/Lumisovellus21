@@ -195,6 +195,9 @@ describe('AuthService Unit Tests', () => {
   });
 
   describe('refreshToken', () => {
+    const testJwtSecret =
+      process.env.JWT_SECRET ?? 'test_jwt_secret_key_for_testing_only';
+
     beforeEach(async () => {
       // Create a test user
       await testPrisma.user.create({
@@ -221,7 +224,7 @@ describe('AuthService Unit Tests', () => {
           email: user?.email,
           role: user?.role,
         },
-        'test_jwt_secret_key_for_testing_only',
+        testJwtSecret,
         { expiresIn: '30d' }
       );
 
@@ -258,7 +261,7 @@ describe('AuthService Unit Tests', () => {
           email: 'temp@test.com',
           role: 'NORMAL',
         },
-        'test_jwt_secret_key_for_testing_only',
+        testJwtSecret,
         { expiresIn: '30d' }
       );
 

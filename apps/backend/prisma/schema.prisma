@@ -75,7 +75,7 @@ model SnowType {
   name                          String                @unique @db.VarChar(50)
   colour                        String                @db.VarChar(15)
   skiability                    Int?
-  categoryId                    Int?                  @map("categoryId")
+  primarySnowTypeId             String?               @map("primary_snow_type_id")
   explanation                   String?               @db.Text
   createdAt                     DateTime              @default(now()) @map("created_at")
   updatedAt                     DateTime              @updatedAt @map("updated_at")
@@ -85,7 +85,10 @@ model SnowType {
   secondaryUserReviews          UserReview[]           @relation("ReviewSecondarySnowType")
   primarySnowTypes              SnowTypeSecondary[]   @relation("PrimarySnowType")
   secondarySnowTypes            SnowTypeSecondary[]   @relation("SecondarySnowType")
+  primarySnowType               SnowType?             @relation("PrimarySnowTypeReference", fields: [primarySnowTypeId], references: [id], onDelete: SetNull)
+  secondarySnowTypesRef         SnowType[]            @relation("PrimarySnowTypeReference")
 
+  @@index([primarySnowTypeId], map: "snow_types_primary_snow_type_id_fkey")
   @@map("snowTypes")
 }
 
@@ -139,6 +142,7 @@ model SnowUpdate {
   temperature      Float?
   windSpeed        Float?
   visibility       Int?
+  hazards          Json?                       @db.Json
   createdAt        DateTime                    @default(now()) @map("created_at")
   updatedAt        DateTime                    @updatedAt @map("updated_at")
   attachments      SnowUpdateAttachment[]
@@ -226,16 +230,18 @@ model LocationData {
 }
 
 model HelpRequest {
-  id           String       @id
-  userId       String       @unique @map("user_id") @db.VarChar(255)
-  timestamp    Int
-  gpsCoord     String       @map("gpscoord") @db.VarChar(255)
-  helpType     String       @map("help_type") @db.VarChar(100)
-  roomId       String       @map("room_id") @db.VarChar(255)
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  user         User         @relation(fields: [userId], references: [id])
-  helpReceived NearbyUser[] @relation("HelpReceiver")
+  id               String          @id
+  userId           String          @unique @map("user_id") @db.VarChar(255)
+  timestamp        Int
+  gpsCoord         String          @map("gpscoord") @db.VarChar(255)
+  helpType         String          @map("help_type") @db.VarChar(100)
+  roomId           String          @map("room_id") @db.VarChar(255)
+  status           HelpEventStatus @default(active)
+  locationAccuracy Float?          @map("location_accuracy")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  user             User            @relation(fields: [userId], references: [id])
+  helpReceived     NearbyUser[]    @relation("HelpReceiver")
 
   @@map("help_requests")
 }
@@ -245,6 +251,10 @@ model NearbyUser {
   helpGiver     String      @map("help_giver") @db.VarChar(255)
   helpRequester String      @map("help_requester") @db.VarChar(255)
   state         Int
+  acceptedAt    DateTime?   @map("accepted_at")
+  acceptedLatitude  Float?  @map("accepted_latitude")
+  acceptedLongitude Float?  @map("accepted_longitude")
+  acceptedAccuracy  Float?  @map("accepted_accuracy")
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   giver         User        @relation("HelpGiver", fields: [helpGiver], references: [id], map: "nearby_users_help_giver_fkey")
@@ -306,4 +316,10 @@ enum UserRole {
   RESCUE
 
   @@map("user_role")
+}
+
+enum HelpEventStatus {
+  active
+  completed
+  cancelled
 }

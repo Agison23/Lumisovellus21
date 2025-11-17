@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **name** | **String** | Segment name | 
 **terrain** | **String** | Terrain description | 
 **avalancheDanger** | **bool** |  | 
-**isLowerSegment** | **int** |  | 
+**isLowerSegment** | **String** |  | 
 **points** | [**List&lt;SegmentPoint&gt;**](SegmentPoint.md) | Polygon or polyline of the segment | 
 **guideUpdate** | [**GuideUpdateRequestOutput**](GuideUpdateRequestOutput.md) |  | 
 **userReviews** | [**List&lt;SegmentUserReview&gt;**](SegmentUserReview.md) |  | 
