@@ -13,7 +13,7 @@ void main() {
       // TODO
     });
 
-    // Object data
+    // SnowType data
     test('to test the property `data`', () async {
       // TODO
     });

@@ -7,40 +7,6 @@ const reviewsController = new ReviewsController();
 
 /**
  * @swagger
- * /api/v1/snow-types:
- *   get:
- *     summary: Get all snow types
- *     description: Retrieve all available snow types for reviews
- *     tags: [Snow Types]
- *     responses:
- *       200:
- *         description: Snow types retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
-
-/**
- * @swagger
  * /api/v1/observations:
  *   get:
  *     summary: Get observations for all segments
@@ -153,6 +119,63 @@ router.get('/api/v1/snow-types', reviewsController.getAllSnowTypes);
  *           $ref: '#/definitions/Error'
  */
 router.get('/api/v1/observations', reviewsController.getLatestReviews);
+
+/**
+ * @swagger
+ * /api/v1/segments/{id}/observations:
+ *   get:
+ *     summary: Get observations for a specific segment
+ *     description: Retrieve guide updates and user reviews for a single segment within the requested time window.
+ *     tags: [Reviews]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Segment ID (UUID)
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 30
+ *           default: 3
+ *         description: Number of days to look back for observations
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 10
+ *           default: 3
+ *         description: Maximum number of user reviews to include
+ *     responses:
+ *       200:
+ *         description: Observations retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/definitions/Observation'
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     timestamp:
+ *                       type: string
+ *       404:
+ *         description: No observations exist for the requested segment
+ */
+router.get(
+  '/api/v1/segments/:id/observations',
+  reviewsController.getSegmentObservations
+);
 
 /**
  * @swagger

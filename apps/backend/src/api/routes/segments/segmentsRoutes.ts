@@ -17,8 +17,32 @@ const segmentsController = new SegmentsController();
  *         name: bbox
  *         schema:
  *           type: string
- *         description: Bounding box to filter segments (format: "minLat,minLng,maxLat,maxLng")
- *         example: "64.0,25.0,66.0,30.0"
+ *         description: Bounding box to filter segments (OGC order: "minLng,minLat,maxLng,maxLat")
+ *         example: "25.0,64.0,30.0,66.0"
+ *       - in: query
+ *         name: minLat
+ *         schema:
+ *           type: number
+ *         description: Minimum latitude of bounding box
+ *         example: 64.0
+ *       - in: query
+ *         name: minLng
+ *         schema:
+ *           type: number
+ *         description: Minimum longitude of bounding box
+ *         example: 25.0
+ *       - in: query
+ *         name: maxLat
+ *         schema:
+ *           type: number
+ *         description: Maximum latitude of bounding box
+ *         example: 66.0
+ *       - in: query
+ *         name: maxLng
+ *         schema:
+ *           type: number
+ *         description: Maximum longitude of bounding box
+ *         example: 30.0
  *       - in: query
  *         name: search
  *         schema:
@@ -59,131 +83,6 @@ const segmentsController = new SegmentsController();
  */
 router.get('/api/v1/segments', segmentsController.getAllSegments);
 
-/**
- * @swagger
- * /api/v1/segments/{id}/updates:
- *   get:
- *     summary: Get latest updates for a segment
- *     description: Retrieve the most recent updates for a specific segment
- *     tags: [Segments]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Segment ID (UUID)
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 3
- *         description: Maximum number of updates to return
- *       - in: query
- *         name: days
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 3
- *         description: Number of days to look back
- *     responses:
- *       200:
- *         description: Updates retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-router.get(
-  '/api/v1/segments/:id/updates',
-  segmentsController.getSegmentUpdates
-);
-
-/**
- * @swagger
- * /api/v1/updates:
- *   get:
- *     summary: Get updates for segments
- *     description: Get updates filtered by updatedSince or time range; include review details.
- *     tags: [Updates]
- *     parameters:
- *       - in: query
- *         name: days
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 30
- *           default: 3
- *         description: Number of days to look back (ignored if updatedSince/from/to provided)
- *       - in: query
- *         name: segmentId
- *         schema:
- *           type: string
- *           format: uuid
- *         description: Filter updates by a specific segment ID
- *       - in: query
- *         name: updatedSince
- *         schema:
- *           type: string
- *           format: date-time
- *         description: Return updates since this timestamp (ISO 8601)
- *       - in: query
- *         name: from
- *         schema:
- *           type: string
- *           format: date-time
- *         description: Start of time range (ISO 8601). If provided, overrides days/updatedSince.
- *       - in: query
- *         name: to
- *         schema:
- *           type: string
- *           format: date-time
- *         description: End of time range (ISO 8601). If provided, overrides days/updatedSince.
- *     responses:
- *       200:
- *         description: Updates retrieved successfully, with review details included
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                 meta:
- *                   type: object
- *                   properties:
- *                     timestamp:
- *                       type: string
- *       500:
- *         description: Internal server error
- *         schema:
- *           $ref: '#/definitions/Error'
- */
-router.get('/api/v1/updates', segmentsController.getAllUpdates);
 
 /**
  * @swagger
@@ -232,6 +131,13 @@ router.get('/api/v1/updates', segmentsController.getAllUpdates);
  *                 maxItems: 2
  *                 description: Array of secondary snow type IDs (max 2)
  *                 example: ["uuid1", "uuid2"]
+ *               hazards:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [stones, branches]
+ *                 description: Array of hazards found on the trail (e.g., ["stones", "branches"])
+ *                 example: ["stones"]
  *     responses:
  *       200:
  *         description: Guide update created/updated successfully
@@ -254,6 +160,10 @@ router.get('/api/v1/updates', segmentsController.getAllUpdates);
  *                       items:
  *                         type: string
  *                     secondarySnowTypeIds:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     hazards:
  *                       type: array
  *                       items:
  *                         type: string

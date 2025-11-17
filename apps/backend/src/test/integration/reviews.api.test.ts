@@ -3,12 +3,14 @@ import request from 'supertest';
 import express from 'express';
 import { testPrisma } from '../vitest.setup';
 import reviewsRoutes from '../../api/routes/reviews/reviewsRoutes';
+import snowTypesRoutes from '../../api/routes/snowTypes/snowTypesRoutes';
 import jwt from 'jsonwebtoken';
 
 // Create test app
 const app = express();
 app.use(express.json());
 app.use('/', reviewsRoutes);
+app.use('/', snowTypesRoutes);
 
 // Mock JWT secret for testing
 const JWT_SECRET = 'test_jwt_secret_key_for_testing_only';
@@ -22,7 +24,12 @@ describe('Reviews API Integration Tests', () => {
     await testPrisma.nearbyUser.deleteMany();
     await testPrisma.helpRequest.deleteMany();
     await testPrisma.locationData.deleteMany();
+    await testPrisma.snowUpdateReviewReference.deleteMany();
+    await testPrisma.snowUpdateAttachment.deleteMany();
+    await testPrisma.snowUpdateCondition.deleteMany();
+    await testPrisma.snowUpdate.deleteMany();
     await testPrisma.userReview.deleteMany();
+    await testPrisma.snowTypeSecondary.deleteMany();
     await testPrisma.snowType.deleteMany();
     await testPrisma.segment.deleteMany();
     await testPrisma.user.deleteMany();
@@ -55,7 +62,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder snow',
           },
           {
@@ -63,7 +70,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice surface',
           },
         ],
@@ -80,13 +87,27 @@ describe('Reviews API Integration Tests', () => {
       });
 
       expect(response.body.data).toHaveLength(2);
-      expect(response.body.data[0]).toEqual({
+      
+      // Find the Powder snow type (order may vary)
+      const powderType = response.body.data.find((st: any) => st.id === '1');
+      expect(powderType).toEqual({
         id: '1',
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
-        categoryId: 1,
+        primarySnowTypeId: null,
         explanation: 'Fresh powder snow',
+      });
+      
+      // Find the Ice snow type
+      const iceType = response.body.data.find((st: any) => st.id === '2');
+      expect(iceType).toEqual({
+        id: '2',
+        name: 'Ice',
+        colour: '#CCCCCC',
+        skiability: 1,
+        primarySnowTypeId: null,
+        explanation: 'Hard ice surface',
       });
     });
 
@@ -128,7 +149,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder',
           },
           {
@@ -136,7 +157,7 @@ describe('Reviews API Integration Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice',
           },
         ],
@@ -236,6 +257,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Test Snow',
           colour: '#FFFFFF',
           skiability: 5,
+          primarySnowTypeId: null,
         },
       });
 
@@ -274,6 +296,87 @@ describe('Reviews API Integration Tests', () => {
     });
   });
 
+  describe('GET /api/v1/segments/:id/observations', () => {
+    it('should return observations for a specific segment', async () => {
+      const admin = await testPrisma.user.create({
+        data: {
+          id: 'admin-segment',
+          firstName: 'Guide',
+          lastName: 'Admin',
+          email: 'admin-segment@example.com',
+          role: 'ADMIN',
+        },
+      });
+
+      await testPrisma.segment.create({
+        data: {
+          id: 'segment-observation',
+          name: 'Segment For Observations',
+          terrain: 'Medium',
+          avalancheDanger: false,
+          isLowerSegment: null,
+        },
+      });
+
+      await testPrisma.snowType.create({
+        data: {
+          id: 'segment-snow',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          primarySnowTypeId: null,
+        },
+      });
+
+      const snowUpdate = await testPrisma.snowUpdate.create({
+        data: {
+          id: 'segment-guide-update',
+          creator: admin.id,
+          segment: 'segment-observation',
+          time: new Date(),
+          description: 'Guide update content',
+          status: 'ACTIVE',
+          priority: 1,
+        },
+      });
+
+      await testPrisma.snowUpdateCondition.create({
+        data: {
+          id: 'segment-condition',
+          updateId: snowUpdate.id,
+          snowType: 'segment-snow',
+          layer: 'SURFACE',
+        },
+      });
+
+      await testPrisma.userReview.create({
+        data: {
+          id: 'segment-review',
+          segment: 'segment-observation',
+          snowType: 'segment-snow',
+          hazards: ['branches'],
+          comment: 'Solid riding',
+          time: new Date(),
+        },
+      });
+
+      const response = await request(app)
+        .get('/api/v1/segments/segment-observation/observations')
+        .query({ days: 3, limit: 2 })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.segmentId).toBe('segment-observation');
+      expect(response.body.data.guideUpdate.description).toBe('Guide update content');
+      expect(response.body.data.userReviews).toHaveLength(1);
+    });
+
+    it('should return 404 when no observations exist', async () => {
+      await request(app)
+        .get('/api/v1/segments/non-existent-segment/observations')
+        .expect(404);
+    });
+  });
+
   describe('POST /api/v1/segments/:id/reviews', () => {
     it('should create a review successfully', async () => {
       // Create test segment
@@ -293,7 +396,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -305,7 +408,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Ice',
           colour: '#CCCCCC',
           skiability: 1,
-          categoryId: 2,
+          primarySnowTypeId: '1',
           explanation: 'Hard ice',
         },
       });
@@ -369,7 +472,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -380,7 +483,7 @@ describe('Reviews API Integration Tests', () => {
           name: 'Harsi',
           colour: '#F0F0F0',
           skiability: 4,
-          categoryId: 2,
+          primarySnowTypeId: '3',
           explanation: 'Surface hoar',
         },
       });

@@ -1,20 +1,45 @@
+import 'package:lumisovellus_api/lumisovellus_api.dart';
+
 const _sentinel = Object();
 
-class InteractiveAreaState {
-  final Map<String, dynamic>? fc;
+class SegmentsState {
+  final List<Segment>? segments;
   final String? selectedId;
   final String? hoveredId;
-  const InteractiveAreaState({this.fc, this.selectedId, this.hoveredId});
 
-  InteractiveAreaState copyWith({
-    Map<String, dynamic>? fc,
+  const SegmentsState({this.segments, this.selectedId, this.hoveredId});
+
+  SegmentsState copyWith({
+    List<Segment>? segments,
     Object? selectedId = _sentinel,
     Object? hoveredId = _sentinel,
   }) {
-    return InteractiveAreaState(
-      fc: fc ?? this.fc,
-      selectedId: identical(selectedId, _sentinel) ? this.selectedId : selectedId as String?,
-      hoveredId: identical(hoveredId, _sentinel) ? this.hoveredId : hoveredId as String?,
+    return SegmentsState(
+      segments: segments ?? this.segments,
+      selectedId: identical(selectedId, _sentinel)
+          ? this.selectedId
+          : selectedId as String?,
+      hoveredId: identical(hoveredId, _sentinel)
+          ? this.hoveredId
+          : hoveredId as String?,
+    );
+  }
+}
+
+class SnowTypesState {
+  final List<SnowType>? snowTypes;
+
+  const SnowTypesState({
+    this.snowTypes
+  });
+
+  SnowTypesState copyWith({
+    List<SnowType>? snowTypes,
+    Object? selectedId = _sentinel,
+    Object? hoveredId = _sentinel,
+  }) {
+    return SnowTypesState(
+      snowTypes: snowTypes ?? this.snowTypes
     );
   }
 }

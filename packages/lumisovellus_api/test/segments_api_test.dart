@@ -11,7 +11,7 @@ void main() {
     //
     // Retrieve all ski segments with their coordinates and terrain information. Supports filtering by bounding box, search, and updatedSince.
     //
-    //Future<ApiV1SegmentsGet200Response> apiV1SegmentsGet({ String bbox, String search, DateTime updatedSince }) async
+    //Future<ApiV1SegmentsGet200Response> apiV1SegmentsGet({ String bbox, String minLat, String minLng, String maxLat, String maxLng, String search, DateTime updatedSince }) async
     test('test apiV1SegmentsGet', () async {
       // TODO
     });
@@ -22,15 +22,6 @@ void main() {
     //
     //Future<ApiV1SegmentsIdGuideUpdatePost200Response> apiV1SegmentsIdGuideUpdatePost(String id, GuideUpdateRequest guideUpdateRequest) async
     test('test apiV1SegmentsIdGuideUpdatePost', () async {
-      // TODO
-    });
-
-    // Get latest updates for a segment
-    //
-    // Retrieve the most recent updates for a specific segment
-    //
-    //Future<ApiV1SegmentsIdUpdatesGet200Response> apiV1SegmentsIdUpdatesGet(String id, { String limit, String days }) async
-    test('test apiV1SegmentsIdUpdatesGet', () async {
       // TODO
     });
 

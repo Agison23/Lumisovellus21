@@ -3,6 +3,13 @@ import { HelpService } from '../../services/help/HelpService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { AuthenticatedRequest } from '../../types';
+import {
+  helpEventAcceptanceSchema,
+  helpEventCreateSchema,
+  helpEventNearbyQuerySchema,
+  helpEventStatusUpdateSchema,
+} from '../../middleware/validation';
+import { z } from 'zod';
 
 export class HelpController {
   private helpService: HelpService;
@@ -11,43 +18,178 @@ export class HelpController {
     this.helpService = new HelpService();
   }
 
-  createHelpRequest = asyncHandler(
+  private handleValidationError(
+    res: Response,
+    error: z.ZodError,
+    message: string
+  ) {
+    ApiResponseHandler.validationError(res, message, error.flatten());
+  }
+
+  createHelpEvent = asyncHandler(
     async (req: AuthenticatedRequest, res: Response): Promise<void> => {
       if (!req.user) {
         ApiResponseHandler.unauthorized(res, 'Authentication required');
         return;
       }
 
-      const helpData = {
-        ...req.body,
-        userId: req.user.id, // Use authenticated user's ID
-      };
-      const result = await this.helpService.createHelpRequest(helpData);
-      ApiResponseHandler.success(res, { status: 'ok', ...result });
+      const parsed = helpEventCreateSchema.safeParse(req.body);
+      if (!parsed.success) {
+        this.handleValidationError(res, parsed.error, 'Invalid help event payload');
+        return;
+      }
+
+      const event = await this.helpService.createHelpEvent(
+        req.user.id,
+        parsed.data
+      );
+      ApiResponseHandler.success(res, event, 201);
     }
   );
 
-  getAllHelpRequests = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const helpRequests = await this.helpService.getAllHelpRequests();
-      ApiResponseHandler.success(res, helpRequests);
+  listNearbyHelpEvents = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
+
+      const parsed = helpEventNearbyQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        this.handleValidationError(
+          res,
+          parsed.error,
+          'Invalid location parameters'
+        );
+        return;
+      }
+
+      const { lat, lng, accuracy } = parsed.data;
+      const events = await this.helpService.listNearbyHelpEvents(
+        lat,
+        lng,
+        accuracy ?? 3000
+      );
+      ApiResponseHandler.success(res, events);
     }
   );
 
-  updateHelpResponse = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const responseData = req.body;
-      await this.helpService.updateHelpResponse(responseData);
-      ApiResponseHandler.success(res, { status: 'ok' });
+  getHelpEventView = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
+
+      try {
+        const event = await this.helpService.getHelpEventView(
+          req.params.eventId,
+          req.user.id
+        );
+        ApiResponseHandler.success(res, event);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not part')) {
+          ApiResponseHandler.forbidden(res, error.message);
+          return;
+        }
+        throw error;
+      }
     }
   );
 
-  getHelpRequestHelpers = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const { id } = req.params;
+  acceptHelpEvent = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
 
-      const helpers = await this.helpService.getHelpRequestHelpers(id);
-      ApiResponseHandler.success(res, helpers);
+      const parsed = helpEventAcceptanceSchema.safeParse(req.body);
+      if (!parsed.success) {
+        this.handleValidationError(res, parsed.error, 'Invalid acceptance payload');
+        return;
+      }
+
+      try {
+        const view = await this.helpService.acceptHelpEvent(
+          req.params.eventId,
+          req.user.id,
+          {
+            latitude: parsed.data.location.latitude,
+            longitude: parsed.data.location.longitude,
+            accuracy: parsed.data.location.accuracy ?? null,
+          }
+        );
+        ApiResponseHandler.success(res, view);
+      } catch (error) {
+        if (error instanceof Error) {
+          ApiResponseHandler.forbidden(res, error.message);
+          return;
+        }
+        throw error;
+      }
     }
   );
+
+  withdrawHelpEvent = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
+
+      try {
+        const view = await this.helpService.withdrawHelpEvent(
+          req.params.eventId,
+          req.user.id
+        );
+        ApiResponseHandler.success(res, view);
+      } catch (error) {
+        if (error instanceof Error) {
+          ApiResponseHandler.forbidden(res, error.message);
+          return;
+        }
+        throw error;
+      }
+    }
+  );
+
+  updateHelpEventStatus = asyncHandler(
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+      if (!req.user) {
+        ApiResponseHandler.unauthorized(res, 'Authentication required');
+        return;
+      }
+
+      const parsed = helpEventStatusUpdateSchema.safeParse(req.body);
+      if (!parsed.success) {
+        this.handleValidationError(res, parsed.error, 'Invalid status payload');
+        return;
+      }
+
+      try {
+        const event = await this.helpService.updateHelpEventStatus(
+          req.params.eventId,
+          req.user.id,
+          parsed.data.status
+        );
+        ApiResponseHandler.success(res, event);
+      } catch (error) {
+        if (error instanceof Error) {
+          ApiResponseHandler.forbidden(res, error.message);
+          return;
+        }
+        throw error;
+      }
+    }
+  );
+
+  streamHelpEvent = asyncHandler(async (req: Request, res: Response) => {
+    ApiResponseHandler.error(
+      res,
+      'NOT_IMPLEMENTED',
+      'Real-time streaming is not yet available',
+      501
+    );
+  });
 }

@@ -26,10 +26,7 @@ Segment _$SegmentFromJson(Map<String, dynamic> json) =>
         name: $checkedConvert('name', (v) => v as String),
         terrain: $checkedConvert('terrain', (v) => v as String),
         avalancheDanger: $checkedConvert('avalancheDanger', (v) => v as bool),
-        isLowerSegment: $checkedConvert(
-          'isLowerSegment',
-          (v) => (v as num?)?.toInt(),
-        ),
+        isLowerSegment: $checkedConvert('isLowerSegment', (v) => v as String?),
         points: $checkedConvert(
           'points',
           (v) =>

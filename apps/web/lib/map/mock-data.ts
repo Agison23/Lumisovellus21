@@ -615,7 +615,7 @@ export type SnowType = {
 	name: string;
 	colour: string;
 	skiability: number | null;
-	categoryId: number | null;
+	primarySnowTypeId: number | null;
 	explanation: string;
 };
 
@@ -625,7 +625,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Korppu",
 		colour: "#3838a0",
 		skiability: 3,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation:
 			"Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.",
 	},
@@ -634,7 +634,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Sohjo",
 		colour: "#919394",
 		skiability: 2,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation: "Vesipitoinen ja osittain sulanut lumi suojasäällä.",
 	},
 	{
@@ -642,7 +642,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Jää",
 		colour: "#34929A",
 		skiability: 2,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation:
 			"Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.",
 	},
@@ -651,7 +651,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Uusi lumi",
 		colour: "#5AABED",
 		skiability: 4,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation: "Vastasatanut pehmeä lumi.",
 	},
 	{
@@ -659,7 +659,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Tuulen pieksemä lumi",
 		colour: "#7C759F",
 		skiability: 3,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation:
 			"Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.",
 	},
@@ -668,7 +668,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Vähäinen lumi",
 		colour: "#6D4F32",
 		skiability: null,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation: "",
 	},
 	{
@@ -676,7 +676,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Lumeton maa",
 		colour: "#000000",
 		skiability: null,
-		categoryId: null,
+		primarySnowTypeId: null,
 		explanation: "",
 	},
 	{
@@ -684,7 +684,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Vitilumi",
 		colour: "#5AABED",
 		skiability: 5,
-		categoryId: 4,
+		primarySnowTypeId: 4,
 		explanation:
 			"Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.",
 	},
@@ -693,7 +693,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Puuterilumi",
 		colour: "#5AABED",
 		skiability: 5,
-		categoryId: 4,
+		primarySnowTypeId: 4,
 		explanation:
 			"Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.",
 	},
@@ -702,7 +702,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Märkä uusi lumi",
 		colour: "#5AABED",
 		skiability: 4,
-		categoryId: 4,
+		primarySnowTypeId: 4,
 		explanation:
 			"Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
 	},
@@ -711,7 +711,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Sastrugi",
 		colour: "#7C759F",
 		skiability: 1,
-		categoryId: 5,
+		primarySnowTypeId: 5,
 		explanation:
 			"Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista.",
 	},
@@ -720,7 +720,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Aaltoileva lumi",
 		colour: "#7C759F",
 		skiability: 4,
-		categoryId: 5,
+		primarySnowTypeId: 5,
 		explanation:
 			"Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa.",
 	},
@@ -729,7 +729,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Tuiskulumi",
 		colour: "#7C759F",
 		skiability: 4,
-		categoryId: 5,
+		primarySnowTypeId: 5,
 		explanation:
 			"Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.",
 	},
@@ -738,7 +738,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Ohut korppu",
 		colour: "#3838a0",
 		skiability: 3,
-		categoryId: 1,
+		primarySnowTypeId: 1,
 		explanation:
 			"Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.",
 	},
@@ -747,7 +747,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Rikkoutuva korppu",
 		colour: "#3838a0",
 		skiability: 2,
-		categoryId: 1,
+		primarySnowTypeId: 1,
 		explanation:
 			"Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.",
 	},
@@ -756,7 +756,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Kantava korppu",
 		colour: "#3838a0",
 		skiability: 3,
-		categoryId: 1,
+		primarySnowTypeId: 1,
 		explanation:
 			"Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.",
 	},
@@ -765,7 +765,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Rikkoutuva jää",
 		colour: "#34929A",
 		skiability: 1,
-		categoryId: 3,
+		primarySnowTypeId: 3,
 		explanation: "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.",
 	},
 	{
@@ -773,7 +773,7 @@ export const mockSnowData: SnowType[] = [
 		name: "Kastuva lumi",
 		colour: "#919394",
 		skiability: 3,
-		categoryId: 2,
+		primarySnowTypeId: 2,
 		explanation:
 			"Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.",
 	},
@@ -782,25 +782,9 @@ export const mockSnowData: SnowType[] = [
 		name: "Saturoitunut lumi",
 		colour: "#919394",
 		skiability: 2,
-		categoryId: 2,
+		primarySnowTypeId: 2,
 		explanation:
 			"Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi",
-	},
-	{
-		id: 21,
-		name: "Kiviä",
-		colour: "#4B4B4B",
-		skiability: null,
-		categoryId: 7,
-		explanation: "",
-	},
-	{
-		id: 22,
-		name: "Oksia",
-		colour: "#6D4F32",
-		skiability: null,
-		categoryId: 7,
-		explanation: "",
 	},
 ];
 

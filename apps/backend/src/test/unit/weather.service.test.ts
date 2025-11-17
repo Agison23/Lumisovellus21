@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { WeatherService } from '../../api/services/weather/WeatherService';
 import { testPrisma } from '../vitest.setup';
 
@@ -10,6 +10,10 @@ describe('WeatherService Unit Tests', () => {
     await testPrisma.weather.deleteMany();
 
     weatherService = new WeatherService();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('saveWeatherData', () => {
@@ -26,7 +30,7 @@ describe('WeatherService Unit Tests', () => {
         visibility: null,
         cloudCover: null,
         stationId: '101982',
-        stationName: 'Muonio Laukukero',
+        stationName: 'Pallastunturi',
       };
 
       const savedWeather = await weatherService.saveWeatherData(weatherData);
@@ -35,7 +39,7 @@ describe('WeatherService Unit Tests', () => {
       expect(savedWeather?.temperature).toBe(15.5);
       expect(savedWeather?.windSpeed).toBe(8.3);
       expect(savedWeather?.stationId).toBe('101982');
-      expect(savedWeather?.stationName).toBe('Muonio Laukukero');
+      expect(savedWeather?.stationName).toBe('Pallastunturi');
     });
 
     it('should handle null values correctly', async () => {
@@ -191,6 +195,225 @@ describe('WeatherService Unit Tests', () => {
       expect(history[0].temperature).toBe(20.0);
       expect(history[1].temperature).toBe(15.0);
       expect(history[2].temperature).toBe(10.0);
+    });
+  });
+
+  describe('getAverageForItem', () => {
+    it('calculates arithmetic average for wind speed', async () => {
+      const now = new Date('2024-01-10T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      for (let i = 0; i < 3; i++) {
+        await testPrisma.weather.create({
+          data: {
+            timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
+            windSpeed: 5 + i, // 5,6,7 -> average 6
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        });
+      }
+
+      const average = await weatherService.getAverageForItem('windSpeed', 3);
+      expect(average).toBeCloseTo(6);
+    });
+
+    it('calculates circular average for wind direction across north', async () => {
+      const now = new Date('2024-01-05T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await testPrisma.weather.createMany({
+        data: [
+          {
+            timestamp: new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            windDirection: 0,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+          {
+            timestamp: now,
+            windDirection: 270,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        ],
+      });
+
+      const average = await weatherService.getAverageForItem('windDirection', 3);
+      expect(average).toBeCloseTo(315);
+    });
+  });
+
+  describe('getMinimumForItem', () => {
+    it('returns coldest temperature within window', async () => {
+      const now = new Date('2024-02-01T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      const temps = [-2, -10, 1];
+      for (let i = 0; i < temps.length; i++) {
+        await testPrisma.weather.create({
+          data: {
+            timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
+            temperature: temps[i],
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        });
+      }
+
+      const min = await weatherService.getMinimumForItem(3);
+      expect(min).toBe(-10);
+    });
+  });
+
+  describe('getMaximumForItem', () => {
+    it('returns warmest temperature', async () => {
+      const now = new Date('2024-02-10T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      const temps = [-5, 0, 3, 8];
+      for (let i = 0; i < temps.length; i++) {
+        await testPrisma.weather.create({
+          data: {
+            timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
+            temperature: temps[i],
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        });
+      }
+
+      const maxTemp = await weatherService.getMaximumForItem('temperature', 4);
+      expect(maxTemp).toBe(8);
+    });
+
+    it('returns strongest wind speed', async () => {
+      const now = new Date('2024-02-20T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      const windSpeeds = [3, 12, 7];
+      for (let i = 0; i < windSpeeds.length; i++) {
+        await testPrisma.weather.create({
+          data: {
+            timestamp: new Date(now.getTime() - i * 24 * 60 * 60 * 1000),
+            windSpeed: windSpeeds[i],
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        });
+      }
+
+      const maxWind = await weatherService.getMaximumForItem('windSpeed', 3);
+      expect(maxWind).toBe(12);
+    });
+  });
+
+  describe('getChangeForItem', () => {
+    it('returns latest minus earliest snow depth', async () => {
+      const now = new Date('2024-03-01T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await testPrisma.weather.createMany({
+        data: [
+          {
+            timestamp: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+            snowDepth: 40,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+          {
+            timestamp: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+            snowDepth: 60,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+          {
+            timestamp: now,
+            snowDepth: 55,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        ],
+      });
+
+      const change = await weatherService.getChangeForItem('snowDepth', 7);
+      expect(change).toBe(15); // 55 - 40
+    });
+
+    it('returns null when insufficient data', async () => {
+      const now = new Date('2024-03-10T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await testPrisma.weather.create({
+        data: {
+          timestamp: now,
+          snowDepth: 50,
+          stationId: 'station',
+          stationName: 'Pallastunturi',
+        },
+      });
+
+      const change = await weatherService.getChangeForItem('snowDepth', 3);
+      expect(change).toBeNull();
+    });
+  });
+
+  describe('getDaysWhereAverageTemperatureExceedsThreshold', () => {
+    it('filters days whose averages are above threshold', async () => {
+      const now = new Date('2024-04-04T12:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      const makeEntry = async (date: string, temperature: number) => {
+        await testPrisma.weather.create({
+          data: {
+            timestamp: new Date(date),
+            temperature,
+            stationId: 'station',
+            stationName: 'Pallastunturi',
+          },
+        });
+      };
+
+      await makeEntry('2024-04-02T06:00:00Z', -2);
+      await makeEntry('2024-04-02T12:00:00Z', -1);
+      await makeEntry('2024-04-03T08:00:00Z', 1);
+      await makeEntry('2024-04-03T12:00:00Z', 2);
+      await makeEntry('2024-04-03T18:00:00Z', 3);
+      await makeEntry('2024-04-04T09:00:00Z', 0.5);
+
+      const matches = await weatherService.getDaysWhereAverageTemperatureExceedsThreshold(3, 0);
+
+      expect(matches).toHaveLength(2);
+      expect(matches[0].date).toBe('2024-04-03T00:00:00.000Z');
+      expect(matches[0].averageTemperature).toBeCloseTo(2);
+      expect(matches[1].date).toBe('2024-04-04T00:00:00.000Z');
+      expect(matches[1].averageTemperature).toBeCloseTo(0.5);
+    });
+
+    it('returns empty array when no days exceed threshold', async () => {
+      const now = new Date('2024-04-10T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await testPrisma.weather.create({
+        data: {
+          timestamp: now,
+          temperature: -5,
+          stationId: 'station',
+          stationName: 'Pallastunturi',
+        },
+      });
+
+      const matches = await weatherService.getDaysWhereAverageTemperatureExceedsThreshold(3, 0);
+      expect(matches).toEqual([]);
     });
   });
 

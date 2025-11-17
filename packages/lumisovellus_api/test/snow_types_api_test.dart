@@ -7,9 +7,9 @@ void main() {
   final instance = LumisovellusApi().getSnowTypesApi();
 
   group(SnowTypesApi, () {
-    // Get all snow types
+    // Get all snow types (primary and secondary)
     //
-    // Retrieve all available snow types for reviews
+    // Retrieve all snow types including both primary and secondary snow types in a flat list.
     //
     //Future<ApiV1SnowTypesGet200Response> apiV1SnowTypesGet() async
     test('test apiV1SnowTypesGet', () async {
@@ -20,7 +20,7 @@ void main() {
     //
     // Associate one or more existing snow types as secondary types for the specified snow type. All entities are SnowTypes - \"secondary\" refers only to the relationship. Requires authentication and admin role.
     //
-    //Future<ApiV1SnowTypesPost201Response> apiV1SnowTypesIdSecondaryPost(String id, AddSecondarySnowTypesRequest addSecondarySnowTypesRequest) async
+    //Future<ApiV1SnowTypesIdSecondaryPost200Response> apiV1SnowTypesIdSecondaryPost(String id, AddSecondarySnowTypesRequest addSecondarySnowTypesRequest) async
     test('test apiV1SnowTypesIdSecondaryPost', () async {
       // TODO
     });
@@ -31,6 +31,15 @@ void main() {
     //
     //Future<ApiV1SnowTypesPost201Response> apiV1SnowTypesPost(CreateSnowTypeRequest createSnowTypeRequest) async
     test('test apiV1SnowTypesPost', () async {
+      // TODO
+    });
+
+    // Get all primary snow types
+    //
+    // Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.
+    //
+    //Future<ApiV1SnowTypesPrimaryGet200Response> apiV1SnowTypesPrimaryGet() async
+    test('test apiV1SnowTypesPrimaryGet', () async {
       // TODO
     });
 

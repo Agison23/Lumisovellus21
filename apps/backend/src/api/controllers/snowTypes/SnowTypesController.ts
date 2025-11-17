@@ -40,5 +40,19 @@ export class SnowTypesController {
       ApiResponseHandler.success(res, snowType, 200);
     }
   );
+
+  getAllSnowTypesFlat = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const snowTypes = await this.snowTypesService.getAllSnowTypesFlat();
+      ApiResponseHandler.success(res, snowTypes);
+    }
+  );
+
+  getPrimarySnowTypes = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const snowTypes = await this.snowTypesService.getPrimarySnowTypes();
+      ApiResponseHandler.success(res, snowTypes);
+    }
+  );
 }
 

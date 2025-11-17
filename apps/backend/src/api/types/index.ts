@@ -42,6 +42,7 @@ export interface GuideUpdate {
   description: string | null;
   primarySnowTypeIds: string[];
   secondarySnowTypeIds: string[];
+  hazards: HazardType[];
 }
 
 export interface UserReviewItem {
@@ -119,7 +120,7 @@ export interface SnowType {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
   secondaryTypes?: SnowType[];
 }
@@ -128,7 +129,7 @@ export interface CreateSnowTypeRequest {
   name: string;
   colour: string;
   skiability?: number | null;
-  categoryId?: number | null;
+  primarySnowTypeId?: string | null;
   explanation?: string | null;
 }
 
@@ -158,12 +159,25 @@ export interface UserRole {
   permissions: string;
 }
 
-// Help Request Types
-export interface HelpRequestCreate {
+// Help Event Types
+export type HelpNeedType = 'health' | 'equipment' | 'lost';
+
+export type HelpEventStatus = 'active' | 'completed' | 'cancelled';
+
+export interface HelpEventLocation {
+  latitude: number;
+  longitude: number;
+  accuracy: number | null;
+}
+
+export interface HelpEventCreate {
   timestamp: number;
-  deviceId: string;
-  gpsCoord: string;
-  helpType: 'seriousEmerg' | 'help';
+  location: {
+    latitude: number;
+    longitude: number;
+    accuracy?: number | null;
+  };
+  needType: HelpNeedType;
   chatRoomId: string;
 }
 
@@ -174,6 +188,8 @@ export interface HelpRequest {
   gpsCoord: string;
   helpType: string;
   roomId: string;
+  status: HelpEventStatus;
+  locationAccuracy?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -199,6 +215,39 @@ export interface HelpRequestHelper {
   lowBattery: number; // 0: Normal, 1: Low
   lastSeen: Date;
 }
+
+export interface Rescuee {
+  userId: string;
+  needType: HelpNeedType;
+  userStatus: {
+    location: HelpEventLocation;
+    batteryLevel: number | null;
+  };
+}
+
+export interface HelpEventParticipation {
+  acceptanceId: string;
+  eventId: string;
+  responderId: string;
+  location: HelpEventLocation | null;
+  acceptedAt: string;
+}
+
+export interface HelpEventSummary {
+  eventId: string;
+  status: HelpEventStatus;
+  rescuee: Rescuee;
+  location: HelpEventLocation;
+  rescuerCount: number;
+  createdAt: string;
+}
+
+export interface HelpEventRescueeView extends HelpEventSummary {
+  acceptedRescuers: HelpEventParticipation[];
+  updatedAt: string | null;
+}
+
+export type HelpEventRescuerView = HelpEventSummary;
 
 // Error Types
 export interface ApiError {

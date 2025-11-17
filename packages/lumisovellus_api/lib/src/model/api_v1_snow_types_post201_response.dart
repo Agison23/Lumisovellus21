@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lumisovellus_api/src/model/snow_type.dart';
 import 'package:lumisovellus_api/src/model/health_get200_response_meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -43,11 +44,11 @@ ApiV1SnowTypesPost201Response({
     
     name: r'data',
     required: true,
-    includeIfNull: true,
+    includeIfNull: false,
   )
 
 
-  final Object? data;
+  final SnowType data;
 
 
 
@@ -74,7 +75,7 @@ ApiV1SnowTypesPost201Response({
     @override
     int get hashCode =>
         success.hashCode +
-        (data == null ? 0 : data.hashCode) +
+        data.hashCode +
         meta.hashCode;
 
   factory ApiV1SnowTypesPost201Response.fromJson(Map<String, dynamic> json) => _$ApiV1SnowTypesPost201ResponseFromJson(json);

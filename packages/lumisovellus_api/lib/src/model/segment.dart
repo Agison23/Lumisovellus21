@@ -84,8 +84,6 @@ Segment({
 
 
 
-          // minimum: -9007199254740991
-          // maximum: 9007199254740991
   @JsonKey(
     
     name: r'isLowerSegment',
@@ -94,7 +92,7 @@ Segment({
   )
 
 
-  final int? isLowerSegment;
+  final String? isLowerSegment;
 
 
 

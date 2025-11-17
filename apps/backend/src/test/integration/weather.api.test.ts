@@ -1,365 +1,231 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import { testPrisma } from '../vitest.setup';
 import weatherRoutes from '../../api/routes/weather/weatherRoutes';
 import { errorHandler } from '../../api/middleware/errorHandler';
 
-// Create test app
 const app = express();
 app.use(express.json());
 app.use('/', weatherRoutes);
 app.use(errorHandler);
 
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+async function addWeatherEntry({
+  timestamp,
+  temperature = null,
+  windSpeed = null,
+  windDirection = null,
+  snowDepth = null,
+}: {
+  timestamp: Date;
+  temperature?: number | null;
+  windSpeed?: number | null;
+  windDirection?: number | null;
+  snowDepth?: number | null;
+}) {
+  await testPrisma.weather.create({
+    data: {
+      timestamp,
+      temperature,
+      windSpeed,
+      windDirection,
+      snowDepth,
+      stationId: 'station',
+      stationName: 'Pallastunturi',
+    },
+  });
+}
+
 describe('Weather API Integration Tests', () => {
   beforeEach(async () => {
-    // Clean up data before each test
     await testPrisma.weather.deleteMany();
+    vi.useRealTimers();
   });
 
-  describe('GET /weather', () => {
-    it('should return the latest weather data', async () => {
-      const now = new Date();
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-      // Create old weather data
-      await testPrisma.weather.create({
-        data: {
-          timestamp: yesterday,
-          temperature: 10.0,
-          windSpeed: 5.0,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      // Create recent weather data
-      await testPrisma.weather.create({
-        data: {
-          timestamp: now,
-          temperature: 20.0,
-          windSpeed: 10.0,
-          windDirection: 180,
-          airPressure: 1013.2,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      const response = await request(app).get('/weather');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.temperature).toBe(20.0);
-      expect(response.body.data.windSpeed).toBe(10.0);
-      expect(response.body.data.stationId).toBe('101982');
-    });
-
-    it('should return null when no weather data exists', async () => {
-      const response = await request(app).get('/weather');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toBeNull();
-    });
-
-    it('should return most recent weather data when multiple records exist', async () => {
-      // Create weather records with increasing timestamps
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T10:00:00Z'),
-          temperature: 10,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T11:00:00Z'),
-          temperature: 20,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T12:00:00Z'),
-          temperature: 30,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T13:00:00Z'),
-          temperature: 40,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
-
-      const response = await request(app).get('/weather');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      // Should return the most recent record (latest timestamp)
-      expect(response.body.data.temperature).toBe(40);
-    });
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  describe('GET /weather/history', () => {
-    it('should return weather history with default limit', async () => {
-      const baseTime = new Date('2024-01-01T12:00:00Z');
+  describe('GET /weather/average', () => {
+    it('returns rolling average wind speed', async () => {
+      const now = new Date('2024-05-01T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      // Create 15 weather records with simple temperatures
-      for (let i = 0; i < 15; i++) {
-        const timestamp = new Date(baseTime.getTime() - i * 60 * 60 * 1000);
-        await testPrisma.weather.create({
-          data: {
-            timestamp,
-            temperature: i, // 0, 1, 2, 3, ..., 14
-            stationId: '101982',
-            stationName: 'Muonio Laukukero',
-          },
-        });
-      }
-
-      const response = await request(app).get('/weather/history');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toHaveLength(15);
-      // Most recent record is i=0 (temperature 0)
-      expect(response.body.data[0].temperature).toBe(0);
-      // Oldest record is i=14 (temperature 14)
-      expect(response.body.data[14].temperature).toBe(14);
-    });
-
-    it('should return weather history with custom limit', async () => {
-      const baseTime = new Date('2024-01-01T12:00:00Z');
-
-      // Create 20 weather records
-      for (let i = 0; i < 20; i++) {
-        const timestamp = new Date(baseTime.getTime() - i * 60 * 60 * 1000);
-        await testPrisma.weather.create({
-          data: {
-            timestamp,
-            temperature: i * 2, // 0, 2, 4, 6, ... 38
-            stationId: '101982',
-            stationName: 'Muonio Laukukero',
-          },
-        });
-      }
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - DAY_IN_MS), windSpeed: 5 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - 2 * DAY_IN_MS), windSpeed: 7 });
+      await addWeatherEntry({ timestamp: now, windSpeed: 9 });
 
       const response = await request(app)
-        .get('/weather/history')
-        .query({ limit: 5 });
+        .get('/weather/average')
+        .query({ item: 'windSpeed', days: 3 });
 
       expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toHaveLength(5);
-      // Should return 5 most recent: 0, 2, 4, 6, 8
-      expect(response.body.data[0].temperature).toBe(0); // Most recent
-      expect(response.body.data[4].temperature).toBe(8); // 5th most recent
+      expect(response.body.data).toMatchObject({
+        type: 'average',
+        item: 'windSpeed',
+        unit: 'metersPerSecond',
+        days: 3,
+      });
+      expect(response.body.data.value).toBeCloseTo(7);
+      expect(response.body.data.location.name).toBe('Pallastunturi');
     });
 
-    it('should return empty array when no weather data exists', async () => {
-      const response = await request(app).get('/weather/history');
+    it('computes circular average for wind direction', async () => {
+      const now = new Date('2024-05-05T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toEqual([]);
-    });
+      await addWeatherEntry({ timestamp: now, windDirection: 0 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - DAY_IN_MS), windDirection: 270 });
 
-    it('should handle invalid limit parameter', async () => {
       const response = await request(app)
-        .get('/weather/history')
-        .query({ limit: 'invalid' });
+        .get('/weather/average')
+        .query({ item: 'windDirection', days: 2 });
 
       expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      // Should default to 100
+      expect(response.body.data.value).toBeCloseTo(315);
     });
 
-    it('should return results sorted by timestamp descending', async () => {
-      // Create records with timestamps in ascending order (oldest first)
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T10:00:00Z'),
-          temperature: 10,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
+    it('returns 400 for missing item', async () => {
+      const response = await request(app).get('/weather/average');
 
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T11:00:00Z'),
-          temperature: 20,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
 
-      await testPrisma.weather.create({
-        data: {
-          timestamp: new Date('2024-01-01T12:00:00Z'),
-          temperature: 30,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
+    it('returns 404 when no data exists', async () => {
+      const response = await request(app)
+        .get('/weather/average')
+        .query({ item: 'windSpeed', days: 3 });
 
-      const response = await request(app).get('/weather/history');
-
-      expect(response.status).toBe(200);
-      // Results should be sorted descending by timestamp (newest first)
-      expect(response.body.data[0].temperature).toBe(30); // 12:00 (newest)
-      expect(response.body.data[1].temperature).toBe(20); // 11:00
-      expect(response.body.data[2].temperature).toBe(10); // 10:00 (oldest)
+      expect(response.status).toBe(404);
     });
   });
 
-  describe('POST /weather/update', () => {
-    it('should update weather data successfully', async () => {
-      // Mock the fetch function to return valid XML response
-      const mockXmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
-        <wfs:FeatureCollection>
-          <wfs:member>
-            <om:Observation>
-              <omResult>
-                <measurementSeries>
-                  <item gml:id="obs-obs-1-1-t2m">
-                    <value>15.5</value>
-                  </item>
-                  <item gml:id="obs-obs-1-1-ws_10min">
-                    <value>8.3</value>
-                  </item>
-                  <item gml:id="obs-obs-1-1-wd_10min">
-                    <value>180</value>
-                  </item>
-                </measurementSeries>
-              </omResult>
-            </om:Observation>
-          </wfs:member>
-        </wfs:FeatureCollection>`;
+  describe('GET /weather/minimum', () => {
+    it('returns coldest temperature', async () => {
+      const now = new Date('2024-06-01T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      const originalFetch = global.fetch;
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        text: async () => mockXmlResponse,
-      } as any);
+      await addWeatherEntry({ timestamp: now, temperature: -2 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - DAY_IN_MS), temperature: -8 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - 2 * DAY_IN_MS), temperature: 1 });
 
-      const response = await request(app).post('/weather/update');
+      const response = await request(app)
+        .get('/weather/minimum')
+        .query({ item: 'temperature', days: 3 });
 
       expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).not.toBeNull();
-
-      global.fetch = originalFetch;
-    });
-
-    it('should handle API errors gracefully', async () => {
-      const originalFetch = global.fetch;
-      global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
-
-      const response = await request(app).post('/weather/update');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toBeNull();
-
-      global.fetch = originalFetch;
-    });
-
-    it('should handle non-ok API responses', async () => {
-      const originalFetch = global.fetch;
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-      } as any);
-
-      const response = await request(app).post('/weather/update');
-
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data).toBeNull();
-
-      global.fetch = originalFetch;
+      expect(response.body.data.value).toBe(-8);
+      expect(response.body.data.item).toBe('temperature');
+      expect(response.body.data.unit).toBe('celsius');
     });
   });
 
-  describe('API response format', () => {
-    it('should return correct response structure for successful requests', async () => {
-      await testPrisma.weather.create({
-        data: {
-          temperature: 15.0,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
+  describe('GET /weather/maximum', () => {
+    it('returns strongest wind speed', async () => {
+      const now = new Date('2024-06-10T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      const response = await request(app).get('/weather');
+      await addWeatherEntry({ timestamp: now, windSpeed: 3 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - DAY_IN_MS), windSpeed: 12 });
 
-      expect(response.body).toHaveProperty('success');
-      expect(response.body).toHaveProperty('data');
-      expect(response.body).toHaveProperty('meta');
-      expect(response.body.success).toBe(true);
-      expect(response.body.meta).toHaveProperty('timestamp');
+      const response = await request(app)
+        .get('/weather/maximum')
+        .query({ item: 'windSpeed', days: 2 });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.value).toBe(12);
+      expect(response.body.data.unit).toBe('metersPerSecond');
     });
 
-    it('should include meta information in response', async () => {
-      await testPrisma.weather.create({
-        data: {
-          temperature: 15.0,
-          stationId: '101982',
-          stationName: 'Muonio Laukukero',
-        },
-      });
+    it('returns warmest temperature', async () => {
+      const now = new Date('2024-06-15T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      const response = await request(app).get('/weather');
+      await addWeatherEntry({ timestamp: now, temperature: 5 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - DAY_IN_MS), temperature: 8 });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - 2 * DAY_IN_MS), temperature: 10 });
 
-      expect(response.body.meta).toBeDefined();
-      expect(response.body.meta.timestamp).toBeDefined();
-      expect(typeof response.body.meta.timestamp).toBe('string');
+      const response = await request(app)
+        .get('/weather/maximum')
+        .query({ item: 'temperature', days: 3 });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.value).toBe(10);
+      expect(response.body.data.unit).toBe('celsius');
     });
   });
 
-  describe('data integrity', () => {
-    it('should preserve all weather data fields', async () => {
-      const weatherData = {
-        timestamp: new Date(),
-        temperature: 15.5,
-        windSpeed: 8.3,
-        windDirection: 180,
-        airPressure: 1013.2,
-        snowDepth: 50.0,
-        relativeHumidity: 65,
-        dewPoint: 5.2,
-        precipitation: 0.0,
-        visibility: 10.0,
-        cloudCover: 3,
-        stationId: '101982',
-        stationName: 'Muonio Laukukero',
-      };
+  describe('GET /weather/change', () => {
+    it('returns snow depth delta', async () => {
+      const now = new Date('2024-07-01T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
 
-      await testPrisma.weather.create({ data: weatherData });
+      await addWeatherEntry({ timestamp: new Date(now.getTime() - 7 * DAY_IN_MS), snowDepth: 30 });
+      await addWeatherEntry({ timestamp: now, snowDepth: 45 });
 
-      const response = await request(app).get('/weather');
+      const response = await request(app)
+        .get('/weather/change')
+        .query({ item: 'snowDepth', days: 7 });
 
-      expect(response.body.data.temperature).toBe(15.5);
-      expect(response.body.data.windSpeed).toBe(8.3);
-      expect(response.body.data.windDirection).toBe(180);
-      expect(response.body.data.airPressure).toBe(1013.2);
-      expect(response.body.data.snowDepth).toBe(50.0);
-      expect(response.body.data.relativeHumidity).toBe(65);
-      expect(response.body.data.dewPoint).toBe(5.2);
-      expect(response.body.data.precipitation).toBe(0.0);
-      expect(response.body.data.visibility).toBe(10.0);
-      expect(response.body.data.cloudCover).toBe(3);
+      expect(response.status).toBe(200);
+      expect(response.body.data.value).toBe(15);
+      expect(response.body.data.unit).toBe('centimeters');
+    });
+
+    it('responds 404 when insufficient snow depth data', async () => {
+      const now = new Date('2024-07-05T00:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await addWeatherEntry({ timestamp: now, snowDepth: 40 });
+
+      const response = await request(app)
+        .get('/weather/change')
+        .query({ item: 'snowDepth', days: 7 });
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe('GET /weather/filterDays', () => {
+    it('returns dates whose daily averages exceed threshold', async () => {
+      const now = new Date('2024-08-04T12:00:00Z');
+      vi.useFakeTimers();
+      vi.setSystemTime(now);
+
+      await addWeatherEntry({ timestamp: new Date('2024-08-02T06:00:00Z'), temperature: -2 });
+      await addWeatherEntry({ timestamp: new Date('2024-08-02T12:00:00Z'), temperature: -1 });
+      await addWeatherEntry({ timestamp: new Date('2024-08-03T08:00:00Z'), temperature: 2 });
+      await addWeatherEntry({ timestamp: new Date('2024-08-03T12:00:00Z'), temperature: 4 });
+      await addWeatherEntry({ timestamp: new Date('2024-08-04T09:00:00Z'), temperature: 0.5 });
+
+      const response = await request(app)
+        .get('/weather/filterDays')
+        .query({ item: 'temperature', threshold: 0, days: 3 });
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.matches).toHaveLength(2);
+      expect(response.body.data.matches[0].date).toBe('2024-08-03T00:00:00.000Z');
+      expect(response.body.data.matches[0].averageTemperature).toBeCloseTo(3);
+      expect(response.body.data.matches[1].date).toBe('2024-08-04T00:00:00.000Z');
+      expect(response.body.data.matches[1].averageTemperature).toBeCloseTo(0.5);
+    });
+
+    it('validates required threshold parameter', async () => {
+      const response = await request(app)
+        .get('/weather/filterDays')
+        .query({ item: 'temperature', days: 3 });
+
+      expect(response.status).toBe(400);
     });
   });
 });
