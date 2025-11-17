@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { loginAction } from '@/app/(auth)/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function LoginPage() {
       // we need to revalidate the path to update the auth state
       router.refresh();
       // then redirect to the weather page
-      router.push('/weather');
+      router.push('/');
     },
     onError: () => {
       toast.error(t('errors.loginFailed'));
@@ -41,7 +42,7 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
       <form
         className="flex flex-col p-2 gap-4 rounded-md border border-accent max-w-md"
         onSubmit={(e) => formMutation.mutate(e)}
@@ -69,6 +70,11 @@ export default function LoginPage() {
           {formMutation.isPending ? t('buttons.loggingIn') : t('buttons.login')}
         </Button>
       </form>
+      <Link href="/register">
+        <span className="text-muted-foreground hover:text-primary transition-colors duration-150">
+          {t('links.register')}
+        </span>
+      </Link>
     </div>
   );
 }

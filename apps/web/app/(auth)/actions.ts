@@ -33,3 +33,9 @@ export async function logoutAction() {
   revalidatePath('/');
   return { success: true };
 }
+
+export async function registerAction(email: string, password: string) {
+  // Call your backend API here to register the user
+  console.log('Registering user:', email);
+  return true;
+}
