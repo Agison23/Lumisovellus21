@@ -1,9 +1,9 @@
-import { Obstacles } from '@/components/map-3d';
-import { useState } from 'react';
+import { Obstacles } from "@/components/map-3d";
+import { useState } from "react";
 
 export interface SnowConditionFormData {
-  // Step 0 (Display): Area information - no inputs needed
-  areaId: string | null;
+  // Step 0 (Display): Segment information - no inputs needed
+  segmentId: string | null;
 
   // Step 1 (Select): Snow type selection
   selectedSnowTypeId: string | null;
@@ -13,7 +13,7 @@ export interface SnowConditionFormData {
 }
 
 const initialFormData: SnowConditionFormData = {
-  areaId: null,
+  segmentId: null,
   selectedSnowTypeId: null,
   obstacleIds: null,
   description: null,
@@ -22,7 +22,7 @@ const initialFormData: SnowConditionFormData = {
 
 export function useMultiStepForm(
   initialData: Partial<SnowConditionFormData> = {},
-  totalSteps: number = 3
+  totalSteps: number = 3,
 ) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<SnowConditionFormData>({

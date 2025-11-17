@@ -29,6 +29,7 @@ import {
   saveControlState,
 } from "@/lib/map/control-state";
 import {
+  apiUrl,
   fetchAreas,
   fetchMonitorData,
   fetchSnowTypes,
@@ -59,25 +60,44 @@ import type {
 } from "@/lib/map/mock-data";
 import { calculatePolygonArea } from "@/lib/map/utils";
 import type { Monitor } from "@/lib/snower/types";
+import { paths } from "@lumisovellus/api-client-web";
 
 const submitObservation = async (data: {
-  areaId: string | null;
+  segmentId: string | null;
   selectedSnowTypeId: string | null;
   obstacles?: Obstacles | null;
   timestamp: Date | null;
 }) => {
   // Validate required fields
-  if (!data.areaId || !data.selectedSnowTypeId || !data.timestamp) {
+  if (!data.segmentId || !data.selectedSnowTypeId || !data.timestamp) {
     throw new Error(
       "Missing required fields: areaId, selectedSnowTypeId, or timestamp",
     );
   }
 
-  const response = await fetch("/api/observations", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  type ObservationRequestBody =
+    paths["/api/v1/segments/{id}/reviews"]["post"]["requestBody"]["content"]["application/json"];
+
+  const hazards: ("stones" | "branches")[] = [];
+  if (data.obstacles?.stones) hazards.push("stones");
+  if (data.obstacles?.branches) hazards.push("branches");
+
+  const requestBody: ObservationRequestBody = {
+    snowType: data.selectedSnowTypeId,
+    hazards: hazards.length > 0 ? hazards : undefined,
+  };
+
+  console.log("posting to:", `/api/v1/segments/${data.segmentId}/reviews`);
+  console.log("Submitting observation:", requestBody);
+
+  const response = await fetch(
+    `${apiUrl}/api/v1/segments/${data.segmentId}/reviews`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    },
+  );
 
   if (!response.ok) throw new Error("Failed to submit observation");
   return response.json();
@@ -86,6 +106,24 @@ const submitObservation = async (data: {
 export type Obstacles = {
   stones: boolean;
   branches: boolean;
+};
+
+const HazardBadges = ({ hazards }: { hazards: ("stones" | "branches")[] }) => {
+  if (!hazards || hazards.length === 0) return null;
+  return (
+    <div className="flex gap-1 mt-1">
+      {hazards.includes("stones") && (
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs">
+          🪨 Stones
+        </span>
+      )}
+      {hazards.includes("branches") && (
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 text-orange-800 text-xs">
+          🌿 Branches
+        </span>
+      )}
+    </div>
+  );
 };
 
 export default function Map3d() {
@@ -272,7 +310,7 @@ export default function Map3d() {
 
   const form = useMultiStepForm(
     {
-      areaId: selectedArea?.id || null,
+      segmentId: selectedArea?.id || null,
       timestamp: new Date(),
       selectedSnowTypeId: selectedSnowTypeId,
       obstacleIds: selectedObstacles,
@@ -316,7 +354,7 @@ export default function Map3d() {
       setSelectedArea(properties);
       setSelectedMonitor(null);
       form.updateFormData({
-        areaId: properties.id,
+        segmentId: properties.id,
       });
       form.goToStep(0);
       submitMutation.reset();
@@ -627,6 +665,9 @@ export default function Map3d() {
                                   </div>
                                 ),
                               )}
+                              <HazardBadges
+                                hazards={updateData.guideUpdate.hazards}
+                              />
                             </div>
                           )}
                           {updateData.userReviews.length > 0 &&
@@ -653,6 +694,14 @@ export default function Map3d() {
                                       `reportForm.snowTypes.${review.snowTypeId}.description`,
                                     )}
                                   </p>
+                                  <HazardBadges
+                                    hazards={
+                                      review.hazards as (
+                                        | "stones"
+                                        | "branches"
+                                      )[]
+                                    }
+                                  />
                                 </div>
                               ))}
                             </div>
@@ -815,7 +864,7 @@ export default function Map3d() {
                   <Button
                     onClick={() =>
                       submitMutation.mutate({
-                        areaId: form.formData.areaId,
+                        segmentId: form.formData.segmentId,
                         selectedSnowTypeId: form.formData.selectedSnowTypeId,
                         obstacles: form.formData.obstacleIds,
                         timestamp: new Date(),
