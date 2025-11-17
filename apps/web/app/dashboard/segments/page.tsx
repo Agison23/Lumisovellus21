@@ -96,6 +96,283 @@ export default function DashboardPage() {
   );
 }
 
+function CreateAreaDialog({
+  t,
+  refetch,
+}: {
+  t: (key: string, params?: Record<string, string>) => string;
+  refetch: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [newArea, setNewArea] = useState<InteractiveAreaFeature>({
+    type: "Feature",
+    geometry: {
+      type: "Polygon",
+      coordinates: [[[0, 0]]],
+    },
+    properties: {
+      id: "",
+      name: "",
+      terrain: "",
+      avalancheDanger: false,
+      isLowerSegment: null,
+    },
+  });
+  const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const handleCoordinateChange = (
+    index: number,
+    coordIndex: number,
+    positionIndex: number,
+    value: string,
+  ) => {
+    const numValue = value === "" ? 0 : Number(value);
+    const updatedCoordinates = [...newArea.geometry.coordinates];
+    updatedCoordinates[index][coordIndex][positionIndex] = numValue;
+    setNewArea((prev) => ({
+      ...prev,
+      geometry: {
+        ...prev.geometry,
+        coordinates: updatedCoordinates,
+      },
+    }));
+  };
+
+  const handleCancel = () => {
+    setNewArea({
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [[[0, 0]]],
+      },
+      properties: {
+        id: "",
+        name: "",
+        terrain: "",
+        avalancheDanger: false,
+        isLowerSegment: null,
+      },
+    });
+    setOpen(false);
+  };
+
+  const mutation = useMutation({
+    mutationFn: async (areaToCreate: InteractiveAreaFeature) => {
+      return fetch("/api/areas/create", {
+        method: "POST",
+        body: JSON.stringify(areaToCreate),
+      });
+    },
+    onSuccess: () => {
+      toast.success(t("createDialog.success.createSuccessful"));
+      refetch();
+      handleCancel();
+    },
+    onError: () => {
+      toast.error(t("createDialog.errors.createFailed"));
+    },
+  });
+
+  const handleCreate = async () => {
+    mutation.mutate(newArea);
+  };
+
+  const isValid =
+    newArea.properties.id.trim() !== "" &&
+    newArea.properties.name.trim() !== "" &&
+    newArea.properties.terrain.trim() !== "";
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>{t("newButton")}</Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[80vh] w-full grid-rows-[auto_1fr] overflow-hidden flex flex-col gap-4">
+        <DialogHeader>
+          <DialogTitle>{t("createDialog.title")}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-2 min-h-0">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs">{t("createDialog.id")}</label>
+            <Input
+              value={newArea.properties.id}
+              onChange={(e) =>
+                setNewArea((prev) => ({
+                  ...prev,
+                  properties: { ...prev.properties, id: e.target.value },
+                }))
+              }
+              placeholder="e.g., area-1"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs">{t("createDialog.name")}</label>
+            <Input
+              value={newArea.properties.name}
+              onChange={(e) =>
+                setNewArea((prev) => ({
+                  ...prev,
+                  properties: { ...prev.properties, name: e.target.value },
+                }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs">{t("createDialog.terrain")}</label>
+            <Input
+              value={newArea.properties.terrain}
+              onChange={(e) =>
+                setNewArea((prev) => ({
+                  ...prev,
+                  properties: { ...prev.properties, terrain: e.target.value },
+                }))
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-1 min-h-0 overflow-hidden">
+            <label className="text-xs">
+              {t("createDialog.coordinates.title")}
+            </label>
+            {newArea.geometry.coordinates.map(
+              (coordSet: number[][], index: number) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-2 min-h-0 border overflow-hidden rounded-md"
+                >
+                  <div
+                    ref={(el) => {
+                      scrollRefs.current[index] = el;
+                    }}
+                    className="overflow-y-auto min-h-0 p-2"
+                  >
+                    {coordSet.map((coord: number[], coordIndex: number) => (
+                      <div key={coordIndex} className="flex gap-2 mb-1 min-w-0">
+                        <Input
+                          placeholder={t("createDialog.coordinates.longitude")}
+                          value={coord[0]}
+                          type="number"
+                          className="min-w-0 flex-1 no-spinner"
+                          onChange={(e) =>
+                            handleCoordinateChange(
+                              index,
+                              coordIndex,
+                              0,
+                              e.target.value,
+                            )
+                          }
+                        />
+                        <Input
+                          placeholder={t("createDialog.coordinates.latitude")}
+                          value={coord[1]}
+                          type="number"
+                          className="min-w-0 flex-1 no-spinner"
+                          onChange={(e) =>
+                            handleCoordinateChange(
+                              index,
+                              coordIndex,
+                              1,
+                              e.target.value,
+                            )
+                          }
+                        />
+                        <Button
+                          variant="outline"
+                          className="shrink-0"
+                          onClick={() => {
+                            const updatedCoordinates = [
+                              ...newArea.geometry.coordinates,
+                            ];
+                            updatedCoordinates[index].splice(coordIndex, 1);
+                            setNewArea((prev) => ({
+                              ...prev,
+                              geometry: {
+                                ...prev.geometry,
+                                coordinates: updatedCoordinates,
+                              },
+                            }));
+                          }}
+                        >
+                          <Trash />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="flex-1 shrink-0 mb-2 mx-2"
+                    onClick={() => {
+                      const updatedCoordinates = [
+                        ...newArea.geometry.coordinates,
+                      ];
+                      updatedCoordinates[index].push([0, 0]);
+                      setNewArea((prev) => ({
+                        ...prev,
+                        geometry: {
+                          ...prev.geometry,
+                          coordinates: updatedCoordinates,
+                        },
+                      }));
+                      // Scroll to bottom after adding coordinate
+                      setTimeout(() => {
+                        const scrollEl = scrollRefs.current[index];
+                        if (scrollEl) {
+                          scrollEl.scrollTop = scrollEl.scrollHeight;
+                        }
+                      }, 0);
+                    }}
+                  >
+                    {t("createDialog.coordinates.addCoordinate")}
+                  </Button>
+                </div>
+              ),
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-xs">
+              {t("createDialog.avalanche.title")}
+            </label>
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                checked={newArea.properties.avalancheDanger}
+                onCheckedChange={(checked) =>
+                  setNewArea((prev) => ({
+                    ...prev,
+                    properties: {
+                      ...prev.properties,
+                      avalancheDanger: Boolean(checked),
+                    },
+                  }))
+                }
+              />
+              <span>{t("createDialog.avalanche.toggleAvalancheWarning")}</span>
+            </div>
+          </div>
+          <div className="flex gap-2 w-full shrink-0">
+            <Button
+              onClick={() => handleCancel()}
+              variant="outline"
+              className="flex-1"
+              disabled={mutation.isPending}
+            >
+              {t("createDialog.buttons.cancel")}
+            </Button>
+            <Button
+              disabled={mutation.isPending || !isValid}
+              onClick={() => handleCreate()}
+              className="flex-1"
+            >
+              {mutation.isPending
+                ? t("createDialog.buttons.creating")
+                : t("createDialog.buttons.create")}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function EditAreaDialog({
   area,
   t,
