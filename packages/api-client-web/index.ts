@@ -1120,6 +1120,14 @@ export interface paths {
                 query?: {
                     /** @description Bounding box to filter segments (format: "minLat,minLng,maxLat,maxLng") */
                     bbox?: string;
+                    /** @description Minimum latitude of bounding box */
+                    minLat?: string;
+                    /** @description Minimum longitude of bounding box */
+                    minLng?: string;
+                    /** @description Maximum latitude of bounding box */
+                    maxLat?: string;
+                    /** @description Maximum longitude of bounding box */
+                    maxLng?: string;
                     /** @description Search term to filter segments by name */
                     search?: string;
                     /** @description Return only segments updated since this date (ISO 8601 format) */
@@ -1144,127 +1152,6 @@ export interface paths {
                              */
                             success: boolean;
                             data: components["schemas"]["Segment"][];
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/segments/{id}/updates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get latest updates for a segment
-         * @description Retrieve the most recent updates for a specific segment
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Maximum number of updates to return */
-                    limit?: string;
-                    /** @description Number of days to look back */
-                    days?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description Segment ID (UUID) */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Updates retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: components["schemas"]["SegmentUpdate"][];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1390,6 +1277,7 @@ export interface paths {
                                 description: string | null;
                                 primarySnowTypeIds: string[];
                                 secondarySnowTypeIds: string[];
+                                hazards: string[];
                             };
                             /** @description Response metadata */
                             meta: {
@@ -1463,130 +1351,6 @@ export interface paths {
                 };
             };
         };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/updates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get updates for segments
-         * @description Get updates filtered by updatedSince or time range; include review details.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Number of days to look back (ignored if updatedSince/from/to provided) */
-                    days?: string;
-                    /** @description Filter updates by a specific segment ID */
-                    segmentId?: string;
-                    /** @description Return updates since this timestamp (ISO 8601) */
-                    updatedSince?: string;
-                    /** @description Start of time range (ISO 8601). If provided, overrides days/updatedSince. */
-                    from?: string;
-                    /** @description End of time range (ISO 8601). If provided, overrides days/updatedSince. */
-                    to?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Updates retrieved successfully, with review details included */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: components["schemas"]["SegmentUpdate"][];
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1601,8 +1365,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get all snow types
-         * @description Retrieve all available snow types for reviews
+         * Get all snow types (primary and secondary)
+         * @description Retrieve all snow types including both primary and secondary snow types in a flat list.
          */
         get: {
             parameters: {
@@ -1625,7 +1389,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: unknown[];
+                            data: components["schemas"]["SnowTypes"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1717,7 +1481,7 @@ export interface paths {
                      *       "name": "Powder",
                      *       "colour": "#FFFFFF",
                      *       "skiability": 5,
-                     *       "categoryId": 1,
+                     *       "primarySnowTypeId": null,
                      *       "explanation": "Fresh powder snow"
                      *     }
                      */
@@ -1737,7 +1501,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: unknown;
+                            data: components["schemas"]["SnowType"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1801,6 +1565,119 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/snow-types/primary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all primary snow types
+         * @description Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Snow types retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["PrimarySnowTypeWithSecondaries"][];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2048,6 +1925,127 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/segments/{id}/observations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get observations for a specific segment
+         * @description Retrieve guide updates and user reviews for a specific segment within the requested time window.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Number of days to look back for this segment */
+                    days?: string;
+                    /** @description Maximum number of user reviews to include */
+                    limit?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Segment ID (UUID) */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Segment observations retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["Observation"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/segments/{id}/reviews": {
         parameters: {
             query?: never;
@@ -2087,7 +2085,7 @@ export interface paths {
                          *       "stones"
                          *     ]
                          */
-                        hazards?: ("stones" | "branches")[];
+                        hazards?: components["schemas"]["Hazard"][];
                         /**
                          * @description Optional review comment
                          * @example Good snow conditions
@@ -3129,224 +3127,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/help-requests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get help requests
-         * @description Retrieve all help requests for rescue interface
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Help requests retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: unknown[];
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /**
-         * Create help request
-         * @description Create a help request for emergency or assistance
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["HelpRequest"];
-                };
-            };
-            responses: {
-                /** @description Help request created successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: {
-                                status: string;
-                                nearbyUsers: number;
-                            };
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/help-responses": {
+    "/help/events": {
         parameters: {
             query?: never;
             header?: never;
@@ -3355,10 +3136,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Update help response
-         * @description Update the response status for a help request
-         */
+        /** Create a new help event */
         post: {
             parameters: {
                 query?: never;
@@ -3368,12 +3146,12 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["HelpResponse"];
+                    "application/json": components["schemas"]["HelpEventCreate"];
                 };
             };
             responses: {
-                /** @description Help response updated successfully */
-                200: {
+                /** @description Help event created successfully */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -3384,9 +3162,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: {
-                                status: string;
-                            };
+                            data: components["schemas"]["HelpEventRescueeView"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -3465,30 +3241,144 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/help-requests/{id}/helpers": {
+    "/help/events/nearby": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get users who can help with a specific help request
-         * @description Retrieve all users who have been notified about a help request with their status and distance
-         */
+        /** List nearby help events */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Latitude of requesting user */
+                    lat: number;
+                    /** @description Longitude of requesting user */
+                    lng: number;
+                    /** @description Search radius in meters */
+                    accuracy?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Nearby help events retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["HelpEventSummary"][];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/help/events/{eventId}/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get help event view */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Help request ID */
-                    id: string;
+                    /** @description Help event identifier */
+                    eventId: string;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Help request helpers retrieved successfully */
+                /** @description Help event view retrieved successfully */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -3500,17 +3390,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: {
-                                userId: string;
-                                firstName: string;
-                                lastName: string | null;
-                                phoneNumber: string | null;
-                                distance: number;
-                                state: number;
-                                lowBattery: number;
-                                /** Format: date-time */
-                                lastSeen: string;
-                            }[];
+                            data: components["schemas"]["HelpEventRescueeView"] | components["schemas"]["HelpEventRescuerView"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -3591,236 +3471,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/weather": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get latest weather data
-         * @description Returns the most recent weather data from the FMI API
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Latest weather data */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: unknown;
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/weather/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get weather history
-         * @description Returns historical weather data
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Maximum number of records to return */
-                    limit?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Weather history */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description Indicates if the request was successful
-                             * @example true
-                             */
-                            success: boolean;
-                            data: unknown[];
-                            /** @description Response metadata */
-                            meta: {
-                                /**
-                                 * Format: date-time
-                                 * @description Response timestamp
-                                 * @example 2024-01-15T10:30:00.000Z
-                                 */
-                                timestamp: string;
-                                /** @description Optional success message */
-                                message?: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/weather/update": {
+    "/help/events/{eventId}/acceptance": {
         parameters: {
             query?: never;
             header?: never;
@@ -3829,20 +3480,24 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Manually trigger weather update
-         * @description Fetches new weather data from FMI API and saves it to database
-         */
+        /** Accept help event */
         post: {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    /** @description Help event identifier */
+                    eventId: string;
+                };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["HelpEventAcceptance"];
+                };
+            };
             responses: {
-                /** @description Weather data updated successfully */
+                /** @description Rescuer joined the help event */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -3854,7 +3509,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: unknown;
+                            data: components["schemas"]["HelpEventRescuerView"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -3927,6 +3582,903 @@ export interface paths {
                 };
             };
         };
+        /** Withdraw from help event */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Help event identifier */
+                    eventId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Rescuer withdrew from the help event */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["HelpEventRescuerView"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/help/events/{eventId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update help event status */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Help event identifier */
+                    eventId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["HelpEventStatusUpdate"];
+                };
+            };
+            responses: {
+                /** @description Help event status updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["HelpEventRescueeView"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/help/events/{eventId}/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stream help event updates */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Help event identifier */
+                    eventId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Streaming not yet implemented */
+                501: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather/average": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Average weather metric
+         * @description Returns the average for supported weather items within the requested period.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Weather item to average */
+                    item: "windSpeed" | "windDirection";
+                    /** @description Number of days to include */
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Average weather metric */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["WeatherMetric"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather/minimum": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Minimum temperature
+         * @description Returns the minimum temperature within the requested period.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Weather item to get minimum for */
+                    item: "temperature";
+                    /** @description Number of days to include */
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Minimum temperature */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["WeatherMetric"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather/maximum": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Maximum weather metric
+         * @description Returns the maximum temperature or wind speed within the requested period.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Weather item to get maximum for */
+                    item: "temperature" | "windSpeed";
+                    /** @description Number of days to include */
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Maximum weather metric */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["WeatherMetric"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather/change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Snow depth change
+         * @description Returns the change in snow depth between the start and end of the requested period.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Weather item to calculate change for */
+                    item: "snowDepth";
+                    /** @description Number of days to look back from now */
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Snow depth change */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["WeatherMetric"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/weather/filterDays": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Filter days with average temperature above threshold
+         * @description Returns the dates within the requested period where the daily average temperature exceeded the threshold.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Weather item used for filtering */
+                    item: "temperature";
+                    /** @description Threshold to compare against */
+                    threshold: number;
+                    /** @description Number of days to include */
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Filtered days */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description Indicates if the request was successful
+                             * @example true
+                             */
+                            success: boolean;
+                            data: components["schemas"]["WeatherFilterDaysResponse"];
+                            /** @description Response metadata */
+                            meta: {
+                                /**
+                                 * Format: date-time
+                                 * @description Response timestamp
+                                 * @example 2024-01-15T10:30:00.000Z
+                                 */
+                                timestamp: string;
+                                /** @description Optional success message */
+                                message?: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -4053,7 +4605,21 @@ export interface components {
              *     ]
              */
             secondarySnowTypeIds: string[];
+            /**
+             * @description Array of hazards found on the trail (e.g., ["stones", "branches"])
+             * @default []
+             * @example [
+             *       "stones"
+             *     ]
+             */
+            hazards: components["schemas"]["Hazard"][];
         };
+        /**
+         * @description Hazard type found on the trail
+         * @example stones
+         * @enum {string}
+         */
+        Hazard: "stones" | "branches";
         CreateSnowTypeRequest: {
             /**
              * @description Snow type name
@@ -4067,8 +4633,12 @@ export interface components {
             colour: string;
             /** @description Skiability rating (1-5) */
             skiability?: number | null;
-            /** @description Category ID */
-            categoryId?: number | null;
+            /**
+             * Format: uuid
+             * @description Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
+             * @example null
+             */
+            primarySnowTypeId?: string | null;
             /**
              * @description Explanation of the snow type
              * @example Fresh powder snow
@@ -4127,50 +4697,52 @@ export interface components {
              */
             role: string;
         };
-        HelpRequest: {
+        HelpEventCreate: {
             /**
              * @description Unix timestamp
              * @example 1640995200
              */
             timestamp: number;
+            location: components["schemas"]["HelpEventLocation"];
             /**
-             * @description Device identifier
-             * @example device123
-             */
-            deviceId: string;
-            /**
-             * @description GPS coordinates (format: "lat,lng")
-             * @example 65.0121,25.4651
-             */
-            gpsCoord: string;
-            /**
-             * @description Type of help request
-             * @example help
+             * @description Type of help requested
+             * @example health
              * @enum {string}
              */
-            helpType: "seriousEmerg" | "help";
+            needType: "health" | "equipment" | "lost";
             /**
              * @description Chat room identifier
              * @example room123
              */
             chatRoomId: string;
         };
-        HelpResponse: {
+        HelpEventLocation: {
             /**
-             * @description User ID of the person providing help
-             * @example 550e8400-e29b-41d4-a716-446655440001
+             * @description Latitude
+             * @example 65.0121
              */
-            helpGiver: string;
+            latitude: number;
             /**
-             * @description User ID of the person requesting help
-             * @example 550e8400-e29b-41d4-a716-446655440002
+             * @description Longitude
+             * @example 25.4651
              */
-            helpRequester: string;
+            longitude: number;
             /**
-             * @description Response state (0: Pending, 1: Accepted, 2: Declined, 3: Completed)
-             * @example 0
+             * @description Location accuracy in meters
+             * @example 25
              */
-            state: number;
+            accuracy?: number | null;
+        };
+        HelpEventAcceptance: {
+            location: components["schemas"]["HelpEventLocation"];
+        };
+        HelpEventStatusUpdate: {
+            /**
+             * @description Help event status
+             * @example active
+             * @enum {string}
+             */
+            status: "active" | "completed" | "cancelled";
         };
         AuthResponse: {
             /** @description User information */
@@ -4212,7 +4784,7 @@ export interface components {
             /** @description Terrain description */
             terrain: string;
             avalancheDanger: boolean;
-            isLowerSegment: number | null;
+            isLowerSegment: string | null;
             /** @description Polygon or polyline of the segment */
             points: components["schemas"]["SegmentPoint"][];
             guideUpdate: components["schemas"]["GuideUpdateRequestOutput"] | null;
@@ -4239,217 +4811,77 @@ export interface components {
             secondarySnowTypeId: string | null;
             hazards: string[];
         };
-        SegmentUpdate: {
+        /** @description List of snow types */
+        SnowTypes: components["schemas"]["SnowType"][];
+        SnowType: {
             /**
              * Format: uuid
-             * @description Update ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
+             * @description Snow type ID (UUID)
+             * @example 72209550-799c-4a33-99ab-ca2c396f16d7
              */
             id: string;
             /**
-             * Format: uuid
-             * @description Segment ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
+             * @description Snow type name
+             * @example Puuterilumi
              */
-            segment: string;
+            name: string;
             /**
-             * Format: date-time
-             * @description Update timestamp
-             * @example 2024-01-15T10:30:00.000Z
+             * @description Snow type colour in hex format
+             * @example #5AABED
              */
-            time: string;
+            colour: string;
             /**
-             * @description Update description
-             * @example Great conditions today
-             */
-            description: string | null;
-            /**
-             * @description Weather conditions
-             * @example Sunny
-             */
-            weather: string | null;
-            /**
-             * @description Temperature in Celsius
-             * @example -5
-             */
-            temperature: number | null;
-            /**
-             * @description Wind speed
-             * @example 10
-             */
-            windSpeed: number | null;
-            /**
-             * @description Visibility rating
-             * @example 5
-             */
-            visibility: number | null;
-            /**
-             * @description Update status
-             * @example ACTIVE
-             * @enum {string}
-             */
-            status: "DRAFT" | "ACTIVE" | "ARCHIVED" | "DELETED";
-            /**
-             * @description Update priority
-             * @example 1
-             */
-            priority: number;
-            /** @description Update creator information */
-            creator: components["schemas"]["Creator"];
-            /**
-             * @description Segment name
-             * @example Test Segment
-             */
-            segmentName: string;
-            /** @description Snow conditions for this update */
-            snowConditions: components["schemas"]["SnowCondition"][];
-            /** @description Review references associated with this update */
-            reviewReferences: components["schemas"]["ReviewReference"][];
-        };
-        Creator: {
-            /**
-             * @description Creator first name
-             * @example John
-             */
-            firstName: string | null;
-            /**
-             * @description Creator last name
-             * @example Doe
-             */
-            lastName: string | null;
-        } | null;
-        SnowCondition: {
-            /**
-             * Format: uuid
-             * @description Snow condition ID
-             * @example 550e8400-e29b-41d4-a716-446655440001
-             */
-            id: string;
-            /**
-             * @description Primary snow type name
-             * @example Powder
-             */
-            snowType: string | null;
-            /**
-             * @description Secondary snow type name
-             * @example Wet Snow
-             */
-            secondarySnowType: string | null;
-            /**
-             * @description Snow layer
-             * @example SURFACE
-             * @enum {string}
-             */
-            layer: "SURFACE" | "MIDDLE" | "BASE";
-            /**
-             * @description Snow depth in cm
-             * @example 20
-             */
-            depth: number | null;
-            /**
-             * @description Snow coverage percentage
-             * @example 80
-             */
-            coverage: number | null;
-            /**
-             * @description Snow quality rating
+             * @description Skiability rating (1-5), nullable
              * @example 4
              */
-            quality: number | null;
-            /**
-             * @description Snow hardness rating
-             * @example 2
-             */
-            hardness: number | null;
-            /**
-             * @description Snow moisture rating
-             * @example 1
-             */
-            moisture: number | null;
-            /**
-             * @description Additional notes
-             * @example Excellent powder conditions
-             */
-            notes: string | null;
-            /**
-             * Format: date-time
-             * @description Creation timestamp
-             * @example 2024-01-15T10:30:00.000Z
-             */
-            createdAt: string;
-        };
-        ReviewReference: {
+            skiability?: number | null;
             /**
              * Format: uuid
-             * @description Review reference ID
-             * @example 550e8400-e29b-41d4-a716-446655440001
+             * @description Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
+             * @example null
+             */
+            primarySnowTypeId?: string | null;
+            /**
+             * @description Explanation of the snow type
+             * @example Vastasatanut irtonainen, höyhenenkevyt lumi.
+             */
+            explanation?: string | null;
+        };
+        PrimarySnowTypeWithSecondaries: {
+            /**
+             * Format: uuid
+             * @description Snow type ID (UUID)
+             * @example 72209550-799c-4a33-99ab-ca2c396f16d7
              */
             id: string;
             /**
+             * @description Snow type name
+             * @example Puuterilumi
+             */
+            name: string;
+            /**
+             * @description Snow type colour in hex format
+             * @example #5AABED
+             */
+            colour: string;
+            /**
+             * @description Skiability rating (1-5), nullable
+             * @example 4
+             */
+            skiability?: number | null;
+            /**
              * Format: uuid
-             * @description Snow update ID
-             * @example 550e8400-e29b-41d4-a716-446655440000
+             * @description Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
+             * @example null
              */
-            updateId: string;
+            primarySnowTypeId?: string | null;
             /**
-             * @description User review ID
-             * @example review-123
+             * @description Explanation of the snow type
+             * @example Vastasatanut irtonainen, höyhenenkevyt lumi.
              */
-            reviewId: string;
-            /**
-             * @description Relevance score
-             * @example 1
-             */
-            relevance: number;
-            /** @description Reference notes */
-            notes: string | null;
-            /**
-             * Format: date-time
-             * @description Creation timestamp
-             * @example 2024-01-15T10:30:00.000Z
-             */
-            createdAt: string;
-            /** @description Associated user review */
-            reviewRel: {
-                /** @description Review ID */
-                id: string;
-                /**
-                 * Format: date-time
-                 * @description Review time
-                 */
-                time: string;
-                /**
-                 * Format: uuid
-                 * @description Segment ID
-                 */
-                segment: string;
-                /**
-                 * Format: uuid
-                 * @description Snow type ID
-                 */
-                snowType: string | null;
-                /**
-                 * Format: uuid
-                 * @description Secondary snow type ID
-                 */
-                secondarySnowType: string | null;
-                /** @description Hazards (JSON) */
-                hazards: unknown;
-                /** @description Review comment */
-                comment: string | null;
-                /** @description User ID */
-                userId: string | null;
-                /**
-                 * Format: date-time
-                 * @description Creation timestamp
-                 */
-                createdAt: string;
-                /**
-                 * Format: date-time
-                 * @description Update timestamp
-                 */
-                updatedAt: string;
-            };
+            explanation?: string | null;
+            /** @description Secondary snow types for this primary type */
+            secondarySnowTypes: components["schemas"]["SnowType"][];
         };
         Observation: {
             /**
@@ -4483,6 +4915,146 @@ export interface components {
              *     ]
              */
             hazards: string[];
+        };
+        HelpEventRescueeView: {
+            eventId: string;
+            /**
+             * @description Help event status
+             * @example active
+             * @enum {string}
+             */
+            status: "active" | "completed" | "cancelled";
+            rescuee: components["schemas"]["HelpEventRescuee"];
+            location: components["schemas"]["HelpEventLocationOutput"];
+            rescuerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            acceptedRescuers: components["schemas"]["HelpEventParticipation"][];
+            /** Format: date-time */
+            updatedAt: string | null;
+        };
+        HelpEventRescuee: {
+            /** @description Rescuee user ID */
+            userId: string;
+            /**
+             * @description Type of help requested
+             * @example health
+             * @enum {string}
+             */
+            needType: "health" | "equipment" | "lost";
+            userStatus: components["schemas"]["HelpEventUserStatus"];
+        };
+        HelpEventUserStatus: {
+            location: components["schemas"]["HelpEventLocationOutput"];
+            /**
+             * @description Battery level percentage
+             * @example 85
+             */
+            batteryLevel: number | null;
+        };
+        HelpEventParticipation: {
+            /** @description Participation entry ID */
+            acceptanceId: string;
+            /** @description Help event ID */
+            eventId: string;
+            /** @description Rescuer user ID */
+            responderId: string;
+            location: components["schemas"]["HelpEventLocationOutput"] | null;
+            /**
+             * Format: date-time
+             * @description Acceptance timestamp
+             */
+            acceptedAt: string;
+        };
+        HelpEventSummary: {
+            eventId: string;
+            /**
+             * @description Help event status
+             * @example active
+             * @enum {string}
+             */
+            status: "active" | "completed" | "cancelled";
+            rescuee: components["schemas"]["HelpEventRescuee"];
+            location: components["schemas"]["HelpEventLocationOutput"];
+            rescuerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        HelpEventRescuerView: components["schemas"]["HelpEventSummary"];
+        WeatherMetric: {
+            /**
+             * @description Metric type
+             * @enum {string}
+             */
+            type: "average" | "minimum" | "maximum" | "change";
+            /**
+             * @description Weather item
+             * @example windSpeed
+             */
+            item: string;
+            /** @description Calculated value for the metric */
+            value: number;
+            /**
+             * @description Unit of measurement
+             * @example metersPerSecond
+             */
+            unit: string;
+            /** @description Number of days included in the window */
+            days: number;
+            period: components["schemas"]["WeatherPeriod"];
+            location: components["schemas"]["WeatherLocation"];
+        };
+        WeatherPeriod: {
+            /**
+             * Format: date-time
+             * @description Start of the look-back window
+             */
+            start: string;
+            /**
+             * Format: date-time
+             * @description End of the look-back window (now)
+             */
+            end: string;
+        };
+        WeatherLocation: {
+            /**
+             * @description Location name
+             * @example Pallastunturi
+             */
+            name: string;
+            /**
+             * @description Latitude in decimal degrees
+             * @example 68.066
+             */
+            latitude: number;
+            /**
+             * @description Longitude in decimal degrees
+             * @example 24.133
+             */
+            longitude: number;
+        };
+        WeatherFilterDaysResponse: {
+            /**
+             * @description Weather item used for filtering
+             * @enum {string}
+             */
+            item: "temperature";
+            /** @description Threshold for the average temperature */
+            threshold: number;
+            /** @description Number of days inspected */
+            days: number;
+            period: components["schemas"]["WeatherPeriod"];
+            location: components["schemas"]["WeatherLocation"];
+            /** @description Dates matching the filter */
+            matches: {
+                /**
+                 * Format: date-time
+                 * @description Date in ISO format
+                 */
+                date: string;
+                /** @description Daily average temperature in Celsius */
+                averageTemperature: number;
+            }[];
         };
         ErrorResponse: {
             /**
@@ -4551,6 +5123,31 @@ export interface components {
              *     ]
              */
             secondarySnowTypeIds: string[];
+            /**
+             * @description Array of hazards found on the trail (e.g., ["stones", "branches"])
+             * @default []
+             * @example [
+             *       "stones"
+             *     ]
+             */
+            hazards: components["schemas"]["Hazard"][];
+        };
+        HelpEventLocationOutput: {
+            /**
+             * @description Latitude
+             * @example 65.0121
+             */
+            latitude: number;
+            /**
+             * @description Longitude
+             * @example 25.4651
+             */
+            longitude: number;
+            /**
+             * @description Location accuracy in meters
+             * @example 25
+             */
+            accuracy?: number | null;
         };
     };
     responses: never;

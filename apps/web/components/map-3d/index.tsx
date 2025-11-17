@@ -1,6 +1,6 @@
-'use client';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import type { FeatureCollection, Polygon } from 'geojson';
+"use client";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { FeatureCollection, Polygon } from "geojson";
 
 import {
   ActivityIcon,
@@ -8,39 +8,39 @@ import {
   LandPlot,
   Snowflake,
   ThermometerSnowflake,
-} from 'lucide-react';
-import type { FilterSpecification, MapMouseEvent } from 'mapbox-gl';
-import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NavigationControl, Source, Layer, Marker } from 'react-map-gl/mapbox';
-import Map from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { toast } from 'sonner';
-import { Button } from '../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Separator } from '../ui/separator';
-import { Toggle } from '../ui/toggle';
-import MapLoadingOverlay from './map-loading';
-import MonitorInfo from './monitor-info';
-import { useMultiStepForm } from '@/hooks/use-multi-step-form';
+} from "lucide-react";
+import type { FilterSpecification, MapMouseEvent } from "mapbox-gl";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { NavigationControl, Source, Layer, Marker } from "react-map-gl/mapbox";
+import Map from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Separator } from "../ui/separator";
+import { Toggle } from "../ui/toggle";
+import MapLoadingOverlay from "./map-loading";
+import MonitorInfo from "./monitor-info";
+import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import {
   CONTROL_STORAGE_KEYS,
   loadControlState,
   saveControlState,
-} from '@/lib/map/control-state';
+} from "@/lib/map/control-state";
 import {
   fetchAreas,
   fetchMonitorData,
   fetchSnowTypes,
   fetchUpdateData,
   Segment,
-} from '@/lib/map/loaders';
+} from "@/lib/map/loaders";
 import {
   type CameraState,
   DEFAULT_VIEW_STATE,
   loadCameraState,
   saveCameraState,
-} from '@/lib/map/map-camera';
+} from "@/lib/map/map-camera";
 import {
   areaAvalancheDangerOutlineLayer,
   areaFillLayer,
@@ -51,57 +51,41 @@ import {
   hillshadeLayer,
   TERRAIN_CONFIG,
   TERRAIN_SOURCE_CONFIG,
-} from '@/lib/map/map-style';
+} from "@/lib/map/map-style";
 import type {
   InteractiveAreaProperties,
   mockUpdateData,
   UpdateData,
-} from '@/lib/map/mock-data';
-import { calculatePolygonArea } from '@/lib/map/utils';
-import type { Monitor } from '@/lib/snower/types';
+} from "@/lib/map/mock-data";
+import { calculatePolygonArea } from "@/lib/map/utils";
+import type { Monitor } from "@/lib/snower/types";
 
 const submitObservation = async (data: {
   areaId: string | null;
-  selectedSnowTypeId: number | null;
-  obstacleIds?: number[] | null;
+  selectedSnowTypeId: string | null;
+  obstacles?: Obstacles | null;
   timestamp: Date | null;
 }) => {
-  // Validate that at least one of snowTypeDetails or obstacleIds is provided
-  const hasSnowTypeDetails = data.selectedSnowTypeId !== null;
-  const hasObstacles =
-    data.obstacleIds &&
-    Array.isArray(data.obstacleIds) &&
-    data.obstacleIds.length > 0;
-
-  if (
-    !data.areaId ||
-    !data.selectedSnowTypeId ||
-    !data.timestamp ||
-    (!hasSnowTypeDetails && !hasObstacles) ||
-    (data.obstacleIds && !Array.isArray(data.obstacleIds))
-  ) {
-    // show what is missing
-    console.log(
-      'Missing data:',
-      'areaId:',
-      data.areaId,
-      'selectedSnowTypeId:',
-      data.selectedSnowTypeId,
-      'timestamp:',
-      data.timestamp,
-      'obstacleIds:',
-      data.obstacleIds
+  // Validate required fields
+  if (!data.areaId || !data.selectedSnowTypeId || !data.timestamp) {
+    throw new Error(
+      "Missing required fields: areaId, selectedSnowTypeId, or timestamp",
     );
-    throw new Error('Invalid observation data');
   }
-  const response = await fetch('/api/observations', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+
+  const response = await fetch("/api/observations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
-  if (!response.ok) throw new Error('Failed to submit observation');
+  if (!response.ok) throw new Error("Failed to submit observation");
   return response.json();
+};
+
+export type Obstacles = {
+  stones: boolean;
+  branches: boolean;
 };
 
 export default function Map3d() {
@@ -111,18 +95,19 @@ export default function Map3d() {
   const [showLoading, setShowLoading] = useState(true);
   const hasLoadedRef = useRef(false);
   const [selectedSnowCategoryId, setSelectedSnowCategoryId] = useState<
-    number | null
+    string | null | undefined
   >(null);
-  const [selectedSnowTypeId, setSelectedSnowTypeId] = useState<number | null>(
-    null
-  );
-  const [selectedObstacleIds, setSelectedObstacleIds] = useState<
-    number[] | null
+  const [selectedSnowTypeId, setSelectedSnowTypeId] = useState<
+    string | null | undefined
   >(null);
+  const [selectedObstacles, setSelectedObstacles] = useState<Obstacles>({
+    stones: false,
+    branches: false,
+  });
   const [selectedMonitor, setSelectedMonitor] = useState<Monitor | null>(null);
 
   const [viewState, setViewState] = useState<CameraState>(() => {
-    if (typeof window === 'undefined') return DEFAULT_VIEW_STATE;
+    if (typeof window === "undefined") return DEFAULT_VIEW_STATE;
     return loadCameraState() ?? DEFAULT_VIEW_STATE;
   });
 
@@ -135,7 +120,7 @@ export default function Map3d() {
     setShowMonitors(loadControlState(CONTROL_STORAGE_KEYS.SHOW_MONITORS, true));
   }, []);
 
-  const t = useTranslations('MapPage');
+  const t = useTranslations("MapPage");
 
   // DATA LOADERS:
   const {
@@ -143,7 +128,7 @@ export default function Map3d() {
     isError: areasError,
     error: areasErrorMessage,
   } = useQuery({
-    queryKey: ['mapAreas'],
+    queryKey: ["mapAreas"],
     queryFn: fetchAreas,
     staleTime: Infinity,
   });
@@ -153,7 +138,7 @@ export default function Map3d() {
     isError: snowTypesError,
     isLoading: snowTypesLoading,
   } = useQuery({
-    queryKey: ['snowTypes'],
+    queryKey: ["snowTypes"],
     queryFn: fetchSnowTypes,
     staleTime: Infinity,
   });
@@ -163,7 +148,7 @@ export default function Map3d() {
     isError: updateError,
     isLoading: updateDataLoading,
   } = useQuery({
-    queryKey: ['updateData'],
+    queryKey: ["updateData"],
     queryFn: fetchUpdateData,
     refetchInterval: 10000,
     staleTime: 5000,
@@ -174,7 +159,7 @@ export default function Map3d() {
     isError: monitorsError,
     isLoading: monitorsLoading,
   } = useQuery({
-    queryKey: ['monitors'],
+    queryKey: ["monitors"],
     queryFn: fetchMonitorData,
     staleTime: Infinity,
   });
@@ -186,20 +171,20 @@ export default function Map3d() {
       form.reset();
       setSelectedSnowCategoryId(null);
       setSelectedSnowTypeId(null);
-      setSelectedObstacleIds(null);
-      toast.success(t('reportForm.messages.submitSuccess'));
+      setSelectedObstacles({ stones: false, branches: false });
+      toast.success(t("reportForm.messages.submitSuccess"));
     },
     onError: (error) => {
       toast.error(
-        t('reportForm.messages.submitError') +
-          (error instanceof Error ? ` ${error.message}` : '')
+        t("reportForm.messages.submitError") +
+          (error instanceof Error ? ` ${error.message}` : ""),
       );
     },
   });
 
   const areasGeoJson = useMemo<FeatureCollection<Polygon, Segment>>(
     () => ({
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: [...areas]
         .sort((a, b) => {
           const areaA = calculatePolygonArea(a.points);
@@ -221,40 +206,41 @@ export default function Map3d() {
             }
           }
           return {
-            type: 'Feature' as const,
+            type: "Feature" as const,
             geometry: {
-              type: 'Polygon' as const,
+              type: "Polygon" as const,
               coordinates: [ring],
             },
             properties: area,
           };
         }),
     }),
-    [areas]
+    [areas],
   );
 
   const hoverFilter = useMemo<FilterSpecification>(
-    () => ['==', ['get', 'id'], hoveredAreaId ?? ''] as FilterSpecification,
-    [hoveredAreaId]
+    () => ["==", ["get", "id"], hoveredAreaId ?? ""] as FilterSpecification,
+    [hoveredAreaId],
   );
 
   const selectedFilter = useMemo<FilterSpecification>(
-    () => ['==', ['get', 'id'], selectedArea?.id ?? ''] as FilterSpecification,
-    [selectedArea]
+    () => ["==", ["get", "id"], selectedArea?.id ?? ""] as FilterSpecification,
+    [selectedArea],
   );
 
   const monitorsGeoJson = useMemo<FeatureCollection>(
     () => ({
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: monitors
         .filter(
           (monitor) =>
-            monitor.snowDepth !== 'No Data' || monitor.temperature !== 'No Data'
+            monitor.snowDepth !== "No Data" ||
+            monitor.temperature !== "No Data",
         )
         .map((monitor) => ({
-          type: 'Feature' as const,
+          type: "Feature" as const,
           geometry: {
-            type: 'Point' as const,
+            type: "Point" as const,
             coordinates: [monitor.lng, monitor.lat],
           },
           properties: {
@@ -264,12 +250,12 @@ export default function Map3d() {
           },
         })),
     }),
-    [monitors]
+    [monitors],
   );
 
   const handleMouseMove = useCallback((event: MapMouseEvent) => {
     const hoveredFeature = event.features?.[0];
-    event.target.getCanvas().style.cursor = hoveredFeature ? 'pointer' : '';
+    event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
 
     if (hoveredFeature) {
       const properties = hoveredFeature.properties as InteractiveAreaProperties;
@@ -280,7 +266,7 @@ export default function Map3d() {
   }, []);
 
   const handleMouseLeave = useCallback((event: MapMouseEvent) => {
-    event.target.getCanvas().style.cursor = '';
+    event.target.getCanvas().style.cursor = "";
     setHoveredAreaId(null);
   }, []);
 
@@ -289,9 +275,9 @@ export default function Map3d() {
       areaId: selectedArea?.id || null,
       timestamp: new Date(),
       selectedSnowTypeId: selectedSnowTypeId,
-      obstacleIds: selectedObstacleIds,
+      obstacleIds: selectedObstacles,
     },
-    3
+    3,
   );
 
   const handleClick = useCallback(
@@ -300,12 +286,15 @@ export default function Map3d() {
 
       setSelectedSnowCategoryId(null);
       setSelectedSnowTypeId(null);
-      setSelectedObstacleIds(null);
+      setSelectedObstacles({
+        stones: false,
+        branches: false,
+      });
 
       // Check if a monitor was clicked
-      if (feature?.layer?.id === 'monitors-points') {
+      if (feature?.layer?.id === "monitors-points") {
         const monitor = monitors.find(
-          (m) => m.name === feature.properties?.name
+          (m) => m.name === feature.properties?.name,
         );
         if (monitor) {
           setSelectedMonitor(monitor);
@@ -332,7 +321,7 @@ export default function Map3d() {
       form.goToStep(0);
       submitMutation.reset();
     },
-    [monitors, form, submitMutation]
+    [monitors, form, submitMutation],
   );
 
   const handleMapLoad = useCallback(() => {
@@ -346,11 +335,8 @@ export default function Map3d() {
     }
   }, []);
 
-  const getUpdateDataForArea = (
-    areaId: string
-  ): (typeof mockUpdateData)[0] | undefined => {
-    const segmentNumber = parseInt(areaId.split('-')[1], 10);
-    return updateData.find((update) => update.segment === segmentNumber);
+  const getUpdateDataForArea = (areaId: string) => {
+    return updateData.find((update) => update.segmentId === areaId);
   };
 
   const getLatestUserUpdateForArea = (updateData: UpdateData) => {
@@ -386,21 +372,21 @@ export default function Map3d() {
     const diffMs = now.getTime() - pastTime.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    if (diffMins < 1) return t('reportForm.time.justNow');
+    if (diffMins < 1) return t("reportForm.time.justNow");
     if (diffMins < 60)
-      return t('reportForm.time.minutesAgo', { count: diffMins });
+      return t("reportForm.time.minutesAgo", { count: diffMins });
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24)
-      return t('reportForm.time.hoursAgo', { count: diffHours });
+      return t("reportForm.time.hoursAgo", { count: diffHours });
     const diffDays = Math.floor(diffHours / 24);
-    return t('reportForm.time.daysAgo', { count: diffDays });
+    return t("reportForm.time.daysAgo", { count: diffDays });
   };
 
   if (areasError) {
     return (
       <div className="p-4">
         <h2 className="text-red-600 font-bold mb-2">
-          {t('errors.loadingData')}
+          {t("errors.loadingData")}
         </h2>
         <p className="text-red-500">{areasErrorMessage?.message}</p>
       </div>
@@ -411,12 +397,12 @@ export default function Map3d() {
       <MapLoadingOverlay
         showLoading={showLoading}
         isLoading={isLoading}
-        loadingText={t('loading.map')}
+        loadingText={t("loading.map")}
       />
 
       <Map
         initialViewState={viewState}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         maxTileCacheSize={500}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -434,7 +420,7 @@ export default function Map3d() {
           setViewState(newState);
           saveCameraState(newState);
         }}
-        interactiveLayerIds={['areas-fill', 'monitors-points']}
+        interactiveLayerIds={["areas-fill", "monitors-points"]}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_ACCESS_TOKEN}
         terrain={TERRAIN_CONFIG}
@@ -453,19 +439,15 @@ export default function Map3d() {
           <>
             {showMonitors && (
               <>
-                <Source
-                  id="monitors"
-                  type="geojson"
-                  data={monitorsGeoJson}
-                >
+                <Source id="monitors" type="geojson" data={monitorsGeoJson}>
                   <Layer
                     id="monitors-points"
                     type="circle"
                     paint={{
-                      'circle-radius': 6,
-                      'circle-color': '#ff6b6b',
-                      'circle-stroke-width': 2,
-                      'circle-stroke-color': '#fff',
+                      "circle-radius": 6,
+                      "circle-color": "#ff6b6b",
+                      "circle-stroke-width": 2,
+                      "circle-stroke-color": "#fff",
                     }}
                   />
                 </Source>
@@ -473,8 +455,8 @@ export default function Map3d() {
                   monitors
                     .filter(
                       (monitor) =>
-                        monitor.temperature !== 'No Data' ||
-                        monitor.snowDepth !== 'No Data'
+                        monitor.temperature !== "No Data" ||
+                        monitor.snowDepth !== "No Data",
                     )
                     .map((monitor) => (
                       <Marker
@@ -485,7 +467,7 @@ export default function Map3d() {
                         className="bg-background p-1 rounded-md "
                       >
                         <div>
-                          {monitor.temperature !== 'No Data' && (
+                          {monitor.temperature !== "No Data" && (
                             <p className="flex items-center gap-1">
                               <ThermometerSnowflake size={16} />
                               <span>
@@ -494,11 +476,11 @@ export default function Map3d() {
                               </span>
                             </p>
                           )}
-                          {monitor.snowDepth !== 'No Data' && (
+                          {monitor.snowDepth !== "No Data" && (
                             <p className="flex items-center gap-1">
                               <Snowflake size={16} />
                               <span>
-                                {monitor.snowDepth.value}{' '}
+                                {monitor.snowDepth.value}{" "}
                                 {monitor.snowDepth.unit}
                               </span>
                             </p>
@@ -518,14 +500,8 @@ export default function Map3d() {
                 <Layer {...areaFillLayer} />
                 <Layer {...areaOutlineLayer} />
                 <Layer {...areaAvalancheDangerOutlineLayer} />
-                <Layer
-                  {...areaHoverLayer}
-                  filter={hoverFilter}
-                />
-                <Layer
-                  {...areaSelectedLayer}
-                  filter={selectedFilter}
-                />
+                <Layer {...areaHoverLayer} filter={hoverFilter} />
+                <Layer {...areaSelectedLayer} filter={selectedFilter} />
                 <Layer {...areaLabelLayer} />
               </Source>
             )}
@@ -561,7 +537,7 @@ export default function Map3d() {
             className="data-[state=on]:bg-transparent  data-[state=on]:*:[svg]:stroke-green-500 text-xs"
           >
             <LandPlot />
-            {t('controls.segments')}
+            {t("controls.segments")}
           </Toggle>
           <Toggle
             size="sm"
@@ -577,7 +553,7 @@ export default function Map3d() {
             className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:stroke-green-500 text-xs"
           >
             <ActivityIcon />
-            {t('controls.sensors')}
+            {t("controls.sensors")}
           </Toggle>
         </PopoverContent>
       </Popover>
@@ -600,71 +576,85 @@ export default function Map3d() {
             {form.currentStep === 0 && (
               <>
                 {updateDataLoading ? (
-                  <p>{t('loading.segmentData')}</p>
+                  <p>{t("loading.segmentData")}</p>
                 ) : (
                   <>
                     {updateError && (
                       <p className="text-red-500">
-                        {t('errors.loadingSegmentData')}
+                        {t("errors.loadingSegmentData")}
                       </p>
                     )}
                     {selectedArea.avalancheDanger && (
-                      <p>{t('warnings.avalanche.danger')}</p>
+                      <p>{t("warnings.avalanche.danger")}</p>
                     )}
                     {(() => {
                       const updateData = getUpdateDataForArea(selectedArea.id);
                       if (!updateData) return null;
 
-                      const userUpdate = getLatestUserUpdateForArea(updateData);
-                      const guideUpdate =
-                        getLatestGuideUpdateForArea(updateData);
-
                       return (
                         <>
-                          {guideUpdate && (
-                            <div className="text-sm text-primary">
-                              <p>
-                                {t('reportForm.lastUpdate.guide', {
-                                  time: getPrettyTimeDiff(
-                                    new Date(guideUpdate.time)
-                                  ),
-                                })}
-                              </p>
-                              <p className="font-medium">
-                                {t(
-                                  `reportForm.snowTypes.${guideUpdate.snowTypeId1}.name`
-                                )}
-                              </p>
-                              <p className="text-xs">
-                                {t(
-                                  `reportForm.snowTypes.${guideUpdate.snowTypeId1}.description`
-                                )}
-                              </p>
+                          {updateData.guideUpdate && (
+                            <div className="text-sm text-primary gap-1">
+                              {updateData.guideUpdate.primarySnowTypeIds.map(
+                                (snowTypeId, index) => (
+                                  <div key={snowTypeId}>
+                                    <p className="font-medium text-lg">
+                                      {t(
+                                        `reportForm.snowTypes.${snowTypeId}.name`,
+                                      )}
+                                    </p>
+                                    <p className="text-xs">
+                                      {t(
+                                        `reportForm.snowTypes.${snowTypeId}.description`,
+                                      )}
+                                    </p>
+                                  </div>
+                                ),
+                              )}
+                              {updateData.guideUpdate.secondarySnowTypeIds.map(
+                                (snowTypeId) => (
+                                  <div key={snowTypeId}>
+                                    <p className="font-medium text-sm">
+                                      {t(
+                                        `reportForm.snowTypes.${snowTypeId}.name`,
+                                      )}
+                                    </p>
+                                    <p className="text-xs">
+                                      {t(
+                                        `reportForm.snowTypes.${snowTypeId}.description`,
+                                      )}
+                                    </p>
+                                  </div>
+                                ),
+                              )}
                             </div>
                           )}
-                          {userUpdate && guideUpdate && <Separator />}
-                          {userUpdate && (
+                          {updateData.userReviews.length > 0 &&
+                            updateData.guideUpdate && <Separator />}
+                          {updateData.userReviews.length > 0 && (
                             <div className="text-xs text-muted-foreground">
-                              <p>{t('reportForm.observationType.visitor')}</p>
-                              <div className="text-primary flex flex-col">
-                                <p>
-                                  {t('reportForm.lastUpdate.visitor', {
-                                    time: getPrettyTimeDiff(
-                                      new Date(userUpdate.time)
-                                    ),
-                                  })}
-                                </p>
-                                <p className="font-medium">
-                                  {t(
-                                    `reportForm.snowTypes.${userUpdate.snowTypeId}.name`
-                                  )}
-                                </p>
-                                <p className="text-xs">
-                                  {t(
-                                    `reportForm.snowTypes.${userUpdate.snowTypeId}.description`
-                                  )}
-                                </p>
-                              </div>
+                              <p>{t("reportForm.observationType.visitor")}</p>
+                              {updateData.userReviews.map((review, index) => (
+                                <div
+                                  key={index}
+                                  className="text-primary flex flex-col"
+                                >
+                                  <p className="font-medium text-sm">
+                                    {t(
+                                      `reportForm.snowTypes.${review.snowTypeId}.name`,
+                                    )}
+                                    :{" "}
+                                    {getPrettyTimeDiff(
+                                      new Date(review.submittedAt),
+                                    )}
+                                  </p>
+                                  <p className="text-xs">
+                                    {t(
+                                      `reportForm.snowTypes.${review.snowTypeId}.description`,
+                                    )}
+                                  </p>
+                                </div>
+                              ))}
                             </div>
                           )}
                         </>
@@ -674,13 +664,13 @@ export default function Map3d() {
                 )}
                 <div className="flex gap-2">
                   <Button onClick={() => form.goToStep(1)}>
-                    {t('reportForm.buttons.addObservation')}
+                    {t("reportForm.buttons.addObservation")}
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => setSelectedArea(null)}
                   >
-                    {t('reportForm.buttons.close')}
+                    {t("reportForm.buttons.close")}
                   </Button>
                 </div>
               </>
@@ -688,16 +678,16 @@ export default function Map3d() {
             {form.currentStep === 1 && (
               <div className="flex gap-4 flex-col items-center">
                 <div className="flex flex-col gap-2 items-center">
-                  <p>{t('reportForm.steps.selectSnowType')}</p>
-                  {snowTypesLoading && <p>{t('loading.snowData')}</p>}
+                  <p>{t("reportForm.steps.selectSnowType")}</p>
+                  {snowTypesLoading && <p>{t("loading.snowData")}</p>}
                   {snowTypesError && (
                     <p className="text-red-500">
-                      {t('errors.loadingSnowData')}
+                      {t("errors.loadingSnowData")}
                     </p>
                   )}
                   <div className="grid grid-cols-2 gap-2">
                     {snowTypes
-                      .filter((st) => st.categoryId === null)
+                      .filter((st) => st.primarySnowTypeId === null)
                       .map((snowType) => (
                         <Button
                           key={snowType.id}
@@ -720,11 +710,8 @@ export default function Map3d() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => form.goToStep(0)}
-                  >
-                    {t('reportForm.buttons.back')}
+                  <Button variant="secondary" onClick={() => form.goToStep(0)}>
+                    {t("reportForm.buttons.back")}
                   </Button>
                 </div>
               </div>
@@ -732,13 +719,13 @@ export default function Map3d() {
             {form.currentStep === 2 && (
               <div className="flex gap-4 flex-col items-center">
                 <div className="flex flex-col gap-2 items-center">
-                  <p>{t('reportForm.steps.specifySnowType')}</p>
+                  <p>{t("reportForm.steps.specifySnowType")}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {snowTypes
                       .filter(
                         (st) =>
-                          st.categoryId === selectedSnowCategoryId ||
-                          st.id === selectedSnowCategoryId
+                          st.primarySnowTypeId === selectedSnowCategoryId ||
+                          st.id === selectedSnowCategoryId,
                       )
                       .map((snowType) => (
                         <Button
@@ -751,7 +738,7 @@ export default function Map3d() {
                             });
                           }}
                           className={` text-xs
-															${selectedSnowTypeId === snowType.id ? 'ring-green-500 ring-2' : ''}
+															${selectedSnowTypeId === snowType.id ? "ring-green-500 ring-2" : ""}
 														`}
                         >
                           {t(`reportForm.snowTypes.${snowType.id}.name`)}
@@ -760,46 +747,57 @@ export default function Map3d() {
                   </div>
                   <p className="text-center">
                     {t(
-                      `reportForm.snowTypes.${selectedSnowTypeId}.description`
+                      `reportForm.snowTypes.${selectedSnowTypeId}.description`,
                     )}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 items-center">
-                  <p>{t('reportForm.obstacles.description')}</p>
+                  <p>{t("reportForm.obstacles.description")}</p>
                   <div className="grid grid-cols-2 gap-2">
-                    {snowTypes
-                      .filter((st) => st.categoryId === 7)
-                      .map((obstacleType) => (
-                        <Button
-                          key={obstacleType.id}
-                          variant="outline"
-                          onClick={() => {
-                            let newObstacles = selectedObstacleIds;
-                            if (
-                              selectedObstacleIds?.includes(obstacleType.id)
-                            ) {
-                              newObstacles = selectedObstacleIds.filter(
-                                (id) => id !== obstacleType.id
-                              );
-                            } else {
-                              newObstacles = selectedObstacleIds
-                                ? [...selectedObstacleIds, obstacleType.id]
-                                : [obstacleType.id];
-                            }
-                            setSelectedObstacleIds(newObstacles);
-                            form.updateFormData({
-                              obstacleIds: newObstacles,
-                            });
-                          }}
-                          className={
-                            selectedObstacleIds?.includes(obstacleType.id)
-                              ? 'ring-green-500 ring-2'
-                              : ''
-                          }
-                        >
-                          {t(`reportForm.snowTypes.${obstacleType.id}.name`)}
-                        </Button>
-                      ))}
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const newStonesState = !selectedObstacles.stones;
+                        setSelectedObstacles((prev) => ({
+                          ...prev,
+                          stones: newStonesState,
+                        }));
+                        form.updateFormData({
+                          obstacleIds: {
+                            stones: newStonesState,
+                            branches: selectedObstacles.branches,
+                          },
+                        });
+                      }}
+                      className={
+                        selectedObstacles.stones ? "ring-green-500 ring-2" : ""
+                      }
+                    >
+                      Stones
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const newBranchesState = !selectedObstacles.branches;
+                        setSelectedObstacles((prev) => ({
+                          ...prev,
+                          branches: newBranchesState,
+                        }));
+                        form.updateFormData({
+                          obstacleIds: {
+                            stones: selectedObstacles.stones,
+                            branches: newBranchesState,
+                          },
+                        });
+                      }}
+                      className={
+                        selectedObstacles.branches
+                          ? "ring-green-500 ring-2"
+                          : ""
+                      }
+                    >
+                      Branches
+                    </Button>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -807,32 +805,26 @@ export default function Map3d() {
                     variant="secondary"
                     onClick={() => {
                       setSelectedSnowTypeId(null);
-                      setSelectedObstacleIds(null);
+                      setSelectedObstacles({ stones: false, branches: false });
                       submitMutation.reset();
                       form.goToStep(1);
                     }}
                   >
-                    {t('reportForm.buttons.back')}
+                    {t("reportForm.buttons.back")}
                   </Button>
                   <Button
                     onClick={() =>
                       submitMutation.mutate({
                         areaId: form.formData.areaId,
                         selectedSnowTypeId: form.formData.selectedSnowTypeId,
-                        obstacleIds: form.formData.obstacleIds,
+                        obstacles: form.formData.obstacleIds,
                         timestamp: new Date(),
                       })
                     }
-                    disabled={
-                      submitMutation.isPending ||
-                      (selectedSnowTypeId === null &&
-                        (!selectedObstacleIds ||
-                          selectedObstacleIds.length === 0))
-                    }
                   >
                     {submitMutation.isPending
-                      ? t('reportForm.buttons.submitting')
-                      : t('reportForm.buttons.submit')}
+                      ? t("reportForm.buttons.submitting")
+                      : t("reportForm.buttons.submit")}
                   </Button>
                 </div>
               </div>
