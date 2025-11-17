@@ -44,23 +44,23 @@ export default function LoginPage() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-4">
       <form
-        className="flex flex-col p-2 gap-4 rounded-md border border-accent max-w-md"
+        className="flex flex-col p-2 gap-4 rounded-md border border-accent max-w-sm w-full"
         onSubmit={(e) => formMutation.mutate(e)}
       >
         <p>{t('title')}</p>
-        <section className="flex flex-col gap-1 text-muted-foreground">
+        <section className="flex flex-col gap-1 text-muted-foreground w-full">
           <label htmlFor={t('email')}>{t('email')}</label>
           <Input
-            className="text-primary"
+            className="text-primary w-full"
             type="email"
             name="email"
             required={true}
           />
         </section>
-        <section className="flex flex-col gap-1 text-muted-foreground">
+        <section className="flex flex-col gap-1 text-muted-foreground w-full">
           <label htmlFor={t('password')}>{t('password')}</label>
           <Input
-            className="text-primary"
+            className="text-primary w-full"
             type="password"
             name="password"
             required={true}

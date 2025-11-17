@@ -6,12 +6,32 @@ import Link from 'next/link';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { registerAction } from '../actions';
+
+const PASSWORD_REGEX =
+  /^(?=.*[0-9])(?=.*[^\w\s])[A-Za-z0-9!@#$%^&*\-_+=~`|\\:;"'<>,.?/]{8,}$/;
+
+function validatePassword(password: string) {
+  return {
+    minLength: password.length >= 8,
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[^\w\s]/.test(password),
+  };
+}
+
+function isPasswordValid(password: string) {
+  const validation = validatePassword(password);
+  return (
+    validation.minLength && validation.hasNumber && validation.hasSpecialChar
+  );
+}
 
 export default function RegisterPage() {
   const t = useTranslations('RegisterPage');
   const router = useRouter();
+  const [password, setPassword] = useState('');
+  const validation = validatePassword(password);
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,11 +45,7 @@ export default function RegisterPage() {
       throw new Error(t('errors.missingFields'));
     }
 
-    // validate that the password is at least 8 characters long, has at least one number and one special character
-    const passwordRegex =
-      /^(?=.*[0-9])(?=.*[^\w\s])[A-Za-z0-9!@#$%^&*\-_+=~`|\\:;"'<>,.?/]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      console.log(password.length);
+    if (!isPasswordValid(password)) {
       throw new Error(t('errors.passwordTooWeak'));
     }
 
@@ -95,16 +111,39 @@ export default function RegisterPage() {
         <section className="flex flex-col gap-1 text-muted-foreground">
           <label htmlFor={t('password')}>{t('password')}</label>
           <Input
-            className="text-white"
+            className="text-primary"
             type="password"
             name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required={true}
           />
+          <div className="text-xs mt-2 space-y-1">
+            <p className="font-semibold">{t('passwordRequirements.title')}:</p>
+            <div
+              className={`flex items-center gap-2 ${validation.minLength ? 'text-green-500' : 'text-red-500'}`}
+            >
+              <span>{validation.minLength ? '✓' : '✗'}</span>
+              <span>{t('passwordRequirements.minLength')}</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 ${validation.hasNumber ? 'text-green-500' : 'text-red-500'}`}
+            >
+              <span>{validation.hasNumber ? '✓' : '✗'}</span>
+              <span>{t('passwordRequirements.hasNumber')}</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 ${validation.hasSpecialChar ? 'text-green-500' : 'text-red-500'}`}
+            >
+              <span>{validation.hasSpecialChar ? '✓' : '✗'}</span>
+              <span>{t('passwordRequirements.hasSpecialChar')}</span>
+            </div>
+          </div>
         </section>
         <section className="flex flex-col gap-1 text-muted-foreground">
           <label htmlFor={t('confirmPassword')}>{t('confirmPassword')}</label>
           <Input
-            className="text-white"
+            className="text-primary"
             type="password"
             name="confirmPassword"
             required={true}

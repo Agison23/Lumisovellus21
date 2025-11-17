@@ -289,7 +289,8 @@
       "loginSuccessful": "Sisäänkirjautuminen onnistui."
     },
     "links": {
-      "register": "Ei vielä tiliä? Rekisteröidy tästä."
+      "register": "Ei vielä tiliä? Rekisteröidy tästä.",
+      "forgotPassword": "Unohditko salasanasi?"
     }
   },
   "RegisterPage": {
@@ -302,6 +303,12 @@
     "buttons": {
       "register": "Rekisteröidy",
       "registering": "Rekisteröidään..."
+    },
+    "passwordRequirements": {
+      "title": "Salasanan vaatimukset",
+      "minLength": "Vähintään 8 merkkiä",
+      "hasNumber": "Vähintään yksi numero",
+      "hasSpecialChar": "Vähintään yksi erikoismerkki"
     },
     "errors": {
       "missingFields": "Täytä kaikki vaaditut kentät.",
