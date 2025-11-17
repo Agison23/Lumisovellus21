@@ -60,7 +60,7 @@ export default function LoginPage() {
         <section className="flex flex-col gap-1 text-muted-foreground">
           <label htmlFor={t('password')}>{t('password')}</label>
           <Input
-            className="text-white"
+            className="text-primary"
             type="password"
             name="password"
             required={true}
