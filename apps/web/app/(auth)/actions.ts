@@ -23,7 +23,11 @@ export async function loginAction(email: string, password: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Login failed");
+    // match the error response type
+    type ErrorResponse =
+      paths["/auth/login"]["post"]["responses"]["400"]["content"]["application/json"];
+    const errorData: ErrorResponse = await response.json();
+    throw new Error(errorData.error.message || "Login failed");
   }
   type LoginResponse =
     paths["/auth/login"]["post"]["responses"]["200"]["content"]["application/json"];

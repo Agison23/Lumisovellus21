@@ -28,16 +28,63 @@ async function verifyToken(token: string): Promise<boolean> {
     return false;
   }
 }
+async function verifyTokenWithUser(token: string) {
+  try {
+    const response = await fetch(`${apiUrl}/auth/verify-token`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+    type VerifyResponse =
+      paths["/auth/verify-token"]["get"]["responses"]["200"]["content"]["application/json"];
+    const result: VerifyResponse = await response.json();
+
+    return result.data?.valid === true ? result.data?.user : null;
+  } catch (error) {
+    console.error("Token verification failed in middleware:", error);
+    return null;
+  }
+}
+
+function hasRouteAccess(
+  pathname: string,
+  userRole: string | undefined,
+): boolean {
+  console.log(`Checking access for role: ${userRole} to path: ${pathname}`);
+  // NORMAL users can only access /dashboard root
+  if (userRole === "NORMAL") {
+    return pathname === "/dashboard" || pathname === "/dashboard/";
+  }
+
+  // GUIDE and RESCUE can access segments and reports
+  if (userRole === "GUIDE" || userRole === "RESCUE") {
+    return (
+      pathname === "/dashboard" ||
+      pathname.startsWith("/dashboard/segments") ||
+      pathname.startsWith("/dashboard/reports")
+    );
+  }
+
+  // ADMIN can access everything under /dashboard
+  if (userRole === "ADMIN") {
+    return pathname.startsWith("/dashboard");
+  }
+
+  return false;
+}
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  const pathname = request.nextUrl.pathname;
 
-  if (
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/register") &&
-    accessToken
-  ) {
+  if ((pathname === "/login" || pathname === "/register") && accessToken) {
     const isValid = await verifyToken(accessToken);
     if (isValid) {
       return NextResponse.redirect(new URL("/", request.url));
@@ -45,18 +92,20 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/dashboard")) {
     if (!accessToken && !refreshToken) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     if (accessToken) {
-      const isValid = await verifyToken(accessToken);
-      if (!isValid && !refreshToken) {
+      const user = await verifyTokenWithUser(accessToken);
+      if (!user) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
-      // If token is invalid but we have refreshToken, let the request through
-      // The server will handle refreshing via the action
+
+      if (!hasRouteAccess(pathname, user.role)) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
     }
   }
 
