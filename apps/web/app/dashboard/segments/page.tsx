@@ -104,60 +104,35 @@ function CreateAreaDialog({
   refetch: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [newArea, setNewArea] = useState<InteractiveAreaFeature>({
-    type: "Feature",
-    geometry: {
-      type: "Polygon",
-      coordinates: [[[0, 0]]],
-    },
-    properties: {
+  const [newArea, setNewArea] = useState<Segment>({
+    id: "",
+    name: "",
+    terrain: "",
+    avalancheDanger: false,
+    isLowerSegment: null,
+    points: [{ lat: 0, lng: 0 }],
+    guideUpdate: null,
+    userReviews: [],
+  });
+  const scrollRefs = useRef<HTMLDivElement | null>(null);
+
+  const handleCancel = () => {
+    setNewArea({
       id: "",
       name: "",
       terrain: "",
       avalancheDanger: false,
       isLowerSegment: null,
-    },
-  });
-  const scrollRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const handleCoordinateChange = (
-    index: number,
-    coordIndex: number,
-    positionIndex: number,
-    value: string,
-  ) => {
-    const numValue = value === "" ? 0 : Number(value);
-    const updatedCoordinates = [...newArea.geometry.coordinates];
-    updatedCoordinates[index][coordIndex][positionIndex] = numValue;
-    setNewArea((prev) => ({
-      ...prev,
-      geometry: {
-        ...prev.geometry,
-        coordinates: updatedCoordinates,
-      },
-    }));
-  };
-
-  const handleCancel = () => {
-    setNewArea({
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [[[0, 0]]],
-      },
-      properties: {
-        id: "",
-        name: "",
-        terrain: "",
-        avalancheDanger: false,
-        isLowerSegment: null,
-      },
+      points: [{ lat: 0, lng: 0 }],
+      guideUpdate: null,
+      userReviews: [],
     });
     setOpen(false);
   };
 
+  // we cannot do this since the backend does not work
   const mutation = useMutation({
-    mutationFn: async (areaToCreate: InteractiveAreaFeature) => {
+    mutationFn: async (areaToCreate: Segment) => {
       return fetch("/api/areas/create", {
         method: "POST",
         body: JSON.stringify(areaToCreate),
@@ -178,9 +153,26 @@ function CreateAreaDialog({
   };
 
   const isValid =
-    newArea.properties.id.trim() !== "" &&
-    newArea.properties.name.trim() !== "" &&
-    newArea.properties.terrain.trim() !== "";
+    newArea.id.trim() !== "" &&
+    newArea.name.trim() !== "" &&
+    newArea.terrain.trim() !== "";
+
+  const handleCoordinateChange = (
+    coordIndex: number,
+    positionIndex: "lat" | "lng",
+    value: string,
+  ) => {
+    const numValue = value === "" ? 0 : Number(value);
+    const updatedCoordinates = [...newArea.points];
+    updatedCoordinates[coordIndex] = {
+      ...updatedCoordinates[coordIndex],
+      [positionIndex]: numValue,
+    };
+    setNewArea((prev) => ({
+      ...prev,
+      points: updatedCoordinates,
+    }));
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -195,11 +187,11 @@ function CreateAreaDialog({
           <div className="flex flex-col gap-1">
             <label className="text-xs">{t("createDialog.id")}</label>
             <Input
-              value={newArea.properties.id}
+              value={newArea.id}
               onChange={(e) =>
                 setNewArea((prev) => ({
                   ...prev,
-                  properties: { ...prev.properties, id: e.target.value },
+                  properties: { ...prev, id: e.target.value },
                 }))
               }
               placeholder="e.g., area-1"
@@ -208,11 +200,11 @@ function CreateAreaDialog({
           <div className="flex flex-col gap-1">
             <label className="text-xs">{t("createDialog.name")}</label>
             <Input
-              value={newArea.properties.name}
+              value={newArea.name}
               onChange={(e) =>
                 setNewArea((prev) => ({
                   ...prev,
-                  properties: { ...prev.properties, name: e.target.value },
+                  name: e.target.value,
                 }))
               }
             />
@@ -220,11 +212,11 @@ function CreateAreaDialog({
           <div className="flex flex-col gap-1">
             <label className="text-xs">{t("createDialog.terrain")}</label>
             <Input
-              value={newArea.properties.terrain}
+              value={newArea.terrain}
               onChange={(e) =>
                 setNewArea((prev) => ({
                   ...prev,
-                  properties: { ...prev.properties, terrain: e.target.value },
+                  properties: { ...prev, terrain: e.target.value },
                 }))
               }
             />
@@ -233,99 +225,80 @@ function CreateAreaDialog({
             <label className="text-xs">
               {t("createDialog.coordinates.title")}
             </label>
-            {newArea.geometry.coordinates.map(
-              (coordSet: number[][], index: number) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-2 min-h-0 border overflow-hidden rounded-md"
-                >
-                  <div
-                    ref={(el) => {
-                      scrollRefs.current[index] = el;
-                    }}
-                    className="overflow-y-auto min-h-0 p-2"
-                  >
-                    {coordSet.map((coord: number[], coordIndex: number) => (
-                      <div key={coordIndex} className="flex gap-2 mb-1 min-w-0">
-                        <Input
-                          placeholder={t("createDialog.coordinates.longitude")}
-                          value={coord[0]}
-                          type="number"
-                          className="min-w-0 flex-1 no-spinner"
-                          onChange={(e) =>
-                            handleCoordinateChange(
-                              index,
-                              coordIndex,
-                              0,
-                              e.target.value,
-                            )
-                          }
-                        />
-                        <Input
-                          placeholder={t("createDialog.coordinates.latitude")}
-                          value={coord[1]}
-                          type="number"
-                          className="min-w-0 flex-1 no-spinner"
-                          onChange={(e) =>
-                            handleCoordinateChange(
-                              index,
-                              coordIndex,
-                              1,
-                              e.target.value,
-                            )
-                          }
-                        />
-                        <Button
-                          variant="outline"
-                          className="shrink-0"
-                          onClick={() => {
-                            const updatedCoordinates = [
-                              ...newArea.geometry.coordinates,
-                            ];
-                            updatedCoordinates[index].splice(coordIndex, 1);
-                            setNewArea((prev) => ({
-                              ...prev,
-                              geometry: {
-                                ...prev.geometry,
-                                coordinates: updatedCoordinates,
-                              },
-                            }));
-                          }}
-                        >
-                          <Trash />
-                        </Button>
-                      </div>
-                    ))}
+            <div className="flex flex-col gap-2 min-h-0 border overflow-hidden rounded-md">
+              <div
+                ref={(el) => {
+                  scrollRefs.current = el;
+                }}
+                className="overflow-y-auto min-h-0 p-2"
+              >
+                {newArea.points.map((coord, coordIndex) => (
+                  <div key={coordIndex} className="flex gap-2 mb-1 min-w-0">
+                    <Input
+                      placeholder={t("createDialog.coordinates.longitude")}
+                      value={coord.lat}
+                      type="number"
+                      className="min-w-0 flex-1 no-spinner"
+                      onChange={(e) =>
+                        handleCoordinateChange(
+                          coordIndex,
+                          "lat",
+                          e.target.value,
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder={t("createDialog.coordinates.latitude")}
+                      value={coord.lng}
+                      type="number"
+                      className="min-w-0 flex-1 no-spinner"
+                      onChange={(e) =>
+                        handleCoordinateChange(
+                          coordIndex,
+                          "lng",
+                          e.target.value,
+                        )
+                      }
+                    />
+                    <Button
+                      variant="outline"
+                      className="shrink-0"
+                      onClick={() => {
+                        const updatedCoordinates = [...newArea.points];
+                        updatedCoordinates.splice(coordIndex, 1);
+                        setNewArea((prev) => ({
+                          ...prev,
+                          points: updatedCoordinates,
+                        }));
+                      }}
+                    >
+                      <Trash />
+                    </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    className="flex-1 shrink-0 mb-2 mx-2"
-                    onClick={() => {
-                      const updatedCoordinates = [
-                        ...newArea.geometry.coordinates,
-                      ];
-                      updatedCoordinates[index].push([0, 0]);
-                      setNewArea((prev) => ({
-                        ...prev,
-                        geometry: {
-                          ...prev.geometry,
-                          coordinates: updatedCoordinates,
-                        },
-                      }));
-                      // Scroll to bottom after adding coordinate
-                      setTimeout(() => {
-                        const scrollEl = scrollRefs.current[index];
-                        if (scrollEl) {
-                          scrollEl.scrollTop = scrollEl.scrollHeight;
-                        }
-                      }, 0);
-                    }}
-                  >
-                    {t("createDialog.coordinates.addCoordinate")}
-                  </Button>
-                </div>
-              ),
-            )}
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                className="flex-1 shrink-0 mb-2 mx-2"
+                onClick={() => {
+                  const updatedCoordinates = [...newArea.points];
+                  updatedCoordinates.push({ lat: 0, lng: 0 });
+                  setNewArea((prev) => ({
+                    ...prev,
+                    points: updatedCoordinates,
+                  }));
+                  // Scroll to bottom after adding coordinate
+                  setTimeout(() => {
+                    const scrollEl = scrollRefs.current;
+                    if (scrollEl) {
+                      scrollEl.scrollTop = scrollEl.scrollHeight;
+                    }
+                  }, 0);
+                }}
+              >
+                {t("createDialog.coordinates.addCoordinate")}
+              </Button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
@@ -334,14 +307,11 @@ function CreateAreaDialog({
             </label>
             <div className="flex gap-2 items-center">
               <Checkbox
-                checked={newArea.properties.avalancheDanger}
+                checked={newArea.avalancheDanger}
                 onCheckedChange={(checked) =>
                   setNewArea((prev) => ({
                     ...prev,
-                    properties: {
-                      ...prev.properties,
-                      avalancheDanger: Boolean(checked),
-                    },
+                    avalancheDanger: Boolean(checked),
                   }))
                 }
               />
@@ -485,7 +455,7 @@ function EditAreaDialog({
               <div ref={scrollRef} className="overflow-y-auto min-h-0 p-2">
                 {editArea.points.map(
                   (coordSet: { lat: number; lng: number }, index: number) => (
-                    <div className="flex gap-2 mb-1 min-w-0">
+                    <div key={index} className="flex gap-2 mb-1 min-w-0">
                       <Input
                         placeholder={t("editDialog.coordinates.longitude")}
                         value={coordSet.lng}
