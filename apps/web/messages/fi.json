@@ -316,7 +316,21 @@
       }
     },
     "ReportsPage": {
-      "title": "Raportit"
+      "title": "Raportit",
+      "loading": "Ladataan raportteja...",
+      "errors": {
+        "loadingFailed": "Raporttien lataaminen epäonnistui. Yritä uudelleen myöhemmin."
+      },
+      "search": {
+        "placeholder": "Etsi raportteja..."
+      },
+      "labels": {
+        "id": "ID",
+        "date": "Päivämäärä",
+        "snowType": "Lumityyppi",
+        "location": "Sijainti",
+        "description": "Kuvaus"
+      }
     },
     "Sidebar": {
       "title": "Hallintapaneeli"

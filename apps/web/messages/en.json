@@ -321,7 +321,21 @@
       }
     },
     "ReportsPage": {
-      "title": "Reports"
+      "title": "Reports",
+      "loading": "Loading reports...",
+      "errors": {
+        "loadingFailed": "Failed to load reports. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search reports..."
+      },
+      "labels": {
+        "id": "ID",
+        "date": "Date",
+        "snowType": "Snow type",
+        "location": "Location",
+        "description": "Description"
+      }
     },
     "Sidebar": {
       "title": "Dashboard"
