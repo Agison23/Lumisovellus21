@@ -196,6 +196,7 @@ export default function Map3d() {
     data: updateData = [],
     isError: updateError,
     isLoading: updateDataLoading,
+    refetch: refetchUpdateData,
   } = useQuery({
     queryKey: ["updateData"],
     queryFn: fetchUpdateData,
@@ -222,6 +223,7 @@ export default function Map3d() {
       setSelectedSnowTypeId(null);
       setSelectedObstacles({ stones: false, branches: false });
       toast.success(t("reportForm.messages.submitSuccess"));
+      refetchUpdateData();
     },
     onError: (error) => {
       toast.error(
