@@ -299,6 +299,25 @@
         "email": "Email",
         "role": "Role",
         "id": "ID"
+      },
+      "editDialog": {
+        "title": "Editing {email}",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "role": "Role",
+        "rolePlaceholder": "Select a role",
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "saveFailed": "Failed to save changes. Please try again."
+        },
+        "success": {
+          "saveSuccessful": "Changes saved successfully."
+        }
       }
     },
     "ReportsPage": {

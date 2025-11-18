@@ -294,6 +294,25 @@
         "email": "Sähköposti",
         "role": "Rooli",
         "id": "ID"
+      },
+      "editDialog": {
+        "title": "Muokkaa {email}",
+        "email": "Sähköposti",
+        "firstName": "Etunimi",
+        "lastName": "Sukunimi",
+        "role": "Rooli",
+        "rolePlaceholder": "Valitse rooli",
+        "buttons": {
+          "cancel": "Peruuta",
+          "save": "Tallenna",
+          "saving": "Tallennetaan..."
+        },
+        "errors": {
+          "saveFailed": "Tallennus epäonnistui. Yritä uudelleen."
+        },
+        "success": {
+          "saveSuccessful": "Muutokset tallennettu onnistuneesti."
+        }
       }
     },
     "ReportsPage": {
