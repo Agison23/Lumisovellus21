@@ -56,14 +56,17 @@ export default function DashboardPage() {
       {isError && <p>Error loading areas.</p>}
       {!isLoading && !isError && (
         <>
-          <Input
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.currentTarget.value)
-            }
-            value={searchTerm}
-            placeholder={t("search.placeholder")}
-            className="h-max"
-          />
+          <div className="w-full flex gap-2 items-center">
+            <Input
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setSearchTerm(e.currentTarget.value)
+              }
+              value={searchTerm}
+              placeholder={t("search.placeholder")}
+              className="h-max"
+            />
+            <CreateAreaDialog t={t} refetch={refetch} />
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 overflow-y-auto pb-14">
             {filteredSegments.map((area) => (
               <div

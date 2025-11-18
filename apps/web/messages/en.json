@@ -207,6 +207,7 @@
     },
     "SegmentsPage": {
       "title": "Segments",
+      "newButton": "New Segment",
       "search": {
         "placeholder": "Search segments..."
       },
@@ -214,6 +215,33 @@
         "avalancheDanger": "Avalanche danger: ",
         "true": "True",
         "false": "False"
+      },
+      "createDialog": {
+        "title": "Create New Segment",
+        "name": "Name",
+        "terrain": "Terrain",
+        "id": "ID",
+        "coordinates": {
+          "title": "Coordinates",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "addCoordinate": "Add coordinate"
+        },
+        "avalanche": {
+          "title": "Avalanche",
+          "toggleAvalancheWarning": "Area is prone to avalanches"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create",
+          "creating": "Creating..."
+        },
+        "errors": {
+          "createFailed": "Failed to create segment. Please try again."
+        },
+        "success": {
+          "createSuccessful": "Segment created successfully."
+        }
       },
       "editDialog": {
         "title": "Editing {name}",
