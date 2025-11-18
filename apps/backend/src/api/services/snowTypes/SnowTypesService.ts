@@ -1,5 +1,6 @@
 import { BaseService } from '../BaseService';
 import { SnowType } from '../../types';
+import { generateSnowTypeIdentifier } from '../../../utils/snowTypeUtils';
 
 export interface CreateSnowTypeRequest {
   name: string;
@@ -62,6 +63,7 @@ export class SnowTypesService extends BaseService {
 
       return {
         id: snowType.id,
+        identifier: generateSnowTypeIdentifier(snowType.name),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
@@ -172,6 +174,7 @@ export class SnowTypesService extends BaseService {
 
       return {
         id: updatedSnowType.id,
+        identifier: generateSnowTypeIdentifier(updatedSnowType.name),
         name: updatedSnowType.name,
         colour: updatedSnowType.colour,
         skiability: updatedSnowType.skiability,
@@ -180,6 +183,7 @@ export class SnowTypesService extends BaseService {
         secondaryTypes: updatedSnowType.primarySnowTypes.map(
           (rel) => ({
             id: rel.secondarySnowType.id,
+            identifier: generateSnowTypeIdentifier(rel.secondarySnowType.name),
             name: rel.secondarySnowType.name,
             colour: rel.secondarySnowType.colour,
             skiability: rel.secondarySnowType.skiability,
@@ -226,6 +230,7 @@ export class SnowTypesService extends BaseService {
 
       return {
         id: snowType.id,
+        identifier: generateSnowTypeIdentifier(snowType.name),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
@@ -234,6 +239,7 @@ export class SnowTypesService extends BaseService {
         secondaryTypes: snowType.primarySnowTypes.map(
           (rel) => ({
             id: rel.secondarySnowType.id,
+            identifier: generateSnowTypeIdentifier(rel.secondarySnowType.name),
             name: rel.secondarySnowType.name,
             colour: rel.secondarySnowType.colour,
             skiability: rel.secondarySnowType.skiability,
@@ -267,6 +273,7 @@ export class SnowTypesService extends BaseService {
 
       return allSnowTypes.map((snowType) => ({
         id: snowType.id,
+        identifier: generateSnowTypeIdentifier(snowType.name),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
@@ -295,6 +302,7 @@ export class SnowTypesService extends BaseService {
 
       return snowTypes.map((snowType) => ({
         id: snowType.id.toString(),
+        identifier: generateSnowTypeIdentifier(snowType.name),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
@@ -302,6 +310,7 @@ export class SnowTypesService extends BaseService {
         explanation: snowType.explanation,
         secondaryTypes: snowType.primarySnowTypes.map((rel) => ({
           id: rel.secondarySnowType.id.toString(),
+          identifier: generateSnowTypeIdentifier(rel.secondarySnowType.name),
           name: rel.secondarySnowType.name,
           colour: rel.secondarySnowType.colour,
           skiability: rel.secondarySnowType.skiability,
