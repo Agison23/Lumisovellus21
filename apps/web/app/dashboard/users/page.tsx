@@ -38,11 +38,11 @@ export default function DashboardPage() {
     queryKey: ["users"],
     queryFn: async () => {
       const accessToken = await getAccessTokenAction();
-      type UsersResponse =
-        paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"];
       if (!accessToken) {
         throw new Error("User is not authenticated");
       }
+      type UsersResponse =
+        paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"];
       const response = await fetch(`${apiUrl}/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
