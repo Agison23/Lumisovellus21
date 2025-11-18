@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus/features/settings/view/widgets/auth_page.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/snow_definitions/view/snow_definitions_page.dart';
 import 'package:lumisovellus/main.dart';
@@ -70,22 +71,9 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  void _showUserInfoDialog(BuildContext context) {
-    final t = AppLocalizations.of(context);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(t.userInformation),
-        content: Text(t.userInfoNotImplemented),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+  void _openUserInfoPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AuthPage()),
     );
   }
 
@@ -123,7 +111,7 @@ class SettingsPage extends ConsumerWidget {
                       icon: Icons.person_outline_rounded,
                       title: t.userInformation,
                       subtitle: t.userInformationSubtitle,
-                      onTap: () => _showUserInfoDialog(context),
+                      onTap: () => _openUserInfoPage(context),
                     ),
                     const SizedBox(height: 12),
                     _buildSettingsCard(
