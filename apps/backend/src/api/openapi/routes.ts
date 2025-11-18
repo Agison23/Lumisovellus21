@@ -36,6 +36,9 @@ import {
   weatherChangeQuerySchema,
   weatherFilterDaysQuerySchema,
   segmentSchema,
+  snowTypeResponseSchema,
+  primarySnowTypeResponseSchema,
+  reviewResponseSchema,
 } from '../middleware/validation';
 import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
 
@@ -447,7 +450,7 @@ export const openApiRoutes = {
       description: 'Retrieve all snow types including both primary and secondary snow types in a flat list.',
       tags: ['Snow Types'],
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        '200': createSuccessResponse(z.array(snowTypeResponseSchema), 'Snow types retrieved successfully'),
         ...createErrorResponses(),
       },
     },
@@ -472,7 +475,7 @@ export const openApiRoutes = {
         },
       },
       responses: {
-        '201': createSuccessResponse(z.any(), 'Snow type created successfully'),
+        '201': createSuccessResponse(snowTypeResponseSchema, 'Snow type created successfully'),
         '400': createErrorResponses()['400'],
         '401': createErrorResponses()['401'],
         '403': createErrorResponses()['403'],
@@ -488,7 +491,7 @@ export const openApiRoutes = {
       description: 'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
       tags: ['Snow Types'],
       responses: {
-        '200': createSuccessResponse(z.array(z.any()), 'Snow types retrieved successfully'),
+        '200': createSuccessResponse(z.array(primarySnowTypeResponseSchema), 'Snow types retrieved successfully'),
         ...createErrorResponses(),
       },
     },
@@ -515,7 +518,7 @@ export const openApiRoutes = {
         },
       },
       responses: {
-        '200': createSuccessResponse(z.any(), 'Secondary snow types added successfully'),
+        '200': createSuccessResponse(snowTypeResponseSchema, 'Secondary snow types added successfully'),
         '400': createErrorResponses()['400'],
         '401': createErrorResponses()['401'],
         '403': createErrorResponses()['403'],
@@ -574,7 +577,7 @@ export const openApiRoutes = {
         },
       },
       responses: {
-        '201': createSuccessResponse(z.any(), 'Review created successfully'),
+        '201': createSuccessResponse(reviewResponseSchema, 'Review created successfully'),
         ...createErrorResponses(),
       },
     },
