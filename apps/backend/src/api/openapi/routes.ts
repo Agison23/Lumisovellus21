@@ -5,6 +5,7 @@ import {
   registerSchema,
   changePasswordSchema,
   updateProfileSchema,
+  updateUserSchema,
   refreshTokenSchema,
   resetPasswordSchema,
   segmentIdSchema,
@@ -724,9 +725,7 @@ export const openApiRoutes = {
         required: true,
         content: {
           'application/json': {
-            schema: updateProfileSchema.extend({
-              role: z.string().optional(),
-            }),
+            schema: updateUserSchema,
           },
         },
       },

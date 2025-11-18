@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { UsersService } from '../../services/users/UsersService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { AuthenticatedRequest } from '../../types';
 import { AuthService } from '../../services/auth/AuthService';
+import { updateUserSchema } from '../../middleware/validation';
 
 export class UsersController {
   private usersService: UsersService;
@@ -80,9 +82,9 @@ export class UsersController {
   updateUser = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const { id } = req.params;
-      const updateData = req.body;
+      const validatedData = updateUserSchema.parse(req.body);
 
-      const updatedUser = await this.usersService.updateUser(id, updateData);
+      const updatedUser = await this.usersService.updateUser(id, validatedData);
       ApiResponseHandler.success(res, updatedUser);
     }
   );

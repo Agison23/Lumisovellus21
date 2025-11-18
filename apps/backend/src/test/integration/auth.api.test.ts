@@ -26,7 +26,6 @@ describe('Auth API Integration Tests', () => {
         lastName: 'Doe',
         email: 'john.doe@test.com',
         password: 'password123',
-        role: 'NORMAL',
       };
 
       const response = await request(app)
@@ -41,7 +40,7 @@ describe('Auth API Integration Tests', () => {
             firstName: userData.firstName,
             lastName: userData.lastName,
             email: userData.email,
-            role: userData.role,
+            role: 'NORMAL',
           },
           accessToken: expect.any(String),
           refreshToken: expect.any(String),
@@ -71,6 +70,30 @@ describe('Auth API Integration Tests', () => {
         .expect(201);
 
       expect(response.body.data.user.role).toBe('NORMAL');
+    });
+
+    it('should ignore role field if provided and always set to NORMAL', async () => {
+      const userData = {
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test.user@test.com',
+        password: 'password123',
+        role: 'ADMIN', // This should be ignored
+      };
+
+      const response = await request(app)
+        .post('/auth/register')
+        .send(userData)
+        .expect(201);
+
+      // Role should always be NORMAL regardless of what was sent
+      expect(response.body.data.user.role).toBe('NORMAL');
+
+      // Verify in database
+      const createdUser = await testPrisma.user.findUnique({
+        where: { email: userData.email },
+      });
+      expect(createdUser?.role).toBe('NORMAL');
     });
 
     it('should return validation error for invalid email', async () => {

@@ -113,10 +113,6 @@ export const registerSchema = z
       .string()
       .min(6, 'Password must be at least 6 characters')
       .meta({ description: 'User password', example: 'password123' }),
-    role: z
-      .enum(['NORMAL', 'ADMIN', 'RESCUE'])
-      .optional()
-      .meta({ description: 'User role', example: 'NORMAL' }),
   })
   .meta({ id: 'RegisterRequest' });
 
@@ -155,6 +151,35 @@ export const updateProfileSchema = z
       .meta({ description: 'Phone number', example: '+1234567890' }),
   })
   .meta({ id: 'UpdateProfileRequest' });
+
+export const updateUserSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(1, 'First name is required')
+      .optional()
+      .meta({ description: 'User first name', example: 'John' }),
+    lastName: z
+      .string()
+      .optional()
+      .meta({ description: 'User last name', example: 'Doe' }),
+    email: z
+      .string()
+      .email('Invalid email format')
+      .optional()
+      .meta({ description: 'User email address', example: 'john@example.com' }),
+    role: z
+      .enum(['NORMAL', 'PREMIUM', 'ADMIN', 'RESCUE', 'GUIDE'], {
+        message: 'Invalid role. Must be one of: NORMAL, PREMIUM, ADMIN, RESCUE, GUIDE',
+      })
+      .optional()
+      .meta({ description: 'User role', example: 'NORMAL' }),
+    phoneNumber: z
+      .string()
+      .optional()
+      .meta({ description: 'Phone number', example: '+1234567890' }),
+  })
+  .meta({ id: 'UpdateUserRequest' });
 
 export const refreshTokenSchema = z
   .object({

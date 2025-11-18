@@ -95,6 +95,16 @@ async function main() {
     },
   });
 
+  await prisma.role.upsert({
+    where: { name: 'guide' },
+    update: {},
+    create: {
+      id: crypto.randomUUID(),
+      name: 'guide',
+      permissions: 'rescue,snow condition,guide update',
+    },
+  });
+
   // Create snow types (from mock-data.ts)
   // Primary snow types (primarySnowTypeId: null) - these are the main categories
   // Secondary snow types (primarySnowTypeId: <uuid>) - these are subtypes
