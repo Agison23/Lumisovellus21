@@ -264,10 +264,65 @@
     }
   },
   "Sidebar": {
+    "logIn": {
+      "logIn": "Kirjaudu sisään",
+      "logOut": "Kirjaudu ulos"
+    },
     "title": "Pallaksen Pöllöt",
     "p1": "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista. Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin, joiden sisällä lumi on tyypillisesti hyvin samanlaista.",
     "p2": "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti. Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta.",
     "p3": "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja koko kaudelta löydät sääpainikkeen takaa.",
     "p4": "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme, tunturista ja sen kauneudesta."
+  },
+  "LoginPage": {
+    "title": "Kirjaudu sisään",
+    "email": "Sähköposti",
+    "password": "Salasana",
+    "buttons": {
+      "login": "Kirjaudu sisään",
+      "loggingIn": "Kirjaudutaan sisään..."
+    },
+    "errors": {
+      "invalidCredentials": "Väärä sähköposti tai salasana.",
+      "loginFailed": "Sisäänkirjautuminen epäonnistui. Yritä uudelleen."
+    },
+    "success": {
+      "loginSuccessful": "Sisäänkirjautuminen onnistui."
+    },
+    "links": {
+      "register": "Ei vielä tiliä? Rekisteröidy tästä.",
+      "forgotPassword": "Unohditko salasanasi?"
+    }
+  },
+  "RegisterPage": {
+    "title": "Rekisteröidy",
+    "email": "Sähköposti",
+    "firstName": "Etunimi",
+    "lastName": "Sukunimi",
+    "password": "Salasana",
+    "confirmPassword": "Vahvista salasana",
+    "buttons": {
+      "register": "Rekisteröidy",
+      "registering": "Rekisteröidään..."
+    },
+    "passwordRequirements": {
+      "title": "Salasanan vaatimukset",
+      "minLength": "Vähintään 8 merkkiä",
+      "hasNumber": "Vähintään yksi numero",
+      "hasSpecialChar": "Vähintään yksi erikoismerkki"
+    },
+    "errors": {
+      "missingFields": "Täytä kaikki vaaditut kentät.",
+      "invalidCredentials": "Virheellinen sähköposti tai salasana.",
+      "passwordMismatch": "Salasanat eivät täsmää.",
+      "passwordTooWeak": "Salasana on liian heikko, sen on oltava vähintään 8 merkkiä.",
+      "registrationFailed": "Rekisteröinti epäonnistui. Yritä uudelleen myöhemmin."
+    },
+    "success": {
+      "registrationSuccessful": "Rekisteröinti onnistui. Siirrytään..."
+    },
+    "links": {
+      "login": "Onko sinulla jo tili? Kirjaudu sisään tästä."
+    }
   }
 }
