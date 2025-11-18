@@ -61,6 +61,9 @@ import type {
 import { calculatePolygonArea } from "@/lib/map/utils";
 import type { Monitor } from "@/lib/snower/types";
 import { paths } from "@lumisovellus/api-client-web";
+import { cookies } from "next/headers";
+import { document } from "postcss";
+import { getAccessTokenAction } from "@/app/(auth)/actions";
 
 const submitObservation = async (data: {
   segmentId: string | null;
@@ -73,6 +76,11 @@ const submitObservation = async (data: {
     throw new Error(
       "Missing required fields: areaId, selectedSnowTypeId, or timestamp",
     );
+  }
+
+  const accessToken = await getAccessTokenAction();
+  if (!accessToken) {
+    throw new Error("User is not authenticated");
   }
 
   type ObservationRequestBody =
@@ -94,7 +102,10 @@ const submitObservation = async (data: {
     `${apiUrl}/api/v1/segments/${data.segmentId}/reviews`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: JSON.stringify(requestBody),
     },
   );
