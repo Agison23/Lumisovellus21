@@ -254,7 +254,19 @@
       }
     },
     "UsersPage": {
-      "title": "Käyttäjät"
+      "title": "Käyttäjät",
+      "loading": "Ladataan käyttäjiä...",
+      "errors": {
+        "loadingFailed": "Käyttäjien lataaminen epäonnistui. Yritä uudelleen myöhemmin."
+      },
+      "search": {
+        "placeholder": "Etsi käyttäjiä..."
+      },
+      "labels": {
+        "email": "Sähköposti",
+        "role": "Rooli",
+        "id": "ID"
+      }
     },
     "ReportsPage": {
       "title": "Raportit"

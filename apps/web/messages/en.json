@@ -259,7 +259,19 @@
       }
     },
     "UsersPage": {
-      "title": "Users"
+      "title": "Users",
+      "loading": "Loading users...",
+      "errors": {
+        "loadingFailed": "Failed to load users. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search users..."
+      },
+      "labels": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      }
     },
     "ReportsPage": {
       "title": "Reports"
