@@ -72,8 +72,10 @@ export default function ReportsPage() {
         update.primarySnowTypeIds.some(id => id.toLowerCase().includes(token)) ||
         update.secondarySnowTypeIds.some(id => id.toLowerCase().includes(token))
         || update.primarySnowTypeIds.some(id => snowTypes.find(s => s.id === id)?.name.toLowerCase().includes(token))
-        || update.secondarySnowTypeIds.some(id => snowTypes.find(s => s.id === id)?.name.toLowerCase().includes(token)) ||
-        segments.find(s => s.id === update.segmentId)?.name.toLowerCase().includes(token)
+        || update.secondarySnowTypeIds.some(id => snowTypes.find(s => s.id === id)?.name.toLowerCase().includes(token))
+        || update.primarySnowTypeIds.some(id => snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, id))}.name`).toLowerCase().includes(token))
+        || update.secondarySnowTypeIds.some(id => snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, id))}.name`).toLowerCase().includes(token))
+        || segments.find(s => s.id === update.segmentId)?.name.toLowerCase().includes(token)
       )
     );
 
@@ -83,8 +85,9 @@ export default function ReportsPage() {
         review.snowTypeId.toLowerCase().includes(token) ||
         review.hazards.some(h => h.toLowerCase().includes(token)) ||
         review.submittedAt.toLowerCase().includes(token)
-        || snowTypes.find(s => s.id === review.snowTypeId)?.name.toLowerCase().includes(token) ||
-        segments.find(s => s.id === review.segmentId)?.name.toLowerCase().includes(token)
+        || snowTypes.find(s => s.id === review.snowTypeId)?.name.toLowerCase().includes(token)
+        || snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.name`).toLowerCase().includes(token)
+        || segments.find(s => s.id === review.segmentId)?.name.toLowerCase().includes(token)
       )
     );
 
