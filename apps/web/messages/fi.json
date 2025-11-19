@@ -78,87 +78,87 @@
         "minor": "vähäistä"
       },
       "snowTypes": {
-        "72a07425-a3f7-4574-801c-db3a578cb233": {
+        "crust": {
           "name": "Korppu",
           "description": "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista."
         },
-        "229e9c86-e215-4bfd-96e6-44176f4a0727": {
+        "slush": {
           "name": "Sohjo",
           "description": "Vesipitoinen ja osittain sulanut lumi suojasäällä."
         },
-        "06e4088b-9cdc-4db9-b931-bcdabd4b0547": {
+        "ice": {
           "name": "Jää",
           "description": "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena."
         },
-        "7858e302-a22b-4d29-af59-ad08f6474f02": {
+        "fresh": {
           "name": "Uusi lumi",
           "description": "Vastasatanut pehmeä lumi."
         },
-        "06d11ad5-7da5-47b4-85f6-1466bcdc64c7": {
+        "wind-blown": {
           "name": "Tuulen pieksemä lumi",
           "description": "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi."
         },
-        "50af36a0-17bc-46ac-8ef4-16b8b0f6a91a": {
+        "sparse": {
           "name": "Vähäinen lumi",
           "description": ""
         },
-        "a4ecbe38-f740-4ded-8664-fe27fc9a6e32": {
+        "bare-ground": {
           "name": "Lumeton maa",
           "description": ""
         },
-        "e906c9c7-c96d-4d80-ab4c-d22972b1b334": {
+        "powder-snow": {
           "name": "Vitilumi",
           "description": "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta."
         },
-        "580607c0-2ce3-4195-9fde-4e0228b6ff95": {
+        "powder": {
           "name": "Puuterilumi",
           "description": "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella."
         },
-        "695b2d74-59d8-4610-b33e-2be4e34f1e9c": {
+        "wet": {
           "name": "Märkä uusi lumi",
           "description": "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella."
         },
-        "fe316828-8034-42cb-8a2b-87744df3b94d": {
+        "sastrugi": {
           "name": "Sastrugi",
           "description": "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista."
         },
-        "f03adbfa-c85c-4f66-b4f1-20846a718bdc": {
+        "wavy": {
           "name": "Aaltoileva lumi",
           "description": "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa."
         },
-        "be781456-689e-4cff-989a-f06cbe54ae6e": {
+        "wind-packed": {
           "name": "Tuiskulumi",
           "description": "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle."
         },
-        "12c8dbeb-d380-48b4-aa37-aeb76fe2e308": {
+        "thin-crust": {
           "name": "Ohut korppu",
           "description": "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa."
         },
-        "d83558df-a1e0-4c28-8a9d-557888a5c528": {
+        "breakable-crust": {
           "name": "Rikkoutuva korppu",
           "description": "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta."
         },
-        "2a0a2ec7-9541-40fe-9590-df92bbc889d3": {
+        "bearing-crust": {
           "name": "Kantava korppu",
           "description": "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä."
         },
-        "da1bdc36-89fe-4dee-a5be-29a6b2b3f4fb": {
+        "breakable-ice": {
           "name": "Rikkoutuva jää",
           "description": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros."
         },
-        "480c682b-78b3-4b26-9eb1-6491d7299a4c": {
+        "softening-snow": {
           "name": "Kastuva lumi",
           "description": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi."
         },
-        "97227e4e-7b27-4d44-bbfc-35b18880ad2c": {
+        "saturated-snow": {
           "name": "Saturoitunut lumi",
           "description": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi"
         },
-        "21": {
+        "rocks": {
           "name": "Kiviä",
           "description": ""
         },
-        "22": {
+        "branches": {
           "name": "Oksia",
           "description": ""
         }

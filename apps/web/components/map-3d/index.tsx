@@ -64,6 +64,7 @@ import { paths } from "@lumisovellus/api-client-web";
 import { cookies } from "next/headers";
 import { document } from "postcss";
 import { getAccessTokenAction } from "@/app/(auth)/actions";
+import { getTranslationKeyForSnowTypeName } from "@/lib/utils";
 
 const submitObservation = async (data: {
   segmentId: string | null;
@@ -387,7 +388,7 @@ export default function Map3d() {
   }, []);
 
   const getUpdateDataForArea = (areaId: string) => {
-    return updateData.find((update) => update.segmentId === areaId);
+    return updateData.find((update) => update.segmentId === areaId) ?? "";
   };
 
   const getLatestUserUpdateForArea = (updateData: UpdateData) => {
@@ -416,6 +417,10 @@ export default function Map3d() {
       secondaryId1: updateData.secondaryId1,
       secondaryId2: updateData.secondaryId2,
     };
+  };
+
+  const getSnowTypeNameById = (snowTypeId: string): string => {
+    return snowTypes.find((type) => type.id === snowTypeId)?.name ?? "";
   };
 
   const getPrettyTimeDiff = (pastTime: Date): string => {
@@ -651,12 +656,12 @@ export default function Map3d() {
                                   <div key={snowTypeId}>
                                     <p className="font-medium text-lg">
                                       {t(
-                                        `reportForm.snowTypes.${snowTypeId}.name`,
+                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypeId))}.name`,
                                       )}
                                     </p>
                                     <p className="text-xs">
                                       {t(
-                                        `reportForm.snowTypes.${snowTypeId}.description`,
+                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypeId))}.description`,
                                       )}
                                     </p>
                                   </div>
@@ -667,12 +672,12 @@ export default function Map3d() {
                                   <div key={snowTypeId}>
                                     <p className="font-medium text-sm">
                                       {t(
-                                        `reportForm.snowTypes.${snowTypeId}.name`,
+                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypeId))}.name`,
                                       )}
                                     </p>
                                     <p className="text-xs">
                                       {t(
-                                        `reportForm.snowTypes.${snowTypeId}.description`,
+                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypeId))}.description`,
                                       )}
                                     </p>
                                   </div>
@@ -695,7 +700,7 @@ export default function Map3d() {
                                 >
                                   <p className="font-medium text-sm">
                                     {t(
-                                      `reportForm.snowTypes.${review.snowTypeId}.name`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(review.snowTypeId))}.name`,
                                     )}
                                     :{" "}
                                     {getPrettyTimeDiff(
@@ -704,7 +709,7 @@ export default function Map3d() {
                                   </p>
                                   <p className="text-xs">
                                     {t(
-                                      `reportForm.snowTypes.${review.snowTypeId}.description`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(review.snowTypeId))}.description`,
                                     )}
                                   </p>
                                   <HazardBadges
@@ -765,7 +770,7 @@ export default function Map3d() {
                             form.nextStep();
                           }}
                         >
-                          {t(`reportForm.snowTypes.${snowType.id}.name`)}
+                          {t(`reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowType.id))}.name`)}
                         </Button>
                       ))}
                   </div>
@@ -803,13 +808,13 @@ export default function Map3d() {
 															${selectedSnowTypeId === snowType.id ? "ring-green-500 ring-2" : ""}
 														`}
                         >
-                          {t(`reportForm.snowTypes.${snowType.id}.name`)}
+                          {t(`reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowType.id))}.name`)}
                         </Button>
                       ))}
                   </div>
                   <p className="text-center">
                     {t(
-                      `reportForm.snowTypes.${selectedSnowTypeId}.description`,
+                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(selectedSnowTypeId || ""))}.description`,
                     )}
                   </p>
                 </div>

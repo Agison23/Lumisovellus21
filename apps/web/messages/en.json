@@ -77,87 +77,87 @@
         "minor": "minor"
       },
       "snowTypes": {
-        "72a07425-a3f7-4574-801c-db3a578cb233": {
+        "crust": {
           "name": "Crust",
           "description": "Hard crust covering the surface. Crust can be smooth or rough in nature."
         },
-        "229e9c86-e215-4bfd-96e6-44176f4a0727": {
+        "slush": {
           "name": "Slush",
           "description": "Water-rich and partially melted snow in sheltered conditions."
         },
-        "06e4088b-9cdc-4db9-b931-bcdabd4b0547": {
+        "ice": {
           "name": "Ice",
           "description": "Hard and unbroken icy layer on the surface. Ice forms as a result of melt-freeze cycles."
         },
-        "7858e302-a22b-4d29-af59-ad08f6474f02": {
+        "fresh": {
           "name": "Fresh snow",
           "description": "Recently fallen soft snow."
         },
-        "06d11ad5-7da5-47b4-85f6-1466bcdc64c7": {
+        "wind-blown": {
           "name": "Wind-blown snow",
           "description": "Wind-hardened and unevenly shaped snow."
         },
-        "50af36a0-17bc-46ac-8ef4-16b8b0f6a91a": {
+        "sparse": {
           "name": "Sparse snow",
           "description": ""
         },
-        "a4ecbe38-f740-4ded-8664-fe27fc9a6e32": {
+        "bare-ground": {
           "name": "Bare ground",
           "description": ""
         },
-        "e906c9c7-c96d-4d80-ab4c-d22972b1b334": {
+        "powder-snow": {
           "name": "Powder snow",
           "description": "Recently fallen, light, soft and slightly consolidated frost snow."
         },
-        "580607c0-2ce3-4195-9fde-4e0228b6ff95": {
+        "powder": {
           "name": "Powder",
           "description": "Recently fallen loose, feather-light and non-consolidated snow. Powder usually forms in calm weather and hard frost."
         },
-        "695b2d74-59d8-4610-b33e-2be4e34f1e9c": {
+        "wet": {
           "name": "Wet fresh snow",
           "description": "Snow from which you can easily make a snowball. Wet snow forms when it rains near freezing or well in sheltered areas."
         },
-        "fe316828-8034-42cb-8a2b-87744df3b94d": {
+        "sastrugi": {
           "name": "Sastrugi",
           "description": "Wind-caused snow ridges that are hard, icy and sharp-crested."
         },
-        "f03adbfa-c85c-4f66-b4f1-20846a718bdc": {
+        "wavy": {
           "name": "Wavy snow",
           "description": "Wind-shaped fresh snow area. Waves are soft and easily broken."
         },
-        "be781456-689e-4cff-989a-f06cbe54ae6e": {
+        "wind-packed": {
           "name": "Wind-packed snow",
           "description": "Smooth, wind-layered and compacted slab or lens. Wind-packed snow can also accumulate without snowfall if wind moves snow from place to place. Wind-packed snow typically forms in sheltered areas."
         },
-        "12c8dbeb-d380-48b4-aa37-aeb76fe2e308": {
+        "thin-crust": {
           "name": "Thin crust",
           "description": "Snow crust that breaks under the skier's weight. Below the crust, snow can be sinking in places."
         },
-        "d83558df-a1e0-4c28-8a9d-557888a5c528": {
+        "breakable-crust": {
           "name": "Breakable crust",
           "description": "Intermittently bearing, unexpectedly breaking snow surface. The crust can be very thick if there is porous snow beneath it."
         },
-        "2a0a2ec7-9541-40fe-9590-df92bbc889d3": {
+        "bearing-crust": {
           "name": "Bearing crust",
           "description": "Solid and bearing snow crust, often with a very hard and dense surface."
         },
-        "da1bdc36-89fe-4dee-a5be-29a6b2b3f4fb": {
+        "breakable-ice": {
           "name": "Breakable ice",
           "description": "Hard and breakable icy layer on the surface."
         },
-        "480c682b-78b3-4b26-9eb1-6491d7299a4c": {
+        "softening-snow": {
           "name": "Softening snow",
           "description": "Snow that becomes wet or moist from warming or rain starting from the surface."
         },
-        "97227e4e-7b27-4d44-bbfc-35b18880ad2c": {
+        "saturated-snow": {
           "name": "Saturated snow",
           "description": "Wet, throughly soaked and whipped cream-like snow."
         },
-        "21": {
+        "rocks": {
           "name": "Rocks",
           "description": ""
         },
-        "22": {
+        "branches": {
           "name": "Branches",
           "description": ""
         }
