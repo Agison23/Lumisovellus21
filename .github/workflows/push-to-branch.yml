@@ -1,12 +1,12 @@
-name: PR -> frontend
+name: Push -> branch (all branches)
 
 on:
   push:
     branches:
-      - 'frontend'
+      - '**'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

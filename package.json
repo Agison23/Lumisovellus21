@@ -33,12 +33,14 @@
     "packages/*"
   ],
   "engines": {
-    "node": "20.10.0"
+    "node": "20.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@openapitools/openapi-generator-cli": "^2.23.4",
-    "@types/node": "20.12.12",
+    "@types/node": "^22.7.4",
+    "@vitest/browser": "^4.0.10",
+    "@vitest/ui": "^4.0.10",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -47,7 +49,9 @@
     "rimraf": "^6.0.1",
     "turbo": "^2.5.6",
     "typescript": "5.9.2",
-    "typescript-eslint": "^8.44.0"
+    "typescript-eslint": "^8.44.0",
+    "vite": "^7.2.2",
+    "vitest": "^4.0.10"
   },
   "packageManager": "npm@10.2.3",
   "dependencies": {

@@ -1,0 +1,47 @@
+name: Test All Workflows
+
+on:
+  push:
+    branches:
+      - "**"
+
+concurrency:
+  group: test-all-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Simulate PR -> master workflow
+  pr_master_sim:
+    name: Simulated PR → master
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 80
+      run-build: true
+      run-heavy-lint: true
+      run-security-checks: true
+      audit-level: "high"
+      run-smoke-e2e: true
+    secrets: inherit
+
+  # Simulate PR -> dev workflow
+  pr_dev_sim:
+    name: Simulated PR → dev
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 70
+      run-build: true
+      run-security-checks: true
+      audit-level: "high"
+      run-smoke-e2e: true
+    secrets: inherit
+
+  # Simulate push-to-branch workflow
+  push_branch_sim:
+    name: Simulated push → branch
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 70
+      run-heavy-lint: true
+      run-security-checks: true
+      audit-level: "high"
+    secrets: inherit
