@@ -47,7 +47,7 @@ export function getTranslationKeyForSnowTypeName(name: string) {
     case "Saturoitunut lumi":
       return "saturated-snow"
     case "Kiviä":
-      return "rocks"
+      return "stones"
     case "Oksia":
       return "branches"
   }

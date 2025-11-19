@@ -161,9 +161,51 @@ export async function refreshTokenAction() {
   }
 }
 
-export async function registerAction(email: string, password: string) {
+export async function registerAction(firstName: string, lastName: string | undefined,email: string, password: string) {
   // Call your backend API here to register the user
   console.log("Registering user:", email);
+
+  type RegisterBody =
+    paths["/auth/register"]["post"]["requestBody"]["content"]["application/json"];
+  const requestBody: RegisterBody = { firstName, lastName, email, password };
+
+  const response = await fetch(`${apiUrl}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    // match the error response type
+    type ErrorResponse =
+      paths["/auth/register"]["post"]["responses"]["400"]["content"]["application/json"];
+    const errorData: ErrorResponse = await response.json();
+    throw new Error(errorData.error.message || "Registration failed");
+  }
+
+  type RegisterResponse =
+    paths["/auth/register"]["post"]["responses"]["201"]["content"]["application/json"];
+  const { data }: RegisterResponse = await response.json();
+
+  const cookieStore = await cookies();
+  cookieStore.set("accessToken", data.accessToken, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "strict",
+  });
+  cookieStore.set("refreshToken", data.refreshToken, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "strict",
+  });
+
+  revalidatePath("/"); 
   return true;
 }
 

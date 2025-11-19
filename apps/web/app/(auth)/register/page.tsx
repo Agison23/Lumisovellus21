@@ -53,7 +53,7 @@ export default function RegisterPage() {
       throw new Error(t('errors.passwordsMismatch'));
     }
 
-    await registerAction(email, password);
+    await registerAction(firstName, lastName, email, password);
     return true;
   };
 
