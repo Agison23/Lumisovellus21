@@ -442,6 +442,24 @@ describe('Users API Integration Tests', () => {
       });
     });
 
+    it('should update user role successfully as admin', async () => {
+      const updateData = {
+        role: 'PREMIUM',
+      };
+
+      const response = await request(app)
+        .put(`/api/v1/users/${userId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(updateData)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toMatchObject({
+        id: userId,
+        role: 'PREMIUM',
+      });
+    });
+
     it('should return 403 for non-admin user', async () => {
       const updateData = {
         firstName: 'Updated',

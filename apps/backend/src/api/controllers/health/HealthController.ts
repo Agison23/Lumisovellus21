@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { HealthService } from '../../services/health/HealthService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
+import { healthResponseSchema } from '../../openapi/schemas';
 
 export class HealthController {
   private healthService: HealthService;
@@ -13,7 +14,7 @@ export class HealthController {
   getHealth = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const healthData = await this.healthService.getHealthStatus();
-      ApiResponseHandler.success(res, healthData);
+      ApiResponseHandler.success(res, healthData, 200, undefined, healthResponseSchema);
     }
   );
 }

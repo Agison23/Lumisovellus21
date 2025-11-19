@@ -53,6 +53,7 @@ describe('ReviewsService Unit Tests', () => {
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
         id: '1',
+        identifier: 'powder',
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
@@ -62,6 +63,7 @@ describe('ReviewsService Unit Tests', () => {
       });
       expect(result[1]).toEqual({
         id: '2',
+        identifier: 'ice',
         name: 'Ice',
         colour: '#CCCCCC',
         skiability: 1,

@@ -11,6 +11,7 @@ import {
   refreshTokenSchema,
   resetPasswordSchema,
 } from '../../middleware/validation';
+import { authResponseSchema, userSchema, tokenPairSchema, messageResponseSchema, verifyTokenResponseSchema } from '../../openapi/routes';
 
 export class AuthController {
   static async register(req: Request, res: Response): Promise<void> {
@@ -21,13 +22,13 @@ export class AuthController {
 
       ApiResponseHandler.success(res, result, 201, {
         message: 'User registered successfully',
-      });
+      }, authResponseSchema);
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -52,13 +53,13 @@ export class AuthController {
 
       ApiResponseHandler.success(res, result, 200, {
         message: 'Login successful',
-      });
+      }, authResponseSchema);
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -83,13 +84,13 @@ export class AuthController {
 
       ApiResponseHandler.success(res, result, 200, {
         message: 'Token refreshed successfully',
-      });
+      }, tokenPairSchema);
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -121,7 +122,9 @@ export class AuthController {
       ApiResponseHandler.success(
         res,
         { message: 'Logged out successfully' },
-        200
+        200,
+        undefined,
+        messageResponseSchema
       );
     } catch (error) {
       console.error('Logout error:', error);
@@ -150,14 +153,16 @@ export class AuthController {
       ApiResponseHandler.success(
         res,
         { message: 'Password changed successfully' },
-        200
+        200,
+        undefined,
+        messageResponseSchema
       );
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -190,14 +195,16 @@ export class AuthController {
         {
           message: 'If the email exists, a password reset link has been sent',
         },
-        200
+        200,
+        undefined,
+        messageResponseSchema
       );
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -224,7 +231,7 @@ export class AuthController {
         return;
       }
 
-      ApiResponseHandler.success(res, user, 200);
+      ApiResponseHandler.success(res, user, 200, undefined, userSchema);
     } catch (error) {
       console.error('Get profile error:', error);
       ApiResponseHandler.internalError(res, 'Failed to get profile');
@@ -250,13 +257,13 @@ export class AuthController {
 
       ApiResponseHandler.success(res, updatedUser, 200, {
         message: 'Profile updated successfully',
-      });
+      }, userSchema);
     } catch (error) {
       if (error instanceof z.ZodError) {
         ApiResponseHandler.validationError(
           res,
           'Validation failed',
-          error.errors
+          error.issues
         );
         return;
       }
@@ -289,7 +296,9 @@ export class AuthController {
           valid: true,
           user: req.user,
         },
-        200
+        200,
+        undefined,
+        verifyTokenResponseSchema
       );
     } catch (error) {
       console.error('Token verification error:', error);

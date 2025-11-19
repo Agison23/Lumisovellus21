@@ -6,13 +6,14 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   console.error('Unhandled error:', error);
 
   // Handle Zod validation errors
-  if (error instanceof ZodError) {
-    const details = error.errors.map((err) => ({
+  if (error instanceof ZodError || error.name === 'ZodError') {
+    const zodError = error as ZodError;
+    const details = zodError.errors.map((err) => ({
       field: err.path.join('.'),
       message: err.message,
       code: err.code,
