@@ -45,7 +45,12 @@ class WeatherPage extends StatelessWidget {
                     WeatherBox(
                       title: localised.temperature,
                       subtitle: localised.lastThreeDays,
-                      icon: Icons.thermostat
+                      icon: Icons.thermostat,
+                      children: [
+                        WeatherLine(label: localised.highest, value: "5 °C"),
+                        WeatherLine(label: localised.lowest, value: "-6 °C"),
+                        WeatherLine(label: localised.countDaysAboveFreezing, value: "1")
+                      ]
                     ),
 
                     const SizedBox(height: 16),
@@ -53,7 +58,12 @@ class WeatherPage extends StatelessWidget {
                     WeatherBox(
                       title: localised.wind,
                       subtitle: localised.lastThreeDays,
-                      icon: Icons.air
+                      icon: Icons.air,
+                      children: [
+                        WeatherLine(label: localised.avgSpeed, value: "3 m/s"),
+                        WeatherLine(label: localised.maxWind, value: "8 m/s"),
+                        WeatherLine(label: localised.avgDirection, value: "${localised.south} (184 °)")
+                      ]
                     ),
 
                     const SizedBox(height: 16),
@@ -61,7 +71,10 @@ class WeatherPage extends StatelessWidget {
                     WeatherBox(
                       title: localised.snowDepth,
                       subtitle: localised.lastSevenDays,
-                      icon: Icons.ac_unit // ac_unit looks like a snowflake as of 2025
+                      icon: Icons.ac_unit, // ac_unit looks like a snowflake as of 2025
+                      children: [
+                        WeatherLine(label: localised.snowDepthChange, value: "+2 cm")
+                      ]
                     )     
             ],
           ),
@@ -79,12 +92,14 @@ class WeatherBox extends StatelessWidget {
   final String title;
   final String? subtitle;
   final IconData icon;
+  final List<Widget> children;
 
   const WeatherBox({
                       super.key,
                       required this.title,
                       required this.icon,
-                      this.subtitle
+                      this.subtitle,
+                      required this.children
                     });
 
   @override
@@ -132,7 +147,7 @@ class WeatherBox extends StatelessWidget {
                           if (subtitle != null)
                             Text(
                               subtitle!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.normal,
                               ),
@@ -147,7 +162,12 @@ class WeatherBox extends StatelessWidget {
               // Start of info rows
               
               const SizedBox(height: 8),
-
+              
+              Column(
+                children: children
+              )
+              
+              /*
               // --- Maximum Row ---
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -219,10 +239,44 @@ class WeatherBox extends StatelessWidget {
                     ],
                   ),
                 ),
+                */
 
               // End of info rows
               ]
             )
+    );
+  }
+}
+
+class WeatherLine extends StatelessWidget {
+  
+  final String label;
+  final String value;
+
+  const WeatherLine({
+                super.key,
+                required this.label,
+                required this.value
+              });
+  
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label,
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
