@@ -203,7 +203,19 @@
   "Dashboard": {
     "title": "Dashboard",
     "OverviewPage": {
-      "title": "Overview"
+      "title": "Overview",
+      "greetings": {
+        "morning": "Good morning, {name}",
+        "day": "Good day, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}",
+        "night": "Good night, {name}"
+      },
+      "user": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      }
     },
     "SegmentsPage": {
       "title": "Segments",

@@ -204,7 +204,19 @@
   "Dashboard": {
     "title": "Hallintapaneeli",
     "OverviewPage": {
-      "title": "Yleiskatsaus"
+      "title": "Yleiskatsaus",
+      "greetings": {
+        "morning": "Hyvää huomenta, {name}",
+        "day": "Hyvää päivää, {name}",
+        "afternoon": "Hyvää iltapäivää, {name}",
+        "evening": "Hyvää iltaa, {name}",
+        "night": "Hyvää yötä, {name}"
+      },
+      "user": {
+        "email": "Sähköposti",
+        "role": "Rooli",
+        "id": "ID"
+      }
     },
     "SegmentsPage": {
       "search": {
