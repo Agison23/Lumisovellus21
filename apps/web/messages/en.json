@@ -153,8 +153,8 @@
           "name": "Saturated snow",
           "description": "Wet, throughly soaked and whipped cream-like snow."
         },
-        "rocks": {
-          "name": "Rocks",
+        "stones": {
+          "name": "Stones",
           "description": ""
         },
         "branches": {
