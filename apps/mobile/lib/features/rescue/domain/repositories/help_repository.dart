@@ -7,6 +7,10 @@ abstract class HelpRepository {
   Future<HelpResponse> requestHelp(HelpRequest request);
 
   /// Cancel an active help request.
-  Future<void> cancelHelp(String requestId);
+  Future<void> cancelHelpEvent(String requestId);
+
+  /// Complete an active help event.
+  Future<void> completeHelpEvent(String requestId);
+  
 }
 

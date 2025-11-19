@@ -8,7 +8,7 @@ class CancelHelpUseCase {
 
   /// Cancel an active help request.
   Future<void> execute(String requestId) async {
-    return _repository.cancelHelp(requestId);
+    return _repository.cancelHelpEvent(requestId);
   }
 }
 

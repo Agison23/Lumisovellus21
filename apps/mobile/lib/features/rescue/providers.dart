@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/config/app_config.dart';
+import 'package:lumisovellus/core/network/providers.dart';
 import 'data/services/help_service.dart';
 import 'data/services/help_service_fake.dart';
 import 'data/services/help_service_backend.dart';
@@ -16,7 +17,8 @@ final _inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
 final _helpServiceProvider = Provider<HelpService>((ref) {
   final cfg = ref.watch(appConfigProvider);
   if (cfg.useRealBackend) {
-    return BackendHelpService(baseUrl: cfg.apiBaseUrl);
+    final apiClient = ref.watch(apiClientProvider);
+    return BackendHelpService(apiClient: apiClient);
   }
   final store = ref.watch(_inMemoryHelpStoreProvider);
   return FakeHelpService(store);

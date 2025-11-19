@@ -4,6 +4,7 @@
 abstract class HelpService {
   Future<ServiceHelpResponse> requestHelp(ServiceHelpRequest request);
   Future<void> cancelHelp(String requestId);
+  Future<void> completeHelp(String requestId);
 }
 
 /// Service models - these will be replaced with API models when finalized.
@@ -26,15 +27,21 @@ class ServiceHelpResponse {
   final String requestId;
   final DateTime createdAt;
   final dynamic needType; // Will be HelpNeedType from domain
-  final bool active;
+  final dynamic status; // Will be HelpEventStatus from domain
   final int notifiedNearbyCount;
+  final double latitude;
+  final double longitude;
+  final double? accuracy;
 
   ServiceHelpResponse({
     required this.requestId,
     required this.createdAt,
     required this.needType,
-    required this.active,
+    required this.status,
     required this.notifiedNearbyCount,
+    required this.latitude,
+    required this.longitude,
+    this.accuracy,
   });
 }
 

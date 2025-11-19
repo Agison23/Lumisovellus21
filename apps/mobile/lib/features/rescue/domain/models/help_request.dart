@@ -3,11 +3,11 @@ import 'location.dart';
 
 class HelpRequest {
   final HelpNeedType needType;
-  final Location? location;
+  final Location location;
 
   const HelpRequest({
     required this.needType,
-    this.location,
+    required this.location,
   });
 }
 

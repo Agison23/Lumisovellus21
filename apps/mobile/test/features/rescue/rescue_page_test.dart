@@ -20,13 +20,21 @@ class RecordingHelpRepository implements HelpRepository {
       requestId: 'id-1',
       createdAt: DateTime(2024, 1, 1),
       needType: HelpNeedType.health,
-      active: true,
-      rescuerCount: 4,
+      status: HelpEventStatus.active,
+      notifiedNearbyCount: 4,
+      location: const Location(
+        latitude: 60.0,
+        longitude: 24.0,
+        accuracy: 5.0,
+      ),
     );
   }
 
   @override
-  Future<void> cancelHelp(String requestId) async {}
+  Future<void> cancelHelpEvent(String requestId) async {}
+
+  @override
+  Future<void> completeHelpEvent(String requestId) async {}
 }
 
 void main() {

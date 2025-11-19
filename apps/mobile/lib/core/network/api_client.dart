@@ -8,8 +8,9 @@ class ApiClient {
   final UsersApi users;
   final WeatherApi weather;
   final SnowTypesApi snowTypes;
+  final HelpEventsApi helpEvents;
 
-  ApiClient._(this.dio, this.segments, this.reviews, this.users, this.weather, this.snowTypes);
+  ApiClient._(this.dio, this.segments, this.reviews, this.users, this.weather, this.snowTypes, this.helpEvents);
 
   factory ApiClient({required String baseUrl, String? token, void Function(RequestOptions, Response)? on401}) {
     final dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -30,7 +31,8 @@ class ApiClient {
       ReviewsApi(dio),
       UsersApi(dio),
       WeatherApi(dio),
-      SnowTypesApi(dio)
+      SnowTypesApi(dio),
+      HelpEventsApi(dio)
     );
   }
 }
