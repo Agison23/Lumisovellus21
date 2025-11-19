@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lumisovellus/features/rescue/help_service_provider.dart';
-import 'package:lumisovellus/features/rescue/model/help_models.dart';
+import 'package:lumisovellus/features/rescue/domain/models/index.dart';
+import 'package:lumisovellus/features/rescue/domain/repositories/help_repository.dart';
+import 'package:lumisovellus/features/rescue/providers.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../test_utils/pump_rescue.dart';
 
-class RecordingHelpService implements HelpService {
+class RecordingHelpRepository implements HelpRepository {
   HelpRequest? lastRequest;
   bool shouldThrow = false;
 
@@ -20,7 +21,7 @@ class RecordingHelpService implements HelpService {
       createdAt: DateTime(2024, 1, 1),
       needType: HelpNeedType.health,
       active: true,
-      notifiedNearbyCount: 4
+      rescuerCount: 4,
     );
   }
 
@@ -48,13 +49,13 @@ void main() {
   });
 
   testWidgets('requests help after confirm and shows success', (tester) async {
-    final recording = RecordingHelpService();
+    final recording = RecordingHelpRepository();
     await pumpRescueWithFakeLocation(
       tester,
       serviceEnabled: true,
       permission: LocationPermission.deniedForever,
       position: null,
-      overrides: [helpServiceProvider.overrideWithValue(recording)],
+      overrides: [helpRepositoryProvider.overrideWithValue(recording)],
     );
 
     final needHealth = find.byKey(const ValueKey('rescue.need.health'));
@@ -77,13 +78,13 @@ void main() {
   });
 
   testWidgets('shows error SnackBar when service throws', (tester) async {
-    final recording = RecordingHelpService()..shouldThrow = true;
+    final recording = RecordingHelpRepository()..shouldThrow = true;
     await pumpRescueWithFakeLocation(
       tester,
       serviceEnabled: true,
       permission: LocationPermission.deniedForever,
       position: null,
-      overrides: [helpServiceProvider.overrideWithValue(recording)],
+      overrides: [helpRepositoryProvider.overrideWithValue(recording)],
     );
 
     final needHealth2 = find.byKey(const ValueKey('rescue.need.health'));

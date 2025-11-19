@@ -1,18 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/config/app_config.dart';
-import 'model/help_models.dart';
+import 'data/services/help_service.dart';
 import 'data/services/help_service_fake.dart';
 import 'data/services/help_service_backend.dart';
+import 'data/repositories/help_repository_impl.dart';
+import 'domain/repositories/help_repository.dart';
+import 'domain/use_cases/request_help_use_case.dart';
+import 'domain/use_cases/cancel_help_use_case.dart';
 
-final inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
+// Service layer providers
+final _inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
   return InMemoryHelpStore();
 });
 
-final helpServiceProvider = Provider<HelpService>((ref) {
+final _helpServiceProvider = Provider<HelpService>((ref) {
   final cfg = ref.watch(appConfigProvider);
   if (cfg.useRealBackend) {
     return BackendHelpService(baseUrl: cfg.apiBaseUrl);
   }
-  final store = ref.watch(inMemoryHelpStoreProvider);
+  final store = ref.watch(_inMemoryHelpStoreProvider);
   return FakeHelpService(store);
+});
+
+// Repository layer providers
+final helpRepositoryProvider = Provider<HelpRepository>((ref) {
+  final service = ref.watch(_helpServiceProvider);
+  return HelpRepositoryImpl(service);
+});
+
+// Use case providers
+final requestHelpUseCaseProvider = Provider<RequestHelpUseCase>((ref) {
+  final repository = ref.watch(helpRepositoryProvider);
+  return RequestHelpUseCase(repository);
+});
+
+final cancelHelpUseCaseProvider = Provider<CancelHelpUseCase>((ref) {
+  final repository = ref.watch(helpRepositoryProvider);
+  return CancelHelpUseCase(repository);
 });

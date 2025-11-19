@@ -5,7 +5,7 @@ import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:lumisovellus/features/rescue/model/help_models.dart';
+import 'package:lumisovellus/features/rescue/domain/models/index.dart';
 import 'package:lumisovellus/features/rescue/providers.dart';
 
 class RescuePage extends ConsumerStatefulWidget {
@@ -282,22 +282,26 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                   key: const ValueKey('rescue.confirm.ok'),
                   onPressed: localSelectedNeed == null
                       ? null
-                      : () async {
+                        : () async {
                           Navigator.of(context).pop();
-                          final service = ref.read(helpServiceProvider);
+                          final useCase = ref.read(requestHelpUseCaseProvider);
                           final needType = _selectedNeed == 'health'
                               ? HelpNeedType.health
                               : _selectedNeed == 'equipment'
                               ? HelpNeedType.equipment
                               : HelpNeedType.lost;
                           try {
-                            final resp = await service.requestHelp(
-                              HelpRequest(
-                                needType: needType,
-                                latitude: _currentPosition?.latitude,
-                                longitude: _currentPosition?.longitude,
-                                accuracyMeters: _currentPosition?.accuracy,
-                              ),
+                            if (_currentPosition == null) {
+                              throw StateError('Location not available');
+                            }
+                            final location = Location(
+                              latitude: _currentPosition!.latitude,
+                              longitude: _currentPosition!.longitude,
+                              accuracy: _currentPosition!.accuracy,
+                            );
+                            final resp = await useCase.execute(
+                              needType: needType,
+                              location: location,
                             );
                             if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(

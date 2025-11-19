@@ -1,12 +1,13 @@
-import '../../model/help_models.dart';
+import 'help_service.dart';
 
 class BackendHelpService implements HelpService {
   BackendHelpService({required this.baseUrl});
   final String baseUrl;
 
   @override
-  Future<HelpResponse> requestHelp(HelpRequest request) async {
+  Future<ServiceHelpResponse> requestHelp(ServiceHelpRequest request) async {
     // TODO: Implement real network call to "$baseUrl/help-requests"
+    // This will use the auto-generated API client when API is finalized
     throw UnimplementedError('BackendHelpService.requestHelp not implemented');
   }
 

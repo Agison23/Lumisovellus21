@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lumisovellus/features/rescue/data/services/help_service_fake.dart';
-import 'package:lumisovellus/features/rescue/model/help_models.dart';
+import 'package:lumisovellus/features/rescue/data/services/help_service.dart';
+import 'package:lumisovellus/features/rescue/domain/models/help_need_type.dart';
 
 void main() {
   test('FakeHelpService stores requests and returns response', () async {
@@ -8,7 +9,7 @@ void main() {
     final service = FakeHelpService(store);
 
     final resp = await service.requestHelp(
-      const HelpRequest(needType: HelpNeedType.health),
+      ServiceHelpRequest(needType: HelpNeedType.health),
     );
 
     expect(store.requests.length, 1);
@@ -20,7 +21,7 @@ void main() {
     final service = FakeHelpService(store);
 
     final resp = await service.requestHelp(
-      const HelpRequest(needType: HelpNeedType.equipment),
+      ServiceHelpRequest(needType: HelpNeedType.equipment),
     );
     expect(store.responses.containsKey(resp.requestId), isTrue);
 

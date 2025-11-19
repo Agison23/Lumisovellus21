@@ -1,9 +1,9 @@
 import 'dart:async';
-import '../../model/help_models.dart';
+import 'help_service.dart';
 
 class InMemoryHelpStore {
-  final List<HelpRequest> requests = <HelpRequest>[];
-  final Map<String, HelpResponse> responses = <String, HelpResponse>{};
+  final List<ServiceHelpRequest> requests = <ServiceHelpRequest>[];
+  final Map<String, ServiceHelpResponse> responses = <String, ServiceHelpResponse>{};
 }
 
 class FakeHelpService implements HelpService {
@@ -12,15 +12,15 @@ class FakeHelpService implements HelpService {
   final InMemoryHelpStore _store;
 
   @override
-  Future<HelpResponse> requestHelp(HelpRequest request) async {
+  Future<ServiceHelpResponse> requestHelp(ServiceHelpRequest request) async {
     _store.requests.add(request);
     await Future<void>.delayed(const Duration(milliseconds: 350));
-    final response = HelpResponse(
+    final response = ServiceHelpResponse(
       requestId: DateTime.now().microsecondsSinceEpoch.toString(),
       createdAt: DateTime.now(),
-      active: true,
       needType: request.needType,
-      notifiedNearbyCount: 3
+      active: true,
+      notifiedNearbyCount: 3,
     );
     _store.responses[response.requestId] = response;
     return response;
