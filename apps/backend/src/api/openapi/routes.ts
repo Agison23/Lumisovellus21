@@ -22,7 +22,6 @@ import {
   helpEventRescueeViewSchema,
   helpEventRescuerViewSchema,
   helpEventSummarySchema,
-  querySchema,
   createSnowTypeSchema,
   snowTypeIdSchema,
   addSecondarySnowTypesSchema,
@@ -105,11 +104,11 @@ const createErrorResponses = () => ({
 });
 
 // Auth response schema
-const authResponseSchema = z
+export const authResponseSchema = z
   .object({
     user: z
       .object({
-        id: z.string().uuid(),
+        id: z.string().meta({ description: 'User ID' }),
         firstName: z.string(),
         lastName: z.string().nullable(),
         email: z.string().nullable(),
@@ -121,20 +120,71 @@ const authResponseSchema = z
   })
   .meta({ id: 'AuthResponse' });
 
-// User schema
-const userSchema = z
+// Token pair schema (for refresh token response)
+export const tokenPairSchema = z
   .object({
-    id: z.string().uuid(),
+    accessToken: z.string().meta({ description: 'JWT access token' }),
+    refreshToken: z.string().meta({ description: 'JWT refresh token' }),
+  })
+  .meta({ id: 'TokenPair' });
+
+// Helper to create a date-time schema that accepts both Date objects and datetime strings
+const dateTimeSchema = z.preprocess(
+  (val) => val instanceof Date ? val.toISOString() : val,
+  z.string().datetime()
+);
+
+// User schema
+export const userSchema = z
+  .object({
+    id: z.string().meta({ description: 'User ID' }),
     firstName: z.string(),
     lastName: z.string().nullable(),
     email: z.string().nullable(),
     role: z.string(),
-    phoneNumber: z.string().nullable(),
-    lowBattery: z.number(),
-    createdAt: z.string().datetime(),
-    updatedAt: z.string().datetime(),
+    phoneNumber: z.string().nullable().optional(),
+    lowBattery: z.number().optional(),
+    createdAt: dateTimeSchema.optional().meta({ description: 'Creation timestamp' }),
+    updatedAt: dateTimeSchema.meta({ description: 'Last update timestamp' }),
+    devId: z.string().nullable().optional(),
+    ipAddress: z.string().nullable().optional(),
   })
   .meta({ id: 'User' });
+
+// Simple message response schemas
+export const messageResponseSchema = z
+  .object({
+    message: z.string().meta({ description: 'Response message' }),
+  })
+  .meta({ id: 'MessageResponse' });
+
+export const statusResponseSchema = z
+  .object({
+    status: z.string().meta({ description: 'Status message', example: 'ok' }),
+  })
+  .meta({ id: 'StatusResponse' });
+
+export const verifyTokenResponseSchema = z
+  .object({
+    valid: z.boolean().meta({ description: 'Whether the token is valid' }),
+    user: z
+      .object({
+        id: z.string(),
+        email: z.string().nullable(),
+        firstName: z.string(),
+        lastName: z.string().nullable(),
+        role: z.string(),
+      })
+      .meta({ description: 'User information from token' }),
+  })
+  .meta({ id: 'VerifyTokenResponse' });
+
+export const userRoleResponseSchema = z
+  .object({
+    role: z.string().meta({ description: 'User role', example: 'normal' }),
+    permissions: z.string().meta({ description: 'Role permissions' }),
+  })
+  .meta({ id: 'UserRoleResponse' });
 
 const helpEventIdParams = z
   .object({
@@ -159,7 +209,7 @@ const weatherPeriodSchema = z
   })
   .meta({ id: 'WeatherPeriod' });
 
-const weatherMetricSchema = z
+export const weatherMetricSchema = z
   .object({
     type: z.enum(['average', 'minimum', 'maximum', 'change']).meta({ description: 'Metric type' }),
     item: z.string().meta({ description: 'Weather item', example: 'windSpeed' }),
@@ -171,7 +221,7 @@ const weatherMetricSchema = z
   })
   .meta({ id: 'WeatherMetric' });
 
-const weatherFilterDaysResponseSchema = z
+export const weatherFilterDaysResponseSchema = z
   .object({
     item: z.literal('temperature').meta({ description: 'Weather item used for filtering' }),
     threshold: z.number().meta({ description: 'Threshold for the average temperature' }),
@@ -265,7 +315,7 @@ export const openApiRoutes = {
         },
       },
       responses: {
-        '200': createSuccessResponse(authResponseSchema, 'Token refreshed successfully'),
+        '200': createSuccessResponse(tokenPairSchema, 'Token refreshed successfully'),
         ...createErrorResponses(),
       },
     },

@@ -10,6 +10,7 @@ import {
   weatherMinimumQuerySchema,
 } from '../../middleware/validation';
 import { z } from 'zod';
+import { weatherMetricSchema, weatherFilterDaysResponseSchema } from '../../openapi/routes';
 
 type WeatherMetricType = 'average' | 'minimum' | 'maximum' | 'change';
 
@@ -43,7 +44,7 @@ export class WeatherController {
       return;
     }
 
-    ApiResponseHandler.success(res, this.buildMetricResponse('average', item, value, days));
+    ApiResponseHandler.success(res, this.buildMetricResponse('average', item, value, days), 200, undefined, weatherMetricSchema);
   });
 
   getMinimum = asyncHandler(async (req: Request, res: Response) => {
@@ -62,7 +63,7 @@ export class WeatherController {
       return;
     }
 
-    ApiResponseHandler.success(res, this.buildMetricResponse('minimum', item, value, days));
+    ApiResponseHandler.success(res, this.buildMetricResponse('minimum', item, value, days), 200, undefined, weatherMetricSchema);
   });
 
   getMaximum = asyncHandler(async (req: Request, res: Response) => {
@@ -81,7 +82,7 @@ export class WeatherController {
       return;
     }
 
-    ApiResponseHandler.success(res, this.buildMetricResponse('maximum', item, value, days));
+    ApiResponseHandler.success(res, this.buildMetricResponse('maximum', item, value, days), 200, undefined, weatherMetricSchema);
   });
 
   getChange = asyncHandler(async (req: Request, res: Response) => {
@@ -100,7 +101,7 @@ export class WeatherController {
       return;
     }
 
-    ApiResponseHandler.success(res, this.buildMetricResponse('change', item, value, days));
+    ApiResponseHandler.success(res, this.buildMetricResponse('change', item, value, days), 200, undefined, weatherMetricSchema);
   });
 
   filterDays = asyncHandler(async (req: Request, res: Response) => {
@@ -124,7 +125,7 @@ export class WeatherController {
       period: this.createPeriod(days),
       location: this.weatherService.location,
       matches,
-    });
+    }, 200, undefined, weatherFilterDaysResponseSchema);
   });
 
   private buildMetricResponse(

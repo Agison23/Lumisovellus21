@@ -15,6 +15,15 @@ app.use('/auth', authRoutes);
 
 describe('Auth API Integration Tests', () => {
   beforeEach(async () => {
+    // Clean up related records before users to avoid foreign key constraints
+    await testPrisma.nearbyUser.deleteMany();
+    await testPrisma.helpRequest.deleteMany();
+    await testPrisma.userReview.deleteMany();
+    await testPrisma.locationData.deleteMany();
+    await testPrisma.snowUpdateReviewReference.deleteMany();
+    await testPrisma.snowUpdateAttachment.deleteMany();
+    await testPrisma.snowUpdateCondition.deleteMany();
+    await testPrisma.snowUpdate.deleteMany();
     // Clean up users before each test
     await testPrisma.user.deleteMany();
   });
