@@ -11,9 +11,6 @@ export async function loginAction(email: string, password: string) {
     paths["/auth/login"]["post"]["requestBody"]["content"]["application/json"];
   const loginData: LoginBody = { email, password };
 
-  console.log("Logging in with:", loginData);
-  console.log("POSTING TO:", `${apiUrl}/auth/login`);
-
   const response = await fetch(`${apiUrl}/auth/login`, {
     method: "POST",
     headers: {
@@ -72,11 +69,8 @@ export async function logoutAction() {
 
     type LogoutResponse =
       paths["/auth/logout"]["post"]["responses"]["200"]["content"]["application/json"];
-    if (res.ok) {
-      const result: LogoutResponse = await res.json();
-      console.log("Logout response:", result);
-    } else {
-      console.error("Logout failed with status:", res.status);
+    if (!res.ok) {
+      throw new Error("Logout failed");
     }
   }
   cookieStore.delete("accessToken");
@@ -162,9 +156,6 @@ export async function refreshTokenAction() {
 }
 
 export async function registerAction(firstName: string, lastName: string | undefined,email: string, password: string) {
-  // Call your backend API here to register the user
-  console.log("Registering user:", email);
-
   type RegisterBody =
     paths["/auth/register"]["post"]["requestBody"]["content"]["application/json"];
   const requestBody: RegisterBody = { firstName, lastName, email, password };

@@ -56,7 +56,6 @@ function hasRouteAccess(
   pathname: string,
   userRole: string | undefined,
 ): boolean {
-  console.log(`Checking access for role: ${userRole} to path: ${pathname}`);
   // NORMAL users can only access /dashboard root
   if (userRole === "NORMAL") {
     return pathname === "/dashboard" || pathname === "/dashboard/";

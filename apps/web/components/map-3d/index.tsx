@@ -96,9 +96,6 @@ const submitObservation = async (data: {
     hazards: hazards.length > 0 ? hazards : undefined,
   };
 
-  console.log("posting to:", `/api/v1/segments/${data.segmentId}/reviews`);
-  console.log("Submitting observation:", requestBody);
-
   const response = await fetch(
     `${apiUrl}/api/v1/segments/${data.segmentId}/reviews`,
     {

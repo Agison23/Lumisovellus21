@@ -21,7 +21,6 @@ export default function AppSidebar() {
   const t = useTranslations('Sidebar');
   const router = useRouter();
   const isLoggedIn = useAuth().isLoggedIn;
-  console.log('Sidebar - isLoggedIn:', isLoggedIn);
 
   const handleLogout = async () => {
     await logoutAction();
