@@ -32,6 +32,18 @@ export class ApiResponseHandler {
     meta?: any,
     schema?: z.ZodTypeAny
   ): void {
+    if (!schema) {
+      res.status(statusCode).json({
+        success: true,
+        data,
+        meta: {
+          ...meta,
+          timestamp: new Date().toISOString(),
+        },
+      });
+      return;
+    } 
+
     const response: ApiResponse<T> = {
       success: true,
       data,
@@ -41,27 +53,32 @@ export class ApiResponseHandler {
       },
     };
 
-    if (schema) {
-      try {
-        const responseSchema = successResponseSchema(schema);
-        // Transform Date objects to ISO strings before validation
-        const transformedResponse = transformDatesToISO(response);
-        responseSchema.parse(transformedResponse);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error('Response validation failed:', {
-            path: res.req.path,
-            method: res.req.method,
-            errors: error.issues,
-            data,
-          });
-          // In development, we might want to throw or log more aggressively
-          // For now, just log the error but still send the response
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('Response validation failed but sending response anyway');
-          }
-        }
+    try {
+      const responseSchema = successResponseSchema(schema);
+      // Transform Date objects to ISO strings before validation
+      const transformedResponse = transformDatesToISO(response);
+      responseSchema.parse(transformedResponse);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error('Response validation failed:', {
+          path: res.req.path,
+          method: res.req.method,
+          errors: error.issues,
+          data,
+        });
+        this.error(
+          res,
+          'RESPONSE_SCHEMA_INVALID',
+          'Response schema validation failed',
+          500,
+          error.issues
+        );
+        return;
       }
+
+      console.error('Unexpected response validation error:', error);
+      this.internalError(res, 'Unexpected response validation error');
+      return;
     }
 
     res.status(statusCode).json(response);
