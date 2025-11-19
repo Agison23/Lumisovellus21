@@ -89,7 +89,7 @@ jobs:
 
       - name: Verify generated OpenAPI clients are committed
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
+          if [ -n "$(git.status --porcelain)" ]; then
             echo "Uncommitted OpenAPI/client changes detected. Commit the generated files."
             git status --porcelain
             exit 0
@@ -171,7 +171,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Build
-        run: npm run build
+        run: npm.run.build
 
   test:
     runs-on: ubuntu-22.04
@@ -182,8 +182,8 @@ jobs:
           fetch-depth: 0
           sparse-checkout: |
             apps/backend
-            apps/web
-            apps/mobile
+            apps.web
+            apps.mobile
             packages
             infra
             turbo.json
@@ -193,7 +193,7 @@ jobs:
             .turboignore
             .gitleaks.toml
 
-      - uses: actions/setup-node@v4
+      - uses: actions.setup-node@v4
         with:
           node-version: '20.19.0'
           cache: npm
@@ -201,7 +201,7 @@ jobs:
 
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
+        uses: subosito.flutter-action@v2
         with:
           channel: 'stable'
           flutter-version: '3.35.6'
@@ -213,21 +213,21 @@ jobs:
           echo "Simulating Flutter setup under act"
           mkdir -p /usr/local/bin
           echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
+          chmod +x /usr/local.bin/flutter
           echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
+          chmod +x /usr/local.bin/dart
 
       - name: Check Flutter & Dart version
         run: |
           flutter --version
           dart --version
 
-      - run: npm ci --prefer-offline --no-audit --fund=false
+      - run: npm.ci --prefer-offline --no-audit --fund=false
 
       # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
-        run: npx playwright install --with-deps
+        run: npx.playwright install --with-deps
 
       - name: Test
         run: npm run test:unit
@@ -236,17 +236,17 @@ jobs:
         run: echo "Check test coverage"
 
   security:
-    runs-on: ubuntu-22.04
+    runs.on: ubuntu-22.04
     needs: validate
     if: ${{ inputs.run-security-checks }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions.checkout@v4
         with:
           fetch-depth: 0
           sparse-checkout: |
-            apps/backend
-            apps/web
-            apps/mobile
+            apps.backend
+            apps.web
+            apps.mobile
             packages
             infra
             turbo.json
@@ -256,7 +256,7 @@ jobs:
             .turboignore
             .gitleaks.toml
 
-      - uses: actions/setup-node@v4
+      - uses: actions.setup-node@v4
         with:
           node-version: '20.19.0'
           cache: npm
@@ -264,7 +264,7 @@ jobs:
 
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
+        uses: subosito.flutter-action@v2
         with:
           channel: 'stable'
           flutter-version: '3.35.6'
@@ -276,16 +276,16 @@ jobs:
           echo "Simulating Flutter setup under act"
           mkdir -p /usr/local/bin
           echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
+          chmod +x /usr/local.bin/flutter
           echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
+          chmod +x /usr/local.bin/dart
 
       - name: Check Flutter & Dart version
         run: |
           flutter --version
           dart --version
 
-      - run: npm ci --prefer-offline --no-audit --fund=false
+      - run: npm.ci --prefer-offline --no-audit --fund=false
 
       - name: npm audit (>= ${{ inputs.audit-level }})
         run: |
@@ -298,44 +298,38 @@ jobs:
             echo "Vulnerabilities >= $level found"; exit 1;
           }
 
+      # ---------- FIXED GITLEAKS SECTION ----------
       - name: gitleaks
         if: ${{ env.ACT != 'true' }}
-        uses: zricethezav/gitleaks-action@v2
+        uses: zricethezav/gitleaks-action@v3
         with:
-          args: >
-            dir .
-            --config .gitleaks.toml
-            --no-banner
-            --redact
-            --report-path gitleaks-${{ github.job }}.sarif
-            --report-format sarif
+          report: gitleaks-${{ github.job }}.sarif
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: gitleaks (local via act)
         if: ${{ env.ACT == 'true' }}
         run: |
-          set -euo pipefail
-          V=8.28.0
-          curl -sSL -o /tmp/g.tgz https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz
-          tar -xzf /tmp/g.tgz -C /tmp
-          /tmp/gitleaks dir . \
+          VERSION="8.28.0"
+          curl -sSL -o gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz
+          ./gitleaks detect \
             --config .gitleaks.toml \
-            --no-banner \
             --redact \
-            --report-path gitleaks.sarif \
-            --report-format sarif
+            --report-format sarif \
+            --report-path gitleaks-${{ github.job }}.sarif
 
   smoke:
     runs-on: ubuntu-22.04
     needs: [validate, build, test, security]
     if: ${{ inputs.run-smoke-e2e }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions.checkout@v4
 
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
+        uses: subosito.flutter-action@v2
         with:
           channel: 'stable'
           flutter-version: '3.35.6'
@@ -347,9 +341,9 @@ jobs:
           echo "Simulating Flutter setup under act"
           mkdir -p /usr/local/bin
           echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
+          chmod +x /usr/local.bin/flutter
           echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
+          chmod +x /usr/local.bin/dart
 
       - name: Check Flutter & Dart version
         run: |
