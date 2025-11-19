@@ -10,7 +10,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Simulate PR -> master workflow
   pr_master_sim:
     name: Simulated PR → master
     uses: ./.github/workflows/ci-reusable.yml
@@ -23,9 +22,9 @@ jobs:
       run-smoke-e2e: true
     secrets: inherit
 
-  # Simulate PR -> dev workflow
   pr_dev_sim:
     name: Simulated PR → dev
+    needs: pr_master_sim
     uses: ./.github/workflows/ci-reusable.yml
     with:
       coverage-threshold: 70
@@ -35,9 +34,9 @@ jobs:
       run-smoke-e2e: true
     secrets: inherit
 
-  # Simulate push-to-branch workflow
   push_branch_sim:
     name: Simulated push → branch
+    needs: pr_dev_sim
     uses: ./.github/workflows/ci-reusable.yml
     with:
       coverage-threshold: 70
