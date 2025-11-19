@@ -67,5 +67,18 @@
   "southwest": "Lounas",
   "west": "Länsi",
   "northwest": "Luode",
-  "trend": "Muutokset"
+  "trend": "Muutokset",
+  "lastFewDaysWeather": "Lähipäivien sää",
+  "snowDepthChange": "Lumensyvyyden kasvu",
+  "temperature3Days": "Lämpötila 3 vuorokauden aikana",
+  "highest": "Korkein",
+  "lowest": "Matalin",
+  "countDaysAboveFreezing": "Suojapäivien määrä",
+  "daysAboveFreezing": "Suojapäivät",
+  "wind3Days": "Tuuli 3 vuorokauden aikana",
+  "avgSpeed": "Keskimääräinen nopeus",
+  "avgDirection": "Keskimääräinen suunta",
+  "maxWind": "Kovin tuuli",
+  "lastThreeDays": "Viimeiset 3 päivää",
+  "lastSevenDays": "Viimeiset 7 päivää"
 }

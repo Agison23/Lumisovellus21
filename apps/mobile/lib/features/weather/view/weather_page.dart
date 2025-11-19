@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 
-class WeatherPage extends StatefulWidget {
+class WeatherPage extends StatelessWidget {
 
-    const WeatherPage({super.key});
-    
-    @override
-    State<WeatherPage> createState() => _WeatherPageState();
-}
-
-class _WeatherPageState extends State<WeatherPage> {
-
+  const WeatherPage({super.key});
+  
   @override
   Widget build(BuildContext context) {
     final localised = AppLocalizations.of(context);
 
-    return DefaultTabController(
-      length: 3,
-      child: Container(
+    return Container( // Gradient background
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -25,132 +17,212 @@ class _WeatherPageState extends State<WeatherPage> {
             colors: [
               Color(0xFF1B487B),
               Color(0xFFB5C0E0),
-              Color(0xFF1B487B)
+              Color(0xFF6592C9)
             ],
           ),
         ),
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 8),
-              TabBar(
-                indicatorColor: Colors.white,
-                indicatorWeight: 3,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white70,
-                labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                tabs: [
-                  Tab(text: localised.dayBeforeYesterday),
-                  Tab(text: localised.yesterday),
-                  Tab(text: localised.now),
-                ],
-              ),
-              const SizedBox(height: 8),
-              const Expanded(
-                child: TabBarView(
-                  physics: BouncingScrollPhysics(),
+          child:
+            Center(
+              child: Container( // Round-cornered semitransparent decoration
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xD0FFFFFF),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                width: double.infinity,
+                child: Column( // Vertical stack of weather aspect info-boxes
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    WeatherInfoCard(),
-                    WeatherInfoCard(),
-                    WeatherInfoCard(),
+                    Text( // Title "Recent weather"
+                      localised.lastFewDaysWeather,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    WeatherBox(
+                      title: localised.temperature,
+                      subtitle: localised.lastThreeDays,
+                      icon: Icons.thermostat
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    WeatherBox(
+                      title: localised.wind,
+                      subtitle: localised.lastThreeDays,
+                      icon: Icons.air
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    WeatherBox(
+                      title: localised.snowDepth,
+                      subtitle: localised.lastSevenDays,
+                      icon: Icons.ac_unit // ac_unit looks like a snowflake as of 2025
+                    )     
+            ],
+          ),
+        ),
+      )
+    )
+  );
+              
+
+  }
+}
+
+class WeatherBox extends StatelessWidget {
+
+  final String title;
+  final String? subtitle;
+  final IconData icon;
+
+  const WeatherBox({
+                      super.key,
+                      required this.title,
+                      required this.icon,
+                      this.subtitle
+                    });
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(0, 5),
+                )
+              ],
+            ),
+            child: Column( // Title+subtitle+icon, followed by info rows
+              children: [
+                Row( // Title+subtitle+icon
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column( // icon
+                      children: [
+                        Icon(
+                          icon,
+                          size: 40,
+                          color: Colors.grey.shade400,
+                        )
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded( // title+subtitle
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (subtitle != null)
+                            Text(
+                              subtitle!,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )
+                        ]
+                      )
+                    )
+                    
+                  ]
+                ), // End of title+subtitle+icon
+              
+              // Start of info rows
+              
+              const SizedBox(height: 8),
+
+              // --- Maximum Row ---
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Maximum",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      "11°C",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
-class WeatherInfoCard extends StatelessWidget {
-  const WeatherInfoCard({super.key});
+              // Divider
+              const Divider(thickness: 2, height: 4),
 
-  @override
-  Widget build(BuildContext context) {
-    final localised = AppLocalizations.of(context);
+              // --- Average Row ---
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Average",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      "5°C",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        width: double.infinity,
-        constraints: const BoxConstraints(maxWidth: 340),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _WeatherItem(
-              icon: Icons.thermostat,
-              label: localised.temperature,
-              value: '3.7 °C',
-            ),
-            const SizedBox(height: 20),
-            _WeatherItem(
-              icon: Icons.ac_unit,
-              label: localised.snowDepth,
-              value: '0.0 cm',
-            ),
-            const SizedBox(height: 20),
-            _WeatherItem(
-              icon: Icons.air,
-              label: localised.wind,
-              value: '5.7 m/s',
-              subLabel: 'South',
-            ),
-            const SizedBox(height: 20),
-            _WeatherItem(
-              icon: Icons.speed,
-              label: localised.airPressure,
-              value: '1012.7 mBar',
-              subLabel: '${localised.trend} ↑',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+              // Divider
+              const Divider(thickness: 2, height: 4),
 
-class _WeatherItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final String? subLabel;
+              // --- Minimum Row ---
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Minimum",
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "2°C",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-  const _WeatherItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.subLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 64, color: const Color.fromARGB(255, 130, 130, 130)),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
-              if (subLabel != null)
-                Text(subLabel!,
-                    style: const TextStyle(fontSize: 18, color: Colors.blueGrey)),
-            ],
-          ),
-        ),
-      ],
+              // End of info rows
+              ]
+            )
     );
   }
 }
