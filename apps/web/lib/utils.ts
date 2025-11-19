@@ -1,10 +1,14 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { SnowTypesResponse } from "./map/loaders";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const getSnowTypeNameById = (snowTypes: SnowTypesResponse['data'], snowTypeId: string): string => {
+  return snowTypes.find((type) => type.id === snowTypeId)?.name ?? "";
+};
 // the name we get from the api is in finnish, so we need to convert it to english to get the correct translation key
 export function getTranslationKeyForSnowTypeName(name: string) {
   switch (name) {

@@ -329,7 +329,12 @@
         "date": "Päivämäärä",
         "snowType": "Lumityyppi",
         "location": "Sijainti",
-        "description": "Kuvaus"
+        "description": "Kuvaus",
+        "hazards": "Kohtelia",
+        "primarySnowType": "Ensisijainen lumityyppi",
+        "secondarySnowType": "Toissijainen lumityyppi",
+        "guideUpdates": "Oppaiden päivitykset",
+        "userReviews": "Käyttäjien raportit"
       }
     },
     "Sidebar": {

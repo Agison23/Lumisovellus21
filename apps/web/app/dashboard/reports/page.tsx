@@ -2,6 +2,7 @@
 import { getAccessTokenAction } from "@/app/(auth)/actions";
 import { Input } from "@/components/ui/input";
 import { apiUrl, fetchAreas, fetchSnowTypes, fetchUpdateData } from "@/lib/map/loaders";
+import { getSnowTypeNameById, getTranslationKeyForSnowTypeName } from "@/lib/utils";
 import { paths } from "@lumisovellus/api-client-web";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -9,6 +10,7 @@ import { useMemo, useState } from "react";
 
 export default function ReportsPage() {
 	const t = useTranslations("Dashboard.ReportsPage");
+  const snowTypesTranslations = useTranslations("MapPage.reportForm.snowTypes");
   const {
     data: reports = [],
     isLoading,
@@ -104,16 +106,16 @@ export default function ReportsPage() {
           <div className="flex-1 overflow-y-auto space-y-6 pb-14">
             {guideUpdates.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold mb-4">Guide Updates</h2>
+                <h2 className="text-xl font-bold mb-4">{t('labels.guideUpdates')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {guideUpdates.map((update, i) => (
                     <div key={`${update.segmentId}-${i}`} className="border p-4 rounded-lg bg-card text-card-foreground shadow-sm">
                       <h3 className="font-semibold mb-2">{segments.find(s => s.id === update.segmentId)?.name}</h3>
                       <div className="text-sm">
-                        <p>Description: {update.description}</p>
-                        <p>Hazards: {update.hazards.join(", ") || "None"}</p>
-                        <p>Primary Snow: {update.primarySnowTypeIds.length > 0 ? update.primarySnowTypeIds.map(id => snowTypes.find(s => s.id === id)?.name).join(", ") : "None"}</p>
-                        <p>Secondary Snow: {update.secondarySnowTypeIds.length > 0 ? update.secondarySnowTypeIds.map(id => snowTypes.find(s => s.id === id)?.name).join(", ") : "None"}</p>
+                        <p>{t('labels.description')}: {update.description}</p>
+                        <p>{t('labels.hazards')}: {update.hazards.join(", ") || "None"}</p>
+                        <p>{t('labels.primarySnowType')}: {update.primarySnowTypeIds.length > 0 ? update.primarySnowTypeIds.map(id => snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, id))}.name`)).join(", ") : "None"}</p>
+                        <p>{t('labels.secondarySnowType')}: {update.secondarySnowTypeIds.length > 0 ? update.secondarySnowTypeIds.map(id => snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, id))}.name`)).join(", ") : "None"}</p>
                       </div>
                     </div>
                   ))}
@@ -123,7 +125,7 @@ export default function ReportsPage() {
 
             {userReviews.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold mb-4">User Reviews</h2>
+                <h2 className="text-xl font-bold mb-4">{t('labels.userReviews')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {userReviews.map((review, i) => (
                     <div key={`${review.segmentId}-${review.submittedAt}-${i}`} className="border p-4 rounded-lg bg-card text-card-foreground shadow-sm">
@@ -133,8 +135,8 @@ export default function ReportsPage() {
                         {new Date(review.submittedAt).toLocaleTimeString()} 
                       </p>
                       <div className="text-sm">
-                        <p>Snow Type: {snowTypes.find(s => s.id === review.snowTypeId)?.name}</p>
-                        <p>Hazards: {review.hazards.join(", ") || "None"}</p>
+                        <p>{t('labels.snowType')}: {snowTypesTranslations(`${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.name`)}</p>
+                        <p>{t('labels.hazards')}: {review.hazards.join(", ") || "None"}</p>
                       </div>
                     </div>
                   ))}

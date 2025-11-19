@@ -334,7 +334,12 @@
         "date": "Date",
         "snowType": "Snow type",
         "location": "Location",
-        "description": "Description"
+        "description": "Description",
+        "hazards": "Hazards",
+        "primarySnowType": "Primary Snow Type",
+        "secondarySnowType": "Secondary Snow Type",
+        "guideUpdates": "Guide Updates",
+        "userReviews": "User Reviews"
       }
     },
     "Sidebar": {
