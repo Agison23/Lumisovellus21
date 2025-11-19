@@ -307,7 +307,7 @@ jobs:
             --config .gitleaks.toml
             --no-banner
             --redact
-            --report-path gitleaks.sarif
+            --report-path gitleaks-${{ github.job }}.sarif
             --report-format sarif
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
