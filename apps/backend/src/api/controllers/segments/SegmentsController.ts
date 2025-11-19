@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import {
-  SegmentsService,
-  SegmentQueryParams,
-} from '../../services/segments/SegmentsService';
+import { z } from 'zod';
+import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
-import { AuthenticatedRequest } from '../../types';
-import { GuideUpdate } from '../../types';
+import { AuthenticatedRequest, HazardType } from '../../types';
+import { segmentQuerySchema, segmentSchema, guideUpdateSchema } from '../../middleware/validation';
 
 export class SegmentsController {
   private segmentsService: SegmentsService;
@@ -17,41 +15,27 @@ export class SegmentsController {
 
   getAllSegments = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
-      const queryParams: SegmentQueryParams = {
-        bbox: req.query.bbox as string | undefined,
-        search: req.query.search as string | undefined,
-        updatedSince: req.query.updatedSince as string | undefined,
-      };
+      const parsed = segmentQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        ApiResponseHandler.validationError(
+          res,
+          'Invalid segment query parameters',
+          parsed.error.flatten()
+        );
+        return;
+      }
+
+      const queryParams: SegmentQueryParams = parsed.data;
 
       const segments = await this.segmentsService.getAllSegments(queryParams);
-      ApiResponseHandler.success(res, segments);
-    }
-  );
-
-  getSegmentUpdates = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const { id } = req.params;
-      const limit = parseInt(req.query.limit as string) || 3;
-      const days = parseInt(req.query.days as string) || 3;
-      const updates = await this.segmentsService.getSegmentUpdates(id, limit, days);
-      ApiResponseHandler.success(res, updates);
-    }
-  );
-
-  getAllUpdates = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const days = parseInt(req.query.days as string) || 3;
-      const segmentId = (req.query.segmentId as string) || undefined;
-      const updatedSince = (req.query.updatedSince as string) || undefined;
-      const from = (req.query.from as string) || undefined;
-      const to = (req.query.to as string) || undefined;
-      const updates = await this.segmentsService.getAllUpdates(days, {
-        segmentId,
-        updatedSince,
-        from,
-        to,
-      });
-      ApiResponseHandler.success(res, updates);
+      const normalizedSegments = segments.map((segment) => ({
+        ...segment,
+        isLowerSegment:
+          typeof segment.isLowerSegment === 'number' && !Number.isNaN(segment.isLowerSegment)
+            ? segment.isLowerSegment.toString()
+            : null,
+      }));
+      ApiResponseHandler.success(res, normalizedSegments, 200, undefined, z.array(segmentSchema));
     }
   );
 
@@ -68,6 +52,7 @@ export class SegmentsController {
         description: string | null;
         primarySnowTypeIds: string[];
         secondarySnowTypeIds: string[];
+        hazards?: string[];
       } = req.body;
 
       // Validate request body
@@ -75,15 +60,26 @@ export class SegmentsController {
         !Array.isArray(guideUpdateData.primarySnowTypeIds) ||
         !Array.isArray(guideUpdateData.secondarySnowTypeIds)
       ) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'primarySnowTypeIds and secondarySnowTypeIds must be arrays'
         );
         return;
       }
 
+      // Ensure hazards is an array (default to empty array if not provided)
+      if (guideUpdateData.hazards === undefined) {
+        guideUpdateData.hazards = [];
+      } else if (!Array.isArray(guideUpdateData.hazards)) {
+        ApiResponseHandler.validationError(
+          res,
+          'hazards must be an array'
+        );
+        return;
+      }
+
       if (guideUpdateData.primarySnowTypeIds.length > 2) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'Maximum 2 primary snow types allowed'
         );
@@ -91,9 +87,22 @@ export class SegmentsController {
       }
 
       if (guideUpdateData.secondarySnowTypeIds.length > 2) {
-        ApiResponseHandler.badRequest(
+        ApiResponseHandler.validationError(
           res,
           'Maximum 2 secondary snow types allowed'
+        );
+        return;
+      }
+
+      // Validate hazards are valid HazardType values
+      const validHazards = ['stones', 'branches'];
+      const invalidHazards = guideUpdateData.hazards.filter(
+        (h) => !validHazards.includes(h)
+      );
+      if (invalidHazards.length > 0) {
+        ApiResponseHandler.validationError(
+          res,
+          `Invalid hazard types: ${invalidHazards.join(', ')}. Valid types are: ${validHazards.join(', ')}`
         );
         return;
       }
@@ -101,9 +110,14 @@ export class SegmentsController {
       const guideUpdate = await this.segmentsService.createOrUpdateGuideUpdate(
         id,
         req.user.id,
-        guideUpdateData
+        {
+          description: guideUpdateData.description,
+          primarySnowTypeIds: guideUpdateData.primarySnowTypeIds,
+          secondarySnowTypeIds: guideUpdateData.secondarySnowTypeIds,
+          hazards: guideUpdateData.hazards as HazardType[],
+        }
       );
-      ApiResponseHandler.success(res, guideUpdate);
+      ApiResponseHandler.success(res, guideUpdate, 200, undefined, guideUpdateSchema);
     }
   );
 }

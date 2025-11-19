@@ -76,19 +76,21 @@ Class | Method | HTTP request | Description
 [*AuthenticationApi*](doc/AuthenticationApi.md) | [**authResetPasswordPost**](doc/AuthenticationApi.md#authresetpasswordpost) | **POST** /auth/reset-password | Request password reset
 [*AuthenticationApi*](doc/AuthenticationApi.md) | [**authVerifyTokenGet**](doc/AuthenticationApi.md#authverifytokenget) | **GET** /auth/verify-token | Verify token validity
 [*HealthApi*](doc/HealthApi.md) | [**healthGet**](doc/HealthApi.md#healthget) | **GET** /health | Health check endpoint
-[*HelpRequestsApi*](doc/HelpRequestsApi.md) | [**apiV1HelpRequestsGet**](doc/HelpRequestsApi.md#apiv1helprequestsget) | **GET** /api/v1/help-requests | Get help requests
-[*HelpRequestsApi*](doc/HelpRequestsApi.md) | [**apiV1HelpRequestsIdHelpersGet**](doc/HelpRequestsApi.md#apiv1helprequestsidhelpersget) | **GET** /api/v1/help-requests/{id}/helpers | Get users who can help with a specific help request
-[*HelpRequestsApi*](doc/HelpRequestsApi.md) | [**apiV1HelpRequestsPost**](doc/HelpRequestsApi.md#apiv1helprequestspost) | **POST** /api/v1/help-requests | Create help request
-[*HelpRequestsApi*](doc/HelpRequestsApi.md) | [**apiV1HelpResponsesPost**](doc/HelpRequestsApi.md#apiv1helpresponsespost) | **POST** /api/v1/help-responses | Update help response
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsEventIdAcceptanceDelete**](doc/HelpEventsApi.md#helpeventseventidacceptancedelete) | **DELETE** /help/events/{eventId}/acceptance | Withdraw from help event
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsEventIdAcceptancePost**](doc/HelpEventsApi.md#helpeventseventidacceptancepost) | **POST** /help/events/{eventId}/acceptance | Accept help event
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsEventIdPatch**](doc/HelpEventsApi.md#helpeventseventidpatch) | **PATCH** /help/events/{eventId} | Update help event status
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsEventIdStreamGet**](doc/HelpEventsApi.md#helpeventseventidstreamget) | **GET** /help/events/{eventId}/stream | Stream help event updates
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsEventIdViewGet**](doc/HelpEventsApi.md#helpeventseventidviewget) | **GET** /help/events/{eventId}/view | Get help event view
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsNearbyGet**](doc/HelpEventsApi.md#helpeventsnearbyget) | **GET** /help/events/nearby | List nearby help events
+[*HelpEventsApi*](doc/HelpEventsApi.md) | [**helpEventsPost**](doc/HelpEventsApi.md#helpeventspost) | **POST** /help/events | Create a new help event
 [*ReviewsApi*](doc/ReviewsApi.md) | [**apiV1ObservationsGet**](doc/ReviewsApi.md#apiv1observationsget) | **GET** /api/v1/observations | Get observations for all segments
+[*ReviewsApi*](doc/ReviewsApi.md) | [**apiV1SegmentsIdObservationsGet**](doc/ReviewsApi.md#apiv1segmentsidobservationsget) | **GET** /api/v1/segments/{id}/observations | Get observations for a specific segment
 [*ReviewsApi*](doc/ReviewsApi.md) | [**apiV1SegmentsIdReviewsPost**](doc/ReviewsApi.md#apiv1segmentsidreviewspost) | **POST** /api/v1/segments/{id}/reviews | Create a review for a segment
 [*SegmentsApi*](doc/SegmentsApi.md) | [**apiV1SegmentsGet**](doc/SegmentsApi.md#apiv1segmentsget) | **GET** /api/v1/segments | Get all segments
 [*SegmentsApi*](doc/SegmentsApi.md) | [**apiV1SegmentsIdGuideUpdatePost**](doc/SegmentsApi.md#apiv1segmentsidguideupdatepost) | **POST** /api/v1/segments/{id}/guideUpdate | Create or update a guide update for a segment (Admin only)
-[*SegmentsApi*](doc/SegmentsApi.md) | [**apiV1SegmentsIdUpdatesGet**](doc/SegmentsApi.md#apiv1segmentsidupdatesget) | **GET** /api/v1/segments/{id}/updates | Get latest updates for a segment
 [*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesGet**](doc/SnowTypesApi.md#apiv1snowtypesget) | **GET** /api/v1/snow-types | Get all snow types
 [*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesIdSecondaryPost**](doc/SnowTypesApi.md#apiv1snowtypesidsecondarypost) | **POST** /api/v1/snow-types/{id}/secondary | Add secondary snow types to a snow type
 [*SnowTypesApi*](doc/SnowTypesApi.md) | [**apiV1SnowTypesPost**](doc/SnowTypesApi.md#apiv1snowtypespost) | **POST** /api/v1/snow-types | Create a new snow type
-[*UpdatesApi*](doc/UpdatesApi.md) | [**apiV1UpdatesGet**](doc/UpdatesApi.md#apiv1updatesget) | **GET** /api/v1/updates | Get updates for segments
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdBatteryPost**](doc/UsersApi.md#apiv1usersdeviceidbatterypost) | **POST** /api/v1/users/{deviceId}/battery | Update battery status
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdLocationPost**](doc/UsersApi.md#apiv1usersdeviceidlocationpost) | **POST** /api/v1/users/{deviceId}/location | Update mobile user location
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersDeviceIdRoleGet**](doc/UsersApi.md#apiv1usersdeviceidroleget) | **GET** /api/v1/users/{deviceId}/role | Get user role
@@ -97,24 +99,22 @@ Class | Method | HTTP request | Description
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersIdDelete**](doc/UsersApi.md#apiv1usersiddelete) | **DELETE** /api/v1/users/{id} | Delete a user
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersIdPut**](doc/UsersApi.md#apiv1usersidput) | **PUT** /api/v1/users/{id} | Update a user
 [*UsersApi*](doc/UsersApi.md) | [**apiV1UsersMeGet**](doc/UsersApi.md#apiv1usersmeget) | **GET** /api/v1/users/me | Get current user details
-[*WeatherApi*](doc/WeatherApi.md) | [**weatherGet**](doc/WeatherApi.md#weatherget) | **GET** /weather | Get latest weather data
-[*WeatherApi*](doc/WeatherApi.md) | [**weatherHistoryGet**](doc/WeatherApi.md#weatherhistoryget) | **GET** /weather/history | Get weather history
-[*WeatherApi*](doc/WeatherApi.md) | [**weatherUpdatePost**](doc/WeatherApi.md#weatherupdatepost) | **POST** /weather/update | Manually trigger weather update
+[*WeatherApi*](doc/WeatherApi.md) | [**weatherAverageGet**](doc/WeatherApi.md#weatheraverageget) | **GET** /weather/average | Average weather metric
+[*WeatherApi*](doc/WeatherApi.md) | [**weatherChangeGet**](doc/WeatherApi.md#weatherchangeget) | **GET** /weather/change | Snow depth change
+[*WeatherApi*](doc/WeatherApi.md) | [**weatherFilterDaysGet**](doc/WeatherApi.md#weatherfilterdaysget) | **GET** /weather/filterDays | Filter days with average temperature above threshold
+[*WeatherApi*](doc/WeatherApi.md) | [**weatherMaximumGet**](doc/WeatherApi.md#weathermaximumget) | **GET** /weather/maximum | Maximum weather metric
+[*WeatherApi*](doc/WeatherApi.md) | [**weatherMinimumGet**](doc/WeatherApi.md#weatherminimumget) | **GET** /weather/minimum | Minimum temperature
 
 
 ## Documentation For Models
 
  - [AddSecondarySnowTypesRequest](doc/AddSecondarySnowTypesRequest.md)
- - [ApiV1HelpRequestsIdHelpersGet200Response](doc/ApiV1HelpRequestsIdHelpersGet200Response.md)
- - [ApiV1HelpRequestsIdHelpersGet200ResponseDataInner](doc/ApiV1HelpRequestsIdHelpersGet200ResponseDataInner.md)
- - [ApiV1HelpRequestsPost200Response](doc/ApiV1HelpRequestsPost200Response.md)
- - [ApiV1HelpRequestsPost200ResponseData](doc/ApiV1HelpRequestsPost200ResponseData.md)
  - [ApiV1ObservationsGet200Response](doc/ApiV1ObservationsGet200Response.md)
  - [ApiV1SegmentsGet200Response](doc/ApiV1SegmentsGet200Response.md)
  - [ApiV1SegmentsIdGuideUpdatePost200Response](doc/ApiV1SegmentsIdGuideUpdatePost200Response.md)
  - [ApiV1SegmentsIdGuideUpdatePost200ResponseData](doc/ApiV1SegmentsIdGuideUpdatePost200ResponseData.md)
+ - [ApiV1SegmentsIdObservationsGet200Response](doc/ApiV1SegmentsIdObservationsGet200Response.md)
  - [ApiV1SegmentsIdReviewsPostRequest](doc/ApiV1SegmentsIdReviewsPostRequest.md)
- - [ApiV1SegmentsIdUpdatesGet200Response](doc/ApiV1SegmentsIdUpdatesGet200Response.md)
  - [ApiV1SnowTypesGet200Response](doc/ApiV1SnowTypesGet200Response.md)
  - [ApiV1SnowTypesPost201Response](doc/ApiV1SnowTypesPost201Response.md)
  - [ApiV1UsersDeviceIdLocationPost200Response](doc/ApiV1UsersDeviceIdLocationPost200Response.md)
@@ -135,7 +135,6 @@ Class | Method | HTTP request | Description
  - [BatteryUpdate](doc/BatteryUpdate.md)
  - [ChangePasswordRequest](doc/ChangePasswordRequest.md)
  - [CreateSnowTypeRequest](doc/CreateSnowTypeRequest.md)
- - [Creator](doc/Creator.md)
  - [ErrorResponse](doc/ErrorResponse.md)
  - [ErrorResponseError](doc/ErrorResponseError.md)
  - [ErrorResponseMeta](doc/ErrorResponseMeta.md)
@@ -144,25 +143,42 @@ Class | Method | HTTP request | Description
  - [HealthGet200Response](doc/HealthGet200Response.md)
  - [HealthGet200ResponseMeta](doc/HealthGet200ResponseMeta.md)
  - [HealthResponse](doc/HealthResponse.md)
- - [HelpRequest](doc/HelpRequest.md)
- - [HelpResponse](doc/HelpResponse.md)
+ - [HelpEventAcceptance](doc/HelpEventAcceptance.md)
+ - [HelpEventCreate](doc/HelpEventCreate.md)
+ - [HelpEventLocation](doc/HelpEventLocation.md)
+ - [HelpEventLocationOutput](doc/HelpEventLocationOutput.md)
+ - [HelpEventParticipation](doc/HelpEventParticipation.md)
+ - [HelpEventRescuee](doc/HelpEventRescuee.md)
+ - [HelpEventRescueeView](doc/HelpEventRescueeView.md)
+ - [HelpEventRescuerView](doc/HelpEventRescuerView.md)
+ - [HelpEventStatusUpdate](doc/HelpEventStatusUpdate.md)
+ - [HelpEventSummary](doc/HelpEventSummary.md)
+ - [HelpEventUserStatus](doc/HelpEventUserStatus.md)
+ - [HelpEventsEventIdAcceptancePost200Response](doc/HelpEventsEventIdAcceptancePost200Response.md)
+ - [HelpEventsEventIdViewGet200Response](doc/HelpEventsEventIdViewGet200Response.md)
+ - [HelpEventsEventIdViewGet200ResponseData](doc/HelpEventsEventIdViewGet200ResponseData.md)
+ - [HelpEventsNearbyGet200Response](doc/HelpEventsNearbyGet200Response.md)
+ - [HelpEventsPost201Response](doc/HelpEventsPost201Response.md)
  - [LocationUpdate](doc/LocationUpdate.md)
  - [LoginRequest](doc/LoginRequest.md)
  - [Observation](doc/Observation.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegisterRequest](doc/RegisterRequest.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
- - [ReviewReference](doc/ReviewReference.md)
- - [ReviewReferenceReviewRel](doc/ReviewReferenceReviewRel.md)
  - [RoleUpdate](doc/RoleUpdate.md)
  - [Segment](doc/Segment.md)
  - [SegmentPoint](doc/SegmentPoint.md)
- - [SegmentUpdate](doc/SegmentUpdate.md)
  - [SegmentUserReview](doc/SegmentUserReview.md)
- - [SnowCondition](doc/SnowCondition.md)
  - [UpdateProfileRequest](doc/UpdateProfileRequest.md)
  - [User](doc/User.md)
  - [UserReviewObservation](doc/UserReviewObservation.md)
+ - [WeatherAverageGet200Response](doc/WeatherAverageGet200Response.md)
+ - [WeatherFilterDaysGet200Response](doc/WeatherFilterDaysGet200Response.md)
+ - [WeatherFilterDaysResponse](doc/WeatherFilterDaysResponse.md)
+ - [WeatherFilterDaysResponseMatchesInner](doc/WeatherFilterDaysResponseMatchesInner.md)
+ - [WeatherLocation](doc/WeatherLocation.md)
+ - [WeatherMetric](doc/WeatherMetric.md)
+ - [WeatherPeriod](doc/WeatherPeriod.md)
 
 
 ## Documentation For Authorization

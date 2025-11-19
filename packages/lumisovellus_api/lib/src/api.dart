@@ -9,11 +9,10 @@ import 'package:lumisovellus_api/src/auth/bearer_auth.dart';
 import 'package:lumisovellus_api/src/auth/oauth.dart';
 import 'package:lumisovellus_api/src/api/authentication_api.dart';
 import 'package:lumisovellus_api/src/api/health_api.dart';
-import 'package:lumisovellus_api/src/api/help_requests_api.dart';
+import 'package:lumisovellus_api/src/api/help_events_api.dart';
 import 'package:lumisovellus_api/src/api/reviews_api.dart';
 import 'package:lumisovellus_api/src/api/segments_api.dart';
 import 'package:lumisovellus_api/src/api/snow_types_api.dart';
-import 'package:lumisovellus_api/src/api/updates_api.dart';
 import 'package:lumisovellus_api/src/api/users_api.dart';
 import 'package:lumisovellus_api/src/api/weather_api.dart';
 
@@ -80,10 +79,10 @@ class LumisovellusApi {
     return HealthApi(dio);
   }
 
-  /// Get HelpRequestsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// Get HelpEventsApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
-  HelpRequestsApi getHelpRequestsApi() {
-    return HelpRequestsApi(dio);
+  HelpEventsApi getHelpEventsApi() {
+    return HelpEventsApi(dio);
   }
 
   /// Get ReviewsApi instance, base route and serializer can be overridden by a given but be careful,
@@ -102,12 +101,6 @@ class LumisovellusApi {
   /// by doing that all interceptors will not be executed
   SnowTypesApi getSnowTypesApi() {
     return SnowTypesApi(dio);
-  }
-
-  /// Get UpdatesApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
-  UpdatesApi getUpdatesApi() {
-    return UpdatesApi(dio);
   }
 
   /// Get UsersApi instance, base route and serializer can be overridden by a given but be careful,

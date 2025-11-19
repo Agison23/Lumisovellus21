@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { ApiResponseHandler } from './responseHandler';
@@ -164,7 +164,7 @@ export const optionalAuth = async (
     }
 
     next();
-  } catch (error) {
+  } catch (_error) {
     // If token is invalid, continue without authentication
     next();
   }

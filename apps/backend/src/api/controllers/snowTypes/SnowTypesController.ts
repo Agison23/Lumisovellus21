@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { SnowTypesService } from '../../services/snowTypes/SnowTypesService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
@@ -6,6 +7,8 @@ import {
   createSnowTypeSchema,
   snowTypeIdSchema,
   addSecondarySnowTypesSchema,
+  snowTypeResponseSchema,
+  primarySnowTypeResponseSchema,
 } from '../../middleware/validation';
 
 export class SnowTypesController {
@@ -21,7 +24,7 @@ export class SnowTypesController {
       const validatedData = createSnowTypeSchema.parse(req.body);
 
       const snowType = await this.snowTypesService.createSnowType(validatedData);
-      ApiResponseHandler.success(res, snowType, 201);
+      ApiResponseHandler.success(res, snowType, 201, undefined, snowTypeResponseSchema);
     }
   );
 
@@ -37,7 +40,21 @@ export class SnowTypesController {
         id,
         secondarySnowTypeIds
       );
-      ApiResponseHandler.success(res, snowType, 200);
+      ApiResponseHandler.success(res, snowType, 200, undefined, snowTypeResponseSchema);
+    }
+  );
+
+  getAllSnowTypesFlat = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const snowTypes = await this.snowTypesService.getAllSnowTypesFlat();
+      ApiResponseHandler.success(res, snowTypes, 200, undefined, z.array(snowTypeResponseSchema));
+    }
+  );
+
+  getPrimarySnowTypes = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const snowTypes = await this.snowTypesService.getPrimarySnowTypes();
+      ApiResponseHandler.success(res, snowTypes, 200, undefined, z.array(primarySnowTypeResponseSchema));
     }
   );
 }

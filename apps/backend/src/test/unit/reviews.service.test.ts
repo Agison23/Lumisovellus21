@@ -11,7 +11,12 @@ describe('ReviewsService Unit Tests', () => {
     await testPrisma.nearbyUser.deleteMany();
     await testPrisma.helpRequest.deleteMany();
     await testPrisma.locationData.deleteMany();
+    await testPrisma.snowUpdateReviewReference.deleteMany();
+    await testPrisma.snowUpdateAttachment.deleteMany();
+    await testPrisma.snowUpdateCondition.deleteMany();
+    await testPrisma.snowUpdate.deleteMany();
     await testPrisma.userReview.deleteMany();
+    await testPrisma.snowTypeSecondary.deleteMany();
     await testPrisma.snowType.deleteMany();
     await testPrisma.segment.deleteMany();
     await testPrisma.user.deleteMany();
@@ -29,7 +34,7 @@ describe('ReviewsService Unit Tests', () => {
             name: 'Powder',
             colour: '#FFFFFF',
             skiability: 5,
-            categoryId: 1,
+            primarySnowTypeId: null,
             explanation: 'Fresh powder snow',
           },
           {
@@ -37,7 +42,7 @@ describe('ReviewsService Unit Tests', () => {
             name: 'Ice',
             colour: '#CCCCCC',
             skiability: 1,
-            categoryId: 2,
+            primarySnowTypeId: null,
             explanation: 'Hard ice surface',
           },
         ],
@@ -48,19 +53,23 @@ describe('ReviewsService Unit Tests', () => {
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
         id: '1',
+        identifier: 'powder',
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
-        categoryId: 1,
+        primarySnowTypeId: null,
         explanation: 'Fresh powder snow',
+        secondaryTypes: [],
       });
       expect(result[1]).toEqual({
         id: '2',
+        identifier: 'ice',
         name: 'Ice',
         colour: '#CCCCCC',
         skiability: 1,
-        categoryId: 2,
+        primarySnowTypeId: null,
         explanation: 'Hard ice surface',
+        secondaryTypes: [],
       });
     });
 
@@ -101,7 +110,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -218,7 +227,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
         },
       });
 
@@ -249,6 +258,94 @@ describe('ReviewsService Unit Tests', () => {
     });
   });
 
+  describe('getSegmentObservations', () => {
+    it('should return guide update and reviews for a segment', async () => {
+      const admin = await testPrisma.user.create({
+        data: {
+          id: 'admin-user',
+          firstName: 'Admin',
+          lastName: 'User',
+          email: 'admin@example.com',
+          role: 'ADMIN',
+        },
+      });
+
+      await testPrisma.segment.create({
+        data: {
+          id: 'segment-observation',
+          name: 'Observation Segment',
+          terrain: 'Medium',
+          avalancheDanger: false,
+          isLowerSegment: null,
+        },
+      });
+
+      await testPrisma.snowType.create({
+        data: {
+          id: 'snow-type-observation',
+          name: 'Powder',
+          colour: '#FFFFFF',
+          primarySnowTypeId: null,
+        },
+      });
+
+      const snowUpdate = await testPrisma.snowUpdate.create({
+        data: {
+          id: 'guide-update-segment',
+          creator: admin.id,
+          segment: 'segment-observation',
+          time: new Date(),
+          description: 'Guide update description',
+          status: 'ACTIVE',
+          priority: 1,
+        },
+      });
+
+      await testPrisma.snowUpdateCondition.create({
+        data: {
+          id: 'condition-guide-update',
+          updateId: snowUpdate.id,
+          snowType: 'snow-type-observation',
+          layer: 'SURFACE',
+        },
+      });
+
+      await testPrisma.userReview.create({
+        data: {
+          id: 'observation-review',
+          segment: 'segment-observation',
+          snowType: 'snow-type-observation',
+          hazards: ['stones'],
+          comment: 'Solid conditions',
+          time: new Date(),
+        },
+      });
+
+      const observation = await reviewsService.getSegmentObservations(
+        'segment-observation',
+        3,
+        3
+      );
+
+      expect(observation).not.toBeNull();
+      expect(observation?.segmentId).toBe('segment-observation');
+      expect(observation?.guideUpdate).toMatchObject({
+        description: 'Guide update description',
+      });
+      expect(observation?.userReviews).toHaveLength(1);
+      expect(observation?.userReviews[0].snowTypeId).toBe('snow-type-observation');
+    });
+
+    it('should return null when no observations exist', async () => {
+      const result = await reviewsService.getSegmentObservations(
+        'missing-segment',
+        3,
+        3
+      );
+      expect(result).toBeNull();
+    });
+  });
+
   describe('createReview', () => {
     it('should create a new review successfully', async () => {
       // Create test segment
@@ -268,7 +365,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -280,7 +377,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Ice',
           colour: '#CCCCCC',
           skiability: 1,
-          categoryId: 2,
+          primarySnowTypeId: '1',
           explanation: 'Hard ice',
         },
       });
@@ -335,7 +432,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Powder',
           colour: '#FFFFFF',
           skiability: 5,
-          categoryId: 1,
+          primarySnowTypeId: null,
           explanation: 'Fresh powder',
         },
       });
@@ -346,7 +443,7 @@ describe('ReviewsService Unit Tests', () => {
           name: 'Harsi',
           colour: '#F0F0F0',
           skiability: 4,
-          categoryId: 2,
+          primarySnowTypeId: '3',
           explanation: 'Surface hoar',
         },
       });
