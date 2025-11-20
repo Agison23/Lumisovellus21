@@ -135,24 +135,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
           ),
 
-           if (!isOnline)
-             Positioned(
-               left: 0, right: 0, bottom: 100,
-               child: Center(
-                 child: Container(
-                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                   decoration: BoxDecoration(
-                     color: Colors.black.withValues(alpha: 0.6),
-                     borderRadius: BorderRadius.circular(8),
-                   ),
-                   child: Text(
-                     t.mapOfflineModeMessage,
-                     style: const TextStyle(color: Colors.white),
-                   ),
-                 ),
-               ),
-             ),
-             
+          if (!isOnline)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 100,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    t.mapOfflineModeMessage,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+
           if (selectedSegment != null)
             Positioned(
               top: 32,
