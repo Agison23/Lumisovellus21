@@ -1,3 +1,4 @@
+# TODO: Most likely this needs to be split into multiple files for backend and frontend etc
 name: Reusable CI
 
 on:
@@ -44,49 +45,18 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
 
-      # Setup Flutter (only when not using act)
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
+      - name: Install
+        run: npm ci --prefer-offline --no-audit --fund=false
 
-      # Mock Flutter when using act locally
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
-      - name: Install dependencies
-        run: |
-          set -e
-          npm ci --prefer-offline --no-audit --fund=false
-          npx turbo run pubget
-
-      # ADDED FOR ACT: Install Playwright browsers
-      - name: Install Playwright browsers (ACT)
-        if: ${{ env.ACT == 'true' }}
-        run: npx playwright install --with-deps
-
+      # TODO: Needs to be defined
       - name: Generate OpenAPI & clients
         run: npm run openapi:check
 
+      # TODO: return exit 1 once better way for checking this is implemented
       - name: Verify generated OpenAPI clients are committed
         run: |
           if [ -n "$(git status --porcelain)" ]; then
@@ -98,10 +68,12 @@ jobs:
       - name: Lint (fast)
         run: npm run lint
 
+      # TODO: Needs to be defined in packages/shared/package.json
       - name: Lint (heavy)
         if: ${{ inputs.run-heavy-lint }}
         run: npm run lint:heavy
 
+      # https://github.com/vercel/next.js/discussions/47010
       - name: Create Next type shim for typecheck
         run: |
           set -eu
@@ -133,45 +105,18 @@ jobs:
             .nvmrc
             .turboignore
             .gitleaks.toml
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
-
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
       - run: npm ci --prefer-offline --no-audit --fund=false
 
-      # ADDED FOR ACT
-      - name: Install Playwright browsers (ACT)
-        if: ${{ env.ACT == 'true' }}
-        run: npx playwright install --with-deps
-
+      # TODO: Split into building web and backend one at a time
+      # TODO: Use docker containers?
       - name: Build
         run: npm run build
+      #  upload build artifacts for tests/e2e?
 
   test:
     runs-on: ubuntu-22.04
@@ -192,46 +137,19 @@ jobs:
             .nvmrc
             .turboignore
             .gitleaks.toml
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
-
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
       - run: npm ci --prefer-offline --no-audit --fund=false
 
-      # ADDED FOR ACT
-      - name: Install Playwright browsers (ACT)
-        if: ${{ env.ACT == 'true' }}
-        run: npx playwright install --with-deps
-
+      # TODO: Split into different tests for different targets mobile/web/backend
+      # TODO: SPlit into different levels of tests unit/integration
       - name: Test
-        run: npm run test:unit
+        run: npm run test
 
+      # TODO: Implement once coverage reports available from backend and frontend
       - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
         run: echo "Check test coverage"
 
@@ -255,36 +173,11 @@ jobs:
             .nvmrc
             .turboignore
             .gitleaks.toml
-
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
-
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
       - run: npm ci --prefer-offline --no-audit --fund=false
 
       - name: npm audit (>= ${{ inputs.audit-level }})
@@ -326,40 +219,19 @@ jobs:
             --report-path gitleaks.sarif \
             --report-format sarif
 
+      # TODO: Add once archive process is resolved
+      # - name: Upload SARIF to GitHub Security tab
+      #   if: ${{ env.ACT != 'true' }}
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: gitleaks.sarif
+
   smoke:
     runs-on: ubuntu-22.04
     needs: [validate, build, test, security]
     if: ${{ inputs.run-smoke-e2e }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
-
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
-      # ADDED FOR ACT
-      - name: Install Playwright browsers (ACT)
-        if: ${{ env.ACT == 'true' }}
-        run: npx playwright install --with-deps
-
+      # TODO: Add a command to run once somke tests exist
       - name: Smoke E2E (placeholder)
         run: echo "Run smoke/e2e tests"
