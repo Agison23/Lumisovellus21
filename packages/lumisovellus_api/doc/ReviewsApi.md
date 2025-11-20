@@ -111,7 +111,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1SegmentsIdReviewsPost**
-> ApiV1SnowTypesPost201Response apiV1SegmentsIdReviewsPost(id, apiV1SegmentsIdReviewsPostRequest)
+> ApiV1SnowTypesIdSecondaryPost200Response apiV1SegmentsIdReviewsPost(id, apiV1SegmentsIdReviewsPostRequest)
 
 Create a review for a segment
 
@@ -142,7 +142,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiV1SnowTypesPost201Response**](ApiV1SnowTypesPost201Response.md)
+[**ApiV1SnowTypesIdSecondaryPost200Response**](ApiV1SnowTypesIdSecondaryPost200Response.md)
 
 ### Authorization
 

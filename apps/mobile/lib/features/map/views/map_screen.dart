@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus_api/lumisovellus_api.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/core/network/providers.dart';
@@ -49,7 +50,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final t = AppLocalizations.of(context);
     final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
     final areasMgr = ref.watch(areasLayerManagerProvider);
-    final snowTypes = ref.watch(snowTypesNotifierProvider).value ?? const [];
+    final snowTypesState = ref.watch(snowTypesNotifierProvider).value;
+    final snowTypes = snowTypesState?.snowTypes ?? const <SnowType>[];
 
     final s = ref.watch(segmentsNotifierProvider).value;
     final segments = s?.segments ?? const [];
@@ -133,26 +135,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             },
           ),
 
-          if (!isOnline)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 100,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    t.mapOfflineModeMessage,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-
+           if (!isOnline)
+             Positioned(
+               left: 0, right: 0, bottom: 100,
+               child: Center(
+                 child: Container(
+                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                   decoration: BoxDecoration(
+                     color: Colors.black.withValues(alpha: 0.6),
+                     borderRadius: BorderRadius.circular(8),
+                   ),
+                   child: Text(
+                     t.mapOfflineModeMessage,
+                     style: const TextStyle(color: Colors.white),
+                   ),
+                 ),
+               ),
+             ),
+             
           if (selectedSegment != null)
             Positioned(
               top: 32,
@@ -164,10 +164,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 danger: selectedSegment.avalancheDanger
                     ? t.avalancheWarning
                     : t.noAvalancheWarning,
-                snowTypes: snowTypes,
                 onAdd: () {},
                 onClose: () => ref.read(segmentsNotifierProvider.notifier).select(null),
-              ),
+                snowTypes: snowTypes,
+                hazards: const ['stones', 'branches'],
+              )
             ),
 
           Positioned(

@@ -18,6 +18,7 @@ _$ApiV1SegmentsIdGuideUpdatePost200ResponseDataFromJson(
       'description',
       'primarySnowTypeIds',
       'secondarySnowTypeIds',
+      'hazards',
     ],
   );
   final val = ApiV1SegmentsIdGuideUpdatePost200ResponseData(
@@ -32,6 +33,11 @@ _$ApiV1SegmentsIdGuideUpdatePost200ResponseDataFromJson(
       (v) =>
           (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     ),
+    hazards: $checkedConvert(
+      'hazards',
+      (v) =>
+          (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+    ),
   );
   return val;
 });
@@ -42,4 +48,5 @@ Map<String, dynamic> _$ApiV1SegmentsIdGuideUpdatePost200ResponseDataToJson(
   'description': instance.description,
   'primarySnowTypeIds': instance.primarySnowTypeIds,
   'secondarySnowTypeIds': instance.secondarySnowTypeIds,
+  'hazards': instance.hazards,
 };

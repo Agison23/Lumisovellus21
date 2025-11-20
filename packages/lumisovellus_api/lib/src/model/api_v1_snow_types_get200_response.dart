@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lumisovellus_api/src/model/snow_type.dart';
 import 'package:lumisovellus_api/src/model/health_get200_response_meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -39,6 +40,7 @@ ApiV1SnowTypesGet200Response({
 
 
 
+      /// List of snow types
   @JsonKey(
     
     name: r'data',
@@ -47,7 +49,7 @@ ApiV1SnowTypesGet200Response({
   )
 
 
-  final List<Object> data;
+  final List<SnowType> data;
 
 
 

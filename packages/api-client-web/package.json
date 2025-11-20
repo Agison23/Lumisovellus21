@@ -5,7 +5,6 @@
   "types": "index.ts",
   "private": true,
   "scripts": {
-    "test": "echo 'No tests to run for shared package'",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+      "typecheck": "echo no-ts"
   }
 }

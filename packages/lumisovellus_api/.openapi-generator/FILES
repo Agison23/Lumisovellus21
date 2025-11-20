@@ -11,7 +11,9 @@ doc/ApiV1SegmentsIdGuideUpdatePost200ResponseData.md
 doc/ApiV1SegmentsIdObservationsGet200Response.md
 doc/ApiV1SegmentsIdReviewsPostRequest.md
 doc/ApiV1SnowTypesGet200Response.md
+doc/ApiV1SnowTypesIdSecondaryPost200Response.md
 doc/ApiV1SnowTypesPost201Response.md
+doc/ApiV1SnowTypesPrimaryGet200Response.md
 doc/ApiV1UsersDeviceIdLocationPost200Response.md
 doc/ApiV1UsersDeviceIdLocationPost200ResponseData.md
 doc/ApiV1UsersDeviceIdRoleGet200Response.md
@@ -36,6 +38,7 @@ doc/ErrorResponseError.md
 doc/ErrorResponseMeta.md
 doc/GuideUpdateRequest.md
 doc/GuideUpdateRequestOutput.md
+doc/Hazard.md
 doc/HealthApi.md
 doc/HealthGet200Response.md
 doc/HealthGet200ResponseMeta.md
@@ -60,6 +63,7 @@ doc/HelpEventsPost201Response.md
 doc/LocationUpdate.md
 doc/LoginRequest.md
 doc/Observation.md
+doc/PrimarySnowTypeWithSecondaries.md
 doc/RefreshTokenRequest.md
 doc/RegisterRequest.md
 doc/ResetPasswordRequest.md
@@ -69,6 +73,7 @@ doc/Segment.md
 doc/SegmentPoint.md
 doc/SegmentUserReview.md
 doc/SegmentsApi.md
+doc/SnowType.md
 doc/SnowTypesApi.md
 doc/UpdateProfileRequest.md
 doc/User.md
@@ -106,7 +111,9 @@ lib/src/model/api_v1_segments_id_guide_update_post200_response_data.dart
 lib/src/model/api_v1_segments_id_observations_get200_response.dart
 lib/src/model/api_v1_segments_id_reviews_post_request.dart
 lib/src/model/api_v1_snow_types_get200_response.dart
+lib/src/model/api_v1_snow_types_id_secondary_post200_response.dart
 lib/src/model/api_v1_snow_types_post201_response.dart
+lib/src/model/api_v1_snow_types_primary_get200_response.dart
 lib/src/model/api_v1_users_device_id_location_post200_response.dart
 lib/src/model/api_v1_users_device_id_location_post200_response_data.dart
 lib/src/model/api_v1_users_device_id_role_get200_response.dart
@@ -130,6 +137,7 @@ lib/src/model/error_response_error.dart
 lib/src/model/error_response_meta.dart
 lib/src/model/guide_update_request.dart
 lib/src/model/guide_update_request_output.dart
+lib/src/model/hazard.dart
 lib/src/model/health_get200_response.dart
 lib/src/model/health_get200_response_meta.dart
 lib/src/model/health_response.dart
@@ -152,6 +160,7 @@ lib/src/model/help_events_post201_response.dart
 lib/src/model/location_update.dart
 lib/src/model/login_request.dart
 lib/src/model/observation.dart
+lib/src/model/primary_snow_type_with_secondaries.dart
 lib/src/model/refresh_token_request.dart
 lib/src/model/register_request.dart
 lib/src/model/reset_password_request.dart
@@ -159,6 +168,7 @@ lib/src/model/role_update.dart
 lib/src/model/segment.dart
 lib/src/model/segment_point.dart
 lib/src/model/segment_user_review.dart
+lib/src/model/snow_type.dart
 lib/src/model/update_profile_request.dart
 lib/src/model/user.dart
 lib/src/model/user_review_observation.dart
@@ -178,7 +188,9 @@ test/api_v1_segments_id_guide_update_post200_response_test.dart
 test/api_v1_segments_id_observations_get200_response_test.dart
 test/api_v1_segments_id_reviews_post_request_test.dart
 test/api_v1_snow_types_get200_response_test.dart
+test/api_v1_snow_types_id_secondary_post200_response_test.dart
 test/api_v1_snow_types_post201_response_test.dart
+test/api_v1_snow_types_primary_get200_response_test.dart
 test/api_v1_users_device_id_location_post200_response_data_test.dart
 test/api_v1_users_device_id_location_post200_response_test.dart
 test/api_v1_users_device_id_role_get200_response_data_test.dart
@@ -203,6 +215,7 @@ test/error_response_meta_test.dart
 test/error_response_test.dart
 test/guide_update_request_output_test.dart
 test/guide_update_request_test.dart
+test/hazard_test.dart
 test/health_api_test.dart
 test/health_get200_response_meta_test.dart
 test/health_get200_response_test.dart
@@ -227,6 +240,7 @@ test/help_events_post201_response_test.dart
 test/location_update_test.dart
 test/login_request_test.dart
 test/observation_test.dart
+test/primary_snow_type_with_secondaries_test.dart
 test/refresh_token_request_test.dart
 test/register_request_test.dart
 test/reset_password_request_test.dart
@@ -236,6 +250,7 @@ test/segment_point_test.dart
 test/segment_test.dart
 test/segment_user_review_test.dart
 test/segments_api_test.dart
+test/snow_type_test.dart
 test/snow_types_api_test.dart
 test/update_profile_request_test.dart
 test/user_review_observation_test.dart
