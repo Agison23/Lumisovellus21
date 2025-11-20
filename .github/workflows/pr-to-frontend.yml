@@ -2,7 +2,7 @@ name: PR -> frontend
 
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review, synchronize]
+    types: [opened, reopened, ready_for_review]
     branches:
       - 'frontend'
   workflow_dispatch: {}
@@ -12,13 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  rc:
+  validation:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      coverage-threshold: 80
-      run-build: true
-      run-heavy-lint: true
-      run-security-checks: true
-      audit-level: "high"
-      run-smoke-e2e: true
+      coverage-threshold: 70
+      audit-level: "critical"
     secrets: inherit

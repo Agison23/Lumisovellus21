@@ -1,5 +1,4 @@
 "use client";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FeatureCollection, Polygon } from "geojson";
 
@@ -12,7 +11,6 @@ import {
 } from "lucide-react";
 import type { FilterSpecification, MapMouseEvent } from "mapbox-gl";
 import { useTranslations } from "next-intl";
-import React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationControl, Source, Layer, Marker } from "react-map-gl/mapbox";
 import Map from "react-map-gl/mapbox";
