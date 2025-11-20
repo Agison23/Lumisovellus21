@@ -497,7 +497,8 @@ export const openApiRoutes = {
   '/api/v1/snow-types': {
     get: {
       summary: 'Get all snow types (primary and secondary)',
-      description: 'Retrieve all snow types including both primary and secondary snow types in a flat list.',
+      description:
+        'Retrieve all snow types including both primary and secondary snow types in a flat list.',
       tags: ['Snow Types'],
       responses: {
         '200': createSuccessResponse(z.array(snowTypeResponseSchema), 'Snow types retrieved successfully'),
@@ -538,7 +539,8 @@ export const openApiRoutes = {
   '/api/v1/snow-types/primary': {
     get: {
       summary: 'Get all primary snow types',
-      description: 'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
+      description:
+        'Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.',
       tags: ['Snow Types'],
       responses: {
         '200': createSuccessResponse(z.array(primarySnowTypeResponseSchema), 'Snow types retrieved successfully'),

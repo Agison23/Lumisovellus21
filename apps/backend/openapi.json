@@ -4,67 +4,33 @@
     "title": "Lumisovellus API",
     "version": "v2.0.0",
     "description": "Unified backend API for Lumisovellus - Snow condition tracking and rescue coordination system",
-    "contact": {
-      "name": "Mindhive Oy",
-      "email": "support@mindhive.fi"
-    },
-    "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    }
+    "contact": { "name": "Mindhive Oy", "email": "support@mindhive.fi" },
+    "license": { "name": "MIT", "url": "https://opensource.org/licenses/MIT" }
   },
-  "servers": [
-    {
-      "url": "http://localhost:3001",
-      "description": "API Server"
-    }
-  ],
+  "servers": [{ "url": "http://localhost:3001", "description": "API Server" }],
   "tags": [
-    {
-      "name": "Health",
-      "description": "Health check endpoints"
-    },
+    { "name": "Health", "description": "Health check endpoints" },
     {
       "name": "Authentication",
       "description": "User authentication and account management"
     },
-    {
-      "name": "Segments",
-      "description": "Ski segment management"
-    },
-    {
-      "name": "Updates",
-      "description": "Snow condition updates"
-    },
-    {
-      "name": "Reviews",
-      "description": "User reviews and ratings"
-    },
-    {
-      "name": "Snow Types",
-      "description": "Snow type classifications"
-    },
-    {
-      "name": "Users",
-      "description": "User management and mobile features"
-    },
+    { "name": "Segments", "description": "Ski segment management" },
+    { "name": "Updates", "description": "Snow condition updates" },
+    { "name": "Reviews", "description": "User reviews and ratings" },
+    { "name": "Snow Types", "description": "Snow type classifications" },
+    { "name": "Users", "description": "User management and mobile features" },
     {
       "name": "Help Requests",
       "description": "Emergency and assistance requests"
     },
-    {
-      "name": "Weather",
-      "description": "Weather data endpoints"
-    }
+    { "name": "Weather", "description": "Weather data endpoints" }
   ],
   "paths": {
     "/health": {
       "get": {
         "summary": "Health check endpoint",
         "description": "Returns the current status of the API server",
-        "tags": [
-          "Health"
-        ],
+        "tags": ["Health"],
         "responses": {
           "200": {
             "description": "Server is healthy",
@@ -78,9 +44,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/HealthResponse"
-                    },
+                    "data": { "$ref": "#/components/schemas/HealthResponse" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -97,19 +61,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -122,16 +78,12 @@
       "post": {
         "summary": "Register a new user",
         "description": "Create a new user account with email and password",
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
             }
           }
         },
@@ -148,9 +100,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/AuthResponse"
-                    },
+                    "data": { "$ref": "#/components/schemas/AuthResponse" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -167,19 +117,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -189,9 +131,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -199,9 +139,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -209,9 +147,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -219,9 +155,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -229,9 +163,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -239,9 +171,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -252,16 +182,12 @@
       "post": {
         "summary": "Login user",
         "description": "Authenticate user with email and password",
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
             }
           }
         },
@@ -278,9 +204,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/AuthResponse"
-                    },
+                    "data": { "$ref": "#/components/schemas/AuthResponse" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -297,19 +221,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -319,9 +235,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -329,9 +243,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -339,9 +251,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -349,9 +259,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -359,9 +267,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -369,9 +275,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -382,16 +286,12 @@
       "post": {
         "summary": "Refresh access token",
         "description": "Get new access token using refresh token",
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshTokenRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/RefreshTokenRequest" }
             }
           }
         },
@@ -408,9 +308,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/AuthResponse"
-                    },
+                    "data": { "$ref": "#/components/schemas/AuthResponse" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -427,19 +325,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -449,9 +339,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -459,9 +347,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -469,9 +355,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -479,9 +363,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -489,9 +371,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -499,9 +379,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -512,16 +390,12 @@
       "post": {
         "summary": "Request password reset",
         "description": "Send password reset email to user",
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPasswordRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/ResetPasswordRequest" }
             }
           }
         },
@@ -540,14 +414,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "message"
-                      ],
+                      "properties": { "message": { "type": "string" } },
+                      "required": ["message"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -566,19 +434,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -588,9 +448,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -598,9 +456,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -608,9 +464,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -618,9 +472,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -628,9 +480,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -638,9 +488,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -651,16 +499,8 @@
       "post": {
         "summary": "Logout user",
         "description": "Logout the authenticated user",
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Logged out successfully",
@@ -676,14 +516,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "message"
-                      ],
+                      "properties": { "message": { "type": "string" } },
+                      "required": ["message"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -702,19 +536,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -724,9 +550,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -734,9 +558,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -744,9 +566,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -754,9 +574,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -764,9 +582,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -774,9 +590,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -787,16 +601,8 @@
       "get": {
         "summary": "Get user profile",
         "description": "Retrieve the authenticated user's profile information",
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Profile retrieved successfully",
@@ -810,9 +616,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/User"
-                    },
+                    "data": { "$ref": "#/components/schemas/User" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -829,19 +633,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -851,9 +647,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -861,9 +655,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -871,9 +663,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -881,9 +671,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -891,9 +679,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -901,9 +687,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -912,23 +696,13 @@
       "put": {
         "summary": "Update user profile",
         "description": "Update the authenticated user's profile information",
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateProfileRequest" }
             }
           }
         },
@@ -945,9 +719,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/User"
-                    },
+                    "data": { "$ref": "#/components/schemas/User" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -964,19 +736,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -986,9 +750,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -996,9 +758,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1006,9 +766,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1016,9 +774,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1026,9 +782,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1036,9 +790,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1049,23 +801,13 @@
       "put": {
         "summary": "Change user password",
         "description": "Change the authenticated user's password",
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangePasswordRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" }
             }
           }
         },
@@ -1084,14 +826,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "message"
-                      ],
+                      "properties": { "message": { "type": "string" } },
+                      "required": ["message"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -1110,19 +846,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1132,9 +860,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1142,9 +868,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1152,9 +876,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1162,9 +884,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1172,9 +892,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1182,9 +900,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1195,16 +911,8 @@
       "get": {
         "summary": "Verify token validity",
         "description": "Verify if the provided token is valid and return user information",
-        "tags": [
-          "Authentication"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Authentication"],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Token is valid",
@@ -1221,9 +929,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "valid": {
-                          "type": "boolean"
-                        },
+                        "valid": { "type": "boolean" },
                         "user": {
                           "type": "object",
                           "properties": {
@@ -1232,20 +938,10 @@
                               "format": "uuid",
                               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                             },
-                            "firstName": {
-                              "type": "string"
-                            },
-                            "lastName": {
-                              "nullable": true,
-                              "type": "string"
-                            },
-                            "email": {
-                              "nullable": true,
-                              "type": "string"
-                            },
-                            "role": {
-                              "type": "string"
-                            }
+                            "firstName": { "type": "string" },
+                            "lastName": { "nullable": true, "type": "string" },
+                            "email": { "nullable": true, "type": "string" },
+                            "role": { "type": "string" }
                           },
                           "required": [
                             "id",
@@ -1257,10 +953,7 @@
                           "additionalProperties": false
                         }
                       },
-                      "required": [
-                        "valid",
-                        "user"
-                      ],
+                      "required": ["valid", "user"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -1279,19 +972,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1301,9 +986,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1311,9 +994,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1321,9 +1002,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1331,9 +1010,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1341,9 +1018,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1351,9 +1026,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1364,9 +1037,7 @@
       "get": {
         "summary": "Get all segments",
         "description": "Retrieve all ski segments with their coordinates and terrain information. Supports filtering by bounding box, search, and updatedSince.",
-        "tags": [
-          "Segments"
-        ],
+        "tags": ["Segments"],
         "parameters": [
           {
             "in": "query",
@@ -1456,9 +1127,7 @@
                     },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Segment"
-                      }
+                      "items": { "$ref": "#/components/schemas/Segment" }
                     },
                     "meta": {
                       "description": "Response metadata",
@@ -1476,19 +1145,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1498,9 +1159,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1508,9 +1167,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1518,9 +1175,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1528,9 +1183,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1538,9 +1191,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1548,9 +1199,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1561,16 +1210,8 @@
       "post": {
         "summary": "Create or update a guide update for a segment (Admin only)",
         "description": "Creates a new guide update or updates the existing one for a segment. Only admins can create guide updates.",
-        "tags": [
-          "Segments"
-        ],
-        "security": [
-          {
-            "bearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Segments"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -1590,9 +1231,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GuideUpdateRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/GuideUpdateRequest" }
             }
           }
         },
@@ -1612,10 +1251,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "description": {
-                          "nullable": true,
-                          "type": "string"
-                        },
+                        "description": { "nullable": true, "type": "string" },
                         "primarySnowTypeIds": {
                           "type": "array",
                           "items": {
@@ -1631,12 +1267,17 @@
                             "format": "uuid",
                             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                           }
+                        },
+                        "hazards": {
+                          "type": "array",
+                          "items": { "type": "string" }
                         }
                       },
                       "required": [
                         "description",
                         "primarySnowTypeIds",
-                        "secondarySnowTypeIds"
+                        "secondarySnowTypeIds",
+                        "hazards"
                       ],
                       "additionalProperties": false
                     },
@@ -1656,19 +1297,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1678,9 +1311,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1688,9 +1319,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1698,9 +1327,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1708,9 +1335,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1718,9 +1343,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1728,9 +1351,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1739,11 +1360,9 @@
     },
     "/api/v1/snow-types": {
       "get": {
-        "summary": "Get all snow types",
-        "description": "Retrieve all available snow types for reviews",
-        "tags": [
-          "Snow Types"
-        ],
+        "summary": "Get all snow types (primary and secondary)",
+        "description": "Retrieve all snow types including both primary and secondary snow types in a flat list.",
+        "tags": ["Snow Types"],
         "responses": {
           "200": {
             "description": "Snow types retrieved successfully",
@@ -1757,12 +1376,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        
-                      }
-                    },
+                    "data": { "$ref": "#/components/schemas/SnowTypes" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -1779,19 +1393,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1801,9 +1407,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1811,9 +1415,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1821,9 +1423,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1831,9 +1431,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1841,9 +1439,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1851,9 +1447,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1862,16 +1456,8 @@
       "post": {
         "summary": "Create a new snow type",
         "description": "Create a new snow type with the provided information. Requires authentication and admin role.",
-        "tags": [
-          "Snow Types"
-        ],
-        "security": [
-          {
-            "bearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Snow Types"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -1880,12 +1466,10 @@
                 "name": "Powder",
                 "colour": "#FFFFFF",
                 "skiability": 5,
-                "categoryId": 1,
+                "primarySnowTypeId": null,
                 "explanation": "Fresh powder snow"
               },
-              "schema": {
-                "$ref": "#/components/schemas/CreateSnowTypeRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/CreateSnowTypeRequest" }
             }
           }
         },
@@ -1902,8 +1486,99 @@
                       "example": true,
                       "type": "boolean"
                     },
+                    "data": { "$ref": "#/components/schemas/SnowType" },
+                    "meta": {
+                      "description": "Response metadata",
+                      "type": "object",
+                      "properties": {
+                        "timestamp": {
+                          "description": "Response timestamp",
+                          "example": "2024-01-15T10:30:00.000Z",
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                        },
+                        "message": {
+                          "description": "Optional success message",
+                          "type": "string"
+                        }
+                      },
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": ["success", "data", "meta"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/snow-types/primary": {
+      "get": {
+        "summary": "Get all primary snow types",
+        "description": "Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.",
+        "tags": ["Snow Types"],
+        "responses": {
+          "200": {
+            "description": "Snow types retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "description": "Indicates if the request was successful",
+                      "example": true,
+                      "type": "boolean"
+                    },
                     "data": {
-                      
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PrimarySnowTypeWithSecondaries"
+                      }
                     },
                     "meta": {
                       "description": "Response metadata",
@@ -1921,19 +1596,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -1943,9 +1610,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1953,9 +1618,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1963,9 +1626,15 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1973,9 +1642,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1983,9 +1650,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1996,16 +1661,8 @@
       "post": {
         "summary": "Add secondary snow types to a snow type",
         "description": "Associate one or more existing snow types as secondary types for the specified snow type. All entities are SnowTypes - \"secondary\" refers only to the relationship. Requires authentication and admin role.",
-        "tags": [
-          "Snow Types"
-        ],
-        "security": [
-          {
-            "bearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Snow Types"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -2050,9 +1707,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      
-                    },
+                    "data": {},
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -2069,19 +1724,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2091,9 +1738,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2101,9 +1746,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2111,9 +1754,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2121,9 +1762,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2131,9 +1770,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2144,9 +1781,7 @@
       "get": {
         "summary": "Get observations for all segments",
         "description": "Retrieve observations (reviews and guide updates) for all segments from the last N days, grouped by segment. Supports pagination of segments.",
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "parameters": [
           {
             "in": "query",
@@ -2204,9 +1839,7 @@
                     },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Observation"
-                      }
+                      "items": { "$ref": "#/components/schemas/Observation" }
                     },
                     "meta": {
                       "description": "Response metadata",
@@ -2224,19 +1857,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2246,9 +1871,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2256,9 +1879,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2266,9 +1887,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2276,9 +1895,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2286,9 +1903,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2296,9 +1911,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2309,9 +1922,7 @@
       "get": {
         "summary": "Get observations for a specific segment",
         "description": "Retrieve guide updates and user reviews for a specific segment within the requested time window.",
-        "tags": [
-          "Reviews"
-        ],
+        "tags": ["Reviews"],
         "parameters": [
           {
             "in": "path",
@@ -2360,9 +1971,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/Observation"
-                    },
+                    "data": { "$ref": "#/components/schemas/Observation" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -2379,19 +1988,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2401,9 +2002,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2411,9 +2010,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2421,9 +2018,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2431,9 +2026,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2441,9 +2034,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2451,9 +2042,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2464,16 +2053,8 @@
       "post": {
         "summary": "Create a review for a segment",
         "description": "Submit a snow condition review for a specific segment",
-        "tags": [
-          "Reviews"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Reviews"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -2505,22 +2086,10 @@
                   },
                   "hazards": {
                     "description": "Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])",
-                    "example": [
-                      "stones"
-                    ],
-                    "default": [
-                      
-                    ],
+                    "example": ["stones"],
+                    "default": [],
                     "type": "array",
-                    "items": {
-                      "description": "Hazard type found on the trail",
-                      "example": "stones",
-                      "type": "string",
-                      "enum": [
-                        "stones",
-                        "branches"
-                      ]
-                    }
+                    "items": { "$ref": "#/components/schemas/Hazard" }
                   },
                   "comment": {
                     "description": "Optional review comment",
@@ -2530,9 +2099,7 @@
                     "maxLength": 1000
                   }
                 },
-                "required": [
-                  "snowType"
-                ]
+                "required": ["snowType"]
               }
             }
           }
@@ -2550,9 +2117,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      
-                    },
+                    "data": {},
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -2569,19 +2134,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2591,9 +2148,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2601,9 +2156,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2611,9 +2164,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2621,9 +2172,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2631,9 +2180,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2641,9 +2188,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2654,16 +2199,8 @@
       "post": {
         "summary": "Update mobile user location",
         "description": "Update or create mobile user location data for tracking and rescue purposes",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -2682,9 +2219,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LocationUpdate"
-              }
+              "schema": { "$ref": "#/components/schemas/LocationUpdate" }
             }
           }
         },
@@ -2703,14 +2238,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "status": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "status"
-                      ],
+                      "properties": { "status": { "type": "string" } },
+                      "required": ["status"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -2729,19 +2258,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2751,9 +2272,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2761,9 +2280,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2771,9 +2288,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2781,9 +2296,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2791,9 +2304,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2801,9 +2312,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2814,16 +2323,8 @@
       "post": {
         "summary": "Update battery status",
         "description": "Update the battery status for a mobile user",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -2842,9 +2343,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatteryUpdate"
-              }
+              "schema": { "$ref": "#/components/schemas/BatteryUpdate" }
             }
           }
         },
@@ -2863,14 +2362,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "status": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "status"
-                      ],
+                      "properties": { "status": { "type": "string" } },
+                      "required": ["status"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -2889,19 +2382,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -2911,9 +2396,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2921,9 +2404,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2931,9 +2412,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2941,9 +2420,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2951,9 +2428,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -2961,9 +2436,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -2974,16 +2447,8 @@
       "get": {
         "summary": "Get user role",
         "description": "Retrieve the role and permissions for a mobile user",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -3014,17 +2479,10 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "role": {
-                          "type": "string"
-                        },
-                        "permissions": {
-                          "type": "string"
-                        }
+                        "role": { "type": "string" },
+                        "permissions": { "type": "string" }
                       },
-                      "required": [
-                        "role",
-                        "permissions"
-                      ],
+                      "required": ["role", "permissions"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -3043,19 +2501,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3065,9 +2515,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3075,9 +2523,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3085,9 +2531,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3095,9 +2539,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3105,9 +2547,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3115,9 +2555,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3126,16 +2564,8 @@
       "post": {
         "summary": "Update user role",
         "description": "Update the role for a mobile user",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -3154,9 +2584,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RoleUpdate"
-              }
+              "schema": { "$ref": "#/components/schemas/RoleUpdate" }
             }
           }
         },
@@ -3176,17 +2604,10 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "role": {
-                          "type": "string"
-                        },
-                        "permissions": {
-                          "type": "string"
-                        }
+                        "role": { "type": "string" },
+                        "permissions": { "type": "string" }
                       },
-                      "required": [
-                        "role",
-                        "permissions"
-                      ],
+                      "required": ["role", "permissions"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -3205,19 +2626,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3227,9 +2640,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3237,9 +2648,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3247,9 +2656,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3257,9 +2664,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3267,9 +2672,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3277,9 +2680,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3290,16 +2691,8 @@
       "get": {
         "summary": "List all users",
         "description": "Get a list of all users (admin only)",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Users retrieved successfully",
@@ -3315,9 +2708,7 @@
                     },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
+                      "items": { "$ref": "#/components/schemas/User" }
                     },
                     "meta": {
                       "description": "Response metadata",
@@ -3335,19 +2726,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3357,9 +2740,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3367,9 +2748,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3377,9 +2756,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3387,9 +2764,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3397,9 +2772,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3407,9 +2780,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3420,16 +2791,8 @@
       "get": {
         "summary": "Get current user details",
         "description": "Get details of the currently authenticated user",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "responses": {
           "200": {
             "description": "User details retrieved successfully",
@@ -3443,9 +2806,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/User"
-                    },
+                    "data": { "$ref": "#/components/schemas/User" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -3462,19 +2823,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3484,9 +2837,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3494,9 +2845,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3504,9 +2853,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3514,9 +2861,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3524,9 +2869,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3534,9 +2877,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3547,16 +2888,8 @@
       "put": {
         "summary": "Update a user",
         "description": "Update user information (admin only)",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -3602,9 +2935,7 @@
                     "example": "+1234567890",
                     "type": "string"
                   },
-                  "role": {
-                    "type": "string"
-                  }
+                  "role": { "type": "string" }
                 }
               }
             }
@@ -3623,9 +2954,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/User"
-                    },
+                    "data": { "$ref": "#/components/schemas/User" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -3642,19 +2971,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3664,9 +2985,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3674,9 +2993,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3684,9 +3001,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3694,9 +3009,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3704,9 +3017,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3714,9 +3025,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3725,16 +3034,8 @@
       "delete": {
         "summary": "Delete a user",
         "description": "Delete a user and all related data (admin only)",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -3765,14 +3066,8 @@
                     },
                     "data": {
                       "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "message"
-                      ],
+                      "properties": { "message": { "type": "string" } },
+                      "required": ["message"],
                       "additionalProperties": false
                     },
                     "meta": {
@@ -3791,19 +3086,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3813,9 +3100,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3823,9 +3108,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3833,9 +3116,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3843,9 +3124,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3853,9 +3132,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3863,9 +3140,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -3875,23 +3150,13 @@
     "/help/events": {
       "post": {
         "summary": "Create a new help event",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HelpEventCreate"
-              }
+              "schema": { "$ref": "#/components/schemas/HelpEventCreate" }
             }
           }
         },
@@ -3927,19 +3192,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -3949,9 +3206,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3959,9 +3214,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3969,9 +3222,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3979,9 +3230,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3989,9 +3238,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -3999,9 +3246,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4011,16 +3256,8 @@
     "/help/events/nearby": {
       "get": {
         "summary": "List nearby help events",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "query",
@@ -4096,19 +3333,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4118,9 +3347,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4128,9 +3355,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4138,9 +3363,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4148,9 +3371,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4158,9 +3379,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4168,9 +3387,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4180,16 +3397,8 @@
     "/help/events/{eventId}/view": {
       "get": {
         "summary": "Get help event view",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -4218,12 +3427,8 @@
                     },
                     "data": {
                       "anyOf": [
-                        {
-                          "$ref": "#/components/schemas/HelpEventRescueeView"
-                        },
-                        {
-                          "$ref": "#/components/schemas/HelpEventRescuerView"
-                        }
+                        { "$ref": "#/components/schemas/HelpEventRescueeView" },
+                        { "$ref": "#/components/schemas/HelpEventRescuerView" }
                       ]
                     },
                     "meta": {
@@ -4242,19 +3447,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4264,9 +3461,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4274,9 +3469,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4284,9 +3477,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4294,9 +3485,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4304,9 +3493,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4314,9 +3501,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4326,16 +3511,8 @@
     "/help/events/{eventId}/acceptance": {
       "post": {
         "summary": "Accept help event",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -4353,9 +3530,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HelpEventAcceptance"
-              }
+              "schema": { "$ref": "#/components/schemas/HelpEventAcceptance" }
             }
           }
         },
@@ -4391,19 +3566,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4413,9 +3580,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4423,9 +3588,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4433,9 +3596,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4443,9 +3604,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4453,9 +3612,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4463,9 +3620,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4473,16 +3628,8 @@
       },
       "delete": {
         "summary": "Withdraw from help event",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -4528,19 +3675,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4550,9 +3689,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4560,9 +3697,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4570,9 +3705,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4580,9 +3713,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4590,9 +3721,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4600,9 +3729,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4612,16 +3739,8 @@
     "/help/events/{eventId}": {
       "patch": {
         "summary": "Update help event status",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -4639,9 +3758,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HelpEventStatusUpdate"
-              }
+              "schema": { "$ref": "#/components/schemas/HelpEventStatusUpdate" }
             }
           }
         },
@@ -4677,19 +3794,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4699,9 +3808,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4709,9 +3816,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4719,9 +3824,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4729,9 +3832,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4739,9 +3840,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4749,9 +3848,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -4761,16 +3858,8 @@
     "/help/events/{eventId}/stream": {
       "get": {
         "summary": "Stream help event updates",
-        "tags": [
-          "Help Events"
-        ],
-        "security": [
-          {
-            "BearerAuth": [
-              
-            ]
-          }
-        ],
+        "tags": ["Help Events"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
@@ -4789,9 +3878,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4799,9 +3886,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4809,9 +3894,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4819,9 +3902,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4829,9 +3910,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4839,15 +3918,11 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
-          "501": {
-            "description": "Streaming not yet implemented"
-          }
+          "501": { "description": "Streaming not yet implemented" }
         }
       }
     },
@@ -4855,9 +3930,7 @@
       "get": {
         "summary": "Average weather metric",
         "description": "Returns the average for supported weather items within the requested period.",
-        "tags": [
-          "Weather"
-        ],
+        "tags": ["Weather"],
         "parameters": [
           {
             "in": "query",
@@ -4866,10 +3939,7 @@
               "description": "Weather item to average",
               "example": "windSpeed",
               "type": "string",
-              "enum": [
-                "windSpeed",
-                "windDirection"
-              ]
+              "enum": ["windSpeed", "windDirection"]
             },
             "required": true,
             "description": "Weather item to average"
@@ -4901,9 +3971,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/WeatherMetric"
-                    },
+                    "data": { "$ref": "#/components/schemas/WeatherMetric" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -4920,19 +3988,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -4942,9 +4002,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4952,9 +4010,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4962,9 +4018,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4972,9 +4026,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4982,9 +4034,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -4992,9 +4042,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5005,9 +4053,7 @@
       "get": {
         "summary": "Minimum temperature",
         "description": "Returns the minimum temperature within the requested period.",
-        "tags": [
-          "Weather"
-        ],
+        "tags": ["Weather"],
         "parameters": [
           {
             "in": "query",
@@ -5016,9 +4062,7 @@
               "description": "Weather item to get minimum for",
               "example": "temperature",
               "type": "string",
-              "enum": [
-                "temperature"
-              ]
+              "enum": ["temperature"]
             },
             "required": true,
             "description": "Weather item to get minimum for"
@@ -5050,9 +4094,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/WeatherMetric"
-                    },
+                    "data": { "$ref": "#/components/schemas/WeatherMetric" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -5069,19 +4111,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -5091,9 +4125,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5101,9 +4133,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5111,9 +4141,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5121,9 +4149,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5131,9 +4157,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5141,9 +4165,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5154,9 +4176,7 @@
       "get": {
         "summary": "Maximum weather metric",
         "description": "Returns the maximum temperature or wind speed within the requested period.",
-        "tags": [
-          "Weather"
-        ],
+        "tags": ["Weather"],
         "parameters": [
           {
             "in": "query",
@@ -5165,10 +4185,7 @@
               "description": "Weather item to get maximum for",
               "example": "windSpeed",
               "type": "string",
-              "enum": [
-                "temperature",
-                "windSpeed"
-              ]
+              "enum": ["temperature", "windSpeed"]
             },
             "required": true,
             "description": "Weather item to get maximum for"
@@ -5200,9 +4217,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/WeatherMetric"
-                    },
+                    "data": { "$ref": "#/components/schemas/WeatherMetric" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -5219,19 +4234,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -5241,9 +4248,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5251,9 +4256,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5261,9 +4264,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5271,9 +4272,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5281,9 +4280,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5291,9 +4288,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5304,9 +4299,7 @@
       "get": {
         "summary": "Snow depth change",
         "description": "Returns the change in snow depth between the start and end of the requested period.",
-        "tags": [
-          "Weather"
-        ],
+        "tags": ["Weather"],
         "parameters": [
           {
             "in": "query",
@@ -5315,9 +4308,7 @@
               "description": "Weather item to calculate change for",
               "example": "snowDepth",
               "type": "string",
-              "enum": [
-                "snowDepth"
-              ]
+              "enum": ["snowDepth"]
             },
             "required": true,
             "description": "Weather item to calculate change for"
@@ -5349,9 +4340,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/WeatherMetric"
-                    },
+                    "data": { "$ref": "#/components/schemas/WeatherMetric" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -5368,19 +4357,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -5390,9 +4371,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5400,9 +4379,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5410,9 +4387,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5420,9 +4395,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5430,9 +4403,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5440,9 +4411,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5453,9 +4422,7 @@
       "get": {
         "summary": "Filter days with average temperature above threshold",
         "description": "Returns the dates within the requested period where the daily average temperature exceeded the threshold.",
-        "tags": [
-          "Weather"
-        ],
+        "tags": ["Weather"],
         "parameters": [
           {
             "in": "query",
@@ -5464,9 +4431,7 @@
               "description": "Weather item used for filtering",
               "example": "temperature",
               "type": "string",
-              "enum": [
-                "temperature"
-              ]
+              "enum": ["temperature"]
             },
             "required": true,
             "description": "Weather item used for filtering"
@@ -5528,19 +4493,11 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "timestamp"
-                      ],
-                      "additionalProperties": {
-                        
-                      }
+                      "required": ["timestamp"],
+                      "additionalProperties": {}
                     }
                   },
-                  "required": [
-                    "success",
-                    "data",
-                    "meta"
-                  ],
+                  "required": ["success", "data", "meta"],
                   "additionalProperties": false
                 }
               }
@@ -5550,9 +4507,7 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5560,9 +4515,7 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5570,9 +4523,7 @@
             "description": "Forbidden",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5580,9 +4531,7 @@
             "description": "Not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5590,9 +4539,7 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -5600,9 +4547,7 @@
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5643,18 +4588,10 @@
             "description": "User role",
             "example": "NORMAL",
             "type": "string",
-            "enum": [
-              "NORMAL",
-              "ADMIN",
-              "RESCUE"
-            ]
+            "enum": ["NORMAL", "ADMIN", "RESCUE"]
           }
         },
-        "required": [
-          "firstName",
-          "email",
-          "password"
-        ]
+        "required": ["firstName", "email", "password"]
       },
       "LoginRequest": {
         "type": "object",
@@ -5673,10 +4610,7 @@
             "minLength": 6
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "RefreshTokenRequest": {
         "type": "object",
@@ -5688,9 +4622,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "refreshToken"
-        ]
+        "required": ["refreshToken"]
       },
       "ResetPasswordRequest": {
         "type": "object",
@@ -5703,9 +4635,7 @@
             "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           }
         },
-        "required": [
-          "email"
-        ]
+        "required": ["email"]
       },
       "UpdateProfileRequest": {
         "type": "object",
@@ -5751,10 +4681,7 @@
             "minLength": 6
           }
         },
-        "required": [
-          "currentPassword",
-          "newPassword"
-        ]
+        "required": ["currentPassword", "newPassword"]
       },
       "GuideUpdateRequest": {
         "type": "object",
@@ -5771,9 +4698,7 @@
               "550e8400-e29b-41d4-a716-446655440001",
               "550e8400-e29b-41d4-a716-446655440002"
             ],
-            "default": [
-              
-            ],
+            "default": [],
             "maxItems": 2,
             "type": "array",
             "items": {
@@ -5788,9 +4713,7 @@
               "550e8400-e29b-41d4-a716-446655440001",
               "550e8400-e29b-41d4-a716-446655440002"
             ],
-            "default": [
-              
-            ],
+            "default": [],
             "maxItems": 2,
             "type": "array",
             "items": {
@@ -5798,8 +4721,21 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
+          },
+          "hazards": {
+            "description": "Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])",
+            "example": ["stones"],
+            "default": [],
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Hazard" }
           }
         }
+      },
+      "Hazard": {
+        "description": "Hazard type found on the trail",
+        "example": "stones",
+        "type": "string",
+        "enum": ["stones", "branches"]
       },
       "CreateSnowTypeRequest": {
         "type": "object",
@@ -5826,12 +4762,13 @@
             "minimum": 1,
             "maximum": 5
           },
-          "categoryId": {
-            "description": "Category ID",
+          "primarySnowTypeId": {
+            "description": "Primary snow type ID. NULL for primary snow types, UUID for secondary snow types",
+            "example": null,
             "nullable": true,
-            "type": "integer",
-            "minimum": -9007199254740991,
-            "maximum": 9007199254740991
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "explanation": {
             "description": "Explanation of the snow type",
@@ -5841,10 +4778,7 @@
             "maxLength": 5000
           }
         },
-        "required": [
-          "name",
-          "colour"
-        ]
+        "required": ["name", "colour"]
       },
       "AddSecondarySnowTypesRequest": {
         "type": "object",
@@ -5864,9 +4798,7 @@
             }
           }
         },
-        "required": [
-          "secondarySnowTypeIds"
-        ]
+        "required": ["secondarySnowTypeIds"]
       },
       "LocationUpdate": {
         "type": "object",
@@ -5904,11 +4836,7 @@
             "maxLength": 20
           }
         },
-        "required": [
-          "timestamp",
-          "firstName",
-          "gpsCoord"
-        ]
+        "required": ["timestamp", "firstName", "gpsCoord"]
       },
       "BatteryUpdate": {
         "type": "object",
@@ -5917,15 +4845,10 @@
             "description": "Battery status",
             "example": "normal",
             "type": "string",
-            "enum": [
-              "low",
-              "normal"
-            ]
+            "enum": ["low", "normal"]
           }
         },
-        "required": [
-          "batteryStatus"
-        ]
+        "required": ["batteryStatus"]
       },
       "RoleUpdate": {
         "type": "object",
@@ -5937,9 +4860,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "role"
-        ]
+        "required": ["role"]
       },
       "HelpEventCreate": {
         "type": "object",
@@ -5951,18 +4872,12 @@
             "exclusiveMinimum": true,
             "maximum": 9007199254740991
           },
-          "location": {
-            "$ref": "#/components/schemas/HelpEventLocation"
-          },
+          "location": { "$ref": "#/components/schemas/HelpEventLocation" },
           "needType": {
             "description": "Type of help requested",
             "example": "health",
             "type": "string",
-            "enum": [
-              "health",
-              "equipment",
-              "lost"
-            ]
+            "enum": ["health", "equipment", "lost"]
           },
           "chatRoomId": {
             "description": "Chat room identifier",
@@ -5971,12 +4886,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "timestamp",
-          "location",
-          "needType",
-          "chatRoomId"
-        ]
+        "required": ["timestamp", "location", "needType", "chatRoomId"]
       },
       "HelpEventLocation": {
         "type": "object",
@@ -6003,21 +4913,14 @@
             "minimum": 0
           }
         },
-        "required": [
-          "latitude",
-          "longitude"
-        ]
+        "required": ["latitude", "longitude"]
       },
       "HelpEventAcceptance": {
         "type": "object",
         "properties": {
-          "location": {
-            "$ref": "#/components/schemas/HelpEventLocation"
-          }
+          "location": { "$ref": "#/components/schemas/HelpEventLocation" }
         },
-        "required": [
-          "location"
-        ]
+        "required": ["location"]
       },
       "HelpEventStatusUpdate": {
         "type": "object",
@@ -6026,16 +4929,10 @@
             "description": "Help event status",
             "example": "active",
             "type": "string",
-            "enum": [
-              "active",
-              "completed",
-              "cancelled"
-            ]
+            "enum": ["active", "completed", "cancelled"]
           }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "AuthResponse": {
         "type": "object",
@@ -6049,28 +4946,12 @@
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
-              "firstName": {
-                "type": "string"
-              },
-              "lastName": {
-                "nullable": true,
-                "type": "string"
-              },
-              "email": {
-                "nullable": true,
-                "type": "string"
-              },
-              "role": {
-                "type": "string"
-              }
+              "firstName": { "type": "string" },
+              "lastName": { "nullable": true, "type": "string" },
+              "email": { "nullable": true, "type": "string" },
+              "role": { "type": "string" }
             },
-            "required": [
-              "id",
-              "firstName",
-              "lastName",
-              "email",
-              "role"
-            ],
+            "required": ["id", "firstName", "lastName", "email", "role"],
             "additionalProperties": false
           },
           "accessToken": {
@@ -6082,11 +4963,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "user",
-          "accessToken",
-          "refreshToken"
-        ],
+        "required": ["user", "accessToken", "refreshToken"],
         "additionalProperties": false
       },
       "User": {
@@ -6097,27 +4974,12 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "nullable": true,
-            "type": "string"
-          },
-          "email": {
-            "nullable": true,
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "nullable": true,
-            "type": "string"
-          },
-          "lowBattery": {
-            "type": "number"
-          },
+          "firstName": { "type": "string" },
+          "lastName": { "nullable": true, "type": "string" },
+          "email": { "nullable": true, "type": "string" },
+          "role": { "type": "string" },
+          "phoneNumber": { "nullable": true, "type": "string" },
+          "lowBattery": { "type": "number" },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -6151,42 +5013,25 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "name": {
-            "description": "Segment name",
-            "type": "string"
-          },
-          "terrain": {
-            "description": "Terrain description",
-            "type": "string"
-          },
-          "avalancheDanger": {
-            "type": "boolean"
-          },
-          "isLowerSegment": {
-            "nullable": true,
-            "type": "string"
-          },
+          "name": { "description": "Segment name", "type": "string" },
+          "terrain": { "description": "Terrain description", "type": "string" },
+          "avalancheDanger": { "type": "boolean" },
+          "isLowerSegment": { "nullable": true, "type": "string" },
           "points": {
             "description": "Polygon or polyline of the segment",
             "minItems": 1,
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SegmentPoint"
-            }
+            "items": { "$ref": "#/components/schemas/SegmentPoint" }
           },
           "guideUpdate": {
             "nullable": true,
             "allOf": [
-              {
-                "$ref": "#/components/schemas/GuideUpdateRequestOutput"
-              }
+              { "$ref": "#/components/schemas/GuideUpdateRequestOutput" }
             ]
           },
           "userReviews": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SegmentUserReview"
-            }
+            "items": { "$ref": "#/components/schemas/SegmentUserReview" }
           }
         },
         "required": [
@@ -6215,10 +5060,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "lat",
-          "lng"
-        ],
+        "required": ["lat", "lng"],
         "additionalProperties": false
       },
       "SegmentUserReview": {
@@ -6240,12 +5082,7 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "hazards": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "hazards": { "type": "array", "items": { "type": "string" } }
         },
         "required": [
           "submittedAt",
@@ -6253,6 +5090,108 @@
           "secondarySnowTypeId",
           "hazards"
         ],
+        "additionalProperties": false
+      },
+      "SnowTypes": {
+        "description": "List of snow types",
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/SnowType" }
+      },
+      "SnowType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Snow type ID (UUID)",
+            "example": "72209550-799c-4a33-99ab-ca2c396f16d7",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "description": "Snow type name",
+            "example": "Puuterilumi",
+            "type": "string"
+          },
+          "colour": {
+            "description": "Snow type colour in hex format",
+            "example": "#5AABED",
+            "type": "string"
+          },
+          "skiability": {
+            "description": "Skiability rating (1-5), nullable",
+            "example": 4,
+            "nullable": true,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "primarySnowTypeId": {
+            "description": "Primary snow type ID. NULL for primary snow types, UUID for secondary snow types",
+            "example": null,
+            "nullable": true,
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "explanation": {
+            "description": "Explanation of the snow type",
+            "example": "Vastasatanut irtonainen, höyhenenkevyt lumi.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "colour"],
+        "additionalProperties": false
+      },
+      "PrimarySnowTypeWithSecondaries": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Snow type ID (UUID)",
+            "example": "72209550-799c-4a33-99ab-ca2c396f16d7",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "description": "Snow type name",
+            "example": "Puuterilumi",
+            "type": "string"
+          },
+          "colour": {
+            "description": "Snow type colour in hex format",
+            "example": "#5AABED",
+            "type": "string"
+          },
+          "skiability": {
+            "description": "Skiability rating (1-5), nullable",
+            "example": 4,
+            "nullable": true,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "primarySnowTypeId": {
+            "description": "Primary snow type ID. NULL for primary snow types, UUID for secondary snow types",
+            "example": null,
+            "nullable": true,
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "explanation": {
+            "description": "Explanation of the snow type",
+            "example": "Vastasatanut irtonainen, höyhenenkevyt lumi.",
+            "nullable": true,
+            "type": "string"
+          },
+          "secondarySnowTypes": {
+            "description": "Secondary snow types for this primary type",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SnowType" }
+          }
+        },
+        "required": ["id", "name", "colour", "secondarySnowTypes"],
         "additionalProperties": false
       },
       "Observation": {
@@ -6269,24 +5208,16 @@
             "description": "Guide update for the segment, if available",
             "nullable": true,
             "allOf": [
-              {
-                "$ref": "#/components/schemas/GuideUpdateRequestOutput"
-              }
+              { "$ref": "#/components/schemas/GuideUpdateRequestOutput" }
             ]
           },
           "userReviews": {
             "description": "User reviews for the segment",
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UserReviewObservation"
-            }
+            "items": { "$ref": "#/components/schemas/UserReviewObservation" }
           }
         },
-        "required": [
-          "segmentId",
-          "guideUpdate",
-          "userReviews"
-        ],
+        "required": ["segmentId", "guideUpdate", "userReviews"],
         "additionalProperties": false
       },
       "UserReviewObservation": {
@@ -6307,42 +5238,25 @@
           },
           "hazards": {
             "description": "Array of hazards",
-            "example": [
-              "stones",
-              "branches"
-            ],
+            "example": ["stones", "branches"],
             "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" }
           }
         },
-        "required": [
-          "submittedAt",
-          "snowTypeId",
-          "hazards"
-        ],
+        "required": ["submittedAt", "snowTypeId", "hazards"],
         "additionalProperties": false
       },
       "HelpEventRescueeView": {
         "type": "object",
         "properties": {
-          "eventId": {
-            "type": "string"
-          },
+          "eventId": { "type": "string" },
           "status": {
             "description": "Help event status",
             "example": "active",
             "type": "string",
-            "enum": [
-              "active",
-              "completed",
-              "cancelled"
-            ]
+            "enum": ["active", "completed", "cancelled"]
           },
-          "rescuee": {
-            "$ref": "#/components/schemas/HelpEventRescuee"
-          },
+          "rescuee": { "$ref": "#/components/schemas/HelpEventRescuee" },
           "location": {
             "$ref": "#/components/schemas/HelpEventLocationOutput"
           },
@@ -6358,9 +5272,7 @@
           },
           "acceptedRescuers": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HelpEventParticipation"
-            }
+            "items": { "$ref": "#/components/schemas/HelpEventParticipation" }
           },
           "updatedAt": {
             "nullable": true,
@@ -6384,29 +5296,16 @@
       "HelpEventRescuee": {
         "type": "object",
         "properties": {
-          "userId": {
-            "description": "Rescuee user ID",
-            "type": "string"
-          },
+          "userId": { "description": "Rescuee user ID", "type": "string" },
           "needType": {
             "description": "Type of help requested",
             "example": "health",
             "type": "string",
-            "enum": [
-              "health",
-              "equipment",
-              "lost"
-            ]
+            "enum": ["health", "equipment", "lost"]
           },
-          "userStatus": {
-            "$ref": "#/components/schemas/HelpEventUserStatus"
-          }
+          "userStatus": { "$ref": "#/components/schemas/HelpEventUserStatus" }
         },
-        "required": [
-          "userId",
-          "needType",
-          "userStatus"
-        ],
+        "required": ["userId", "needType", "userStatus"],
         "additionalProperties": false
       },
       "HelpEventUserStatus": {
@@ -6424,10 +5323,7 @@
             "maximum": 100
           }
         },
-        "required": [
-          "location",
-          "batteryLevel"
-        ],
+        "required": ["location", "batteryLevel"],
         "additionalProperties": false
       },
       "HelpEventParticipation": {
@@ -6437,20 +5333,12 @@
             "description": "Participation entry ID",
             "type": "string"
           },
-          "eventId": {
-            "description": "Help event ID",
-            "type": "string"
-          },
-          "responderId": {
-            "description": "Rescuer user ID",
-            "type": "string"
-          },
+          "eventId": { "description": "Help event ID", "type": "string" },
+          "responderId": { "description": "Rescuer user ID", "type": "string" },
           "location": {
             "nullable": true,
             "allOf": [
-              {
-                "$ref": "#/components/schemas/HelpEventLocationOutput"
-              }
+              { "$ref": "#/components/schemas/HelpEventLocationOutput" }
             ]
           },
           "acceptedAt": {
@@ -6472,22 +5360,14 @@
       "HelpEventSummary": {
         "type": "object",
         "properties": {
-          "eventId": {
-            "type": "string"
-          },
+          "eventId": { "type": "string" },
           "status": {
             "description": "Help event status",
             "example": "active",
             "type": "string",
-            "enum": [
-              "active",
-              "completed",
-              "cancelled"
-            ]
+            "enum": ["active", "completed", "cancelled"]
           },
-          "rescuee": {
-            "$ref": "#/components/schemas/HelpEventRescuee"
-          },
+          "rescuee": { "$ref": "#/components/schemas/HelpEventRescuee" },
           "location": {
             "$ref": "#/components/schemas/HelpEventLocationOutput"
           },
@@ -6513,11 +5393,7 @@
         "additionalProperties": false
       },
       "HelpEventRescuerView": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/HelpEventSummary"
-          }
-        ]
+        "allOf": [{ "$ref": "#/components/schemas/HelpEventSummary" }]
       },
       "WeatherMetric": {
         "type": "object",
@@ -6525,12 +5401,7 @@
           "type": {
             "description": "Metric type",
             "type": "string",
-            "enum": [
-              "average",
-              "minimum",
-              "maximum",
-              "change"
-            ]
+            "enum": ["average", "minimum", "maximum", "change"]
           },
           "item": {
             "description": "Weather item",
@@ -6552,12 +5423,8 @@
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
-          "period": {
-            "$ref": "#/components/schemas/WeatherPeriod"
-          },
-          "location": {
-            "$ref": "#/components/schemas/WeatherLocation"
-          }
+          "period": { "$ref": "#/components/schemas/WeatherPeriod" },
+          "location": { "$ref": "#/components/schemas/WeatherLocation" }
         },
         "required": [
           "type",
@@ -6586,10 +5453,7 @@
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
           }
         },
-        "required": [
-          "start",
-          "end"
-        ],
+        "required": ["start", "end"],
         "additionalProperties": false
       },
       "WeatherLocation": {
@@ -6611,11 +5475,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "name",
-          "latitude",
-          "longitude"
-        ],
+        "required": ["name", "latitude", "longitude"],
         "additionalProperties": false
       },
       "WeatherFilterDaysResponse": {
@@ -6624,9 +5484,7 @@
           "item": {
             "description": "Weather item used for filtering",
             "type": "string",
-            "enum": [
-              "temperature"
-            ]
+            "enum": ["temperature"]
           },
           "threshold": {
             "description": "Threshold for the average temperature",
@@ -6638,12 +5496,8 @@
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
-          "period": {
-            "$ref": "#/components/schemas/WeatherPeriod"
-          },
-          "location": {
-            "$ref": "#/components/schemas/WeatherLocation"
-          },
+          "period": { "$ref": "#/components/schemas/WeatherPeriod" },
+          "location": { "$ref": "#/components/schemas/WeatherLocation" },
           "matches": {
             "description": "Dates matching the filter",
             "type": "array",
@@ -6661,10 +5515,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "date",
-                "averageTemperature"
-              ],
+              "required": ["date", "averageTemperature"],
               "additionalProperties": false
             }
           }
@@ -6701,14 +5552,9 @@
                 "example": "Validation failed",
                 "type": "string"
               },
-              "details": {
-                "description": "Additional error details"
-              }
+              "details": { "description": "Additional error details" }
             },
-            "required": [
-              "code",
-              "message"
-            ],
+            "required": ["code", "message"],
             "additionalProperties": false
           },
           "meta": {
@@ -6723,17 +5569,11 @@
                 "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
               }
             },
-            "required": [
-              "timestamp"
-            ],
+            "required": ["timestamp"],
             "additionalProperties": false
           }
         },
-        "required": [
-          "success",
-          "error",
-          "meta"
-        ],
+        "required": ["success", "error", "meta"],
         "additionalProperties": false
       },
       "HealthResponse": {
@@ -6750,10 +5590,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "status",
-          "version"
-        ],
+        "required": ["status", "version"],
         "additionalProperties": false
       },
       "GuideUpdateRequestOutput": {
@@ -6771,9 +5608,7 @@
               "550e8400-e29b-41d4-a716-446655440001",
               "550e8400-e29b-41d4-a716-446655440002"
             ],
-            "default": [
-              
-            ],
+            "default": [],
             "maxItems": 2,
             "type": "array",
             "items": {
@@ -6788,9 +5623,7 @@
               "550e8400-e29b-41d4-a716-446655440001",
               "550e8400-e29b-41d4-a716-446655440002"
             ],
-            "default": [
-              
-            ],
+            "default": [],
             "maxItems": 2,
             "type": "array",
             "items": {
@@ -6798,12 +5631,16 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
+          },
+          "hazards": {
+            "description": "Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])",
+            "example": ["stones"],
+            "default": [],
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Hazard" }
           }
         },
-        "required": [
-          "primarySnowTypeIds",
-          "secondarySnowTypeIds"
-        ],
+        "required": ["primarySnowTypeIds", "secondarySnowTypeIds", "hazards"],
         "additionalProperties": false
       },
       "HelpEventLocationOutput": {
@@ -6831,10 +5668,7 @@
             "minimum": 0
           }
         },
-        "required": [
-          "latitude",
-          "longitude"
-        ],
+        "required": ["latitude", "longitude"],
         "additionalProperties": false
       }
     },

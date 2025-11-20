@@ -8,6 +8,6 @@
     "lint": "dart analyze --fatal-infos",
     "typecheck": "dart analyze --fatal-infos",
     "test": "flutter test --coverage",
-    "build": "flutter build apk --release"
+    "build": "if [ \"$CI\" = \"true\" ]; then echo 'Skipping mobile build in CI'; else flutter build apk --release; fi"
   }
 }

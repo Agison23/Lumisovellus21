@@ -1,8 +1,10 @@
-
 import { cleanup, render, screen } from '@testing-library/react'
 import { useLocale } from 'next-intl'
 import React from 'react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+
+import LocaleSwitcher from '../components/locale-switcher'
+import { LocaleSwitcherSelect } from '../components/locale-switcher/locale-switcher-select'
 
 // Mock next-intl hooks used by LocaleSwitcher so outputs are deterministic
 vi.mock('next-intl', () => {
@@ -22,9 +24,6 @@ vi.mock('next-intl', () => {
 vi.mock('@/i18n/locale', () => ({
   setUserLocale: vi.fn()
 }))
-
-import LocaleSwitcher from '../components/locale-switcher'
-import { LocaleSwitcherSelect } from '../components/locale-switcher/locale-switcher-select'
 
 // Access the mocked functions after imports
 const mockUseLocale = vi.mocked(useLocale)

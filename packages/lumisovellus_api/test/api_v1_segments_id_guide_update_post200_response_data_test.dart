@@ -22,5 +22,10 @@ void main() {
       // TODO
     });
 
+    // List<String> hazards
+    test('to test the property `hazards`', () async {
+      // TODO
+    });
+
   });
 }
