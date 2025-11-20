@@ -13,14 +13,6 @@
       ]
     }
   },
-  // "features": {
-  //   // Enable SSH agent forwarding
-  //   "ghcr.io/devcontainers/features/ssh-agent:1": {}
-  // },
-  // "containerEnv": {
-  //   // Forward SSH agent socket inside container
-  //   "SSH_AUTH_SOCK": "/run/ssh-agent.sock"
-  // },
   "postCreateCommand": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && cd apps/mobile && flutter pub get",
   "forwardPorts": [3000, 8080]
 }
