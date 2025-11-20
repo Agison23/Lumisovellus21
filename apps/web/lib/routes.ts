@@ -1,36 +1,31 @@
+
 export type RouteDefinition = {
-	name: string;
-	path: string;
-	i18nNamespace: string; // namespace to pass to useTranslations(..)
-	i18nKey: string; // key inside that namespace
+  name: string;
+  path: string;
+  i18nNamespace: string; // namespace to pass to useTranslations(..)
+  i18nKey: string; // key inside that namespace
 };
 
 export const routeDefinitions: RouteDefinition[] = [
-	{
-		name: "Map",
-		path: "/",
-		i18nNamespace: "AppLayout",
-		i18nKey: "map",
-	},
-	{
-		name: "Definitions",
-		path: "/definitions",
-		i18nNamespace: "AppLayout",
-		i18nKey: "definitions",
-	},
-	{
-		name: "Weather",
-		path: "/weather",
-		i18nNamespace: "AppLayout",
-		i18nKey: "weather",
-	},
-	{
-		name: "Dashboard",
-		path: "/dashboard",
-		i18nNamespace: "AppLayout",
-		i18nKey: "dashboard",
-	},
-];
+  {
+    name: 'Map',
+    path: '/',
+    i18nNamespace: 'AppLayout',
+    i18nKey: 'map',
+  },
+  {
+    name: 'Definitions',
+    path: '/definitions',
+    i18nNamespace: 'AppLayout',
+    i18nKey: 'definitions',
+  },
+  {
+    name: 'Weather',
+    path: '/weather',
+    i18nNamespace: 'AppLayout',
+    i18nKey: 'weather',
+  }
+]
 
 export type RouteKey = keyof typeof routeDefinitions;
 

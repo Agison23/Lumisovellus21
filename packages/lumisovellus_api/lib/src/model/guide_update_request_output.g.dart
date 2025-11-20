@@ -11,11 +11,7 @@ GuideUpdateRequestOutput _$GuideUpdateRequestOutputFromJson(
 ) => $checkedCreate('GuideUpdateRequestOutput', json, ($checkedConvert) {
   $checkKeys(
     json,
-    requiredKeys: const [
-      'primarySnowTypeIds',
-      'secondarySnowTypeIds',
-      'hazards',
-    ],
+    requiredKeys: const ['primarySnowTypeIds', 'secondarySnowTypeIds'],
   );
   final val = GuideUpdateRequestOutput(
     description: $checkedConvert('description', (v) => v as String?),
@@ -27,14 +23,6 @@ GuideUpdateRequestOutput _$GuideUpdateRequestOutputFromJson(
       'secondarySnowTypeIds',
       (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
     ),
-    hazards: $checkedConvert(
-      'hazards',
-      (v) =>
-          (v as List<dynamic>?)
-              ?.map((e) => $enumDecode(_$HazardEnumMap, e))
-              .toList() ??
-          [],
-    ),
   );
   return val;
 });
@@ -45,7 +33,4 @@ Map<String, dynamic> _$GuideUpdateRequestOutputToJson(
   'description': ?instance.description,
   'primarySnowTypeIds': instance.primarySnowTypeIds,
   'secondarySnowTypeIds': instance.secondarySnowTypeIds,
-  'hazards': instance.hazards.map((e) => _$HazardEnumMap[e]!).toList(),
 };
-
-const _$HazardEnumMap = {Hazard.stones: 'stones', Hazard.branches: 'branches'};

@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/network/providers.dart';
-import 'package:lumisovellus/features/map/data/repositories/snow_types_repository.dart';
-import 'package:lumisovellus/features/map/data/services/snow_types_service.dart';
+import 'package:lumisovellus/features/map/data/services/snow_type_service.dart';
+import 'package:lumisovellus/features/map/data/services/mock_snow_type_service.dart';
 import '../data/repositories/segments_repository.dart';
 import '../data/services/segments_service.dart';
+import '../data/models/snow_type.dart';
+import '../data/repositories/snow_type_repository.dart';
 import './map_state.dart';
 
 final segmentsServiceProvider = Provider<SegmentsService>(
@@ -34,25 +36,23 @@ final segmentsNotifierProvider =
       SegmentsNotifier.new,
     );
 
-final snowTypesServiceProvider = Provider<SnowTypesService>(
-  (ref) => SnowTypesService(ref.watch(apiClientProvider)),
+final snowTypeServiceProvider = Provider<SnowTypeService>(
+  (ref) => MockSnowTypeService(),
 );
 
-final snowTypesRepositoryProvider = Provider<SnowTypesRepository>(
-  (ref) => SnowTypesRepository(ref.watch(snowTypesServiceProvider)),
+final snowTypeRepositoryProvider = Provider(
+  (ref) => SnowTypeRepository(ref.watch(snowTypeServiceProvider)),
 );
 
-class SnowTypesNotifier extends AutoDisposeAsyncNotifier<SnowTypesState> {
+class SnowTypesNotifier extends AutoDisposeAsyncNotifier<List<SnowType>> {
   @override
-  Future<SnowTypesState> build() async {
-    final repo = ref.watch(snowTypesRepositoryProvider);
-    final snowTypes = await repo.getSnowTypes();
-    return SnowTypesState(snowTypes: snowTypes);
+  Future<List<SnowType>> build() async {
+    final repo = ref.watch(snowTypeRepositoryProvider);
+    return repo.getSnowTypes();
   }
 }
 
-
 final snowTypesNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<SnowTypesNotifier, SnowTypesState>(
+    AutoDisposeAsyncNotifierProvider<SnowTypesNotifier, List<SnowType>>(
       SnowTypesNotifier.new,
     );

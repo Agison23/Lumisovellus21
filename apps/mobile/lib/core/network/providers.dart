@@ -21,5 +21,6 @@ final connectivityProvider = Provider<bool>((ref) {
 
 final apiClientProvider = Provider<ApiClient>((ref) {
   const baseUrl = 'http://localhost:3001';
-  return ApiClient(baseUrl: baseUrl);
+  const token = null;
+  return ApiClient(baseUrl: baseUrl, token: token);
 });

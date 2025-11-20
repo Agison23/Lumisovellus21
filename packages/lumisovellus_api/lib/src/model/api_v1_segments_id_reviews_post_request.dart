@@ -3,7 +3,6 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lumisovellus_api/src/model/hazard.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'api_v1_segments_id_reviews_post_request.g.dart';
@@ -48,7 +47,7 @@ ApiV1SegmentsIdReviewsPostRequest({
   )
 
 
-  final List<Hazard>? hazards;
+  final List<ApiV1SegmentsIdReviewsPostRequestHazardsEnum>? hazards;
 
 
 
@@ -89,4 +88,22 @@ ApiV1SegmentsIdReviewsPostRequest({
   }
 
 }
+
+/// Hazard type found on the trail
+enum ApiV1SegmentsIdReviewsPostRequestHazardsEnum {
+    /// Hazard type found on the trail
+@JsonValue(r'stones')
+stones(r'stones'),
+    /// Hazard type found on the trail
+@JsonValue(r'branches')
+branches(r'branches');
+
+const ApiV1SegmentsIdReviewsPostRequestHazardsEnum(this.value);
+
+final String value;
+
+@override
+String toString() => value;
+}
+
 

@@ -13,8 +13,7 @@ void main() {
       // TODO
     });
 
-    // List of snow types
-    // List<SnowType> data
+    // List<Object> data
     test('to test the property `data`', () async {
       // TODO
     });

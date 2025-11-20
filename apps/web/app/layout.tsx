@@ -14,7 +14,6 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {AuthProvider} from "@/hooks/use-auth";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -38,35 +37,31 @@ export default async function RootLayout({
 }>) {
 	const cookieStore = await cookies();
 	const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-	const sessonToken = cookieStore.get("sessionToken")?.value;
-	const isLoggedIn = !!sessonToken;
 
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
 				<NextIntlClientProvider>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-						<AuthProvider isLoggedIn={isLoggedIn}>
-							<SidebarProvider defaultOpen={defaultOpen}>
-								<div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
-									<AppSidebar />
-									<SidebarInset className="relative flex flex-col gap-2 flex-1">
-										<div className="w-max flex justify-start items-center absolute z-10 p-2">
-											<SidebarTrigger className="bg-background" />
-										</div>
-										<div className="flex-1 w-full h-full rounded-xl overflow-clip">
-											<Providers>
-												{children}
-												<Toaster position="bottom-left" />
-											</Providers>
-										</div>
-										<div className="w-full flex justify-center absolute bottom-0 p-2 z-9999 pointer-events-none">
-											<Nav />
-										</div>
-									</SidebarInset>
-								</div>
-							</SidebarProvider>
-						</AuthProvider>
+						<SidebarProvider defaultOpen={defaultOpen}>
+							<div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
+								<AppSidebar />
+								<SidebarInset className="relative flex flex-col gap-2 flex-1">
+									<div className="w-full flex justify-start items-center absolute z-10 p-2">
+										<SidebarTrigger className="bg-background" />
+									</div>
+									<div className="flex-1 w-full h-full rounded-xl overflow-clip">
+										<Providers>
+											{children}
+											<Toaster position="bottom-left" />
+										</Providers>
+									</div>
+									<div className="w-full flex justify-center absolute bottom-0 p-2 z-9999 pointer-events-none">
+										<Nav />
+									</div>
+								</SidebarInset>
+							</div>
+						</SidebarProvider>
 					</ThemeProvider>
 				</NextIntlClientProvider>
 			</body>

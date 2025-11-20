@@ -25,21 +25,3 @@ class SegmentsState {
     );
   }
 }
-
-class SnowTypesState {
-  final List<SnowType>? snowTypes;
-
-  const SnowTypesState({
-    this.snowTypes
-  });
-
-  SnowTypesState copyWith({
-    List<SnowType>? snowTypes,
-    Object? selectedId = _sentinel,
-    Object? hoveredId = _sentinel,
-  }) {
-    return SnowTypesState(
-      snowTypes: snowTypes ?? this.snowTypes
-    );
-  }
-}

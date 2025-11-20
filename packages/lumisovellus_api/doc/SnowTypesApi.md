@@ -9,18 +9,17 @@ All URIs are relative to *http://localhost:3001*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**apiV1SnowTypesGet**](SnowTypesApi.md#apiv1snowtypesget) | **GET** /api/v1/snow-types | Get all snow types (primary and secondary)
+[**apiV1SnowTypesGet**](SnowTypesApi.md#apiv1snowtypesget) | **GET** /api/v1/snow-types | Get all snow types
 [**apiV1SnowTypesIdSecondaryPost**](SnowTypesApi.md#apiv1snowtypesidsecondarypost) | **POST** /api/v1/snow-types/{id}/secondary | Add secondary snow types to a snow type
 [**apiV1SnowTypesPost**](SnowTypesApi.md#apiv1snowtypespost) | **POST** /api/v1/snow-types | Create a new snow type
-[**apiV1SnowTypesPrimaryGet**](SnowTypesApi.md#apiv1snowtypesprimaryget) | **GET** /api/v1/snow-types/primary | Get all primary snow types
 
 
 # **apiV1SnowTypesGet**
 > ApiV1SnowTypesGet200Response apiV1SnowTypesGet()
 
-Get all snow types (primary and secondary)
+Get all snow types
 
-Retrieve all snow types including both primary and secondary snow types in a flat list.
+Retrieve all available snow types for reviews
 
 ### Example
 ```dart
@@ -55,7 +54,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1SnowTypesIdSecondaryPost**
-> ApiV1SnowTypesIdSecondaryPost200Response apiV1SnowTypesIdSecondaryPost(id, addSecondarySnowTypesRequest)
+> ApiV1SnowTypesPost201Response apiV1SnowTypesIdSecondaryPost(id, addSecondarySnowTypesRequest)
 
 Add secondary snow types to a snow type
 
@@ -86,11 +85,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiV1SnowTypesIdSecondaryPost200Response**](ApiV1SnowTypesIdSecondaryPost200Response.md)
+[**ApiV1SnowTypesPost201Response**](ApiV1SnowTypesPost201Response.md)
 
 ### Authorization
 
-[BearerAuth](../README.md#BearerAuth)
+No authorization required
 
 ### HTTP request headers
 
@@ -111,7 +110,7 @@ Create a new snow type with the provided information. Requires authentication an
 import 'package:lumisovellus_api/api.dart';
 
 final api = LumisovellusApi().getSnowTypesApi();
-final CreateSnowTypeRequest createSnowTypeRequest = {"name":"Powder","colour":"#FFFFFF","skiability":5,"primarySnowTypeId":null,"explanation":"Fresh powder snow"}; // CreateSnowTypeRequest | 
+final CreateSnowTypeRequest createSnowTypeRequest = {"name":"Powder","colour":"#FFFFFF","skiability":5,"categoryId":1,"explanation":"Fresh powder snow"}; // CreateSnowTypeRequest | 
 
 try {
     final response = api.apiV1SnowTypesPost(createSnowTypeRequest);
@@ -133,50 +132,11 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **apiV1SnowTypesPrimaryGet**
-> ApiV1SnowTypesPrimaryGet200Response apiV1SnowTypesPrimaryGet()
-
-Get all primary snow types
-
-Retrieve all primary snow types (primarySnowTypeId: null) for reviews. Each primary snow type includes an array of its secondary snow types.
-
-### Example
-```dart
-import 'package:lumisovellus_api/api.dart';
-
-final api = LumisovellusApi().getSnowTypesApi();
-
-try {
-    final response = api.apiV1SnowTypesPrimaryGet();
-    print(response);
-} catch on DioException (e) {
-    print('Exception when calling SnowTypesApi->apiV1SnowTypesPrimaryGet: $e\n');
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-[**ApiV1SnowTypesPrimaryGet200Response**](ApiV1SnowTypesPrimaryGet200Response.md)
-
-### Authorization
-
 No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

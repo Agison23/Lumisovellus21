@@ -23,7 +23,7 @@ CreateSnowTypeRequest({
   required  this.name,
   required  this.colour,
    this.skiability,
-   this.primarySnowTypeId,
+   this.categoryId,
    this.explanation,
 });
 
@@ -68,16 +68,18 @@ CreateSnowTypeRequest({
 
 
 
-      /// Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
+      /// Category ID
+          // minimum: -9007199254740991
+          // maximum: 9007199254740991
   @JsonKey(
     
-    name: r'primarySnowTypeId',
+    name: r'categoryId',
     required: false,
     includeIfNull: false,
   )
 
 
-  final String? primarySnowTypeId;
+  final int? categoryId;
 
 
 
@@ -101,7 +103,7 @@ CreateSnowTypeRequest({
       other.name == name &&
       other.colour == colour &&
       other.skiability == skiability &&
-      other.primarySnowTypeId == primarySnowTypeId &&
+      other.categoryId == categoryId &&
       other.explanation == explanation;
 
     @override
@@ -109,7 +111,7 @@ CreateSnowTypeRequest({
         name.hashCode +
         colour.hashCode +
         (skiability == null ? 0 : skiability.hashCode) +
-        (primarySnowTypeId == null ? 0 : primarySnowTypeId.hashCode) +
+        (categoryId == null ? 0 : categoryId.hashCode) +
         (explanation == null ? 0 : explanation.hashCode);
 
   factory CreateSnowTypeRequest.fromJson(Map<String, dynamic> json) => _$CreateSnowTypeRequestFromJson(json);

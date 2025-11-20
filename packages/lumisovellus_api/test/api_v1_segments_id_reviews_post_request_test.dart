@@ -14,7 +14,7 @@ void main() {
     });
 
     // Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])
-    // List<Hazard> hazards (default value: [])
+    // List<String> hazards (default value: [])
     test('to test the property `hazards`', () async {
       // TODO
     });

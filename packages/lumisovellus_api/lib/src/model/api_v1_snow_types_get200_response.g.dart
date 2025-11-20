@@ -15,10 +15,7 @@ ApiV1SnowTypesGet200Response _$ApiV1SnowTypesGet200ResponseFromJson(
     data: $checkedConvert(
       'data',
       (v) =>
-          (v as List<dynamic>?)
-              ?.map((e) => SnowType.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          (v as List<dynamic>?)?.map((e) => e as Object).toList() ?? const [],
     ),
     meta: $checkedConvert(
       'meta',
@@ -32,6 +29,6 @@ Map<String, dynamic> _$ApiV1SnowTypesGet200ResponseToJson(
   ApiV1SnowTypesGet200Response instance,
 ) => <String, dynamic>{
   'success': instance.success,
-  'data': instance.data.map((e) => e.toJson()).toList(),
+  'data': instance.data,
   'meta': instance.meta.toJson(),
 };

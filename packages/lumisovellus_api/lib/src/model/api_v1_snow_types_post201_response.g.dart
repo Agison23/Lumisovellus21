@@ -12,10 +12,7 @@ ApiV1SnowTypesPost201Response _$ApiV1SnowTypesPost201ResponseFromJson(
   $checkKeys(json, requiredKeys: const ['success', 'data', 'meta']);
   final val = ApiV1SnowTypesPost201Response(
     success: $checkedConvert('success', (v) => v as bool),
-    data: $checkedConvert(
-      'data',
-      (v) => SnowType.fromJson(v as Map<String, dynamic>),
-    ),
+    data: $checkedConvert('data', (v) => v),
     meta: $checkedConvert(
       'meta',
       (v) => HealthGet200ResponseMeta.fromJson(v as Map<String, dynamic>),
@@ -28,6 +25,6 @@ Map<String, dynamic> _$ApiV1SnowTypesPost201ResponseToJson(
   ApiV1SnowTypesPost201Response instance,
 ) => <String, dynamic>{
   'success': instance.success,
-  'data': instance.data.toJson(),
+  'data': instance.data,
   'meta': instance.meta.toJson(),
 };
