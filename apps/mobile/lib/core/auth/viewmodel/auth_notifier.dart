@@ -106,3 +106,13 @@ class AuthSessionNotifier extends Notifier<AuthSession> {
     state = const AuthSession();
   }
 }
+
+final loggedInRoleProvider = Provider<String?>((ref) {
+  final session = ref.watch(authSessionProvider);
+
+  if (!session.isLoggedIn) {
+    return null;
+  }
+
+  return session.user?.role;
+});

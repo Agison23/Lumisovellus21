@@ -1,4 +1,4 @@
-# lumisovellus_api.model.ApiV1UsersIdPutRequest
+# lumisovellus_api.model.UpdateUserRequest
 
 ## Load the model package
 ```dart
@@ -11,8 +11,8 @@ Name | Type | Description | Notes
 **firstName** | **String** | User first name | [optional] 
 **lastName** | **String** | User last name | [optional] 
 **email** | **String** | User email address | [optional] 
+**role** | **String** | User role | [optional] 
 **phoneNumber** | **String** | Phone number | [optional] 
-**role** | **String** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

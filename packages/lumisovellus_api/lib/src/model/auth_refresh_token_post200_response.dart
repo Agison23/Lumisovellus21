@@ -3,10 +3,11 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lumisovellus_api/src/model/token_pair.dart';
 import 'package:lumisovellus_api/src/model/health_get200_response_meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'api_v1_snow_types_id_secondary_post200_response.g.dart';
+part 'auth_refresh_token_post200_response.g.dart';
 
 
 @JsonSerializable(
@@ -15,12 +16,12 @@ part 'api_v1_snow_types_id_secondary_post200_response.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ApiV1SnowTypesIdSecondaryPost200Response {
+class AuthRefreshTokenPost200Response {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [ApiV1SnowTypesIdSecondaryPost200Response] instance.
-ApiV1SnowTypesIdSecondaryPost200Response({
+/// Returns a new [AuthRefreshTokenPost200Response] instance.
+AuthRefreshTokenPost200Response({
   required  this.success,
   required  this.data,
   required  this.meta,
@@ -43,11 +44,11 @@ ApiV1SnowTypesIdSecondaryPost200Response({
     
     name: r'data',
     required: true,
-    includeIfNull: true,
+    includeIfNull: false,
   )
 
 
-  final Object? data;
+  final TokenPair data;
 
 
 
@@ -66,7 +67,7 @@ ApiV1SnowTypesIdSecondaryPost200Response({
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is ApiV1SnowTypesIdSecondaryPost200Response &&
+    bool operator ==(Object other) => identical(this, other) || other is AuthRefreshTokenPost200Response &&
       other.success == success &&
       other.data == data &&
       other.meta == meta;
@@ -74,12 +75,12 @@ ApiV1SnowTypesIdSecondaryPost200Response({
     @override
     int get hashCode =>
         success.hashCode +
-        (data == null ? 0 : data.hashCode) +
+        data.hashCode +
         meta.hashCode;
 
-  factory ApiV1SnowTypesIdSecondaryPost200Response.fromJson(Map<String, dynamic> json) => _$ApiV1SnowTypesIdSecondaryPost200ResponseFromJson(json);
+  factory AuthRefreshTokenPost200Response.fromJson(Map<String, dynamic> json) => _$AuthRefreshTokenPost200ResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ApiV1SnowTypesIdSecondaryPost200ResponseToJson(this);
+  Map<String, dynamic> toJson() => _$AuthRefreshTokenPost200ResponseToJson(this);
 
   @override
   String toString() {

@@ -65,7 +65,7 @@ void main() {
     //
     // Update user information (admin only)
     //
-    //Future<AuthProfileGet200Response> apiV1UsersIdPut(String id, ApiV1UsersIdPutRequest apiV1UsersIdPutRequest) async
+    //Future<AuthProfileGet200Response> apiV1UsersIdPut(String id, UpdateUserRequest updateUserRequest) async
     test('test apiV1UsersIdPut', () async {
       // TODO
     });

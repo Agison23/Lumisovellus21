@@ -228,7 +228,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authRefreshTokenPost**
-> AuthRegisterPost201Response authRefreshTokenPost(refreshTokenRequest)
+> AuthRefreshTokenPost200Response authRefreshTokenPost(refreshTokenRequest)
 
 Refresh access token
 
@@ -257,7 +257,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AuthRegisterPost201Response**](AuthRegisterPost201Response.md)
+[**AuthRefreshTokenPost200Response**](AuthRefreshTokenPost200Response.md)
 
 ### Authorization
 

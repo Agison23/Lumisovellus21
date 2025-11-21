@@ -7,6 +7,7 @@ void main() {
   // TODO add properties to the entity
 
   group(AuthResponseUser, () {
+    // User ID
     // String id
     test('to test the property `id`', () async {
       // TODO

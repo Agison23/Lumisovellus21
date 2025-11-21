@@ -6,7 +6,7 @@
 import 'package:lumisovellus_api/src/model/snow_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'primary_snow_type_with_secondaries.g.dart';
+part 'primary_snow_type.g.dart';
 
 
 @JsonSerializable(
@@ -15,22 +15,23 @@ part 'primary_snow_type_with_secondaries.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class PrimarySnowTypeWithSecondaries {
+class PrimarySnowType {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [PrimarySnowTypeWithSecondaries] instance.
-PrimarySnowTypeWithSecondaries({
+/// Returns a new [PrimarySnowType] instance.
+PrimarySnowType({
   required  this.id,
+  required  this.identifier,
   required  this.name,
   required  this.colour,
-   this.skiability,
-   this.primarySnowTypeId,
-   this.explanation,
-  this.secondarySnowTypes = const [],
+  required  this.skiability,
+  required  this.primarySnowTypeId,
+  required  this.explanation,
+  this.secondaryTypes = const [],
 });
 
-      /// Snow type ID (UUID)
+      /// Snow type ID
   @JsonKey(
     
     name: r'id',
@@ -40,6 +41,19 @@ PrimarySnowTypeWithSecondaries({
 
 
   final String id;
+
+
+
+      /// Snow type identifier (slug)
+  @JsonKey(
+    
+    name: r'identifier',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String identifier;
 
 
 
@@ -69,14 +83,14 @@ PrimarySnowTypeWithSecondaries({
 
 
 
-      /// Skiability rating (1-5), nullable
-          // minimum: 1
-          // maximum: 5
+      /// Skiability rating (1-5)
+          // minimum: -9007199254740991
+          // maximum: 9007199254740991
   @JsonKey(
     
     name: r'skiability',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -88,8 +102,8 @@ PrimarySnowTypeWithSecondaries({
   @JsonKey(
     
     name: r'primarySnowTypeId',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -101,8 +115,8 @@ PrimarySnowTypeWithSecondaries({
   @JsonKey(
     
     name: r'explanation',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -110,44 +124,46 @@ PrimarySnowTypeWithSecondaries({
 
 
 
-      /// Secondary snow types for this primary type
+      /// Array of secondary snow types for this snow type
   @JsonKey(
     
-    name: r'secondarySnowTypes',
+    name: r'secondaryTypes',
     required: true,
     includeIfNull: false,
   )
 
 
-  final List<SnowType> secondarySnowTypes;
+  final List<SnowType> secondaryTypes;
 
 
 
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is PrimarySnowTypeWithSecondaries &&
+    bool operator ==(Object other) => identical(this, other) || other is PrimarySnowType &&
       other.id == id &&
+      other.identifier == identifier &&
       other.name == name &&
       other.colour == colour &&
       other.skiability == skiability &&
       other.primarySnowTypeId == primarySnowTypeId &&
       other.explanation == explanation &&
-      other.secondarySnowTypes == secondarySnowTypes;
+      other.secondaryTypes == secondaryTypes;
 
     @override
     int get hashCode =>
         id.hashCode +
+        identifier.hashCode +
         name.hashCode +
         colour.hashCode +
         (skiability == null ? 0 : skiability.hashCode) +
         (primarySnowTypeId == null ? 0 : primarySnowTypeId.hashCode) +
         (explanation == null ? 0 : explanation.hashCode) +
-        secondarySnowTypes.hashCode;
+        secondaryTypes.hashCode;
 
-  factory PrimarySnowTypeWithSecondaries.fromJson(Map<String, dynamic> json) => _$PrimarySnowTypeWithSecondariesFromJson(json);
+  factory PrimarySnowType.fromJson(Map<String, dynamic> json) => _$PrimarySnowTypeFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PrimarySnowTypeWithSecondariesToJson(this);
+  Map<String, dynamic> toJson() => _$PrimarySnowTypeToJson(this);
 
   @override
   String toString() {

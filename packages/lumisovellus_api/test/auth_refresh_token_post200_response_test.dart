@@ -1,19 +1,19 @@
 import 'package:test/test.dart';
 import 'package:lumisovellus_api/lumisovellus_api.dart';
 
-// tests for ApiV1SnowTypesIdSecondaryPost200Response
+// tests for AuthRefreshTokenPost200Response
 void main() {
-  final ApiV1SnowTypesIdSecondaryPost200Response? instance = /* ApiV1SnowTypesIdSecondaryPost200Response(...) */ null;
+  final AuthRefreshTokenPost200Response? instance = /* AuthRefreshTokenPost200Response(...) */ null;
   // TODO add properties to the entity
 
-  group(ApiV1SnowTypesIdSecondaryPost200Response, () {
+  group(AuthRefreshTokenPost200Response, () {
     // Indicates if the request was successful
     // bool success
     test('to test the property `success`', () async {
       // TODO
     });
 
-    // Object data
+    // TokenPair data
     test('to test the property `data`', () async {
       // TODO
     });

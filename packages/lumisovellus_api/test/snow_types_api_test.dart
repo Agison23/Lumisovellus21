@@ -20,7 +20,7 @@ void main() {
     //
     // Associate one or more existing snow types as secondary types for the specified snow type. All entities are SnowTypes - \"secondary\" refers only to the relationship. Requires authentication and admin role.
     //
-    //Future<ApiV1SnowTypesIdSecondaryPost200Response> apiV1SnowTypesIdSecondaryPost(String id, AddSecondarySnowTypesRequest addSecondarySnowTypesRequest) async
+    //Future<ApiV1SnowTypesPost201Response> apiV1SnowTypesIdSecondaryPost(String id, AddSecondarySnowTypesRequest addSecondarySnowTypesRequest) async
     test('test apiV1SnowTypesIdSecondaryPost', () async {
       // TODO
     });

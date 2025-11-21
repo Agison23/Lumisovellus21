@@ -122,5 +122,15 @@
   "role": "Rooli",
   "phoneNumber": "Puhelinnumero",
   "registeredAt": "Rekisteröitynyt",
-  "logout": "Kirjaudu ulos"
+  "logout": "Kirjaudu ulos",
+  "guideHazards": "Esteet",
+  "guideInfoFromUsers": "Alla oleva tieto perustuu muiden käyttäjien havaintoihin.",
+  "timeJustNow": "juuri äsken",
+  "timeUnderMinuteAgo": "alle minuutti sitten",
+  "timeOneMinuteAgo": "1 minuutti sitten",
+  "timeNMinutesAgo": "{minutes} minuuttia sitten",
+  "timeOneHourAgo": "1 tunti sitten",
+  "timeNHoursAgo": "{hours} tuntia sitten",
+  "timeOneDayAgo": "1 päivä sitten",
+  "timeNDaysAgo": "{days} päivää sitten"
 }
