@@ -187,35 +187,35 @@ void main() {
         reset(mockService);
       }
     });
+  });
 
-    group('cancelHelpEvent', () {
-      test('delegates to service cancelHelp method', () async {
-        // Arrange
-        const requestId = testRequestId789;
-        when(mockService.cancelHelp(any)).thenAnswer((_) async {});
+  group('cancelHelpEvent', () {
+    test('delegates to service cancelHelp method', () async {
+      // Arrange
+      const requestId = testRequestId789;
+      when(mockService.cancelHelp(any)).thenAnswer((_) async {});
 
-        // Act
-        await repository.cancelHelpEvent(requestId);
+      // Act
+      await repository.cancelHelpEvent(requestId);
 
-        // Assert
-        verify(mockService.cancelHelp(requestId)).called(1);
-        verifyNoMoreInteractions(mockService);
-      });
+      // Assert
+      verify(mockService.cancelHelp(requestId)).called(1);
+      verifyNoMoreInteractions(mockService);
     });
+  });
 
-    group('completeHelpEvent', () {
-      test('delegates to service completeHelp method', () async {
-        // Arrange
-        const requestId = testRequestId101;
-        when(mockService.completeHelp(any)).thenAnswer((_) async {});
+  group('completeHelpEvent', () {
+    test('delegates to service completeHelp method', () async {
+      // Arrange
+      const requestId = testRequestId101;
+      when(mockService.completeHelp(any)).thenAnswer((_) async {});
 
-        // Act
-        await repository.completeHelpEvent(requestId);
+      // Act
+      await repository.completeHelpEvent(requestId);
 
-        // Assert
-        verify(mockService.completeHelp(requestId)).called(1);
-        verifyNoMoreInteractions(mockService);
-      });
+      // Assert
+      verify(mockService.completeHelp(requestId)).called(1);
+      verifyNoMoreInteractions(mockService);
     });
   });
 }

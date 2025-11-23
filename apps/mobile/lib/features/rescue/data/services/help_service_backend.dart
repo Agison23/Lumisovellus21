@@ -51,10 +51,12 @@ class BackendHelpService implements HelpService {
 
     // Create help event request
     final helpEventCreate = HelpEventCreate(
-      timestamp: DateTime.now().millisecondsSinceEpoch,
+      // timestamp: DateTime.now().millisecondsSinceEpoch,
+      timestamp: (DateTime.now().millisecondsSinceEpoch ~/ 1000),
       location: location,
       needType: apiNeedType,
-      chatRoomId: "",
+      chatRoomId:
+          "room-123", // TODO: chatroom ID shouldn't be created by frontend. Leaving this here to avoid errors for now.
     );
 
     // Call API
