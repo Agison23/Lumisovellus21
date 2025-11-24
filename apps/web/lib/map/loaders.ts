@@ -1,8 +1,6 @@
 import type { paths } from "@lumisovellus/api-client-web";
 import { Monitor } from "../snower/types";
 
-
-
 export type SegmentsResponse =
   paths["/api/v1/segments"]["get"]["responses"]["200"]["content"]["application/json"];
 export type Segment = SegmentsResponse["data"][number];

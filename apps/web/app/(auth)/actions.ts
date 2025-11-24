@@ -148,14 +148,19 @@ export async function refreshTokenAction() {
     });
 
     revalidatePath("/");
-    return { success: true, user: data.user };
+    return { success: true };
   } catch (error) {
     console.error("Token refresh failed:", error);
     return { success: false };
   }
 }
 
-export async function registerAction(firstName: string, lastName: string | undefined,email: string, password: string) {
+export async function registerAction(
+  firstName: string,
+  lastName: string | undefined,
+  email: string,
+  password: string,
+) {
   type RegisterBody =
     paths["/auth/register"]["post"]["requestBody"]["content"]["application/json"];
   const requestBody: RegisterBody = { firstName, lastName, email, password };
@@ -196,7 +201,7 @@ export async function registerAction(firstName: string, lastName: string | undef
     sameSite: "strict",
   });
 
-  revalidatePath("/"); 
+  revalidatePath("/");
   return true;
 }
 

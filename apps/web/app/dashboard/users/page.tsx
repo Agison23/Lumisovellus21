@@ -144,6 +144,11 @@ function EditUserDialog({
     setOpen(false);
   };
 
+  type Roles =
+    paths["/api/v1/users/{id}"]["put"]["requestBody"]["content"]["application/json"]["role"];
+
+  const roles: Roles[] = ["ADMIN", "RESCUE", "NORMAL", "GUIDE"];
+
   const mutation = useMutation({
     mutationFn: async (updatedUser: Users[number]) => {
       type UpdateUserBody =
@@ -154,7 +159,7 @@ function EditUserDialog({
         lastName: updatedUser.lastName ?? "",
         email: updatedUser.email ?? "",
         phoneNumber: updatedUser.phoneNumber ?? "",
-        role: updatedUser.role ?? "",
+        role: updatedUser.role as Roles,
       };
       const accessToken = await getAccessTokenAction();
       if (!accessToken) {
@@ -251,9 +256,13 @@ function EditUserDialog({
                 <SelectValue placeholder={t("editDialog.rolePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ADMIN">ADMIN</SelectItem>
-                <SelectItem value="RESCUE">RESCUE</SelectItem>
-                <SelectItem value="NORMAL">NORMAL</SelectItem>
+                {roles
+                  .filter((role) => role !== undefined)
+                  .map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>

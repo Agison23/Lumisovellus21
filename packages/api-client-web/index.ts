@@ -335,7 +335,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: components["schemas"]["AuthResponse"];
+                            data: components["schemas"]["TokenPair"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1389,7 +1389,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: components["schemas"]["SnowTypes"];
+                            data: components["schemas"]["SnowType"][];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1603,7 +1603,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: components["schemas"]["PrimarySnowTypeWithSecondaries"][];
+                            data: components["schemas"]["PrimarySnowType"][];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -1733,7 +1733,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: unknown;
+                            data: components["schemas"]["SnowType"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -2107,7 +2107,7 @@ export interface paths {
                              * @example true
                              */
                             success: boolean;
-                            data: unknown;
+                            data: components["schemas"]["ReviewResponse"];
                             /** @description Response metadata */
                             meta: {
                                 /**
@@ -2906,30 +2906,7 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /**
-                         * @description User first name
-                         * @example John
-                         */
-                        firstName?: string;
-                        /**
-                         * @description User last name
-                         * @example Smith
-                         */
-                        lastName?: string;
-                        /**
-                         * Format: email
-                         * @description User email address
-                         * @example johnsmith@example.com
-                         */
-                        email?: string;
-                        /**
-                         * @description Phone number
-                         * @example +1234567890
-                         */
-                        phoneNumber?: string;
-                        role?: string;
-                    };
+                    "application/json": components["schemas"]["UpdateUserRequest"];
                 };
             };
             responses: {
@@ -4511,12 +4488,6 @@ export interface components {
              * @example password123
              */
             password: string;
-            /**
-             * @description User role
-             * @example NORMAL
-             * @enum {string}
-             */
-            role?: "NORMAL" | "ADMIN" | "RESCUE";
         };
         LoginRequest: {
             /**
@@ -4697,6 +4668,35 @@ export interface components {
              */
             role: string;
         };
+        UpdateUserRequest: {
+            /**
+             * @description User first name
+             * @example John
+             */
+            firstName?: string;
+            /**
+             * @description User last name
+             * @example Doe
+             */
+            lastName?: string;
+            /**
+             * Format: email
+             * @description User email address
+             * @example john@example.com
+             */
+            email?: string;
+            /**
+             * @description User role
+             * @example NORMAL
+             * @enum {string}
+             */
+            role?: "NORMAL" | "PREMIUM" | "ADMIN" | "RESCUE" | "GUIDE";
+            /**
+             * @description Phone number
+             * @example +1234567890
+             */
+            phoneNumber?: string;
+        };
         HelpEventCreate: {
             /**
              * @description Unix timestamp
@@ -4747,7 +4747,7 @@ export interface components {
         AuthResponse: {
             /** @description User information */
             user: {
-                /** Format: uuid */
+                /** @description User ID */
                 id: string;
                 firstName: string;
                 lastName: string | null;
@@ -4759,25 +4759,36 @@ export interface components {
             /** @description JWT refresh token */
             refreshToken: string;
         };
+        TokenPair: {
+            /** @description JWT access token */
+            accessToken: string;
+            /** @description JWT refresh token */
+            refreshToken: string;
+        };
         User: {
-            /** Format: uuid */
+            /** @description User ID */
             id: string;
             firstName: string;
             lastName: string | null;
             email: string | null;
             role: string;
-            phoneNumber: string | null;
-            lowBattery: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
+            phoneNumber?: string | null;
+            lowBattery?: number;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             */
             updatedAt: string;
+            devId?: string | null;
+            ipAddress?: string | null;
         };
         Segment: {
-            /**
-             * Format: uuid
-             * @description Segment ID
-             */
+            /** @description Segment ID */
             id: string;
             /** @description Segment name */
             name: string;
@@ -4805,87 +4816,88 @@ export interface components {
         SegmentUserReview: {
             /** Format: date-time */
             submittedAt: string;
-            /** Format: uuid */
             snowTypeId: string;
-            /** Format: uuid */
-            secondarySnowTypeId: string | null;
+            secondarySnowTypeId?: string | null;
             hazards: string[];
         };
-        /** @description List of snow types */
-        SnowTypes: components["schemas"]["SnowType"][];
         SnowType: {
             /**
-             * Format: uuid
-             * @description Snow type ID (UUID)
-             * @example 72209550-799c-4a33-99ab-ca2c396f16d7
+             * @description Snow type ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
              */
             id: string;
             /**
+             * @description Snow type identifier (slug)
+             * @example powder
+             */
+            identifier: string;
+            /**
              * @description Snow type name
-             * @example Puuterilumi
+             * @example Powder
              */
             name: string;
             /**
              * @description Snow type colour in hex format
-             * @example #5AABED
+             * @example #FFFFFF
              */
             colour: string;
             /**
-             * @description Skiability rating (1-5), nullable
-             * @example 4
+             * @description Skiability rating (1-5)
+             * @example 5
              */
-            skiability?: number | null;
+            skiability: number | null;
             /**
-             * Format: uuid
              * @description Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
              * @example null
              */
-            primarySnowTypeId?: string | null;
+            primarySnowTypeId: string | null;
             /**
              * @description Explanation of the snow type
-             * @example Vastasatanut irtonainen, höyhenenkevyt lumi.
+             * @example Fresh powder snow
              */
-            explanation?: string | null;
+            explanation: string | null;
         };
-        PrimarySnowTypeWithSecondaries: {
+        PrimarySnowType: {
             /**
-             * Format: uuid
-             * @description Snow type ID (UUID)
-             * @example 72209550-799c-4a33-99ab-ca2c396f16d7
+             * @description Snow type ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
              */
             id: string;
             /**
+             * @description Snow type identifier (slug)
+             * @example powder
+             */
+            identifier: string;
+            /**
              * @description Snow type name
-             * @example Puuterilumi
+             * @example Powder
              */
             name: string;
             /**
              * @description Snow type colour in hex format
-             * @example #5AABED
+             * @example #FFFFFF
              */
             colour: string;
             /**
-             * @description Skiability rating (1-5), nullable
-             * @example 4
+             * @description Skiability rating (1-5)
+             * @example 5
              */
-            skiability?: number | null;
+            skiability: number | null;
             /**
-             * Format: uuid
              * @description Primary snow type ID. NULL for primary snow types, UUID for secondary snow types
              * @example null
              */
-            primarySnowTypeId?: string | null;
+            primarySnowTypeId: string | null;
             /**
              * @description Explanation of the snow type
-             * @example Vastasatanut irtonainen, höyhenenkevyt lumi.
+             * @example Fresh powder snow
              */
-            explanation?: string | null;
-            /** @description Secondary snow types for this primary type */
-            secondarySnowTypes: components["schemas"]["SnowType"][];
+            explanation: string | null;
+            /** @description Array of secondary snow types for this snow type */
+            secondaryTypes: components["schemas"]["SnowType"][];
         };
         Observation: {
             /**
-             * Format: uuid
              * @description Segment ID
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
@@ -4902,7 +4914,6 @@ export interface components {
              */
             submittedAt: string;
             /**
-             * Format: uuid
              * @description Snow type ID
              * @example 550e8400-e29b-41d4-a716-446655440001
              */
@@ -4915,6 +4926,49 @@ export interface components {
              *     ]
              */
             hazards: string[];
+        };
+        ReviewResponse: {
+            /**
+             * @description Review ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /**
+             * Format: date-time
+             * @description Review submission timestamp
+             * @example 2024-01-15T10:30:00.000Z
+             */
+            time: string;
+            /**
+             * @description Segment ID
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            segment: string;
+            /**
+             * @description Snow type ID
+             * @example 550e8400-e29b-41d4-a716-446655440001
+             */
+            snowType?: string | null;
+            /**
+             * @description Secondary snow type ID
+             * @example null
+             */
+            secondarySnowType?: string | null;
+            /**
+             * @description Array of hazards
+             * @example [
+             *       "stones",
+             *       "branches"
+             *     ]
+             */
+            hazards: string[];
+            /**
+             * @description Optional review comment
+             * @example Good snow conditions
+             */
+            comment?: string | null;
+            /** @description User ID who created the review */
+            userId?: string | null;
         };
         HelpEventRescueeView: {
             eventId: string;
