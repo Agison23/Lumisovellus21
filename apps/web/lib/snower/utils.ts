@@ -1,6 +1,6 @@
 import { Monitor } from "./types";
 
-export function formatValue(
+export function formatValueToString(
 	value: string | number | null | undefined,
 	unit?: string
 ): string {
@@ -14,6 +14,25 @@ export function formatValue(
 	}
 
 	return unit ? `${num.toFixed(2)} ${unit}` : num.toFixed(2);
+}
+
+export function formatValueToObject(
+	value: number | null | undefined,
+	unit?: string
+): { value: number; unit: string } | "No Data" {
+	if (value === null || value === undefined) {
+		return "No Data";
+	}
+
+	const num = parseFloat(String(value));
+	if (isNaN(num)) {
+		return "No Data";
+	}
+
+	return {
+		value: num,
+		unit: unit || "",
+	};
 }
 
 export function mergeMonitors(

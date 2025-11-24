@@ -26,6 +26,9 @@
       "dependsOn": ["^transit"]
     },
     "lint": { "outputs": [], "dependsOn": ["^lint"] },
+    "lint:fix": { "outputs": [], "dependsOn": ["^lint:fix"] },
+    "format": { "outputs": [] },
+    "format:check": { "outputs": [] },
     "typecheck": { "outputs": [], "dependsOn": ["^typecheck"] },
     "pubget": { "cache": false },
     "openapi:emit": {
@@ -33,7 +36,7 @@
     },
     "openapi:client:mobile": {
       "dependsOn": ["openapi:emit"],
-      "outputs": ["apps/mobile/lib/api/**"]
+      "outputs": ["packages/lumisovellus_api/**"]
     }
   }
 }
