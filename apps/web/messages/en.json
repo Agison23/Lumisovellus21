@@ -203,7 +203,8 @@
     "maxWindTitle": "Max Wind Speed (3 days)",
     "snowChangeTitle": "Snow Depth Change (7 days)",
     "aboveFreezingTitle": "Days Above Freezing (3 days)",
-    "noAboveFreezing": "No days above freezing.",
+    "noAboveFreezing": "No days above freezing."
+  },
     "DefinitionsPage": {
       "title": "Definitions"
   },
