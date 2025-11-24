@@ -231,4 +231,261 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trend => 'Trend';
+
+  @override
+  String get lastFewDaysWeather => 'Recent weather';
+
+  @override
+  String get snowDepthChange => 'Change in snow depth';
+
+  @override
+  String get temperature3Days => 'Temperature over 3 days';
+
+  @override
+  String get highest => 'Highest';
+
+  @override
+  String get lowest => 'Lowest';
+
+  @override
+  String get countDaysAboveFreezing => 'Number of days above freezing';
+
+  @override
+  String get daysAboveFreezing => 'Days above freezing';
+
+  @override
+  String get wind3Days => 'Wind over 3 days';
+
+  @override
+  String get avgSpeed => 'Average speed';
+
+  @override
+  String get avgDirection => 'Average direction';
+
+  @override
+  String get maxWind => 'Maximum windspeed';
+
+  @override
+  String get lastThreeDays => 'Last three days';
+
+  @override
+  String get lastSevenDays => 'Last seven days';
+
+  @override
+  String get snowDefinitionsPageTitle => 'Definitions';
+
+  @override
+  String get noAvalancheWarning => 'No avalanche warning';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get addObservation => 'Add observation';
+
+  @override
+  String get rescue => 'Rescue';
+
+  @override
+  String get rescuePageTitle => 'Rescue';
+
+  @override
+  String get rescuePageCoordinateSystem => 'Coordinate system';
+
+  @override
+  String get rescuePageShowOnMap => 'Show on map';
+
+  @override
+  String get rescuePageAccuracy => 'Position accuracy';
+
+  @override
+  String get rescuePageHelpRequestDescription =>
+      'Help-request alerts and sends your location to nearby rescuers';
+
+  @override
+  String get rescuePageEmergencyCallDescription =>
+      'In an emergency, always call 112';
+
+  @override
+  String get rescuePageEmergencyCallFailed =>
+      'The phone app could not be opened';
+
+  @override
+  String get rescuePageIndicateNeed => 'Please indicate your need';
+
+  @override
+  String get rescuePageHealthIssue => 'Health issue';
+
+  @override
+  String get rescuePageEquipmentIssue => 'Equipment issue';
+
+  @override
+  String get rescuePageImLost => 'I am lost';
+
+  @override
+  String get rescuePageRequestHelp => 'Request Help';
+
+  @override
+  String get rescuePageRequestHelpConfirm =>
+      'Send help request to nearby rescuers?';
+
+  @override
+  String get map => 'Map';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get callForHelp => 'Call for Help';
+
+  @override
+  String get currentLocation => 'Current Location';
+
+  @override
+  String get locationNotAvailable => 'Location not available';
+
+  @override
+  String get userInformation => 'User Information';
+
+  @override
+  String get userInformationSubtitle => 'Manage your personal information';
+
+  @override
+  String get settingsPageSnowDefinitions => 'Snow definitions';
+
+  @override
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Show snow type definitions';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get languageSubtitle => 'Change app language';
+
+  @override
+  String get selectLanguage => 'Select Language';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get finnish => 'Finnish (Suomi)';
+
+  @override
+  String get userInfoNotImplemented => 'User information feature coming soon';
+
+  @override
+  String get dialogConfirm => 'Confirm';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get obstacles => 'Obstacles';
+
+  @override
+  String get selectSnowType => 'Select snow type';
+
+  @override
+  String get specifySnowType => 'Specify snow type';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String get coordinateDirectionNorth => 'N';
+
+  @override
+  String get coordinateDirectionSouth => 'S';
+
+  @override
+  String get coordinateDirectionEast => 'E';
+
+  @override
+  String get coordinateDirectionWest => 'W';
+
+  @override
+  String get sensors => 'Sensors';
+
+  @override
+  String get segments => 'Segments';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get invalidEmail => 'Invalid email address';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordTooShort => 'Password is too short';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get min6Characters => 'At least 6 characters';
+
+  @override
+  String get logIn => 'Log in';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get passwordRequirements => 'Password Requirements';
+
+  @override
+  String get registrationFailed => 'Registration failed';
+
+  @override
+  String get loginFailed => 'Login failed';
+
+  @override
+  String get loggedIn => 'Logged in';
+
+  @override
+  String get registeredSuccesfully => 'Registered succesfully';
+
+  @override
+  String get loggedInAs => 'Logged in as';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get phoneNumber => 'Phone number';
+
+  @override
+  String get registeredAt => 'Registered at';
+
+  @override
+  String get logout => 'Logout';
 }

@@ -1,65 +1,12 @@
 import 'dart:convert';
+import 'package:lumisovellus_api/lumisovellus_api.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-
-// Legacy style with OSM + DEM tiles via proxy or local cache
-final base = Uri.parse('file://tiles');
-final b = base.toString().endsWith('/') ? base.toString() : '${base.toString()}/';
-final isFile = base.scheme == 'file';
-final prefix = isFile ? '' : 'tiles/';
-
-final style = {
-  'version': 8,
-  'glyphs': '', // disable glyphs for now
-  'sources': {
-    'osm': {
-      'type': 'raster',
-      'tiles': ['${b}${prefix}osm/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 19,
-      'attribution': '© OpenStreetMap contributors'
-    },
-    'terrainSource': {
-      'type': 'raster-dem',
-      'tiles': ['${b}${prefix}dem/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 15,
-      'encoding': 'terrarium',
-      'attribution': 'Terrain data © AWS Terrain Tiles'
-    },
-    'hillshadeSource': {
-      'type': 'raster-dem',
-      'tiles': ['${b}${prefix}dem/{z}/{x}/{y}.png'],
-      'tileSize': 256,
-      'maxzoom': 15,
-      'encoding': 'terrarium',
-      'attribution': 'Terrain data © AWS Terrain Tiles'
-    }
-  },
-  'layers': [
-    {
-      'id': 'osm',
-      'type': 'raster',
-      'source': 'osm'
-    },
-    {
-      'id': 'hills',
-      'type': 'hillshade',
-      'source': 'hillshadeSource',
-      'layout': {'visibility': 'visible'},
-      'paint': {'hillshade-shadow-color': '#473B24'}
-    }
-  ],
-  'terrain': {
-    'source': 'terrainSource',
-    'exaggeration': 1,
-  }
-};
 
 class MapStyleRepository {
   static const demSourceId = 'mapbox-dem';
   static const areasSourceId = 'areas';
 
-  static const hillshadeLayerId  = 'hillshade';
+  static const hillshadeLayerId = 'hillshade';
   static const skyLayerId = 'sky';
 
   static const areasFillId = 'areas-fill';
@@ -95,26 +42,55 @@ class MapStyleRepository {
       await style.removeStyleLayer(hillshadeLayerId);
     }
     await style.addLayer(HillshadeLayer(
-      id: hillshadeLayerId,
-      sourceId: demSourceId,
-      hillshadeExaggeration: 1.0,
-      visibility: Visibility.VISIBLE,
+        id: hillshadeLayerId,
+        sourceId: demSourceId,
+        hillshadeExaggeration: 1.0,
+        visibility: Visibility.VISIBLE,
     ));
 
     if (await style.styleLayerExists(skyLayerId)) {
       await style.removeStyleLayer(skyLayerId);
     }
     await style.addLayer(SkyLayer(
-      id: skyLayerId,
-      skyType: SkyType.ATMOSPHERE,
-      skyAtmosphereSunIntensity: 12.0,
+        id: skyLayerId,
+        skyType: SkyType.ATMOSPHERE,
+        skyAtmosphereSunIntensity: 12.0,
     ));
   }
 
+  // Convert the provided segments to FeatureCollection used by MapBox
+  Map<String, dynamic> _segmentsToFeatureCollection(List<Segment> segments) {
+    final filtered = segments.where((s) => s.name != 'Metsä'); // Legacy segment that covers whole area
+
+    return {
+      'type': 'FeatureCollection',
+      'features': filtered.map((s) {
+        return {
+          'type': 'Feature',
+          'properties': {
+            'id': s.id,
+            'name': s.name,
+            'terrain': s.terrain,
+            'avalancheDanger': s.avalancheDanger,
+            'isLowerSegment': s.isLowerSegment,
+          },
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [
+              s.points.map((p) => [p.lng, p.lat]).toList(),
+            ],
+          },
+        };
+      }).toList(),
+    };
+  }
+
   // Recreate the `areas` GeoJSON source and all its layers.
-  // `fcJson` can be String(JSON) or Map (FeatureCollection).
-  Future<void> ensureAreasStyle(StyleManager style, {Object? fcJson}) async {
-    final data = (fcJson is String) ? fcJson : jsonEncode(fcJson);
+  Future<void> ensureAreasStyle(StyleManager style, {List<Segment>? segments}) async {
+    final fc = segments != null
+      ? _segmentsToFeatureCollection(segments)
+      : {'type': 'FeatureCollection', 'features': <dynamic>[]};
+    final data = jsonEncode(fc);
 
     for (final id in [
       areasLabelsId,
@@ -135,75 +111,92 @@ class MapStyleRepository {
     await style.addSource(GeoJsonSource(id: areasSourceId, data: data));
 
     await style.addLayer(FillLayer(
-      id: areasFillId,
-      sourceId: areasSourceId,
-      fillColor: 0xFFFFFFFF,
-      fillOpacity: 0.1,
+        id: areasFillId,
+        sourceId: areasSourceId,
+        fillColor: 0xFFFFFFFF,
+        fillOpacity: 0.1,
     ));
 
     await style.addLayer(FillLayer(
-      id: areasHoverId,
-      sourceId: areasSourceId,
-      fillColor: 0xFFFFFFFF,
-      fillOpacity: 0.3,
-      filter: ["==", ["get", "id"], ""],
+        id: areasHoverId,
+        sourceId: areasSourceId,
+        fillColor: 0xFFFFFFFF,
+        fillOpacity: 0.3,
+        filter: ["==", ["get", "id"], ""],
+      ));
+
+    await style.addLayer(LineLayer(
+        id: areasOutlineId,
+        sourceId: areasSourceId,
+        lineColor: 0xFF2C3E50,
+        lineWidth: 2.0,
+        lineOpacity: 0.5,
     ));
 
     await style.addLayer(LineLayer(
-      id: areasOutlineId,
-      sourceId: areasSourceId,
-      lineColor: 0xFF2C3E50,
-      lineWidth: 2.0,
-      lineOpacity: 0.5,
-    ));
-
-    await style.addLayer(LineLayer(
-      id: areasDangerId,
-      sourceId: areasSourceId,
-      lineColor: 0xFFFF0000,
-      lineWidth: 3.0,
+        id: areasDangerId,
+        sourceId: areasSourceId,
+        lineColor: 0xFFFF0000,
+        lineWidth: 3.0,
       filter: ["==", ["get", "avalancheDanger"], true],
     ));
 
     await style.addLayer(FillLayer(
-      id: areasSelectedId,
-      sourceId: areasSourceId,
-      fillColor: 0xFF000000,
-      fillOpacity: 0.2,
-      filter: ["==", ["get", "id"], ""],
+        id: areasSelectedId,
+        sourceId: areasSourceId,
+        fillColor: 0xFF000000,
+        fillOpacity: 0.2,
+        filter: ["==", ["get", "id"], ""],
     ));
 
     await style.addLayer(SymbolLayer(
-      id: areasLabelsId,
-      sourceId: areasSourceId,
-      textFieldExpression: ["get", "name"],
-      textSize: 14.0,
-      textOffset: const [0.0, 0.0],
-      textColor: 0xFFFFFFFF,
-      textHaloColor: 0xFF000000,
-      textHaloWidth: 2.0,
+        id: areasLabelsId,
+        sourceId: areasSourceId,
+        textFieldExpression: ["get", "name"],
+        textSize: 14.0,
+        textOffset: const [0.0, 0.0],
+        textColor: 0xFFFFFFFF,
+        textHaloColor: 0xFF000000,
+        textHaloWidth: 2.0,
     ));
   }
 
   // Update only the GeoJSON data (recreate if the source is missing).
-  Future<void> setAreasData(StyleManager style, Object fcJson) async {
-    final data = (fcJson is String) ? fcJson : jsonEncode(fcJson);
+  Future<void> setAreasData(StyleManager style, List<Segment> segments) async {
+    final fc = _segmentsToFeatureCollection(segments);
+    final data = jsonEncode(fc);
     final exists = await style.styleSourceExists(areasSourceId);
     if (!exists) {
-      await ensureAreasStyle(style, fcJson: data);
+      await ensureAreasStyle(style, segments: segments);
       return;
     }
     await style.setStyleSourceProperty(areasSourceId, 'data', data);
   }
 
-  // Filters for hover/selected
   Future<void> setHoverFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasHoverId)) return;
-    await style.setStyleLayerProperty(areasHoverId, 'filter', ["==", ["get", "id"], ""]);
+    await style.setStyleLayerProperty(areasHoverId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
   }
+
 
   Future<void> setSelectedFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasSelectedId)) return;
-    await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["get", "id"], ""]);
+    await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
+  }
+
+  Future<void> setAreasVisibility(StyleManager style, {required bool visible}) async {
+    const ids = [
+      areasFillId,
+      areasHoverId,
+      areasOutlineId,
+      areasDangerId,
+      areasSelectedId,
+      areasLabelsId,
+    ];
+    for (final id in ids) {
+      if (await style.styleLayerExists(id)) {
+        await style.setStyleLayerProperty(id, 'visibility', visible ? 'visible' : 'none');
+      }
+    }
   }
 }

@@ -1,105 +1,133 @@
-import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
+import 'package:lumisovellus/features/settings/view/settings_page.dart';
+import 'package:lumisovellus/features/map/views/map_screen.dart';
+import 'package:lumisovellus/features/weather/view/weather_page.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'core/i18n/locale_provider.dart';
-import 'core/data/providers.dart';
-// import 'features/onboarding/view/onboarding_page.dart';
-import 'features/map/views/map_screen.dart';
-import 'features/snow_definitions/view/snow_definitions_page.dart';
-import 'features/weather/view/weather_page.dart';
+import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 
-void main() {
+// Global locale notifier for simple app-wide locale switching.
+// Replace with your preferred state management/localization solution as needed.
+final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
+
+void main() async {
+  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
-  const token = String.fromEnvironment('ACCESS_TOKEN');
+  final token = dotenv.env['ACCESS_TOKEN'] ?? '';
   MapboxOptions.setAccessToken(token);
 
-  runApp(const ProviderScope(child: App()));
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final container = ProviderContainer();
-    unawaited(container.read(jobRunnerProvider).runOnce(batch: 32));
-  });
+  final container = ProviderContainer();
+  await container.read(authSessionProvider.notifier).loadSession();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class App extends ConsumerWidget {
-  const App({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider);
-    return MaterialApp(
-      locale: locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const RootScaffold(), // <- persistent nav here
-      routes: {
-        '/snow-definitions': (context) => const SnowDefinitionsPage(),
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Locale>(
+      valueListenable: localeNotifier,
+      builder: (context, locale, _) {
+        return MaterialApp(
+          title: 'RescueApp',
+          locale: locale,
+          supportedLocales: const [
+            Locale('en'),
+            Locale('fi'),
+            // add other supported locales here
+          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0D1B2A), // <-- this is your new primary color
+            ),
+            extensions: <ThemeExtension<dynamic>>[
+              RescueTheme.light(),
+            ],
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0D1B2A),
+              brightness: Brightness.dark,
+            ),
+            extensions: <ThemeExtension<dynamic>>[
+              RescueTheme.dark(),
+            ],
+          ),
+          home: const MainShell(),
+        );
       },
     );
   }
 }
 
-class RootScaffold extends ConsumerStatefulWidget {
-  const RootScaffold({super.key});
+class MainShell extends StatefulWidget {
+  const MainShell({super.key});
+
   @override
-  ConsumerState<RootScaffold> createState() => _RootScaffoldState();
+  State<MainShell> createState() => _MainShellState();
 }
 
-class _RootScaffoldState extends ConsumerState<RootScaffold> {
+class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    MapScreen(),
-    SnowDefinitionsPage(),
+  final List<Widget> _pages = const [
+    RescuePage(),
+    MapScreen(), 
     WeatherPage(),
+    SettingsPage(),
   ];
 
-  void _onTap(int index) {
-    setState(() => _currentIndex = index);
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // allow body to be rendered under the bottomNavigationBar so the translucent
-      // background actually shows the content beneath it
-      extendBody: true,
-      // keep the pages but preserve state with IndexedStack
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      // semi-transparent, always-on bottom navigation bar
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          // container provides the translucent background
-          color: const Color(0x99000000), // ~60% opacity black
-          child: BottomNavigationBar(
-            // make the bar itself transparent so the container's opacity shows
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white70,
-            currentIndex: _currentIndex,
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.map),
-                label: 'Map',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline),
-                label: 'Definitions',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.cloud_outlined),
-                label: 'Weather',
-              ),
-            ],
-            onTap: _onTap,
+ Widget build(BuildContext context) {
+  return Scaffold(
+    body: IndexedStack(index: _currentIndex, children: _pages),
+    bottomNavigationBar: Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey.shade300, 
+            width: 0.6,               
           ),
         ),
       ),
-    );
+      child: BottomNavigationBar(
+        iconSize: 30,
+        backgroundColor: Theme.of(context).extension<RescueTheme>()?.pageBackground ??
+            const Color(0xFAFAFAFA),
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color.fromARGB(255, 52, 73, 95),
+        unselectedItemColor: const Color.fromARGB(255, 148, 158, 167),
+        onTap: (idx) => setState(() => _currentIndex = idx),
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.local_hospital),
+            label: AppLocalizations.of(context).rescue,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.map),
+            label: AppLocalizations.of(context).map,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.cloud),
+            label: AppLocalizations.of(context).weather,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context).settings,
+          ),
+        ],
+      ),
+    ),
+  );
   }
 }

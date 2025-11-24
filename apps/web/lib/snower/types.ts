@@ -2,8 +2,21 @@ export type Monitor = {
 	lat: number;
 	lng: number;
 	name: string;
-	temperature: string;
-	snowDepth: string;
+	temperatureString: string;
+	temperature:
+		| {
+				value: number;
+				unit: string;
+		  }
+		| "No Data";
+
+	snowDepthString: string;
+	snowDepth:
+		| {
+				value: number;
+				unit: string;
+		  }
+		| "No Data";
 };
 
 export type MonitorLocation = {

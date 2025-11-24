@@ -13,6 +13,12 @@
       ]
     }
   },
-  "postCreateCommand": "adb connect host.docker.internal:5555 && cd apps/mobile && flutter pub get",
+  // "runArgs": [
+  //   "--network=host"
+  // ],
+  // "remoteEnv": {
+  //   "ADB_SERVER_SOCKET": "tcp:host.docker.internal:5037"
+  // },
+  "postCreateCommand": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && cd apps/mobile && flutter pub get",
   "forwardPorts": [3000, 8080]
 }

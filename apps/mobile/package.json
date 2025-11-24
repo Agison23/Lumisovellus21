@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "pubget": "flutter pub get",
-    "dev": "flutter run",
+    "dev": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && flutter run",
     "format": "dart format --set-exit-if-changed .",
     "lint": "dart analyze --fatal-infos",
     "typecheck": "dart analyze --fatal-infos",

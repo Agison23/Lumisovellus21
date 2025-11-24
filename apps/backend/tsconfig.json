@@ -1,8 +1,22 @@
 {
-  "extends": "../../packages/tsconfig/tsconfig.base.json",
+  "extends": "@repo/tsconfig/tsconfig.base.json",
   "compilerOptions": {
+    "outDir": "dist",
     "rootDir": "src",
-    "outDir": "dist"
+    "module": "ESNext",
+    "target": "ES2022",
+    "noImplicitAny": false,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": true,
+    "composite": false,
+    "types": ["node", "vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src/**/*", "prisma/seed.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
+  "ts-node": {
+    "esm": true
+  }
 }
