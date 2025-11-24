@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 export default function WeatherView() {
   const t = useTranslations("WeatherPage");
 
-  // ❗ Generate snowflakes only on the client
   const [snowflakes, setSnowflakes] = useState<
     { left: string; top: string; size: string; delay: string; duration: string }[]
   >([]);
@@ -43,7 +42,6 @@ export default function WeatherView() {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center py-16 px-6 overflow-hidden select-none">
-      {/* Snowflake background layer */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {snowflakes.map((f, i) => (
           <div
@@ -62,15 +60,12 @@ export default function WeatherView() {
         ))}
       </div>
 
-      {/* Foreground content */}
       <div className="relative z-10 flex flex-col items-center">
         <h2 className="text-4xl font-bold mb-12 text-primary tracking-tight">
           {t("title")}
         </h2>
 
-        {/* Weather grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
-          {/* Avg wind */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
@@ -87,7 +82,6 @@ export default function WeatherView() {
             </div>
           </div>
 
-          {/* Temperature */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
             <div className="flex items-center gap-3 mb-4">
               <Thermometer size={36} className="text-red-500" />
@@ -109,7 +103,6 @@ export default function WeatherView() {
             </div>
           </div>
 
-          {/* Max wind speed */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
@@ -120,7 +113,6 @@ export default function WeatherView() {
             </p>
           </div>
 
-          {/* Snow depth change */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
             <div className="flex items-center gap-3 mb-4">
               <Snowflake size={36} className="text-cyan-500" />
@@ -131,7 +123,6 @@ export default function WeatherView() {
             </p>
           </div>
 
-          {/* Days above freezing */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
             <div className="flex items-center gap-3 mb-4">
               <ThermometerSnowflake size={36} className="text-yellow-400" />
