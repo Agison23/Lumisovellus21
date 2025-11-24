@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useAuth } from "@/hooks/use-auth";
 
 export default function DashboardLayout({
   children,

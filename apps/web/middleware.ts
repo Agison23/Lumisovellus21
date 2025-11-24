@@ -1,6 +1,6 @@
+import { paths } from "@lumisovellus/api-client-web";
 import { NextRequest, NextResponse } from "next/server";
 import { apiUrl } from "./lib/map/loaders";
-import { paths } from "@lumisovellus/api-client-web";
 
 async function isValidToken(token: string): Promise<boolean> {
   return token.length > 0;

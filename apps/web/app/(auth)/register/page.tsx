@@ -1,13 +1,13 @@
 'use client';
+import { useMutation } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { FormEvent, useState } from 'react';
+import { toast } from 'sonner';
+import { registerAction } from '../actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { FormEvent, useState } from 'react';
-import { registerAction } from '../actions';
 
 const PASSWORD_REGEX =
   /^(?=.*[0-9])(?=.*[^\w\s])[A-Za-z0-9!@#$%^&*\-_+=~`|\\:;"'<>,.?/]{8,}$/;

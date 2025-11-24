@@ -1,12 +1,10 @@
 "use client";
-import { getAccessTokenAction } from "@/app/(auth)/actions";
-import { Input } from "@/components/ui/input";
-import { apiUrl, fetchAreas, fetchSnowTypes, fetchUpdateData } from "@/lib/map/loaders";
-import { getSnowTypeNameById, getTranslationKeyForSnowTypeName } from "@/lib/utils";
-import { paths } from "@lumisovellus/api-client-web";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { fetchAreas, fetchSnowTypes, fetchUpdateData } from "@/lib/map/loaders";
+import { getSnowTypeNameById, getTranslationKeyForSnowTypeName } from "@/lib/utils";
 
 export default function ReportsPage() {
 	const t = useTranslations("Dashboard.ReportsPage");

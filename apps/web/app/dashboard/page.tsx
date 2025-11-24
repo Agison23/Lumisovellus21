@@ -1,7 +1,7 @@
 "use client";
-import { useAuth } from "@/hooks/use-auth";
 import { paths } from "@lumisovellus/api-client-web";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/use-auth";
 
 type Users =
   paths["/api/v1/users"]["get"]["responses"]["200"]["content"]["application/json"]["data"];

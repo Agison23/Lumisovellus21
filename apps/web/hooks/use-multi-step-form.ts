@@ -1,5 +1,5 @@
-import { Obstacles } from "@/components/map-3d";
 import { useState } from "react";
+import { Obstacles } from "@/components/map-3d";
 
 export interface SnowConditionFormData {
   // Step 0 (Display): Segment information - no inputs needed
