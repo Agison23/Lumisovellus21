@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version: '24.11.1'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -107,7 +107,7 @@ jobs:
             .gitleaks.toml
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version: '24.11.1'
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --prefer-offline --no-audit --fund=false
@@ -139,7 +139,7 @@ jobs:
             .gitleaks.toml
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version: '24.11.1'
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --prefer-offline --no-audit --fund=false
@@ -175,7 +175,7 @@ jobs:
             .gitleaks.toml
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version: '24.11.1'
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --prefer-offline --no-audit --fund=false
