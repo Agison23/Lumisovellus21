@@ -9,5 +9,16 @@
     "typecheck": "dart analyze --fatal-infos",
     "test": "flutter test --coverage",
     "build": "flutter build apk --release"
+  },
+  "turbo": {
+    "pipeline": {
+      "pubget": {
+        "disabled": true,
+        "cache": false,
+        "dependsOn": [],
+        "outputs": [],
+        "inputs": []
+      }
+    }
   }
 }

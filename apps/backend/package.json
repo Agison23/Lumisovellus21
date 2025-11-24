@@ -62,20 +62,19 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.12.12",
     "@types/node-cron": "^3.0.11",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
-    "@vitest/coverage-v8": "^2.1.4",
+    "@vitest/coverage-v8": "4.0.13",
     "concurrently": "^8.2.2",
     "dotenv-cli": "^10.0.0",
     "prisma": "^5.22.0",
     "supertest": "^7.0.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "vitest": "^2.1.4"
+    "vitest": "4.0.13"
   },
   "keywords": [
     "api",
