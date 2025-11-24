@@ -314,6 +314,7 @@ enum UserRole {
   PREMIUM
   ADMIN
   RESCUE
+  GUIDE
 
   @@map("user_role")
 }

@@ -10,12 +10,7 @@ SegmentUserReview _$SegmentUserReviewFromJson(Map<String, dynamic> json) =>
     $checkedCreate('SegmentUserReview', json, ($checkedConvert) {
       $checkKeys(
         json,
-        requiredKeys: const [
-          'submittedAt',
-          'snowTypeId',
-          'secondarySnowTypeId',
-          'hazards',
-        ],
+        requiredKeys: const ['submittedAt', 'snowTypeId', 'hazards'],
       );
       final val = SegmentUserReview(
         submittedAt: $checkedConvert(
@@ -41,6 +36,6 @@ Map<String, dynamic> _$SegmentUserReviewToJson(SegmentUserReview instance) =>
     <String, dynamic>{
       'submittedAt': instance.submittedAt.toIso8601String(),
       'snowTypeId': instance.snowTypeId,
-      'secondarySnowTypeId': instance.secondarySnowTypeId,
+      'secondarySnowTypeId': ?instance.secondarySnowTypeId,
       'hazards': instance.hazards,
     };

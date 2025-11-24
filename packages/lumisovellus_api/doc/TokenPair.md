@@ -1,4 +1,4 @@
-# lumisovellus_api.model.ApiV1SnowTypesIdSecondaryPost200Response
+# lumisovellus_api.model.TokenPair
 
 ## Load the model package
 ```dart
@@ -8,9 +8,8 @@ import 'package:lumisovellus_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**success** | **bool** | Indicates if the request was successful | 
-**data** | **Object** |  | 
-**meta** | [**HealthGet200ResponseMeta**](HealthGet200ResponseMeta.md) |  | 
+**accessToken** | **String** | JWT access token | 
+**refreshToken** | **String** | JWT refresh token | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

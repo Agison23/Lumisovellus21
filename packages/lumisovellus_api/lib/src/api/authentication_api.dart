@@ -10,6 +10,7 @@ import 'package:lumisovellus_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lumisovellus_api/src/model/auth_profile_get200_response.dart';
+import 'package:lumisovellus_api/src/model/auth_refresh_token_post200_response.dart';
 import 'package:lumisovellus_api/src/model/auth_register_post201_response.dart';
 import 'package:lumisovellus_api/src/model/auth_reset_password_post200_response.dart';
 import 'package:lumisovellus_api/src/model/auth_verify_token_get200_response.dart';
@@ -468,9 +469,9 @@ _responseData = rawData == null ? null : deserialize<AuthProfileGet200Response, 
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [AuthRegisterPost201Response] as data
+  /// Returns a [Future] containing a [Response] with a [AuthRefreshTokenPost200Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AuthRegisterPost201Response>> authRefreshTokenPost({ 
+  Future<Response<AuthRefreshTokenPost200Response>> authRefreshTokenPost({ 
     required RefreshTokenRequest refreshTokenRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -518,11 +519,11 @@ _bodyData=jsonEncode(refreshTokenRequest);
       onReceiveProgress: onReceiveProgress,
     );
 
-    AuthRegisterPost201Response? _responseData;
+    AuthRefreshTokenPost200Response? _responseData;
 
     try {
 final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<AuthRegisterPost201Response, AuthRegisterPost201Response>(rawData, 'AuthRegisterPost201Response', growable: true);
+_responseData = rawData == null ? null : deserialize<AuthRefreshTokenPost200Response, AuthRefreshTokenPost200Response>(rawData, 'AuthRefreshTokenPost200Response', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -533,7 +534,7 @@ _responseData = rawData == null ? null : deserialize<AuthRegisterPost201Response
       );
     }
 
-    return Response<AuthRegisterPost201Response>(
+    return Response<AuthRefreshTokenPost200Response>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

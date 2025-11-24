@@ -13,6 +13,8 @@ import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 // Replace with your preferred state management/localization solution as needed.
 final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
       valueListenable: localeNotifier,
       builder: (context, locale, _) {
         return MaterialApp(
+          navigatorKey: navigatorKey,
           title: 'RescueApp',
           locale: locale,
           supportedLocales: const [

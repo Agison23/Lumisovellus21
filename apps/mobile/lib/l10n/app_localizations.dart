@@ -100,7 +100,7 @@ abstract class AppLocalizations {
   /// No description provided for @snowAppInfo.
   ///
   /// In en, this message translates to:
-  /// **'The snow application produced by Pallasen Pöllöt provides information about the prevailing snow conditions in the area.'**
+  /// **'The snow application produced by Pallaksen Pöllöt provides information about the prevailing snow conditions in the area.'**
   String get snowAppInfo;
 
   /// No description provided for @next.
@@ -208,7 +208,7 @@ abstract class AppLocalizations {
   /// No description provided for @newSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Freshly rained soft snow.'**
+  /// **'Freshly landed soft snow.'**
   String get newSnowDesc;
 
   /// No description provided for @freshWetSnow.
@@ -280,7 +280,7 @@ abstract class AppLocalizations {
   /// No description provided for @thinCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'A crust that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
+  /// **'A crust that breaks from the weight of a skier. Under the crust, a foot may sink deep.'**
   String get thinCrustDesc;
 
   /// No description provided for @collapsingCrust.
@@ -834,6 +834,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// No description provided for @guideHazards.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazards'**
+  String get guideHazards;
+
+  /// No description provided for @guideInfoFromUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'The information below is based on observations from other users.'**
+  String get guideInfoFromUsers;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeJustNow;
+
+  /// No description provided for @timeUnderMinuteAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'under a minute ago'**
+  String get timeUnderMinuteAgo;
+
+  /// No description provided for @timeOneMinuteAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute ago'**
+  String get timeOneMinuteAgo;
+
+  /// No description provided for @timeNMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String timeNMinutesAgo(Object minutes);
+
+  /// No description provided for @timeOneHourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour ago'**
+  String get timeOneHourAgo;
+
+  /// No description provided for @timeNHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String timeNHoursAgo(Object hours);
+
+  /// No description provided for @timeOneDayAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day ago'**
+  String get timeOneDayAgo;
+
+  /// No description provided for @timeNDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String timeNDaysAgo(Object days);
 }
 
 class _AppLocalizationsDelegate

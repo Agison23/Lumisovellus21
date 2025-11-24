@@ -308,7 +308,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": { "$ref": "#/components/schemas/AuthResponse" },
+                    "data": { "$ref": "#/components/schemas/TokenPair" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -1376,7 +1376,10 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": { "$ref": "#/components/schemas/SnowTypes" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/SnowType" }
+                    },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -1577,7 +1580,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/PrimarySnowTypeWithSecondaries"
+                        "$ref": "#/components/schemas/PrimarySnowType"
                       }
                     },
                     "meta": {
@@ -1707,7 +1710,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {},
+                    "data": { "$ref": "#/components/schemas/SnowType" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -2117,7 +2120,7 @@
                       "example": true,
                       "type": "boolean"
                     },
-                    "data": {},
+                    "data": { "$ref": "#/components/schemas/ReviewResponse" },
                     "meta": {
                       "description": "Response metadata",
                       "type": "object",
@@ -2909,35 +2912,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "firstName": {
-                    "description": "User first name",
-                    "example": "John",
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "lastName": {
-                    "description": "User last name",
-                    "example": "Smith",
-                    "type": "string"
-                  },
-                  "email": {
-                    "description": "User email address",
-                    "example": "johnsmith@example.com",
-                    "type": "string",
-                    "format": "email",
-                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
-                  },
-                  "phoneNumber": {
-                    "description": "Phone number",
-                    "example": "+1234567890",
-                    "type": "string"
-                  },
-                  "role": { "type": "string" }
-                }
-              }
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequest" }
             }
           }
         },
@@ -4583,12 +4558,6 @@
             "example": "password123",
             "type": "string",
             "minLength": 6
-          },
-          "role": {
-            "description": "User role",
-            "example": "NORMAL",
-            "type": "string",
-            "enum": ["NORMAL", "ADMIN", "RESCUE"]
           }
         },
         "required": ["firstName", "email", "password"]
@@ -4701,11 +4670,7 @@
             "default": [],
             "maxItems": 2,
             "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
+            "items": { "type": "string" }
           },
           "secondarySnowTypeIds": {
             "description": "Array of secondary snow type IDs (max 2)",
@@ -4716,11 +4681,7 @@
             "default": [],
             "maxItems": 2,
             "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
+            "items": { "type": "string" }
           },
           "hazards": {
             "description": "Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])",
@@ -4862,6 +4823,40 @@
         },
         "required": ["role"]
       },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "description": "User first name",
+            "example": "John",
+            "type": "string",
+            "minLength": 1
+          },
+          "lastName": {
+            "description": "User last name",
+            "example": "Doe",
+            "type": "string"
+          },
+          "email": {
+            "description": "User email address",
+            "example": "john@example.com",
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "role": {
+            "description": "User role",
+            "example": "NORMAL",
+            "type": "string",
+            "enum": ["NORMAL", "PREMIUM", "ADMIN", "RESCUE", "GUIDE"]
+          },
+          "phoneNumber": {
+            "description": "Phone number",
+            "example": "+1234567890",
+            "type": "string"
+          }
+        }
+      },
       "HelpEventCreate": {
         "type": "object",
         "properties": {
@@ -4941,11 +4936,7 @@
             "description": "User information",
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
+              "id": { "description": "User ID", "type": "string" },
               "firstName": { "type": "string" },
               "lastName": { "nullable": true, "type": "string" },
               "email": { "nullable": true, "type": "string" },
@@ -4966,14 +4957,25 @@
         "required": ["user", "accessToken", "refreshToken"],
         "additionalProperties": false
       },
+      "TokenPair": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "description": "JWT access token",
+            "type": "string"
+          },
+          "refreshToken": {
+            "description": "JWT refresh token",
+            "type": "string"
+          }
+        },
+        "required": ["accessToken", "refreshToken"],
+        "additionalProperties": false
+      },
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
+          "id": { "description": "User ID", "type": "string" },
           "firstName": { "type": "string" },
           "lastName": { "nullable": true, "type": "string" },
           "email": { "nullable": true, "type": "string" },
@@ -4981,15 +4983,19 @@
           "phoneNumber": { "nullable": true, "type": "string" },
           "lowBattery": { "type": "number" },
           "createdAt": {
+            "description": "Creation timestamp",
             "type": "string",
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
           },
           "updatedAt": {
+            "description": "Last update timestamp",
             "type": "string",
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
-          }
+          },
+          "devId": { "nullable": true, "type": "string" },
+          "ipAddress": { "nullable": true, "type": "string" }
         },
         "required": [
           "id",
@@ -4997,9 +5003,6 @@
           "lastName",
           "email",
           "role",
-          "phoneNumber",
-          "lowBattery",
-          "createdAt",
           "updatedAt"
         ],
         "additionalProperties": false
@@ -5007,19 +5010,13 @@
       "Segment": {
         "type": "object",
         "properties": {
-          "id": {
-            "description": "Segment ID",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
+          "id": { "description": "Segment ID", "type": "string" },
           "name": { "description": "Segment name", "type": "string" },
           "terrain": { "description": "Terrain description", "type": "string" },
           "avalancheDanger": { "type": "boolean" },
           "isLowerSegment": { "nullable": true, "type": "string" },
           "points": {
             "description": "Polygon or polyline of the segment",
-            "minItems": 1,
             "type": "array",
             "items": { "$ref": "#/components/schemas/SegmentPoint" }
           },
@@ -5071,127 +5068,127 @@
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
           },
-          "snowTypeId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "secondarySnowTypeId": {
-            "nullable": true,
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
+          "snowTypeId": { "type": "string" },
+          "secondarySnowTypeId": { "nullable": true, "type": "string" },
           "hazards": { "type": "array", "items": { "type": "string" } }
         },
-        "required": [
-          "submittedAt",
-          "snowTypeId",
-          "secondarySnowTypeId",
-          "hazards"
-        ],
+        "required": ["submittedAt", "snowTypeId", "hazards"],
         "additionalProperties": false
-      },
-      "SnowTypes": {
-        "description": "List of snow types",
-        "type": "array",
-        "items": { "$ref": "#/components/schemas/SnowType" }
       },
       "SnowType": {
         "type": "object",
         "properties": {
           "id": {
-            "description": "Snow type ID (UUID)",
-            "example": "72209550-799c-4a33-99ab-ca2c396f16d7",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "description": "Snow type ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "Snow type identifier (slug)",
+            "example": "powder",
+            "type": "string"
           },
           "name": {
             "description": "Snow type name",
-            "example": "Puuterilumi",
+            "example": "Powder",
             "type": "string"
           },
           "colour": {
             "description": "Snow type colour in hex format",
-            "example": "#5AABED",
+            "example": "#FFFFFF",
             "type": "string"
           },
           "skiability": {
-            "description": "Skiability rating (1-5), nullable",
-            "example": 4,
+            "description": "Skiability rating (1-5)",
+            "example": 5,
             "nullable": true,
             "type": "integer",
-            "minimum": 1,
-            "maximum": 5
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "primarySnowTypeId": {
             "description": "Primary snow type ID. NULL for primary snow types, UUID for secondary snow types",
             "example": null,
             "nullable": true,
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "type": "string"
           },
           "explanation": {
             "description": "Explanation of the snow type",
-            "example": "Vastasatanut irtonainen, höyhenenkevyt lumi.",
+            "example": "Fresh powder snow",
             "nullable": true,
             "type": "string"
           }
         },
-        "required": ["id", "name", "colour"],
+        "required": [
+          "id",
+          "identifier",
+          "name",
+          "colour",
+          "skiability",
+          "primarySnowTypeId",
+          "explanation"
+        ],
         "additionalProperties": false
       },
-      "PrimarySnowTypeWithSecondaries": {
+      "PrimarySnowType": {
         "type": "object",
         "properties": {
           "id": {
-            "description": "Snow type ID (UUID)",
-            "example": "72209550-799c-4a33-99ab-ca2c396f16d7",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "description": "Snow type ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "type": "string"
+          },
+          "identifier": {
+            "description": "Snow type identifier (slug)",
+            "example": "powder",
+            "type": "string"
           },
           "name": {
             "description": "Snow type name",
-            "example": "Puuterilumi",
+            "example": "Powder",
             "type": "string"
           },
           "colour": {
             "description": "Snow type colour in hex format",
-            "example": "#5AABED",
+            "example": "#FFFFFF",
             "type": "string"
           },
           "skiability": {
-            "description": "Skiability rating (1-5), nullable",
-            "example": 4,
+            "description": "Skiability rating (1-5)",
+            "example": 5,
             "nullable": true,
             "type": "integer",
-            "minimum": 1,
-            "maximum": 5
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "primarySnowTypeId": {
             "description": "Primary snow type ID. NULL for primary snow types, UUID for secondary snow types",
             "example": null,
             "nullable": true,
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "type": "string"
           },
           "explanation": {
             "description": "Explanation of the snow type",
-            "example": "Vastasatanut irtonainen, höyhenenkevyt lumi.",
+            "example": "Fresh powder snow",
             "nullable": true,
             "type": "string"
           },
-          "secondarySnowTypes": {
-            "description": "Secondary snow types for this primary type",
+          "secondaryTypes": {
+            "description": "Array of secondary snow types for this snow type",
             "type": "array",
             "items": { "$ref": "#/components/schemas/SnowType" }
           }
         },
-        "required": ["id", "name", "colour", "secondarySnowTypes"],
+        "required": [
+          "id",
+          "identifier",
+          "name",
+          "colour",
+          "skiability",
+          "primarySnowTypeId",
+          "explanation",
+          "secondaryTypes"
+        ],
         "additionalProperties": false
       },
       "Observation": {
@@ -5200,9 +5197,7 @@
           "segmentId": {
             "description": "Segment ID",
             "example": "550e8400-e29b-41d4-a716-446655440000",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "type": "string"
           },
           "guideUpdate": {
             "description": "Guide update for the segment, if available",
@@ -5232,9 +5227,7 @@
           "snowTypeId": {
             "description": "Snow type ID",
             "example": "550e8400-e29b-41d4-a716-446655440001",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "type": "string"
           },
           "hazards": {
             "description": "Array of hazards",
@@ -5244,6 +5237,59 @@
           }
         },
         "required": ["submittedAt", "snowTypeId", "hazards"],
+        "additionalProperties": false
+      },
+      "ReviewResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Review ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "type": "string"
+          },
+          "time": {
+            "description": "Review submission timestamp",
+            "example": "2024-01-15T10:30:00.000Z",
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "segment": {
+            "description": "Segment ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "type": "string"
+          },
+          "snowType": {
+            "description": "Snow type ID",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "nullable": true,
+            "type": "string"
+          },
+          "secondarySnowType": {
+            "description": "Secondary snow type ID",
+            "example": null,
+            "nullable": true,
+            "type": "string"
+          },
+          "hazards": {
+            "description": "Array of hazards",
+            "example": ["stones", "branches"],
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "comment": {
+            "description": "Optional review comment",
+            "example": "Good snow conditions",
+            "nullable": true,
+            "type": "string"
+          },
+          "userId": {
+            "description": "User ID who created the review",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": ["id", "time", "segment", "hazards"],
         "additionalProperties": false
       },
       "HelpEventRescueeView": {
@@ -5611,11 +5657,7 @@
             "default": [],
             "maxItems": 2,
             "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
+            "items": { "type": "string" }
           },
           "secondarySnowTypeIds": {
             "description": "Array of secondary snow type IDs (max 2)",
@@ -5626,11 +5668,7 @@
             "default": [],
             "maxItems": 2,
             "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            }
+            "items": { "type": "string" }
           },
           "hazards": {
             "description": "Array of hazards found on the trail (e.g., [\"stones\", \"branches\"])",

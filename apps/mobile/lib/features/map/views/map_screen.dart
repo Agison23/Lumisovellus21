@@ -161,11 +161,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               left: 16,
               child: AreaCard(
                 t: t,
+                segmentId: selectedSegment.id,
                 name: selectedSegment.name,
                 terrain: selectedSegment.terrain,
                 danger: selectedSegment.avalancheDanger
                     ? t.avalancheWarning
                     : t.noAvalancheWarning,
+                userReviews: selectedSegment.userReviews,
+                guideUpdate: selectedSegment.guideUpdate,
                 onAdd: () {},
                 onClose: () => ref.read(segmentsNotifierProvider.notifier).select(null),
                 snowTypes: snowTypes,

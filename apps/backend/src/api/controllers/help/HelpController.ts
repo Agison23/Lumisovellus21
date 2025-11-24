@@ -8,6 +8,9 @@ import {
   helpEventCreateSchema,
   helpEventNearbyQuerySchema,
   helpEventStatusUpdateSchema,
+  helpEventRescueeViewSchema,
+  helpEventRescuerViewSchema,
+  helpEventSummarySchema,
 } from '../../middleware/validation';
 import { z } from 'zod';
 
@@ -43,7 +46,7 @@ export class HelpController {
         req.user.id,
         parsed.data
       );
-      ApiResponseHandler.success(res, event, 201);
+      ApiResponseHandler.success(res, event, 201, undefined, helpEventRescueeViewSchema);
     }
   );
 
@@ -70,7 +73,7 @@ export class HelpController {
         lng,
         accuracy ?? 3000
       );
-      ApiResponseHandler.success(res, events);
+      ApiResponseHandler.success(res, events, 200, undefined, z.array(helpEventSummarySchema));
     }
   );
 
@@ -86,7 +89,9 @@ export class HelpController {
           req.params.eventId,
           req.user.id
         );
-        ApiResponseHandler.success(res, event);
+        // getHelpEventView returns either rescuee or rescuer view based on user role
+        // Using union schema - validation will check against both schemas
+        ApiResponseHandler.success(res, event, 200, undefined, z.union([helpEventRescueeViewSchema, helpEventRescuerViewSchema]));
       } catch (error) {
         if (error instanceof Error && error.message.includes('not part')) {
           ApiResponseHandler.forbidden(res, error.message);
@@ -120,7 +125,7 @@ export class HelpController {
             accuracy: parsed.data.location.accuracy ?? null,
           }
         );
-        ApiResponseHandler.success(res, view);
+        ApiResponseHandler.success(res, view, 200, undefined, helpEventRescuerViewSchema);
       } catch (error) {
         if (error instanceof Error) {
           ApiResponseHandler.forbidden(res, error.message);
@@ -143,7 +148,7 @@ export class HelpController {
           req.params.eventId,
           req.user.id
         );
-        ApiResponseHandler.success(res, view);
+        ApiResponseHandler.success(res, view, 200, undefined, helpEventRescuerViewSchema);
       } catch (error) {
         if (error instanceof Error) {
           ApiResponseHandler.forbidden(res, error.message);
@@ -173,7 +178,7 @@ export class HelpController {
           req.user.id,
           parsed.data.status
         );
-        ApiResponseHandler.success(res, event);
+        ApiResponseHandler.success(res, event, 200, undefined, helpEventRescueeViewSchema);
       } catch (error) {
         if (error instanceof Error) {
           ApiResponseHandler.forbidden(res, error.message);

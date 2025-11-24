@@ -1,15 +1,21 @@
 import 'package:test/test.dart';
 import 'package:lumisovellus_api/lumisovellus_api.dart';
 
-// tests for PrimarySnowTypeWithSecondaries
+// tests for PrimarySnowType
 void main() {
-  final PrimarySnowTypeWithSecondaries? instance = /* PrimarySnowTypeWithSecondaries(...) */ null;
+  final PrimarySnowType? instance = /* PrimarySnowType(...) */ null;
   // TODO add properties to the entity
 
-  group(PrimarySnowTypeWithSecondaries, () {
-    // Snow type ID (UUID)
+  group(PrimarySnowType, () {
+    // Snow type ID
     // String id
     test('to test the property `id`', () async {
+      // TODO
+    });
+
+    // Snow type identifier (slug)
+    // String identifier
+    test('to test the property `identifier`', () async {
       // TODO
     });
 
@@ -25,7 +31,7 @@ void main() {
       // TODO
     });
 
-    // Skiability rating (1-5), nullable
+    // Skiability rating (1-5)
     // int skiability
     test('to test the property `skiability`', () async {
       // TODO
@@ -43,9 +49,9 @@ void main() {
       // TODO
     });
 
-    // Secondary snow types for this primary type
-    // List<SnowType> secondarySnowTypes
-    test('to test the property `secondarySnowTypes`', () async {
+    // Array of secondary snow types for this snow type
+    // List<SnowType> secondaryTypes
+    test('to test the property `secondaryTypes`', () async {
       // TODO
     });
 

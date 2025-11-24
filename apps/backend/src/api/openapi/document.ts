@@ -1,6 +1,5 @@
 import 'zod-openapi';
 import { createDocument } from 'zod-openapi';
-import { z } from 'zod';
 import { openApiRoutes } from './routes';
 import { errorResponseSchema, healthResponseSchema } from './schemas';
 

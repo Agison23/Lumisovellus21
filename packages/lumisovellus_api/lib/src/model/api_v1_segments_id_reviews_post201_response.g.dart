@@ -1,20 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api_v1_snow_types_id_secondary_post200_response.dart';
+part of 'api_v1_segments_id_reviews_post201_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ApiV1SnowTypesIdSecondaryPost200Response
-_$ApiV1SnowTypesIdSecondaryPost200ResponseFromJson(Map<String, dynamic> json) =>
-    $checkedCreate('ApiV1SnowTypesIdSecondaryPost200Response', json, (
+ApiV1SegmentsIdReviewsPost201Response
+_$ApiV1SegmentsIdReviewsPost201ResponseFromJson(Map<String, dynamic> json) =>
+    $checkedCreate('ApiV1SegmentsIdReviewsPost201Response', json, (
       $checkedConvert,
     ) {
       $checkKeys(json, requiredKeys: const ['success', 'data', 'meta']);
-      final val = ApiV1SnowTypesIdSecondaryPost200Response(
+      final val = ApiV1SegmentsIdReviewsPost201Response(
         success: $checkedConvert('success', (v) => v as bool),
-        data: $checkedConvert('data', (v) => v),
+        data: $checkedConvert(
+          'data',
+          (v) => ReviewResponse.fromJson(v as Map<String, dynamic>),
+        ),
         meta: $checkedConvert(
           'meta',
           (v) => HealthGet200ResponseMeta.fromJson(v as Map<String, dynamic>),
@@ -23,10 +26,10 @@ _$ApiV1SnowTypesIdSecondaryPost200ResponseFromJson(Map<String, dynamic> json) =>
       return val;
     });
 
-Map<String, dynamic> _$ApiV1SnowTypesIdSecondaryPost200ResponseToJson(
-  ApiV1SnowTypesIdSecondaryPost200Response instance,
+Map<String, dynamic> _$ApiV1SegmentsIdReviewsPost201ResponseToJson(
+  ApiV1SegmentsIdReviewsPost201Response instance,
 ) => <String, dynamic>{
   'success': instance.success,
-  'data': instance.data,
+  'data': instance.data.toJson(),
   'meta': instance.meta.toJson(),
 };

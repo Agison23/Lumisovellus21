@@ -122,5 +122,15 @@
   "role": "Role",
   "phoneNumber": "Phone number",
   "registeredAt": "Registered at",
-  "logout": "Logout"
+  "logout": "Logout",
+  "guideHazards": "Hazards",
+  "guideInfoFromUsers": "The information below is based on observations from other users.",
+  "timeJustNow": "just now",
+  "timeUnderMinuteAgo": "under a minute ago",
+  "timeOneMinuteAgo": "1 minute ago",
+  "timeNMinutesAgo": "{minutes} minutes ago",
+  "timeOneHourAgo": "1 hour ago",
+  "timeNHoursAgo": "{hours} hours ago",
+  "timeOneDayAgo": "1 day ago",
+  "timeNDaysAgo": "{days} days ago"
 }

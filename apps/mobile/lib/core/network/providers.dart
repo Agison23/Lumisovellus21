@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:lumisovellus/main.dart';
+import '../auth/viewmodel/auth_notifier.dart';
+
 import 'api_client.dart';
 
 final _connectivityStreamProvider = StreamProvider<bool>((ref) {
@@ -20,6 +24,25 @@ final connectivityProvider = Provider<bool>((ref) {
 });
 
 final apiClientProvider = Provider<ApiClient>((ref) {
-  const baseUrl = 'http://localhost:3001';
-  return ApiClient(baseUrl: baseUrl);
+  return ApiClient(
+    baseUrl: 'http://localhost:3001',
+    on401: (req, res) {
+      final ctx = navigatorKey.currentContext;
+      if (ctx == null) return;
+
+      showDialog(
+        context: ctx,
+        builder: (context) => AlertDialog(
+          title: const Text('Unauthorized'),
+          content: const Text("You don't have permission to do that."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 });

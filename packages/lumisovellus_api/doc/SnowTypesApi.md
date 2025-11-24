@@ -55,7 +55,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1SnowTypesIdSecondaryPost**
-> ApiV1SnowTypesIdSecondaryPost200Response apiV1SnowTypesIdSecondaryPost(id, addSecondarySnowTypesRequest)
+> ApiV1SnowTypesPost201Response apiV1SnowTypesIdSecondaryPost(id, addSecondarySnowTypesRequest)
 
 Add secondary snow types to a snow type
 
@@ -86,7 +86,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ApiV1SnowTypesIdSecondaryPost200Response**](ApiV1SnowTypesIdSecondaryPost200Response.md)
+[**ApiV1SnowTypesPost201Response**](ApiV1SnowTypesPost201Response.md)
 
 ### Authorization
 

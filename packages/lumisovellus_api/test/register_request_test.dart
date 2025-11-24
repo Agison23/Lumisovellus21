@@ -31,11 +31,5 @@ void main() {
       // TODO
     });
 
-    // User role
-    // String role
-    test('to test the property `role`', () async {
-      // TODO
-    });
-
   });
 }

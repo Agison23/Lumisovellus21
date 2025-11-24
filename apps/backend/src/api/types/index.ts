@@ -117,6 +117,7 @@ export interface Review {
 // Snow Type Types
 export interface SnowType {
   id: string;
+  identifier: string;
   name: string;
   colour: string;
   skiability?: number | null;

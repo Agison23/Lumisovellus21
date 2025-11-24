@@ -280,7 +280,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **apiV1UsersIdPut**
-> AuthProfileGet200Response apiV1UsersIdPut(id, apiV1UsersIdPutRequest)
+> AuthProfileGet200Response apiV1UsersIdPut(id, updateUserRequest)
 
 Update a user
 
@@ -292,10 +292,10 @@ import 'package:lumisovellus_api/api.dart';
 
 final api = LumisovellusApi().getUsersApi();
 final String id = 550e8400-e29b-41d4-a716-446655440001; // String | User ID
-final ApiV1UsersIdPutRequest apiV1UsersIdPutRequest = ; // ApiV1UsersIdPutRequest | 
+final UpdateUserRequest updateUserRequest = ; // UpdateUserRequest | 
 
 try {
-    final response = api.apiV1UsersIdPut(id, apiV1UsersIdPutRequest);
+    final response = api.apiV1UsersIdPut(id, updateUserRequest);
     print(response);
 } catch on DioException (e) {
     print('Exception when calling UsersApi->apiV1UsersIdPut: $e\n');
@@ -307,7 +307,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **String**| User ID | 
- **apiV1UsersIdPutRequest** | [**ApiV1UsersIdPutRequest**](ApiV1UsersIdPutRequest.md)|  | 
+ **updateUserRequest** | [**UpdateUserRequest**](UpdateUserRequest.md)|  | 
 
 ### Return type
 
