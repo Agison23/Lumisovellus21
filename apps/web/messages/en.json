@@ -77,87 +77,87 @@
         "minor": "minor"
       },
       "snowTypes": {
-        "1": {
+        "crust": {
           "name": "Crust",
           "description": "Hard crust covering the surface. Crust can be smooth or rough in nature."
         },
-        "2": {
+        "slush": {
           "name": "Slush",
           "description": "Water-rich and partially melted snow in sheltered conditions."
         },
-        "3": {
+        "ice": {
           "name": "Ice",
           "description": "Hard and unbroken icy layer on the surface. Ice forms as a result of melt-freeze cycles."
         },
-        "4": {
+        "fresh": {
           "name": "Fresh snow",
           "description": "Recently fallen soft snow."
         },
-        "5": {
+        "wind-blown": {
           "name": "Wind-blown snow",
           "description": "Wind-hardened and unevenly shaped snow."
         },
-        "6": {
+        "sparse": {
           "name": "Sparse snow",
           "description": ""
         },
-        "8": {
+        "bare-ground": {
           "name": "Bare ground",
           "description": ""
         },
-        "9": {
+        "powder-snow": {
           "name": "Powder snow",
           "description": "Recently fallen, light, soft and slightly consolidated frost snow."
         },
-        "10": {
+        "powder": {
           "name": "Powder",
           "description": "Recently fallen loose, feather-light and non-consolidated snow. Powder usually forms in calm weather and hard frost."
         },
-        "11": {
+        "wet": {
           "name": "Wet fresh snow",
           "description": "Snow from which you can easily make a snowball. Wet snow forms when it rains near freezing or well in sheltered areas."
         },
-        "12": {
+        "sastrugi": {
           "name": "Sastrugi",
           "description": "Wind-caused snow ridges that are hard, icy and sharp-crested."
         },
-        "13": {
+        "wavy": {
           "name": "Wavy snow",
           "description": "Wind-shaped fresh snow area. Waves are soft and easily broken."
         },
-        "14": {
+        "wind-packed": {
           "name": "Wind-packed snow",
           "description": "Smooth, wind-layered and compacted slab or lens. Wind-packed snow can also accumulate without snowfall if wind moves snow from place to place. Wind-packed snow typically forms in sheltered areas."
         },
-        "15": {
+        "thin-crust": {
           "name": "Thin crust",
           "description": "Snow crust that breaks under the skier's weight. Below the crust, snow can be sinking in places."
         },
-        "16": {
+        "breakable-crust": {
           "name": "Breakable crust",
           "description": "Intermittently bearing, unexpectedly breaking snow surface. The crust can be very thick if there is porous snow beneath it."
         },
-        "17": {
+        "bearing-crust": {
           "name": "Bearing crust",
           "description": "Solid and bearing snow crust, often with a very hard and dense surface."
         },
-        "18": {
+        "breakable-ice": {
           "name": "Breakable ice",
           "description": "Hard and breakable icy layer on the surface."
         },
-        "19": {
+        "softening-snow": {
           "name": "Softening snow",
           "description": "Snow that becomes wet or moist from warming or rain starting from the surface."
         },
-        "20": {
+        "saturated-snow": {
           "name": "Saturated snow",
           "description": "Wet, throughly soaked and whipped cream-like snow."
         },
-        "21": {
-          "name": "Rocks",
+        "stones": {
+          "name": "Stones",
           "description": ""
         },
-        "22": {
+        "branches": {
           "name": "Branches",
           "description": ""
         }
@@ -203,10 +203,23 @@
   "Dashboard": {
     "title": "Dashboard",
     "OverviewPage": {
-      "title": "Overview"
+      "title": "Overview",
+      "greetings": {
+        "morning": "Good morning, {name}",
+        "day": "Good day, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}",
+        "night": "Good night, {name}"
+      },
+      "user": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      }
     },
     "SegmentsPage": {
       "title": "Segments",
+      "newButton": "New Segment",
       "search": {
         "placeholder": "Search segments..."
       },
@@ -214,6 +227,33 @@
         "avalancheDanger": "Avalanche danger: ",
         "true": "True",
         "false": "False"
+      },
+      "createDialog": {
+        "title": "Create New Segment",
+        "name": "Name",
+        "terrain": "Terrain",
+        "id": "ID",
+        "coordinates": {
+          "title": "Coordinates",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "addCoordinate": "Add coordinate"
+        },
+        "avalanche": {
+          "title": "Avalanche",
+          "toggleAvalancheWarning": "Area is prone to avalanches"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create",
+          "creating": "Creating..."
+        },
+        "errors": {
+          "createFailed": "Failed to create segment. Please try again."
+        },
+        "success": {
+          "createSuccessful": "Segment created successfully."
+        }
       },
       "editDialog": {
         "title": "Editing {name}",
@@ -259,10 +299,60 @@
       }
     },
     "UsersPage": {
-      "title": "Users"
+      "title": "Users",
+      "loading": "Loading users...",
+      "errors": {
+        "loadingFailed": "Failed to load users. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search users..."
+      },
+      "labels": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      },
+      "editDialog": {
+        "title": "Editing {email}",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "role": "Role",
+        "rolePlaceholder": "Select a role",
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "saveFailed": "Failed to save changes. Please try again."
+        },
+        "success": {
+          "saveSuccessful": "Changes saved successfully."
+        }
+      }
     },
     "ReportsPage": {
-      "title": "Reports"
+      "title": "Reports",
+      "loading": "Loading reports...",
+      "errors": {
+        "loadingFailed": "Failed to load reports. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search reports..."
+      },
+      "labels": {
+        "id": "ID",
+        "date": "Date",
+        "snowType": "Snow type",
+        "location": "Location",
+        "description": "Description",
+        "hazards": "Hazards",
+        "primarySnowType": "Primary Snow Type",
+        "secondarySnowType": "Secondary Snow Type",
+        "guideUpdates": "Guide Updates",
+        "userReviews": "User Reviews"
+      }
     },
     "Sidebar": {
       "title": "Dashboard"
@@ -270,8 +360,8 @@
   },
   "Sidebar": {
     "logIn": {
-      "logIn": "Log In",
-      "logOut": "Log Out"
+      "logIn": "Log in",
+      "logOut": "Log out"
     },
     "title": "Pallaksen Pöllöt",
     "p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
