@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -23,9 +24,11 @@ final connectivityProvider = Provider<bool>((ref) {
   return asyncValue.asData?.value ?? false;
 });
 
-final apiClientProvider = Provider<ApiClient>((ref) {
+final apiClientProvider = Provider<ApiClient>((ref)  {
+  final baseUrl = dotenv.env['BACKEND_URL'] ?? 'http://localhost:3001';
+
   return ApiClient(
-    baseUrl: 'http://localhost:3001',
+    baseUrl: baseUrl,
     on401: (req, res) {
       final ctx = navigatorKey.currentContext;
       if (ctx == null) return;
