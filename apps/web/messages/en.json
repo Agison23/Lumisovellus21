@@ -193,12 +193,19 @@
       }
     }
   },
-  "WeatherPage": {
+	"WeatherPage": {
     "title": "Weather",
-    "loading": "Loading weather data..."
-  },
-  "DefinitionsPage": {
-    "title": "Definitions"
+    "avgWindTitle": "Average Wind (3 days)",
+    "windDirection": "at {deg}°",
+    "tempTitle": "Temperature (3 days)",
+    "min": "Min",
+    "max": "Max",
+    "maxWindTitle": "Max Wind Speed (3 days)",
+    "snowChangeTitle": "Snow Depth Change (7 days)",
+    "aboveFreezingTitle": "Days Above Freezing (3 days)",
+    "noAboveFreezing": "No days above freezing.",
+    "DefinitionsPage": {
+      "title": "Definitions"
   },
   "Dashboard": {
     "title": "Dashboard",

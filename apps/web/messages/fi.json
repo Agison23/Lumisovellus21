@@ -195,8 +195,17 @@
     }
   },
   "WeatherPage": {
-    "title": "Sää",
-    "loading": "Ladataan säätietoja..."
+	"title": "Sää",
+	"loading": "Ladataan säätietoja...",
+	"avgWindTitle": "Keskimääräinen tuuli (3 päivää)",
+	"windDirection": "suunnassa {deg}°",
+	"tempTitle": "Lämpötila (3 päivää)",
+	"min": "Minimi",
+	"max": "Maksimi",
+	"maxWindTitle": "Suurin tuulennopeus (3 päivää)",
+	"snowChangeTitle": "Lumensyvyyden muutos (7 päivää)",
+	"aboveFreezingTitle": "Päivät nollan yläpuolella (3 päivää)",
+	"noAboveFreezing": "Ei päiviä nollan yläpuolella."
   },
   "DefinitionsPage": {
     "title": "Selitteet"
