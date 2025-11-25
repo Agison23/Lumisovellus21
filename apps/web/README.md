@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## ENV
+Make a copy of the `.env.example` file and rename it to `.env.local`. Then, fill in the required environment variables.
+
 ## Getting Started
 
 First, run the development server:

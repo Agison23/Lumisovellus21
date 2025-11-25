@@ -4,9 +4,9 @@ import 'package:lumisovellus_api/src/model/api_v1_segments_get200_response.dart'
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_guide_update_post200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_guide_update_post200_response_data.dart';
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_observations_get200_response.dart';
+import 'package:lumisovellus_api/src/model/api_v1_segments_id_reviews_post201_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_reviews_post_request.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_get200_response.dart';
-import 'package:lumisovellus_api/src/model/api_v1_snow_types_id_secondary_post200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_post201_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_primary_get200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_device_id_location_post200_response.dart';
@@ -14,8 +14,8 @@ import 'package:lumisovellus_api/src/model/api_v1_users_device_id_location_post2
 import 'package:lumisovellus_api/src/model/api_v1_users_device_id_role_get200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_device_id_role_get200_response_data.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_get200_response.dart';
-import 'package:lumisovellus_api/src/model/api_v1_users_id_put_request.dart';
 import 'package:lumisovellus_api/src/model/auth_profile_get200_response.dart';
+import 'package:lumisovellus_api/src/model/auth_refresh_token_post200_response.dart';
 import 'package:lumisovellus_api/src/model/auth_register_post201_response.dart';
 import 'package:lumisovellus_api/src/model/auth_reset_password_post200_response.dart';
 import 'package:lumisovellus_api/src/model/auth_reset_password_post200_response_data.dart';
@@ -54,16 +54,19 @@ import 'package:lumisovellus_api/src/model/help_events_post201_response.dart';
 import 'package:lumisovellus_api/src/model/location_update.dart';
 import 'package:lumisovellus_api/src/model/login_request.dart';
 import 'package:lumisovellus_api/src/model/observation.dart';
-import 'package:lumisovellus_api/src/model/primary_snow_type_with_secondaries.dart';
+import 'package:lumisovellus_api/src/model/primary_snow_type.dart';
 import 'package:lumisovellus_api/src/model/refresh_token_request.dart';
 import 'package:lumisovellus_api/src/model/register_request.dart';
 import 'package:lumisovellus_api/src/model/reset_password_request.dart';
+import 'package:lumisovellus_api/src/model/review_response.dart';
 import 'package:lumisovellus_api/src/model/role_update.dart';
 import 'package:lumisovellus_api/src/model/segment.dart';
 import 'package:lumisovellus_api/src/model/segment_point.dart';
 import 'package:lumisovellus_api/src/model/segment_user_review.dart';
 import 'package:lumisovellus_api/src/model/snow_type.dart';
+import 'package:lumisovellus_api/src/model/token_pair.dart';
 import 'package:lumisovellus_api/src/model/update_profile_request.dart';
+import 'package:lumisovellus_api/src/model/update_user_request.dart';
 import 'package:lumisovellus_api/src/model/user.dart';
 import 'package:lumisovellus_api/src/model/user_review_observation.dart';
 import 'package:lumisovellus_api/src/model/weather_average_get200_response.dart';
@@ -104,12 +107,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ApiV1SegmentsIdGuideUpdatePost200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1SegmentsIdObservationsGet200Response':
           return ApiV1SegmentsIdObservationsGet200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ApiV1SegmentsIdReviewsPost201Response':
+          return ApiV1SegmentsIdReviewsPost201Response.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1SegmentsIdReviewsPostRequest':
           return ApiV1SegmentsIdReviewsPostRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1SnowTypesGet200Response':
           return ApiV1SnowTypesGet200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'ApiV1SnowTypesIdSecondaryPost200Response':
-          return ApiV1SnowTypesIdSecondaryPost200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1SnowTypesPost201Response':
           return ApiV1SnowTypesPost201Response.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1SnowTypesPrimaryGet200Response':
@@ -124,10 +127,10 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ApiV1UsersDeviceIdRoleGet200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ApiV1UsersGet200Response':
           return ApiV1UsersGet200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'ApiV1UsersIdPutRequest':
-          return ApiV1UsersIdPutRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AuthProfileGet200Response':
           return AuthProfileGet200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AuthRefreshTokenPost200Response':
+          return AuthRefreshTokenPost200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AuthRegisterPost201Response':
           return AuthRegisterPost201Response.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AuthResetPasswordPost200Response':
@@ -207,14 +210,16 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return LoginRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Observation':
           return Observation.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'PrimarySnowTypeWithSecondaries':
-          return PrimarySnowTypeWithSecondaries.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'PrimarySnowType':
+          return PrimarySnowType.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RefreshTokenRequest':
           return RefreshTokenRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RegisterRequest':
           return RegisterRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ResetPasswordRequest':
           return ResetPasswordRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReviewResponse':
+          return ReviewResponse.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RoleUpdate':
           return RoleUpdate.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'Segment':
@@ -225,8 +230,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return SegmentUserReview.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SnowType':
           return SnowType.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TokenPair':
+          return TokenPair.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateProfileRequest':
           return UpdateProfileRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateUserRequest':
+          return UpdateUserRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'User':
           return User.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UserReviewObservation':

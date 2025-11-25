@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get snowAppInfo =>
-      'The snow application produced by Pallasen Pöllöt provides information about the prevailing snow conditions in the area.';
+      'The snow application produced by Pallaksen Pöllöt provides information about the prevailing snow conditions in the area.';
 
   @override
   String get next => 'Continue';
@@ -61,7 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newSnow => 'New snow';
 
   @override
-  String get newSnowDesc => 'Freshly rained soft snow.';
+  String get newSnowDesc => 'Freshly landed soft snow.';
 
   @override
   String get freshWetSnow => 'Fresh wet snow';
@@ -102,7 +102,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive.';
+      'A crust that breaks from the weight of a skier. Under the crust, a foot may sink deep.';
 
   @override
   String get collapsingCrust => 'Collapsing crust';
@@ -488,4 +488,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout => 'Logout';
+
+  @override
+  String get guideHazards => 'Hazards';
+
+  @override
+  String get guideInfoFromUsers =>
+      'The information below is based on observations from other users.';
+
+  @override
+  String get timeJustNow => 'just now';
+
+  @override
+  String get timeUnderMinuteAgo => 'under a minute ago';
+
+  @override
+  String get timeOneMinuteAgo => '1 minute ago';
+
+  @override
+  String timeNMinutesAgo(Object minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String get timeOneHourAgo => '1 hour ago';
+
+  @override
+  String timeNHoursAgo(Object hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String get timeOneDayAgo => '1 day ago';
+
+  @override
+  String timeNDaysAgo(Object days) {
+    return '$days days ago';
+  }
 }

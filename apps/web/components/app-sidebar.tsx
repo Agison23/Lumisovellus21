@@ -1,8 +1,11 @@
 'use client';
-import { useTranslations } from 'next-intl';
+import { LogInIcon, LogOutIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import LocaleSwitcher from './locale-switcher';
 import { ThemeToggle } from './theme/theme-toggle';
+import { Button } from './ui/button';
 import {
   Sidebar,
   SidebarContent,
@@ -11,17 +14,13 @@ import {
   SidebarHeader,
   SidebarTrigger,
 } from './ui/sidebar';
-import { useAuth } from '@/hooks/use-auth';
-import { Button } from './ui/button';
-import { LogIn, LogInIcon, LogOut, LogOutIcon } from 'lucide-react';
-import Link from 'next/link';
 import { logoutAction } from '@/app/(auth)/actions';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function AppSidebar() {
   const t = useTranslations('Sidebar');
   const router = useRouter();
   const isLoggedIn = useAuth().isLoggedIn;
-  console.log('Sidebar - isLoggedIn:', isLoggedIn);
 
   const handleLogout = async () => {
     await logoutAction();

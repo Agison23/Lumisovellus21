@@ -7,9 +7,15 @@ void main() {
   // TODO add properties to the entity
 
   group(SnowType, () {
-    // Snow type ID (UUID)
+    // Snow type ID
     // String id
     test('to test the property `id`', () async {
+      // TODO
+    });
+
+    // Snow type identifier (slug)
+    // String identifier
+    test('to test the property `identifier`', () async {
       // TODO
     });
 
@@ -25,7 +31,7 @@ void main() {
       // TODO
     });
 
-    // Skiability rating (1-5), nullable
+    // Skiability rating (1-5)
     // int skiability
     test('to test the property `skiability`', () async {
       // TODO

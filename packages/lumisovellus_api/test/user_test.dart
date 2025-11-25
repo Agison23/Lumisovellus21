@@ -7,6 +7,7 @@ void main() {
   // TODO add properties to the entity
 
   group(User, () {
+    // User ID
     // String id
     test('to test the property `id`', () async {
       // TODO
@@ -42,13 +43,25 @@ void main() {
       // TODO
     });
 
+    // Creation timestamp
     // DateTime createdAt
     test('to test the property `createdAt`', () async {
       // TODO
     });
 
+    // Last update timestamp
     // DateTime updatedAt
     test('to test the property `updatedAt`', () async {
+      // TODO
+    });
+
+    // String devId
+    test('to test the property `devId`', () async {
+      // TODO
+    });
+
+    // String ipAddress
+    test('to test the property `ipAddress`', () async {
       // TODO
     });
 

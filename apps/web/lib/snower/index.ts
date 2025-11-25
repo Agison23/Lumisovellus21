@@ -70,7 +70,6 @@ export class SnowerAPI {
 			}
 
 			const res = await response.json();
-			console.log("API Response from", url, ":", res);
 
 			return await res;
 		} catch (error) {
@@ -238,8 +237,6 @@ export class SnowerAPI {
 			const monitorsWithReadings = await this.getMonitorReadings(
 				monitorsWithLocations
 			);
-
-			console.log("Fetched monitor data:", monitorsWithReadings);
 
 			return mergeMonitors(DEFAULT_MONITORS, monitorsWithReadings);
 		} catch (error) {

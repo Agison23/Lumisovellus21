@@ -13,7 +13,7 @@ void main() {
       // TODO
     });
 
-    // List<PrimarySnowTypeWithSecondaries> data
+    // List<PrimarySnowType> data
     test('to test the property `data`', () async {
       // TODO
     });

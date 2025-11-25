@@ -19,9 +19,7 @@ _$ApiV1SnowTypesPrimaryGet200ResponseFromJson(Map<String, dynamic> json) =>
           (v) =>
               (v as List<dynamic>?)
                   ?.map(
-                    (e) => PrimarySnowTypeWithSecondaries.fromJson(
-                      e as Map<String, dynamic>,
-                    ),
+                    (e) => PrimarySnowType.fromJson(e as Map<String, dynamic>),
                   )
                   .toList() ??
               const [],

@@ -22,7 +22,7 @@ class SegmentUserReview {
 SegmentUserReview({
   required  this.submittedAt,
   required  this.snowTypeId,
-  required  this.secondarySnowTypeId,
+   this.secondarySnowTypeId,
   this.hazards = const [],
 });
 
@@ -53,8 +53,8 @@ SegmentUserReview({
   @JsonKey(
     
     name: r'secondarySnowTypeId',
-    required: true,
-    includeIfNull: true,
+    required: false,
+    includeIfNull: false,
   )
 
 

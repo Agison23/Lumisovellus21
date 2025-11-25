@@ -92,6 +92,7 @@ describe('Reviews API Integration Tests', () => {
       const powderType = response.body.data.find((st: any) => st.id === '1');
       expect(powderType).toEqual({
         id: '1',
+        identifier: 'powder',
         name: 'Powder',
         colour: '#FFFFFF',
         skiability: 5,
@@ -103,6 +104,7 @@ describe('Reviews API Integration Tests', () => {
       const iceType = response.body.data.find((st: any) => st.id === '2');
       expect(iceType).toEqual({
         id: '2',
+        identifier: 'ice',
         name: 'Ice',
         colour: '#CCCCCC',
         skiability: 1,

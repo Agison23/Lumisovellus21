@@ -27,6 +27,7 @@ AuthResponseUser({
   required  this.role,
 });
 
+      /// User ID
   @JsonKey(
     
     name: r'id',

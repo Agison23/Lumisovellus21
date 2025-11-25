@@ -21,14 +21,15 @@ class SnowType {
 /// Returns a new [SnowType] instance.
 SnowType({
   required  this.id,
+  required  this.identifier,
   required  this.name,
   required  this.colour,
-   this.skiability,
-   this.primarySnowTypeId,
-   this.explanation,
+  required  this.skiability,
+  required  this.primarySnowTypeId,
+  required  this.explanation,
 });
 
-      /// Snow type ID (UUID)
+      /// Snow type ID
   @JsonKey(
     
     name: r'id',
@@ -38,6 +39,19 @@ SnowType({
 
 
   final String id;
+
+
+
+      /// Snow type identifier (slug)
+  @JsonKey(
+    
+    name: r'identifier',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String identifier;
 
 
 
@@ -67,14 +81,14 @@ SnowType({
 
 
 
-      /// Skiability rating (1-5), nullable
-          // minimum: 1
-          // maximum: 5
+      /// Skiability rating (1-5)
+          // minimum: -9007199254740991
+          // maximum: 9007199254740991
   @JsonKey(
     
     name: r'skiability',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -86,8 +100,8 @@ SnowType({
   @JsonKey(
     
     name: r'primarySnowTypeId',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -99,8 +113,8 @@ SnowType({
   @JsonKey(
     
     name: r'explanation',
-    required: false,
-    includeIfNull: false,
+    required: true,
+    includeIfNull: true,
   )
 
 
@@ -113,6 +127,7 @@ SnowType({
     @override
     bool operator ==(Object other) => identical(this, other) || other is SnowType &&
       other.id == id &&
+      other.identifier == identifier &&
       other.name == name &&
       other.colour == colour &&
       other.skiability == skiability &&
@@ -122,6 +137,7 @@ SnowType({
     @override
     int get hashCode =>
         id.hashCode +
+        identifier.hashCode +
         name.hashCode +
         colour.hashCode +
         (skiability == null ? 0 : skiability.hashCode) +

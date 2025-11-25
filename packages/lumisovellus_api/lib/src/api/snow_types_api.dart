@@ -11,7 +11,6 @@ import 'package:dio/dio.dart';
 
 import 'package:lumisovellus_api/src/model/add_secondary_snow_types_request.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_get200_response.dart';
-import 'package:lumisovellus_api/src/model/api_v1_snow_types_id_secondary_post200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_post201_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_snow_types_primary_get200_response.dart';
 import 'package:lumisovellus_api/src/model/create_snow_type_request.dart';
@@ -105,9 +104,9 @@ _responseData = rawData == null ? null : deserialize<ApiV1SnowTypesGet200Respons
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ApiV1SnowTypesIdSecondaryPost200Response] as data
+  /// Returns a [Future] containing a [Response] with a [ApiV1SnowTypesPost201Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ApiV1SnowTypesIdSecondaryPost200Response>> apiV1SnowTypesIdSecondaryPost({ 
+  Future<Response<ApiV1SnowTypesPost201Response>> apiV1SnowTypesIdSecondaryPost({ 
     required String id,
     required AddSecondarySnowTypesRequest addSecondarySnowTypesRequest,
     CancelToken? cancelToken,
@@ -162,11 +161,11 @@ _bodyData=jsonEncode(addSecondarySnowTypesRequest);
       onReceiveProgress: onReceiveProgress,
     );
 
-    ApiV1SnowTypesIdSecondaryPost200Response? _responseData;
+    ApiV1SnowTypesPost201Response? _responseData;
 
     try {
 final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<ApiV1SnowTypesIdSecondaryPost200Response, ApiV1SnowTypesIdSecondaryPost200Response>(rawData, 'ApiV1SnowTypesIdSecondaryPost200Response', growable: true);
+_responseData = rawData == null ? null : deserialize<ApiV1SnowTypesPost201Response, ApiV1SnowTypesPost201Response>(rawData, 'ApiV1SnowTypesPost201Response', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -177,7 +176,7 @@ _responseData = rawData == null ? null : deserialize<ApiV1SnowTypesIdSecondaryPo
       );
     }
 
-    return Response<ApiV1SnowTypesIdSecondaryPost200Response>(
+    return Response<ApiV1SnowTypesPost201Response>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

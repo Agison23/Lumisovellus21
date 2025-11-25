@@ -8,7 +8,7 @@ import 'package:lumisovellus_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** |  | 
+**id** | **String** | User ID | 
 **firstName** | **String** |  | 
 **lastName** | **String** |  | 
 **email** | **String** |  | 
