@@ -144,10 +144,10 @@ function EditUserDialog({
     setOpen(false);
   };
 
-  type Roles =
+  type Role =
     paths["/api/v1/users/{id}"]["put"]["requestBody"]["content"]["application/json"]["role"];
 
-  const roles: Roles[] = ["ADMIN", "RESCUE", "NORMAL", "GUIDE"];
+  const roles: Role[] = ["ADMIN", "RESCUE", "NORMAL", "GUIDE"];
 
   const mutation = useMutation({
     mutationFn: async (updatedUser: Users[number]) => {
@@ -159,12 +159,13 @@ function EditUserDialog({
         lastName: updatedUser.lastName ?? "",
         email: updatedUser.email ?? "",
         phoneNumber: updatedUser.phoneNumber ?? "",
-        role: updatedUser.role as Roles,
+        role: updatedUser.role as Role,
       };
       const accessToken = await getAccessTokenAction();
       if (!accessToken) {
         throw new Error("User is not authenticated");
       }
+      console.log("Updating user with body:", body);
       const res = await fetch(`${apiUrl}/api/v1/users/${updatedUser.id}`, {
         method: "PUT",
         headers: {
