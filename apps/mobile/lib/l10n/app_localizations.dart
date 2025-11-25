@@ -118,7 +118,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescueFeatureInfo.
   ///
   /// In en, this message translates to:
-  /// **'The app\'\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request help from other users around you. You can help other users, too. Location sharing can be disabled at any time.'**
+  /// **'The app\'\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You can help other users, too. Location sharing can be disabled at any time.'**
   String get rescueFeatureInfo;
 
   /// No description provided for @allowSharing.
@@ -169,28 +169,16 @@ abstract class AppLocalizations {
   /// **'DEFINITIONS'**
   String get definitions;
 
-  /// No description provided for @snowDefinitionsPageTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Definitions'**
-  String get snowDefinitionsPageTitle;
-
   /// No description provided for @avalancheWarning.
   ///
   /// In en, this message translates to:
   /// **'Avalanche warning'**
   String get avalancheWarning;
 
-  /// No description provided for @noAvalancheWarning.
-  ///
-  /// In en, this message translates to:
-  /// **'No avalanche warning'**
-  String get noAvalancheWarning;
-
   /// No description provided for @avalancheWarningDesc.
   ///
   /// In en, this message translates to:
-  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.'**
+  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.'**
   String get avalancheWarningDesc;
 
   /// No description provided for @snowTypes.
@@ -220,7 +208,7 @@ abstract class AppLocalizations {
   /// No description provided for @freshWetSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.'**
+  /// **'Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point'**
   String get freshWetSnowDesc;
 
   /// No description provided for @powderSnow.
@@ -232,7 +220,7 @@ abstract class AppLocalizations {
   /// No description provided for @powderSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Fresh, loose and extremely light snow. Powder snow forms in calm and very cold weather.'**
+  /// **'Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather.'**
   String get powderSnowDesc;
 
   /// No description provided for @freshSnow.
@@ -280,7 +268,7 @@ abstract class AppLocalizations {
   /// No description provided for @thinCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'A crust that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
+  /// **'A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
   String get thinCrustDesc;
 
   /// No description provided for @collapsingCrust.
@@ -292,7 +280,7 @@ abstract class AppLocalizations {
   /// No description provided for @collapsingCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.'**
+  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath.'**
   String get collapsingCrustDesc;
 
   /// No description provided for @windpackedSnow.
@@ -316,7 +304,7 @@ abstract class AppLocalizations {
   /// No description provided for @driftsAndBanksDesc.
   ///
   /// In en, this message translates to:
-  /// **'An area of new snow shaped by the wind. Waves are soft and easy to break.'**
+  /// **'An area of new snow shaped by the wind. waves are soft and easy to break.'**
   String get driftsAndBanksDesc;
 
   /// No description provided for @sastrug.
@@ -358,7 +346,7 @@ abstract class AppLocalizations {
   /// No description provided for @breakableIce.
   ///
   /// In en, this message translates to:
-  /// **'Breakable ice'**
+  /// **'Brekable ice'**
   String get breakableIce;
 
   /// No description provided for @breakableIceDesc.
@@ -376,7 +364,7 @@ abstract class AppLocalizations {
   /// No description provided for @slushDesc.
   ///
   /// In en, this message translates to:
-  /// **'Wet and partially melted snow in above zero degree weather.'**
+  /// **'Wet and partially melted snow in above zero degrees weather.'**
   String get slushDesc;
 
   /// No description provided for @wettingSnow.
@@ -400,7 +388,7 @@ abstract class AppLocalizations {
   /// No description provided for @saturatedSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Completely wet, slushing and whipped cream-like snow.'**
+  /// **'Completely wet , slushing and whipped cream like snow.'**
   String get saturatedSnowDesc;
 
   /// No description provided for @littleSnow.
@@ -415,8 +403,198 @@ abstract class AppLocalizations {
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
 
-<<<<<<< HEAD
-=======
+  /// No description provided for @weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weather;
+
+  /// No description provided for @dayBeforeYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'2 days ago'**
+  String get dayBeforeYesterday;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get now;
+
+  /// No description provided for @temperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get temperature;
+
+  /// No description provided for @snowDepth.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow depth'**
+  String get snowDepth;
+
+  /// No description provided for @wind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get wind;
+
+  /// No description provided for @airPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Air pressure'**
+  String get airPressure;
+
+  /// No description provided for @north.
+  ///
+  /// In en, this message translates to:
+  /// **'North'**
+  String get north;
+
+  /// No description provided for @northeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Northeast'**
+  String get northeast;
+
+  /// No description provided for @east.
+  ///
+  /// In en, this message translates to:
+  /// **'East'**
+  String get east;
+
+  /// No description provided for @southeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Southeast'**
+  String get southeast;
+
+  /// No description provided for @south.
+  ///
+  /// In en, this message translates to:
+  /// **'South'**
+  String get south;
+
+  /// No description provided for @southwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Southwest'**
+  String get southwest;
+
+  /// No description provided for @west.
+  ///
+  /// In en, this message translates to:
+  /// **'West'**
+  String get west;
+
+  /// No description provided for @northwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Northwest'**
+  String get northwest;
+
+  /// No description provided for @trend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend'**
+  String get trend;
+
+  /// No description provided for @lastFewDaysWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent weather'**
+  String get lastFewDaysWeather;
+
+  /// No description provided for @snowDepthChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change in snow depth'**
+  String get snowDepthChange;
+
+  /// No description provided for @temperature3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature over 3 days'**
+  String get temperature3Days;
+
+  /// No description provided for @highest.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest'**
+  String get highest;
+
+  /// No description provided for @lowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest'**
+  String get lowest;
+
+  /// No description provided for @countDaysAboveFreezing.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of days above freezing'**
+  String get countDaysAboveFreezing;
+
+  /// No description provided for @daysAboveFreezing.
+  ///
+  /// In en, this message translates to:
+  /// **'Days above freezing'**
+  String get daysAboveFreezing;
+
+  /// No description provided for @wind3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind over 3 days'**
+  String get wind3Days;
+
+  /// No description provided for @avgSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Average speed'**
+  String get avgSpeed;
+
+  /// No description provided for @avgDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Average direction'**
+  String get avgDirection;
+
+  /// No description provided for @maxWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum windspeed'**
+  String get maxWind;
+
+  /// No description provided for @lastThreeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last three days'**
+  String get lastThreeDays;
+
+  /// No description provided for @lastSevenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seven days'**
+  String get lastSevenDays;
+
+  /// No description provided for @snowDefinitionsPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Definitions'**
+  String get snowDefinitionsPageTitle;
+
+  /// No description provided for @noAvalancheWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'No avalanche warning'**
+  String get noAvalancheWarning;
+
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -519,110 +697,6 @@ abstract class AppLocalizations {
   /// **'Map'**
   String get map;
 
->>>>>>> frontend
-  /// No description provided for @weather.
-  ///
-  /// In en, this message translates to:
-  /// **'Weather'**
-  String get weather;
-
-<<<<<<< HEAD
-  /// No description provided for @dayBeforeYesterday.
-  ///
-  /// In en, this message translates to:
-  /// **'2 days ago'**
-  String get dayBeforeYesterday;
-
-  /// No description provided for @yesterday.
-  ///
-  /// In en, this message translates to:
-  /// **'Yesterday'**
-  String get yesterday;
-
-  /// No description provided for @now.
-  ///
-  /// In en, this message translates to:
-  /// **'Now'**
-  String get now;
-
-  /// No description provided for @temperature.
-  ///
-  /// In en, this message translates to:
-  /// **'Temperature'**
-  String get temperature;
-
-  /// No description provided for @snowDepth.
-  ///
-  /// In en, this message translates to:
-  /// **'Snow depth'**
-  String get snowDepth;
-
-  /// No description provided for @wind.
-  ///
-  /// In en, this message translates to:
-  /// **'Wind'**
-  String get wind;
-
-  /// No description provided for @airPressure.
-  ///
-  /// In en, this message translates to:
-  /// **'Air pressure'**
-  String get airPressure;
-
-  /// No description provided for @north.
-  ///
-  /// In en, this message translates to:
-  /// **'North'**
-  String get north;
-
-  /// No description provided for @northeast.
-  ///
-  /// In en, this message translates to:
-  /// **'Northeast'**
-  String get northeast;
-
-  /// No description provided for @east.
-  ///
-  /// In en, this message translates to:
-  /// **'East'**
-  String get east;
-
-  /// No description provided for @southeast.
-  ///
-  /// In en, this message translates to:
-  /// **'Southeast'**
-  String get southeast;
-
-  /// No description provided for @south.
-  ///
-  /// In en, this message translates to:
-  /// **'South'**
-  String get south;
-
-  /// No description provided for @southwest.
-  ///
-  /// In en, this message translates to:
-  /// **'Southwest'**
-  String get southwest;
-
-  /// No description provided for @west.
-  ///
-  /// In en, this message translates to:
-  /// **'West'**
-  String get west;
-
-  /// No description provided for @northwest.
-  ///
-  /// In en, this message translates to:
-  /// **'Northwest'**
-  String get northwest;
-
-  /// No description provided for @trend.
-  ///
-  /// In en, this message translates to:
-  /// **'Trend'**
-  String get trend;
-=======
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -934,7 +1008,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
->>>>>>> frontend
 }
 
 class _AppLocalizationsDelegate
