@@ -5,6 +5,8 @@ import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
+import 'package:lumisovellus/features/rescue/domain/models/index.dart';
+import 'package:lumisovellus/features/rescue/providers.dart';
 
 class RescuePage extends ConsumerStatefulWidget {
   const RescuePage({super.key});
@@ -272,22 +274,56 @@ class _RescuePageState extends ConsumerState<RescuePage> {
               ),
               actions: [
                 TextButton(
+                  key: const ValueKey('rescue.confirm.cancel'),
                   onPressed: () => Navigator.of(dialogContext).pop(),
                   child: Text(AppLocalizations.of(context).dialogCancel),
                 ),
                 TextButton(
+                  key: const ValueKey('rescue.confirm.ok'),
                   onPressed: localSelectedNeed == null
                       ? null
-                      : () {
-                          // TODO: send the actual help request with _selectedNeed
-                          Navigator.of(dialogContext).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '${AppLocalizations.of(context).rescuePageRequestHelp} - ${_selectedNeed!}',
+                        : () async {
+                          Navigator.of(context).pop();
+                          final useCase = ref.read(requestHelpUseCaseProvider);
+                          final needType = _selectedNeed == 'health'
+                              ? HelpNeedType.health
+                              : _selectedNeed == 'equipment'
+                              ? HelpNeedType.equipment
+                              : HelpNeedType.lost;
+                          try {
+                            if (_currentPosition == null) {
+                              throw StateError('Location not available');
+                            }
+                            final location = Location(
+                              latitude: _currentPosition!.latitude,
+                              longitude: _currentPosition!.longitude,
+                              accuracy: _currentPosition!.accuracy,
+                            );
+                            final resp = await useCase.execute(
+                              needType: needType,
+                              location: location,
+                            );
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${AppLocalizations.of(context).rescuePageRequestHelp}: ${resp.needType.toString()}',
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          } catch (e) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).rescuePageEmergencyCallFailed,
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         },
                   child: Text(AppLocalizations.of(context).dialogConfirm),
                 ),
@@ -523,6 +559,7 @@ class _RescuePageState extends ConsumerState<RescuePage> {
 
                     // Request help button
                     GestureDetector(
+                      key: const ValueKey('rescue.requestHelpButton'),
                       onTap: _requestHelp,
                       child: Container(
                         width: 180,

@@ -25,7 +25,7 @@ final connectivityProvider = Provider<bool>((ref) {
 });
 
 final apiClientProvider = Provider<ApiClient>((ref)  {
-  final baseUrl = dotenv.env['BACKEND_URL'] ?? 'http://localhost:3001';
+  final baseUrl = dotenv.env['BACKEND_URL'] ?? 'http://localhost:3001'; // 'http://10.0.2.2:3001'
 
   return ApiClient(
     baseUrl: baseUrl,
