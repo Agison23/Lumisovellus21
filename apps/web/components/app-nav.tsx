@@ -1,17 +1,22 @@
 "use client";
 
-import {Cloudy, Info, LayoutDashboard, Map} from "lucide-react";
+import { Cloudy, Info, LayoutDashboard, Map } from "lucide-react";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import {useTranslations} from "next-intl";
-import {NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList,} from "./ui/navigation-menu";
-import {useAuth} from "@/hooks/use-auth";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "./ui/navigation-menu";
+import { useAuth } from "@/hooks/use-auth";
 import * as routes from "@/lib/routes";
 
 export default function Nav() {
   const tApp = useTranslations("AppLayout");
   const path = usePathname();
-  const {isLoggedIn} = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const isCurrentPath = (routePath: string) => {
     if (routePath === "/") {
@@ -23,16 +28,16 @@ export default function Nav() {
     return normalizePath(path).startsWith(normalizePath(routePath));
   };
 
-  const visibleRoutes = routes.routeDefinitions.filter(route => {
+  const visibleRoutes = routes.routeDefinitions.filter((route) => {
     if (route.name.toLowerCase() === "dashboard") {
       return isLoggedIn;
     }
     return true;
-  })
+  });
 
   return (
-    <NavigationMenu>
-      <NavigationMenuList className="bg-background rounded-md p-1 pointer-events-auto border border-accent shadow-md">
+    <NavigationMenu className="w-full flex flex-1 max-w-full">
+      <NavigationMenuList className=" w-full flex-1 bg-background rounded-md sm:p-1 pointer-events-auto border border-accent shadow-md">
         {visibleRoutes.map((route) => (
           <NavigationMenuItem
             key={route.path}
@@ -42,7 +47,7 @@ export default function Nav() {
           >
             <NavigationMenuLink asChild>
               <Link href={route.path}>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center sm:flex-row flex-col w-full">
                   <NavigationItemIcon {...route} />
                   {tApp(route.i18nKey)}
                 </div>
@@ -58,13 +63,13 @@ export default function Nav() {
 function NavigationItemIcon(route: routes.RouteDefinition): React.ReactNode {
   switch (route.name.toLowerCase()) {
     case "map":
-      return <Map/>;
+      return <Map />;
     case "definitions":
-      return <Info/>;
+      return <Info />;
     case "weather":
-      return <Cloudy/>;
+      return <Cloudy />;
     case "dashboard":
-      return <LayoutDashboard/>;
+      return <LayoutDashboard />;
     default:
       return <></>;
   }
