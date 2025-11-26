@@ -179,7 +179,7 @@
       },
       "observationType": {
         "visitor": "The information below is based on observations from other users.",
-        "guide": "The information below is based on observations made by guides."
+        "guide": "Latest guide update for {name}:"
       },
       "lastUpdate": {
         "visitor": "Latest update: {time}",
@@ -190,10 +190,14 @@
         "minutesAgo": "{count} minutes ago",
         "hoursAgo": "{count} hours ago",
         "daysAgo": "{count} days ago"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Add any additional information about the snow conditions here..."
       }
     }
   },
-	"WeatherPage": {
+  "WeatherPage": {
     "title": "Weather",
     "avgWindTitle": "Average Wind (3 days)",
     "windDirection": "at {deg}°",
@@ -205,8 +209,8 @@
     "aboveFreezingTitle": "Days Above Freezing (3 days)",
     "noAboveFreezing": "No days above freezing."
   },
-    "DefinitionsPage": {
-      "title": "Definitions"
+  "DefinitionsPage": {
+    "title": "Definitions"
   },
   "Dashboard": {
     "title": "Dashboard",
