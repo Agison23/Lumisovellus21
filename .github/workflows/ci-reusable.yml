@@ -139,10 +139,6 @@ jobs:
           node-version: '20.19.0'
           cache: npm
           cache-dependency-path: package-lock.json
-            
-      - name: Generate Prisma client
-        working-directory: apps/backend
-        run: npx prisma generate --schema=prisma/schema.prisma
 
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
@@ -202,11 +198,6 @@ jobs:
           node-version: '20.19.0'
           cache: npm
           cache-dependency-path: package-lock.json
-
-      - name: Generate Prisma client
-        working-directory: apps/backend
-        run: npx prisma generate --schema=prisma/schema.prisma
-
 
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
