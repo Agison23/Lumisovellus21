@@ -71,12 +71,14 @@ import {
 } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { SnowTypeCombobox } from "./snow-type-combobox";
+import { Textarea } from "../ui/textarea";
 
 const submitGuideUpdate = async (data: {
   segmentId: string | null;
   primarySnowTypeIds: string[] | null;
   secondarySnowTypeIds?: string[] | null;
   hazards?: ("stones" | "branches")[] | null;
+  description?: string | null;
 }) => {
   if (
     !data.segmentId ||
@@ -84,6 +86,11 @@ const submitGuideUpdate = async (data: {
     !data.secondarySnowTypeIds
   ) {
     throw new Error();
+  }
+
+  // update must have at least one primary snow type
+  if (data.primarySnowTypeIds.length === 0) {
+    throw new Error("At least one primary snow type must be selected");
   }
 
   const accessToken = await getAccessTokenAction();
@@ -99,6 +106,7 @@ const submitGuideUpdate = async (data: {
     secondarySnowTypeIds: data.secondarySnowTypeIds,
     hazards:
       data.hazards && data.hazards.length > 0 ? data.hazards : ([] as const),
+    description: data.description,
   };
 
   const response = await fetch(
@@ -223,6 +231,7 @@ export default function Map3d() {
   const [guidePrimary2, setGuidePrimary2] = useState<string | null>(null);
   const [guideSecondary1, setGuideSecondary1] = useState<string | null>(null);
   const [guideSecondary2, setGuideSecondary2] = useState<string | null>(null);
+  const [guideDescription, setGuideDescription] = useState<string>("");
 
   const t = useTranslations("MapPage");
 
@@ -747,43 +756,55 @@ export default function Map3d() {
                       return (
                         <>
                           {updateData.guideUpdate && (
-                            <div className="text-sm text-primary gap-1">
-                              {updateData.guideUpdate.primarySnowTypeIds.map(
-                                (snowTypeId, index) => (
-                                  <div key={snowTypeId}>
-                                    <p className="font-medium text-lg">
-                                      {t(
-                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
-                                      )}
+                            <>
+                              <div className="text-sm text-primary gap-1">
+                                {updateData.guideUpdate.description && (
+                                  <div className="flex flex-col gap-0">
+                                    <p className="text-xs text-muted-foreground">
+                                      {t("reportForm.observationType.guide", {
+                                        name: selectedArea.name,
+                                      })}
                                     </p>
-                                    <p className="text-xs">
-                                      {t(
-                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
-                                      )}
-                                    </p>
+                                    <p>{updateData.guideUpdate.description}</p>
                                   </div>
-                                ),
-                              )}
-                              {updateData.guideUpdate.secondarySnowTypeIds.map(
-                                (snowTypeId) => (
-                                  <div key={snowTypeId}>
-                                    <p className="font-medium text-sm">
-                                      {t(
-                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
-                                      )}
-                                    </p>
-                                    <p className="text-xs">
-                                      {t(
-                                        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
-                                      )}
-                                    </p>
-                                  </div>
-                                ),
-                              )}
-                              <HazardBadges
-                                hazards={updateData.guideUpdate.hazards}
-                              />
-                            </div>
+                                )}
+                                {updateData.guideUpdate.primarySnowTypeIds.map(
+                                  (snowTypeId, index) => (
+                                    <div key={snowTypeId}>
+                                      <p className="font-medium text-lg">
+                                        {t(
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                        )}
+                                      </p>
+                                      <p className="text-xs">
+                                        {t(
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                        )}
+                                      </p>
+                                    </div>
+                                  ),
+                                )}
+                                {updateData.guideUpdate.secondarySnowTypeIds.map(
+                                  (snowTypeId) => (
+                                    <div key={snowTypeId}>
+                                      <p className="font-medium text-sm">
+                                        {t(
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                        )}
+                                      </p>
+                                      <p className="text-xs">
+                                        {t(
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                        )}
+                                      </p>
+                                    </div>
+                                  ),
+                                )}
+                                <HazardBadges
+                                  hazards={updateData.guideUpdate.hazards}
+                                />
+                              </div>
+                            </>
                           )}
                           {updateData.userReviews.length > 0 &&
                             updateData.guideUpdate && <Separator />}
@@ -925,7 +946,17 @@ export default function Map3d() {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
+                  <p className="font-medium">
+                    {t("reportForm.description.label")}
+                  </p>
+                  <Textarea
+                    value={guideDescription}
+                    onChange={(e) => setGuideDescription(e.target.value)}
+                    placeholder={t("reportForm.description.placeholder")}
+                  />
+                </div>
+                <div className="flex gap-2 w-full justify-center">
                   <Button variant="secondary" onClick={() => form.goToStep(0)}>
                     {t("reportForm.buttons.back")}
                   </Button>
@@ -948,6 +979,7 @@ export default function Map3d() {
                         primarySnowTypeIds,
                         secondarySnowTypeIds,
                         hazards,
+                        description: guideDescription,
                       });
                     }}
                   >
