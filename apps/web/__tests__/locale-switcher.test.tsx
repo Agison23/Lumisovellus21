@@ -1,15 +1,14 @@
 "use client";
 
 import { cleanup, render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { useLocale } from 'next-intl'
 import React from 'react'
-import { afterEach, beforeEach, expect, test, vi } from 'vitest'
-
-// ✅ Required providers
-import { AuthProvider } from '@/hooks/use-auth'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Mock next-intl hooks used by LocaleSwitcher so outputs are deterministic
+import { AuthProvider } from '@/hooks/use-auth'
+
 vi.mock('next-intl', () => {
   const mockUseLocale = vi.fn(() => 'en')
   return {
@@ -23,7 +22,6 @@ vi.mock('next-intl', () => {
   }
 })
 
-// Mock setUserLocale to track calls
 vi.mock('@/i18n/locale', () => ({
   setUserLocale: vi.fn()
 }))
@@ -31,16 +29,13 @@ vi.mock('@/i18n/locale', () => ({
 import LocaleSwitcher from '../components/locale-switcher'
 import { LocaleSwitcherSelect } from '../components/locale-switcher/locale-switcher-select'
 
-// Access the mocked functions after imports
 const mockUseLocale = vi.mocked(useLocale)
 
-// Reset mocks and DOM before each test
 beforeEach(() => {
   vi.clearAllMocks()
-  mockUseLocale.mockReturnValue('en') // Reset to default
+  mockUseLocale.mockReturnValue('en')
 })
 
-// Clean up DOM after each test
 afterEach(() => {
   cleanup()
 })
