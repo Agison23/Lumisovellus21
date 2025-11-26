@@ -99,7 +99,7 @@ jobs:
   # -------------------------
   frontend:
     needs: backend-tests
-    uses: ./.github/workflows/reusable-ci.yml
+    uses: ./.github/workflows/ci-reusable.yml
     with:
       coverage-threshold: 70
       run-build: true
