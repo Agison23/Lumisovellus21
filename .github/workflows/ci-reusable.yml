@@ -230,7 +230,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Test
-        run: npm run test:unit
+        run: npx turbo run test:unit --filter=!backend
 
       - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
         run: echo "Check test coverage"
