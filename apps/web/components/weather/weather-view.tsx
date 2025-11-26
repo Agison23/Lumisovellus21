@@ -15,7 +15,13 @@ export default function WeatherView() {
   const t = useTranslations("WeatherPage");
 
   const [snowflakes, setSnowflakes] = useState<
-    { left: string; top: string; size: string; delay: string; duration: string }[]
+    {
+      left: string;
+      top: string;
+      size: string;
+      delay: string;
+      duration: string;
+    }[]
   >([]);
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export default function WeatherView() {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center py-16 px-6 overflow-hidden select-none">
+    <div className="relative w-full h-full flex flex-col items-center py-16 px-6 overflow-y-auto select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {snowflakes.map((f, i) => (
           <div
@@ -108,9 +114,7 @@ export default function WeatherView() {
               <Wind size={36} className="text-primary" />
               <h4 className="text-xl font-semibold">{t("maxWindTitle")}</h4>
             </div>
-            <p className="text-3xl font-bold">
-              {weatherData.maxWindSpeed} m/s
-            </p>
+            <p className="text-3xl font-bold">{weatherData.maxWindSpeed} m/s</p>
           </div>
 
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
