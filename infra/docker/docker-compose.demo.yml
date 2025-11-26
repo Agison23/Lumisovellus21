@@ -1,0 +1,77 @@
+services:
+  # MySQL service restored to host port 3306
+  mysql:
+    image: mysql:8.0
+    container_name: lumisovellus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lumisovellus
+      MYSQL_USER: lumisovellus
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+
+  # Backend service restored to host port 3001
+  backend:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.backend
+      # IMPORTANT: Use the 'deps' stage for development, as it has npm and node_modules,
+      # but not the final stripped-down 'runner' image.
+      target: deps
+    container_name: lumisovellus-backend
+    environment:
+      DATABASE_URL: mysql://lumisovellus:password@mysql:3306/lumisovellus
+      PORT: 4004
+      NODE_ENV: development
+      # CORS_ORIGIN updated to original frontend host port 3000
+      CORS_ORIGIN: http://localhost:3000
+      JWT_SECRET: dev-secret-key
+    ports:
+      - '51000:4004'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      # Bind mount the app source
+      - ../../apps/backend:/app
+      # Anonymous volume for node_modules (prevents host node_modules from overwriting)
+      - /app/node_modules
+    # Updated command to be non-interactive
+    # Use 'db push' for development (syncs schema without creating migration files)
+    # Or use 'migrate deploy' if migrations already exist
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed  && npm run dev"
+
+  frontend:
+    image: node:20-alpine
+    container_name: lumisovellus-frontend
+    working_dir: /app/apps/web
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: http://185.87.111.35:51000
+      NODE_ENV: production
+      PORT: 51001
+      NEXT_DISABLE_ESLINT: "1"
+      NEXT_DISABLE_TYPECHECK: "1"
+    ports:
+      - "51001:51001"
+    volumes:
+      - ../../apps/web:/app/apps/web
+      - ../../packages:/app/packages
+      - ../../package.json:/app/package.json
+      - ../../package-lock.json:/app/package-lock.json
+      - ../../turbo.json:/app/turbo.json
+    depends_on:
+      - backend
+    command: sh -c "
+      corepack disable &&
+      npm install --legacy-peer-deps &&
+      npm run build &&
+      npm start -- --port 51001
+      "
+volumes:
+  mysql_data:
