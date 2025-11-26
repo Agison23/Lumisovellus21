@@ -29,7 +29,7 @@ void main() {
     //
     // Submit a snow condition review for a specific segment
     //
-    //Future<ApiV1SnowTypesPost201Response> apiV1SegmentsIdReviewsPost(String id, ApiV1SegmentsIdReviewsPostRequest apiV1SegmentsIdReviewsPostRequest) async
+    //Future<ApiV1SegmentsIdReviewsPost201Response> apiV1SegmentsIdReviewsPost(String id, ApiV1SegmentsIdReviewsPostRequest apiV1SegmentsIdReviewsPostRequest) async
     test('test apiV1SegmentsIdReviewsPost', () async {
       // TODO
     });

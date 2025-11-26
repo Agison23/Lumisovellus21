@@ -14,10 +14,6 @@ RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) =>
         lastName: $checkedConvert('lastName', (v) => v as String?),
         email: $checkedConvert('email', (v) => v as String),
         password: $checkedConvert('password', (v) => v as String),
-        role: $checkedConvert(
-          'role',
-          (v) => $enumDecodeNullable(_$RegisterRequestRoleEnumEnumMap, v),
-        ),
       );
       return val;
     });
@@ -28,11 +24,4 @@ Map<String, dynamic> _$RegisterRequestToJson(RegisterRequest instance) =>
       'lastName': ?instance.lastName,
       'email': instance.email,
       'password': instance.password,
-      'role': ?_$RegisterRequestRoleEnumEnumMap[instance.role],
     };
-
-const _$RegisterRequestRoleEnumEnumMap = {
-  RegisterRequestRoleEnum.NORMAL: 'NORMAL',
-  RegisterRequestRoleEnum.ADMIN: 'ADMIN',
-  RegisterRequestRoleEnum.RESCUE: 'RESCUE',
-};

@@ -58,6 +58,7 @@ dependencies:
   country_flags: ^4.1.0
   dio: ^5.9.0
   flutter_dotenv: ^6.0.0
+  flutter_secure_storage: ^9.2.4
   lumisovellus_api:
     path: ../../packages/lumisovellus_api
   auto_mappr_annotation: ^2.3.0

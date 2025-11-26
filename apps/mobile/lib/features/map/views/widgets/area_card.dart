@@ -1,311 +1,168 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus_api/lumisovellus_api.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
-import '../../data/models/snow_type.dart';
+import '../../viewmodel/map_notifier.dart';
+import '../../../../core/auth/viewmodel/auth_notifier.dart';
+import 'area_card_form.dart';
+import 'area_card_info.dart';
 
-class AreaCard extends StatefulWidget {
+class AreaCard extends ConsumerStatefulWidget {
   final AppLocalizations t;
+  final String segmentId;
   final String name;
   final String terrain;
   final String danger;
   final VoidCallback onAdd;
   final VoidCallback onClose;
   final List<SnowType> snowTypes;
-
+  final List<String> hazards;
+  final GuideUpdateRequestOutput? guideUpdate;
+  final List<SegmentUserReview> userReviews;
   const AreaCard({
     required this.t,
+    required this.segmentId,
     required this.name,
     required this.terrain,
     required this.danger,
     required this.onAdd,
     required this.onClose,
     required this.snowTypes,
+    required this.hazards,
+    required this.userReviews,
+    required this.guideUpdate,
     super.key,
   });
-
   @override
-  State<AreaCard> createState() => _AreaCardState();
+  ConsumerState<AreaCard> createState() => _AreaCardState();
 }
 
-class _AreaCardState extends State<AreaCard> {
+class _AreaCardState extends ConsumerState<AreaCard> {
   int step = 0;
-  int? selectedCategoryId;
-  int? selectedSnowTypeId;
-  List<int> obstacleIds = [];
-
+  String? selectedCategoryId;
+  String? selectedSnowTypeId;
+  List<String> selectedHazards = [];
   void _start() => setState(() => step = 1);
   void _backTo0() => setState(() => step = 0);
-  void _toStep2(int id) => setState(() { selectedCategoryId = id; selectedSnowTypeId = id; step = 2; });
-  void _pickType(int id) => setState(() => selectedSnowTypeId = id);
-  void _toggleObstacle(int id) => setState(() {
-    if (obstacleIds.contains(id)) {
-      obstacleIds = obstacleIds.where((e) => e != id).toList();
+  void _toStep2(String id) => setState(() {
+    selectedCategoryId = id;
+    selectedSnowTypeId = id;
+    step = 2;
+  });
+  void _pickType(String id) => setState(() => selectedSnowTypeId = id);
+  void _toggleHazard(String value) => setState(() {
+    if (selectedHazards.contains(value)) {
+      selectedHazards = selectedHazards.where((e) => e != value).toList();
     } else {
-      obstacleIds = [...obstacleIds, id];
+      selectedHazards = [...selectedHazards, value];
     }
   });
-  void _backTo1() => setState(() { selectedSnowTypeId = null; obstacleIds = []; step = 1; });
+  void _backTo1() => setState(() {
+    selectedSnowTypeId = null;
+    selectedHazards = [];
+    step = 1;
+  });
   void _submit() {
-    final payload = {
-      'areaName': widget.name,
-      'selectedSnowTypeId': selectedSnowTypeId,
-      'obstacleIds': obstacleIds,
-      'timestamp': DateTime.now().toIso8601String(),
-    };
-    debugPrint('Observation: $payload');
+    if (selectedSnowTypeId == null) return;
+    final selectedHazardEnums = selectedHazards
+        .map((h) => Hazard.values.byName(h))
+        .toList();
+    final request = ApiV1SegmentsIdReviewsPostRequest(
+      snowType: selectedSnowTypeId!,
+      hazards: selectedHazardEnums,
+    );
+    ref
+        .read(reviewNotifierProvider.notifier)
+        .submit(segmentId: widget.segmentId, review: request);
     setState(() {
       step = 0;
       selectedCategoryId = null;
       selectedSnowTypeId = null;
-      obstacleIds = [];
+      selectedHazards = [];
     });
+  }
+
+  Widget _buildStep(bool canAddObservation) {
+    switch (step) {
+      case 0:
+        return AreaCardInfo(
+          t: widget.t,
+          danger: widget.danger,
+          snowTypes: widget.snowTypes,
+          guideUpdate: widget.guideUpdate,
+          userReviews: widget.userReviews,
+          onAdd: _start,
+          onClose: widget.onClose,
+          canAddObservation: canAddObservation,
+        );
+      case 1:
+        return AreaCardSelectCategoryStep(
+          t: widget.t,
+          snowTypes: widget.snowTypes
+              .where((st) => st.primarySnowTypeId == null)
+              .toList(),
+          onPick: _toStep2,
+          onBack: _backTo0,
+        );
+      default:
+        return AreaCardSpecifyTypeStep(
+          t: widget.t,
+          segmentId: widget.segmentId,
+          allTypes: widget.snowTypes,
+          selectedCategoryId: selectedCategoryId,
+          selectedSnowTypeId: selectedSnowTypeId,
+          hazards: widget.hazards,
+          selectedHazards: selectedHazards,
+          onPickType: _pickType,
+          onToggleHazard: _toggleHazard,
+          onBack: _backTo1,
+          onSubmit: _submit,
+        );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final role = ref.watch(loggedInRoleProvider);
+    final canAddObservation = role != null;
+    final maxHeight = MediaQuery.of(context).size.height * 0.8;
+    final maxWidth = MediaQuery.of(context).size.width * 0.8;
     return Material(
       elevation: 4,
       borderRadius: BorderRadius.circular(12),
-      child: SizedBox(
-        width: 250,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(widget.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(
+                widget.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(widget.terrain, style: const TextStyle(fontSize: 14)),
               const SizedBox(height: 8),
               const Divider(height: 1),
               const SizedBox(height: 8),
-              switch (step) {
-                0 => _StepZeroButtons(
-                  t: widget.t,
-                  onAdd: _start,
-                  onClose: widget.onClose,
-                  danger: widget.danger,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: _buildStep(canAddObservation),
                 ),
-                1 => _StepSelectCategory(
-                  t: widget.t,
-                  snowTypes: widget.snowTypes.where((st) => st.categoryId == null).toList(),
-                  onPick: _toStep2,
-                  onBack: _backTo0,
-                ),
-                _ => _StepSpecifyType(
-                  t: widget.t,
-                  allTypes: widget.snowTypes,
-                  selectedCategoryId: selectedCategoryId,
-                  selectedSnowTypeId: selectedSnowTypeId,
-                  obstacleIds: obstacleIds,
-                  onPickType: _pickType,
-                  onToggleObstacle: _toggleObstacle,
-                  onBack: _backTo1,
-                  onSubmit: _submit,
-                ),
-              },
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-class _StepZeroButtons extends StatelessWidget {
-  final AppLocalizations t;
-  final VoidCallback onAdd;
-  final VoidCallback onClose;
-  final String danger;
-
-  const _StepZeroButtons({
-    required this.t,
-    required this.onAdd,
-    required this.onClose,
-    required this.danger
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(danger, style: const TextStyle(fontSize: 14, color: Colors.black)),
-        const SizedBox(height: 4),
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          ElevatedButton(
-            onPressed: onAdd,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-            ),
-            child: Text(t.addObservation),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: onClose,
-            style: OutlinedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 243, 243, 243),
-              foregroundColor: Colors.black,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-            ),
-            child: Text(t.close),
-          ),
-        ]),
-      ]
-    );
-  }
-}
-
-class _StepSelectCategory extends StatelessWidget {
-  final AppLocalizations t;
-  final List<SnowType> snowTypes;
-  final ValueChanged<int> onPick;
-  final VoidCallback onBack;
-
-  const _StepSelectCategory({
-    required this.t,
-    required this.snowTypes,
-    required this.onPick,
-    required this.onBack,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(t.selectSnowType, style: const TextStyle(fontSize: 14, color: Colors.black)),
-      const SizedBox(height: 8),
-      Center(
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final st in snowTypes)
-              ElevatedButton(
-                onPressed: () => onPick(st.id),
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(100, 50),
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                ),
-                child: Text(st.name, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
-              ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 8),
-      Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
-        ElevatedButton(
-          onPressed: onBack,
-          style: OutlinedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 243, 243, 243),
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          ),
-          child: Text(t.back),
-        ),
-      ]),
-    ]);
-  }
-}
-
-class _StepSpecifyType extends StatelessWidget {
-  final AppLocalizations t;
-  final List<SnowType> allTypes;
-  final int? selectedCategoryId;
-  final int? selectedSnowTypeId;
-  final List<int> obstacleIds;
-  final ValueChanged<int> onPickType;
-  final ValueChanged<int> onToggleObstacle;
-  final VoidCallback onBack;
-  final VoidCallback onSubmit;
-
-  const _StepSpecifyType({
-    required this.t,
-    required this.allTypes,
-    required this.selectedCategoryId,
-    required this.selectedSnowTypeId,
-    required this.obstacleIds,
-    required this.onPickType,
-    required this.onToggleObstacle,
-    required this.onBack,
-    required this.onSubmit,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final options = allTypes.where((st) => st.categoryId == selectedCategoryId || st.id == selectedCategoryId).toList();
-    final obstacles = allTypes.where((st) => st.categoryId == 7).toList();
-    final selected = allTypes.where((e) => e.id == selectedSnowTypeId);
-    final selectedDesc = selected.isEmpty ? '' : selected.first.explanation;
-
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(t.specifySnowType, style: const TextStyle(fontSize: 14, color: Colors.black)),
-      const SizedBox(height: 8),
-      Wrap(spacing: 8, runSpacing: 8, children: [
-        for (final st in options)
-          ElevatedButton(
-            onPressed: () => onPickType(st.id),
-            style: ElevatedButton.styleFrom(
-              fixedSize: const Size(100, 50),
-              backgroundColor: selectedSnowTypeId == st.id ? Colors.black : Colors.white,
-              foregroundColor: selectedSnowTypeId == st.id ? Colors.white : Colors.black,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            ),
-            child: Text(st.name, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
-          ),
-      ]),
-      const SizedBox(height: 8),
-      if (selectedDesc.isNotEmpty) Text(selectedDesc, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
-      const SizedBox(height: 16),
-      if (obstacles.isNotEmpty) Text(t.obstacles, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
-      Wrap(spacing: 8, runSpacing: 8, children: [
-        for (final ob in obstacles)
-          ElevatedButton(
-            onPressed: () => onToggleObstacle(ob.id),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: obstacleIds.contains(ob.id) ? Colors.black : Colors.white,
-              foregroundColor: obstacleIds.contains(ob.id) ? Colors.white : Colors.black,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            ),
-            child: Text(ob.name, style: const TextStyle(fontSize: 12)),
-          ),
-      ]),
-      const SizedBox(height: 8),
-      Row(mainAxisSize: MainAxisSize.min, children: [
-        ElevatedButton(
-          onPressed: onBack,
-          style: OutlinedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 243, 243, 243),
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          ),
-          child: Text(t.back),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: (selectedSnowTypeId != null || obstacleIds.isNotEmpty) ? onSubmit : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-          ),
-          child: Text(t.submit),
-        ),
-      ]),
-    ]);
   }
 }

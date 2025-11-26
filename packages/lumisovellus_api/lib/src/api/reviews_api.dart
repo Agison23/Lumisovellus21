@@ -11,8 +11,8 @@ import 'package:dio/dio.dart';
 
 import 'package:lumisovellus_api/src/model/api_v1_observations_get200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_observations_get200_response.dart';
+import 'package:lumisovellus_api/src/model/api_v1_segments_id_reviews_post201_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_segments_id_reviews_post_request.dart';
-import 'package:lumisovellus_api/src/model/api_v1_snow_types_post201_response.dart';
 import 'package:lumisovellus_api/src/model/error_response.dart';
 
 class ReviewsApi {
@@ -200,9 +200,9 @@ _responseData = rawData == null ? null : deserialize<ApiV1SegmentsIdObservations
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ApiV1SnowTypesPost201Response] as data
+  /// Returns a [Future] containing a [Response] with a [ApiV1SegmentsIdReviewsPost201Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ApiV1SnowTypesPost201Response>> apiV1SegmentsIdReviewsPost({ 
+  Future<Response<ApiV1SegmentsIdReviewsPost201Response>> apiV1SegmentsIdReviewsPost({ 
     required String id,
     required ApiV1SegmentsIdReviewsPostRequest apiV1SegmentsIdReviewsPostRequest,
     CancelToken? cancelToken,
@@ -257,11 +257,11 @@ _bodyData=jsonEncode(apiV1SegmentsIdReviewsPostRequest);
       onReceiveProgress: onReceiveProgress,
     );
 
-    ApiV1SnowTypesPost201Response? _responseData;
+    ApiV1SegmentsIdReviewsPost201Response? _responseData;
 
     try {
 final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<ApiV1SnowTypesPost201Response, ApiV1SnowTypesPost201Response>(rawData, 'ApiV1SnowTypesPost201Response', growable: true);
+_responseData = rawData == null ? null : deserialize<ApiV1SegmentsIdReviewsPost201Response, ApiV1SegmentsIdReviewsPost201Response>(rawData, 'ApiV1SegmentsIdReviewsPost201Response', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -272,7 +272,7 @@ _responseData = rawData == null ? null : deserialize<ApiV1SnowTypesPost201Respon
       );
     }
 
-    return Response<ApiV1SnowTypesPost201Response>(
+    return Response<ApiV1SegmentsIdReviewsPost201Response>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

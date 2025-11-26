@@ -1,11 +1,15 @@
-import { useTranslations } from "next-intl"
-export default function Page() {
+import { useTranslations } from "next-intl";
+import WeatherView from "@/components/weather/weather-view";
 
-  const t = useTranslations('WeatherPage')
+export default function Page() {
+  const t = useTranslations("WeatherPage");
+
   return (
-    <div className="pt-2.5 px-12">
-      <h1>{t('title')}</h1>
-      <p>{t('loading')}</p>
+    <div className="w-full h-full bg-blue-50 text-foreground flex flex-col transition-colors duration-300">
+      <div className="pt-2.5 px-12">
+        <h1 className="text-xl font-semibold mb-4">{t("title")}</h1>
+      </div>
+      <WeatherView />
     </div>
-  )
+  );
 }

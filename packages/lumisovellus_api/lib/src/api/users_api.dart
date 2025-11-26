@@ -12,13 +12,13 @@ import 'package:dio/dio.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_device_id_location_post200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_device_id_role_get200_response.dart';
 import 'package:lumisovellus_api/src/model/api_v1_users_get200_response.dart';
-import 'package:lumisovellus_api/src/model/api_v1_users_id_put_request.dart';
 import 'package:lumisovellus_api/src/model/auth_profile_get200_response.dart';
 import 'package:lumisovellus_api/src/model/auth_reset_password_post200_response.dart';
 import 'package:lumisovellus_api/src/model/battery_update.dart';
 import 'package:lumisovellus_api/src/model/error_response.dart';
 import 'package:lumisovellus_api/src/model/location_update.dart';
 import 'package:lumisovellus_api/src/model/role_update.dart';
+import 'package:lumisovellus_api/src/model/update_user_request.dart';
 
 class UsersApi {
 
@@ -551,7 +551,7 @@ _responseData = rawData == null ? null : deserialize<AuthResetPasswordPost200Res
   ///
   /// Parameters:
   /// * [id] - User ID
-  /// * [apiV1UsersIdPutRequest] 
+  /// * [updateUserRequest] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -563,7 +563,7 @@ _responseData = rawData == null ? null : deserialize<AuthResetPasswordPost200Res
   /// Throws [DioException] if API call or serialization fails
   Future<Response<AuthProfileGet200Response>> apiV1UsersIdPut({ 
     required String id,
-    required ApiV1UsersIdPutRequest apiV1UsersIdPutRequest,
+    required UpdateUserRequest updateUserRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -594,7 +594,7 @@ _responseData = rawData == null ? null : deserialize<AuthResetPasswordPost200Res
     dynamic _bodyData;
 
     try {
-_bodyData=jsonEncode(apiV1UsersIdPutRequest);
+_bodyData=jsonEncode(updateUserRequest);
     } catch(error, stackTrace) {
       throw DioException(
          requestOptions: _options.compose(

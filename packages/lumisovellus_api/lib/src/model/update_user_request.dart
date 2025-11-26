@@ -5,7 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:json_annotation/json_annotation.dart';
 
-part 'api_v1_users_id_put_request.g.dart';
+part 'update_user_request.g.dart';
 
 
 @JsonSerializable(
@@ -14,17 +14,17 @@ part 'api_v1_users_id_put_request.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class ApiV1UsersIdPutRequest {
+class UpdateUserRequest {
 /// Modified to fix Dart constructor errors (dart_constructor.mustache):
 /// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
 /// while keeping normal defaults for all other field types.
-/// Returns a new [ApiV1UsersIdPutRequest] instance.
-ApiV1UsersIdPutRequest({
+/// Returns a new [UpdateUserRequest] instance.
+UpdateUserRequest({
    this.firstName,
    this.lastName,
    this.email,
-   this.phoneNumber,
    this.role,
+   this.phoneNumber,
 });
 
       /// User first name
@@ -66,6 +66,19 @@ ApiV1UsersIdPutRequest({
 
 
 
+      /// User role
+  @JsonKey(
+    
+    name: r'role',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final UpdateUserRequestRoleEnum? role;
+
+
+
       /// Phone number
   @JsonKey(
     
@@ -79,39 +92,27 @@ ApiV1UsersIdPutRequest({
 
 
 
-  @JsonKey(
-    
-    name: r'role',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final String? role;
-
-
-
 
 
     @override
-    bool operator ==(Object other) => identical(this, other) || other is ApiV1UsersIdPutRequest &&
+    bool operator ==(Object other) => identical(this, other) || other is UpdateUserRequest &&
       other.firstName == firstName &&
       other.lastName == lastName &&
       other.email == email &&
-      other.phoneNumber == phoneNumber &&
-      other.role == role;
+      other.role == role &&
+      other.phoneNumber == phoneNumber;
 
     @override
     int get hashCode =>
         firstName.hashCode +
         lastName.hashCode +
         email.hashCode +
-        phoneNumber.hashCode +
-        role.hashCode;
+        role.hashCode +
+        phoneNumber.hashCode;
 
-  factory ApiV1UsersIdPutRequest.fromJson(Map<String, dynamic> json) => _$ApiV1UsersIdPutRequestFromJson(json);
+  factory UpdateUserRequest.fromJson(Map<String, dynamic> json) => _$UpdateUserRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ApiV1UsersIdPutRequestToJson(this);
+  Map<String, dynamic> toJson() => _$UpdateUserRequestToJson(this);
 
   @override
   String toString() {
@@ -119,4 +120,31 @@ ApiV1UsersIdPutRequest({
   }
 
 }
+
+/// User role
+enum UpdateUserRequestRoleEnum {
+    /// User role
+@JsonValue(r'NORMAL')
+NORMAL(r'NORMAL'),
+    /// User role
+@JsonValue(r'PREMIUM')
+PREMIUM(r'PREMIUM'),
+    /// User role
+@JsonValue(r'ADMIN')
+ADMIN(r'ADMIN'),
+    /// User role
+@JsonValue(r'RESCUE')
+RESCUE(r'RESCUE'),
+    /// User role
+@JsonValue(r'GUIDE')
+GUIDE(r'GUIDE');
+
+const UpdateUserRequestRoleEnum(this.value);
+
+final String value;
+
+@override
+String toString() => value;
+}
+
 

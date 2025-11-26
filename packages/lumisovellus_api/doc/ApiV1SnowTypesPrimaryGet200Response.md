@@ -1,4 +1,4 @@
-# lumisovellus_api.model.ApiV1UsersIdPutRequest
+# lumisovellus_api.model.ApiV1SnowTypesPrimaryGet200Response
 
 ## Load the model package
 ```dart
@@ -8,11 +8,9 @@ import 'package:lumisovellus_api/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**firstName** | **String** | User first name | [optional] 
-**lastName** | **String** | User last name | [optional] 
-**email** | **String** | User email address | [optional] 
-**phoneNumber** | **String** | Phone number | [optional] 
-**role** | **String** |  | [optional] 
+**success** | **bool** | Indicates if the request was successful | 
+**data** | [**List&lt;PrimarySnowType&gt;**](PrimarySnowType.md) |  | 
+**meta** | [**HealthGet200ResponseMeta**](HealthGet200ResponseMeta.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

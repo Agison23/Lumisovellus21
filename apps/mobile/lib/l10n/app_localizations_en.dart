@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get snowAppInfo =>
-      'The snow application produced by Pallasen Pöllöt provides information about the prevailing snow conditions in the area.';
+      'The snow application produced by Pallaksen Pöllöt provides information about the prevailing snow conditions in the area.';
 
   @override
   String get next => 'Continue';
@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newSnow => 'New snow';
 
   @override
-  String get newSnowDesc => 'Freshly rained soft snow.';
+  String get newSnowDesc => 'Freshly landed soft snow.';
 
   @override
   String get freshWetSnow => 'Fresh wet snow';
@@ -108,7 +108,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'A crust that breaks from the weight of a skier. Under the crust, the snow can be submersive.';
+      'A crust that breaks from the weight of a skier. Under the crust, a foot may sink deep.';
 
   @override
   String get collapsingCrust => 'Collapsing crust';
@@ -326,4 +326,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get segments => 'Segments';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get invalidEmail => 'Invalid email address';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordTooShort => 'Password is too short';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get min6Characters => 'At least 6 characters';
+
+  @override
+  String get logIn => 'Log in';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get passwordRequirements => 'Password Requirements';
+
+  @override
+  String get registrationFailed => 'Registration failed';
+
+  @override
+  String get loginFailed => 'Login failed';
+
+  @override
+  String get loggedIn => 'Logged in';
+
+  @override
+  String get registeredSuccesfully => 'Registered succesfully';
+
+  @override
+  String get loggedInAs => 'Logged in as';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get phoneNumber => 'Phone number';
+
+  @override
+  String get registeredAt => 'Registered at';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get guideHazards => 'Hazards';
+
+  @override
+  String get guideInfoFromUsers =>
+      'The information below is based on observations from other users.';
+
+  @override
+  String get timeJustNow => 'just now';
+
+  @override
+  String get timeUnderMinuteAgo => 'under a minute ago';
+
+  @override
+  String get timeOneMinuteAgo => '1 minute ago';
+
+  @override
+  String timeNMinutesAgo(Object minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String get timeOneHourAgo => '1 hour ago';
+
+  @override
+  String timeNHoursAgo(Object hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String get timeOneDayAgo => '1 day ago';
+
+  @override
+  String timeNDaysAgo(Object days) {
+    return '$days days ago';
+  }
 }

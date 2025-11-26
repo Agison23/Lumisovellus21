@@ -10,7 +10,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get snowAppInfo =>
-      'Pallasen Pöllöt -sovellus tarjoaa tietoa alueen vallitsevista lumisuhteista.';
+      'Pallaksen Pöllöt -lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista.';
 
   @override
   String get next => 'Jatka';
@@ -33,7 +33,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get infoUsage =>
-      'Tietojasi käytetään sovelluksen pelastustoimintoon. Toiminto auttaa pelastuspalvelua löytämään sinut helpommin 112.';
+      'Tietojasi käytetään sovelluksen pelastustoimintoon. Toiminto auttaa pelastuspalvelua löytämään sinut helpommin.';
 
   @override
   String get fName => 'Etunimi';
@@ -58,7 +58,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get avalancheWarningDesc =>
-      'Pallasen lumialueet sisältävät useita kuruja, kuten Pyhäkuru, Palkaskuru, Rihmakuru, sekä kaikki jyrkät rinteet yli 25° Lommoltunturilla, Keimiötunturilla ja Lehmäkerolla. Pienempiä yksittäisiä lumivyöryjä voi esiintyä myös muualla jyrkillä alueilla. Lumivyöryn todennäköisyys kasvaa säämuutosten myötä.';
+      'Pallaksen lumialueet sisältävät useita kuruja, kuten Pyhäkuru, Palkaskuru, Rihmakuru, sekä kaikki 25 asteen jyrkät rinteet Lommoltunturilla, Keimiötunturilla ja Lehmäkerolla. Pienempiä yksittäisiä lumivyöryjä voi esiintyä myös muualla jyrkillä alueilla. Lumivyöryn todennäköisyys kasvaa säämuutosten myötä.';
 
   @override
   String get snowTypes => 'Lumityypit';
@@ -74,7 +74,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get freshWetSnowDesc =>
-      'Lumi, josta voi helposti tehdä lumipallon. Märkä lumi muodostuu sateesta ja nollan yläpuolisista lämpötiloista.';
+      'Lumi, josta voi helposti tehdä lumipallon. Märkää lunta muodostuu sateen ja suojasään takia.';
 
   @override
   String get powderSnow => 'Höylälumi';
@@ -108,7 +108,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'Kuori, joka murtuu hiihtäjän painosta. Kuoren alla lumi voi olla pehmeää ja uppoavaa.';
+      'Kuori, joka murtuu hiihtäjän painosta. Kuoren alla lumi voi olla pehmeää ja upottavaa.';
 
   @override
   String get collapsingCrust => 'Murtuva kuori';
@@ -248,7 +248,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settings => 'Asetukset';
 
   @override
-  String get callForHelp => 'Soita apua';
+  String get callForHelp => 'Hälytä apua';
 
   @override
   String get currentLocation => 'Nykyinen sijainti';
@@ -266,7 +266,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsPageSnowDefinitions => 'Lumimääritelmät';
 
   @override
-  String get settingsPageSnowDefinitionsSubtitle => 'Lumimääritelmät';
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Näytä lumityyppien määritelmät';
 
   @override
   String get language => 'Kieli';
@@ -278,10 +279,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get selectLanguage => 'Valitse kieli';
 
   @override
-  String get english => 'Englanti';
+  String get english => 'englanti';
 
   @override
-  String get finnish => 'Suomi';
+  String get finnish => 'suomi';
 
   @override
   String get userInfoNotImplemented => 'Käyttäjätietotoiminto tulossa pian';
@@ -324,4 +325,116 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get segments => 'Segmentit';
+
+  @override
+  String get firstName => 'Etunimi';
+
+  @override
+  String get lastName => 'Sukunimi';
+
+  @override
+  String get fieldRequired => 'Pakollinen kenttä';
+
+  @override
+  String get email => 'Sähköposti';
+
+  @override
+  String get invalidEmail => 'Virheellinen sähköposti';
+
+  @override
+  String get password => 'Salasana';
+
+  @override
+  String get passwordTooShort => 'Salasana on liian lyhyt';
+
+  @override
+  String get confirmPassword => 'Vahvista salasana';
+
+  @override
+  String get passwordsDoNotMatch => 'Salasanat eivät täsmää';
+
+  @override
+  String get cancel => 'Peruuta';
+
+  @override
+  String get min6Characters => 'Vähintään 6 merkkiä';
+
+  @override
+  String get logIn => 'Kirjaudu sisään';
+
+  @override
+  String get register => 'Rekisteröidy';
+
+  @override
+  String get alreadyHaveAccount => 'Onko sinulla jo käyttäjä?';
+
+  @override
+  String get dontHaveAccount => 'Eikö sinulla ole käyttäjää?';
+
+  @override
+  String get passwordRequirements => 'Salasanan vaatimukset';
+
+  @override
+  String get registrationFailed => 'Rekisteröityminen epäonnistui';
+
+  @override
+  String get loginFailed => 'Kirjautuminen epäonnistui';
+
+  @override
+  String get loggedIn => 'Kirjauduttiin sisään';
+
+  @override
+  String get registeredSuccesfully => 'Rekisteröityminen onnistui';
+
+  @override
+  String get loggedInAs => 'Kirjautunut sisään käyttäjänä';
+
+  @override
+  String get role => 'Rooli';
+
+  @override
+  String get phoneNumber => 'Puhelinnumero';
+
+  @override
+  String get registeredAt => 'Rekisteröitynyt';
+
+  @override
+  String get logout => 'Kirjaudu ulos';
+
+  @override
+  String get guideHazards => 'Esteet';
+
+  @override
+  String get guideInfoFromUsers =>
+      'Alla oleva tieto perustuu muiden käyttäjien havaintoihin.';
+
+  @override
+  String get timeJustNow => 'juuri äsken';
+
+  @override
+  String get timeUnderMinuteAgo => 'alle minuutti sitten';
+
+  @override
+  String get timeOneMinuteAgo => '1 minuutti sitten';
+
+  @override
+  String timeNMinutesAgo(Object minutes) {
+    return '$minutes minuuttia sitten';
+  }
+
+  @override
+  String get timeOneHourAgo => '1 tunti sitten';
+
+  @override
+  String timeNHoursAgo(Object hours) {
+    return '$hours tuntia sitten';
+  }
+
+  @override
+  String get timeOneDayAgo => '1 päivä sitten';
+
+  @override
+  String timeNDaysAgo(Object days) {
+    return '$days päivää sitten';
+  }
 }

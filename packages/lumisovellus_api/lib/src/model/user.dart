@@ -25,12 +25,15 @@ User({
   required  this.lastName,
   required  this.email,
   required  this.role,
-  required  this.phoneNumber,
-  required  this.lowBattery,
-  required  this.createdAt,
+   this.phoneNumber,
+   this.lowBattery,
+   this.createdAt,
   required  this.updatedAt,
+   this.devId,
+   this.ipAddress,
 });
 
+      /// User ID
   @JsonKey(
     
     name: r'id',
@@ -94,8 +97,8 @@ User({
   @JsonKey(
     
     name: r'phoneNumber',
-    required: true,
-    includeIfNull: true,
+    required: false,
+    includeIfNull: false,
   )
 
 
@@ -106,27 +109,29 @@ User({
   @JsonKey(
     
     name: r'lowBattery',
-    required: true,
+    required: false,
     includeIfNull: false,
   )
 
 
-  final num lowBattery;
+  final num? lowBattery;
 
 
 
+      /// Creation timestamp
   @JsonKey(
     
     name: r'createdAt',
-    required: true,
+    required: false,
     includeIfNull: false,
   )
 
 
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
 
 
+      /// Last update timestamp
   @JsonKey(
     
     name: r'updatedAt',
@@ -136,6 +141,30 @@ User({
 
 
   final DateTime updatedAt;
+
+
+
+  @JsonKey(
+    
+    name: r'devId',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? devId;
+
+
+
+  @JsonKey(
+    
+    name: r'ipAddress',
+    required: false,
+    includeIfNull: false,
+  )
+
+
+  final String? ipAddress;
 
 
 
@@ -151,7 +180,9 @@ User({
       other.phoneNumber == phoneNumber &&
       other.lowBattery == lowBattery &&
       other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+      other.updatedAt == updatedAt &&
+      other.devId == devId &&
+      other.ipAddress == ipAddress;
 
     @override
     int get hashCode =>
@@ -163,7 +194,9 @@ User({
         (phoneNumber == null ? 0 : phoneNumber.hashCode) +
         lowBattery.hashCode +
         createdAt.hashCode +
-        updatedAt.hashCode;
+        updatedAt.hashCode +
+        (devId == null ? 0 : devId.hashCode) +
+        (ipAddress == null ? 0 : ipAddress.hashCode);
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

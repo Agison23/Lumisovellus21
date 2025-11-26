@@ -7,16 +7,22 @@ import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
 import 'package:lumisovellus/features/settings/view/settings_page.dart';
 import 'package:lumisovellus/features/map/views/map_screen.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 
 // Global locale notifier for simple app-wide locale switching.
 // Replace with your preferred state management/localization solution as needed.
 final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
   final token = dotenv.env['ACCESS_TOKEN'] ?? '';
   MapboxOptions.setAccessToken(token);
+
+  final container = ProviderContainer();
+  await container.read(authSessionProvider.notifier).loadSession();
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -30,6 +36,7 @@ class MyApp extends StatelessWidget {
       valueListenable: localeNotifier,
       builder: (context, locale, _) {
         return MaterialApp(
+          navigatorKey: navigatorKey,
           title: 'RescueApp',
           locale: locale,
           supportedLocales: const [

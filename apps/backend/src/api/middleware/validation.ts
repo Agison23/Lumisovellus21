@@ -19,10 +19,8 @@ const weatherDaysSchema = z
 
 export const weatherItemSchema = z
   .enum(['temperature', 'windSpeed', 'windDirection', 'snowDepth'], {
-    errorMap: () => ({
-      message:
-        'Invalid item. Allowed values: temperature, windSpeed, windDirection, snowDepth',
-    }),
+    message:
+      'Invalid item. Allowed values: temperature, windSpeed, windDirection, snowDepth',
   })
   .meta({
     description: 'Weather item to aggregate',
@@ -218,11 +216,9 @@ export const segmentIdSchema = z
 // Review validation
 const hazardSchema = z
   .enum(['stones', 'branches'], {
-    errorMap: () => ({
-      message: 'Invalid hazard type. Must be one of: stones, branches',
-    }),
+    message: 'Invalid hazard type. Must be one of: stones, branches',
   })
-  .meta({ description: 'Hazard type found on the trail', example: 'stones' });
+  .meta({ id: 'Hazard', description: 'Hazard type found on the trail', example: 'stones' });
 
 export const reviewSchema = z
   .object({
