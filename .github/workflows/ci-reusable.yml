@@ -48,7 +48,6 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      # Setup Flutter (only when not using act)
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
         uses: subosito/flutter-action@v2
@@ -57,7 +56,6 @@ jobs:
           flutter-version: '3.35.6'
           cache: false
 
-      # Mock Flutter when using act locally
       - name: Mock Flutter setup (local act)
         if: ${{ env.ACT == 'true' }}
         run: |
@@ -79,7 +77,6 @@ jobs:
           npm ci --prefer-offline --no-audit --fund=false
           npx turbo run pubget
 
-      # ADDED FOR ACT: Install Playwright browsers
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
@@ -96,7 +93,7 @@ jobs:
           fi
 
       - name: Lint (fast)
-        run: npm run lint
+        run: npx turbo run lint --filter='!mobile'
 
       - name: Lint (heavy)
         if: ${{ inputs.run-heavy-lint }}
@@ -165,7 +162,6 @@ jobs:
 
       - run: npm ci --prefer-offline --no-audit --fund=false
 
-      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
@@ -224,7 +220,6 @@ jobs:
 
       - run: npm ci --prefer-offline --no-audit --fund=false
 
-      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
@@ -356,7 +351,6 @@ jobs:
           flutter --version
           dart --version
 
-      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps

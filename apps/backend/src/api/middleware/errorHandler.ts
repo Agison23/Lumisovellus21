@@ -13,7 +13,7 @@ export const errorHandler = (
   // Handle Zod validation errors
   if (error instanceof ZodError || error.name === 'ZodError') {
     const zodError = error as ZodError;
-    const details = zodError.errors.map((err) => ({
+    const details = zodError.issues.map((err) => ({
       field: err.path.join('.'),
       message: err.message,
       code: err.code,
