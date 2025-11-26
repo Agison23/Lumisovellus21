@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import {
   Thermometer,
   ThermometerSnowflake,
@@ -9,6 +8,7 @@ import {
   ArrowDown,
   ArrowUp,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 export default function WeatherView() {
