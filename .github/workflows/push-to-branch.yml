@@ -1,15 +1,19 @@
-name: Push -> branch (all branches)
+name: Push -> branch
 
 on:
   push:
     branches:
-      - '**'
+      - "**"
+  workflow_dispatch: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  full-stack-ci:
-    uses: ./.github/workflows/combined-ci.yml
+  validation:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 70
+      audit-level: "critical"
     secrets: inherit
