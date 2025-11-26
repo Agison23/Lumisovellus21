@@ -68,7 +68,7 @@ export default async function RootLayout({
                         <Toaster position="bottom-left" />
                       </Providers>
                     </div>
-                    <div className="w-full flex justify-center absolute bottom-0 p-2 z-9999 pointer-events-none">
+                    <div className="w-full flex justify-center absolute bottom-0 sm:p-2 z-9999 pointer-events-none">
                       <Nav />
                     </div>
                   </SidebarInset>

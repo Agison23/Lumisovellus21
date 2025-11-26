@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -58,7 +58,7 @@ export default function DashboardLayout({
           <DashboardSidebar t={t} />
         </div>
         <div className="overflow-hidden w-full h-full flex flex-col">
-          <nav className="text-sm p-2 flex gap-2">
+          <nav className="text-sm p-2 flex gap-2 items-center justify-between pl-12 md:pl-0">
             <ul className="flex gap-2">
               {createPathElements(path).map((element, index) => (
                 <div key={element.path} className="flex gap-2">
@@ -82,6 +82,9 @@ export default function DashboardLayout({
                 </div>
               ))}
             </ul>
+            <div className="md:hidden">
+              <SidebarTrigger />
+            </div>
           </nav>
           <div className="flex flex-col overflow-y-auto w-full h-full">
             {children}
