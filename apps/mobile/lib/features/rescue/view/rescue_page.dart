@@ -1,152 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:lumisovellus/features/rescue/domain/models/index.dart';
-import 'package:lumisovellus/features/rescue/providers.dart';
+import '../viewmodel/rescue_view_model.dart';
+import 'widgets/location_display_widget.dart';
+import 'widgets/help_request_dialog.dart';
+import 'widgets/end_event_dialog.dart';
+import 'widgets/pulsating_help_button.dart';
 
-class RescuePage extends ConsumerStatefulWidget {
+/// Main page for the rescue feature
+/// Displays location, allows requesting help, and calling emergency services
+class RescuePage extends ConsumerWidget {
   const RescuePage({super.key});
-
-  @override
-  ConsumerState<RescuePage> createState() => _RescuePageState();
-}
-
-class _RescuePageState extends ConsumerState<RescuePage> {
-  Position? _currentPosition;
-  bool _isLoadingLocation = false;
-  String? _selectedNeed;
-
-  // Converts decimal degrees to degrees and minutes (DMM) with cardinal
-  // direction key. For example: 37.422 -> (37, 25.320, 'north') for latitude.
-  (int degrees, String minutesStr, String directionKey) _toDmm(
-    double value, {
-    required bool isLatitude,
-  }) {
-    final absVal = value.abs();
-    final deg = absVal.floor();
-    final minutes = (absVal - deg) * 60.0;
-    final minutesFixed = minutes.toStringAsFixed(3);
-    final minutesPadded = minutes < 10 ? '0$minutesFixed' : minutesFixed;
-    final dirKey = value >= 0
-        ? (isLatitude ? 'north' : 'east')
-        : (isLatitude ? 'south' : 'west');
-    return (deg, minutesPadded, dirKey);
-  }
-
-  // Gets the localized direction string from a direction key.
-  String _getDirectionString(
-    String directionKey,
-    AppLocalizations localizations,
-  ) {
-    switch (directionKey) {
-      case 'north':
-        return localizations.coordinateDirectionNorth;
-      case 'south':
-        return localizations.coordinateDirectionSouth;
-      case 'east':
-        return localizations.coordinateDirectionEast;
-      case 'west':
-        return localizations.coordinateDirectionWest;
-      default:
-        return directionKey;
-    }
-  }
-
-  Widget _coordCell(
-    BuildContext context,
-    String text, {
-    Alignment alignment = Alignment.center,
-    double? minWidth,
-  }) {
-    final rescueTheme = context.rescueTheme;
-    return Container(
-      constraints: BoxConstraints(minHeight: 20, minWidth: minWidth ?? 0),
-      alignment: alignment,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: rescueTheme.coordinateCell,
-        borderRadius: BorderRadius.circular(10),
-      ),
-
-      child: Text(text, style: rescueTheme.coordinateCellStyle),
-    );
-  }
-
-  Widget _coordDirCell(BuildContext context, String dir) {
-    final rescueTheme = context.rescueTheme;
-    return Container(
-      constraints: const BoxConstraints(minHeight: 20, minWidth: 48),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: rescueTheme.coordinateCell,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(dir, style: rescueTheme.coordinateDirectionStyle),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    setState(() {
-      _isLoadingLocation = true;
-    });
-
-    try {
-      // Check if location services are enabled
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
-        return;
-      }
-
-      // Check location permissions
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          setState(() {
-            _isLoadingLocation = false;
-          });
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
-        return;
-      }
-
-      // Get current position
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
-
-      setState(() {
-        _currentPosition = position;
-        _isLoadingLocation = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoadingLocation = false;
-      });
-    }
-  }
 
   Future<void> _call112(BuildContext context) async {
     const String suomi112Package = 'fi.digia.suomi112';
@@ -205,140 +72,82 @@ class _RescuePageState extends ConsumerState<RescuePage> {
     }
   }
 
-  void _requestHelp() {
-    // Show dialog where the user selects a need and confirms sending help request
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setLocalState) {
-            String? localSelectedNeed = _selectedNeed;
-            final rescueTheme = context.rescueTheme;
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              contentPadding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0.0),
-              actionsPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 12.0),
-              title: Text(
-                AppLocalizations.of(context).rescuePageIndicateNeed,
-                style: rescueTheme.dialogTitleStyle,
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RadioGroup<String>(
-                    groupValue: localSelectedNeed,
-                    onChanged: (String? value) {
-                      setLocalState(() {
-                        localSelectedNeed = value;
-                        _selectedNeed = value;
-                      });
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RadioListTile<String>(
-                          title: Text(
-                            AppLocalizations.of(context).rescuePageHealthIssue,
-                            style: rescueTheme.dialogRadioStyle,
-                          ),
-                          value: 'health',
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        RadioListTile<String>(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            ).rescuePageEquipmentIssue,
-                            style: rescueTheme.dialogRadioStyle,
-                          ),
-                          value: 'equipment',
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        RadioListTile<String>(
-                          title: Text(
-                            AppLocalizations.of(context).rescuePageImLost,
-                            style: rescueTheme.dialogRadioStyle,
-                          ),
-                          value: 'lost',
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  key: const ValueKey('rescue.confirm.cancel'),
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: Text(AppLocalizations.of(context).dialogCancel),
+  void _handleHelpButtonTap(
+    BuildContext context,
+    RescueState state,
+    RescueViewModel viewModel,
+  ) {
+    if (state.hasActiveEvent) {
+      // Show dialog to end the event
+      showDialog(
+        context: context,
+        builder: (dialogContext) => EndEventDialog(
+          onCancel: () async {
+            await viewModel.cancelHelpEvent();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Help event cancelled'),
                 ),
-                TextButton(
-                  key: const ValueKey('rescue.confirm.ok'),
-                  onPressed: localSelectedNeed == null
-                      ? null
-                        : () async {
-                          Navigator.of(context).pop();
-                          final useCase = ref.read(requestHelpUseCaseProvider);
-                          final needType = _selectedNeed == 'health'
-                              ? HelpNeedType.health
-                              : _selectedNeed == 'equipment'
-                              ? HelpNeedType.equipment
-                              : HelpNeedType.lost;
-                          try {
-                            if (_currentPosition == null) {
-                              throw StateError('Location not available');
-                            }
-                            final location = Location(
-                              latitude: _currentPosition!.latitude,
-                              longitude: _currentPosition!.longitude,
-                              accuracy: _currentPosition!.accuracy,
-                            );
-                            final resp = await useCase.execute(
-                              needType: needType,
-                              location: location,
-                            );
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  '${AppLocalizations.of(context).rescuePageRequestHelp}: ${resp.needType.toString()}',
-                                ),
-                              ),
-                            );
-                          } catch (e) {
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  ).rescuePageEmergencyCallFailed,
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                  child: Text(AppLocalizations.of(context).dialogConfirm),
-                ),
-              ],
-            );
+              );
+            }
           },
-        );
-      },
-    );
+          onComplete: () async {
+            await viewModel.completeHelpEvent();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Help event completed'),
+                ),
+              );
+            }
+          },
+        ),
+      );
+    } else {
+      // Show dialog to request help
+      showDialog(
+        context: context,
+        builder: (dialogContext) => HelpRequestDialog(
+          onConfirm: (needType) async {
+            await viewModel.requestHelp(needType);
+            if (context.mounted) {
+              final t = AppLocalizations.of(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${t.rescuePageRequestHelp}: ${needType.toString()}',
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+      );
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final rescueTheme = context.rescueTheme;
+    final state = ref.watch(rescueViewModelProvider);
+    final viewModel = ref.read(rescueViewModelProvider.notifier);
+
+    // Listen for error messages
+    ref.listen<String?>(
+      rescueViewModelProvider.select((s) => s.errorMessage),
+      (previous, next) {
+        if (next != null && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+    );
 
     return Scaffold(
       backgroundColor: rescueTheme.pageBackground,
@@ -347,190 +156,17 @@ class _RescuePageState extends ConsumerState<RescuePage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Location information segment
               const SizedBox(height: 20),
 
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(width: 8),
-                        Text(
-                          t.currentLocation,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    if (_isLoadingLocation)
-                      const Center(child: CircularProgressIndicator())
-                    else if (_currentPosition != null)
-                      Builder(
-                        builder: (context) {
-                          final localizations = AppLocalizations.of(context);
-                          final (latDeg, latMin, latDirKey) = _toDmm(
-                            _currentPosition!.latitude,
-                            isLatitude: true,
-                          );
-                          final (lonDeg, lonMin, lonDirKey) = _toDmm(
-                            _currentPosition!.longitude,
-                            isLatitude: false,
-                          );
-                          final latDir = _getDirectionString(
-                            latDirKey,
-                            localizations,
-                          );
-                          final lonDir = _getDirectionString(
-                            lonDirKey,
-                            localizations,
-                          );
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  const SizedBox(width: 40),
-                                  Expanded(
-                                    child: _coordCell(
-                                      context,
-                                      '$latDeg°',
-                                      alignment: Alignment.centerLeft,
-                                      minWidth: 64,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    flex: 2,
-                                    child: _coordCell(
-                                      context,
-                                      latMin,
-                                      alignment: Alignment.centerLeft,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _coordDirCell(context, latDir),
-                                  const SizedBox(width: 40),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const SizedBox(width: 40),
-                                  Expanded(
-                                    child: _coordCell(
-                                      context,
-                                      '$lonDeg°',
-                                      alignment: Alignment.centerLeft,
-                                      minWidth: 64,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    flex: 2,
-                                    child: _coordCell(
-                                      context,
-                                      lonMin,
-                                      alignment: Alignment.centerLeft,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _coordDirCell(context, lonDir),
-                                  const SizedBox(width: 40),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
-                                style: Theme.of(context).textTheme.bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                              ),
-                              SizedBox(
-                                // width: 150,
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    // TODO: implement show on map
-                                  },
-                                  icon: Icon(
-                                    Icons.place,
-                                    color: rescueTheme.requestHelpButton,
-                                  ),
-                                  label: Text(
-                                    t.rescuePageShowOnMap.toUpperCase(),
-                                    style: rescueTheme.secondaryButtonStyle,
-                                  ),
-                                  style:
-                                      ElevatedButton.styleFrom(
-                                        backgroundColor: rescueTheme
-                                            .secondaryButtonBackground,
-                                        foregroundColor: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 12,
-                                          horizontal: 12,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        side: BorderSide.none,
-                                        shadowColor: Colors.transparent,
-                                      ).copyWith(
-                                        overlayColor: WidgetStateProperty.all(
-                                          Colors.transparent,
-                                        ),
-                                      ),
-                                ),
-                              ),
-                              const SizedBox(height: 0),
-                              // Text(
-                              //   '${t.rescuePageCoordinateSystem}: WGS84',
-                              //   style: Theme.of(context).textTheme.bodySmall
-                              //       ?.copyWith(
-                              //         color: Theme.of(
-                              //           context,
-                              //         ).colorScheme.onSurfaceVariant,
-                              //       ),
-                              // ),
-                              // const SizedBox(height: 2),
-                              // Text(
-                              //   '${t.rescuePageAccuracy}: ${_currentPosition!.accuracy.toStringAsFixed(1)} m',
-                              //   style: Theme.of(context).textTheme.bodySmall
-                              //       ?.copyWith(
-                              //         color: Theme.of(
-                              //           context,
-                              //         ).colorScheme.onSurfaceVariant,
-                              //       ),
-                              // ),
-                            ],
-                          );
-                        },
-                      )
-                    else
-                      Text(
-                        t.locationNotAvailable,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
+              // Location information segment
+              LocationDisplayWidget(
+                currentPosition: state.currentPosition,
+                isLoading: state.isLoadingLocation,
               ),
 
               const SizedBox(height: 20),
 
+              // Help request card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -557,35 +193,15 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                     ),
                     const SizedBox(height: 34),
 
-                    // Request help button
-                    GestureDetector(
-                      key: const ValueKey('rescue.requestHelpButton'),
-                      onTap: _requestHelp,
-                      child: Container(
-                        width: 180,
-                        height: 180,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: rescueTheme.requestHelpButton,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: rescueTheme.requestHelpButtonShadow,
-                              spreadRadius: 14,
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            t.rescuePageRequestHelp,
-                            style: rescueTheme.requestHelpButtonStyle.copyWith(
-                              color: rescueTheme.requestHelpButtonText,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                    // Pulsating help button
+                    PulsatingHelpButton(
+                      onTap: () => _handleHelpButtonTap(
+                        context,
+                        state,
+                        viewModel,
                       ),
+                      isActive: state.hasActiveEvent,
+                      isLoading: state.isLoadingHelpOperation,
                     ),
                     const SizedBox(height: 25),
                   ],
@@ -660,9 +276,6 @@ class _RescuePageState extends ConsumerState<RescuePage> {
                   ],
                 ),
               ),
-              //     ],
-              //   ),
-              // ),
               const SizedBox(height: 34),
             ],
           ),

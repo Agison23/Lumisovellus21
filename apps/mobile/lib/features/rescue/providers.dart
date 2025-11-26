@@ -8,6 +8,7 @@ import 'data/repositories/help_repository_impl.dart';
 import 'domain/repositories/help_repository.dart';
 import 'domain/use_cases/request_help_use_case.dart';
 import 'domain/use_cases/cancel_help_use_case.dart';
+import 'domain/use_cases/complete_help_use_case.dart';
 
 // Service layer providers
 final _inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
@@ -39,4 +40,9 @@ final requestHelpUseCaseProvider = Provider<RequestHelpUseCase>((ref) {
 final cancelHelpUseCaseProvider = Provider<CancelHelpUseCase>((ref) {
   final repository = ref.watch(helpRepositoryProvider);
   return CancelHelpUseCase(repository);
+});
+
+final completeHelpUseCaseProvider = Provider<CompleteHelpUseCase>((ref) {
+  final repository = ref.watch(helpRepositoryProvider);
+  return CompleteHelpUseCase(repository);
 });
