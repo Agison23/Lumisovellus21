@@ -58,18 +58,6 @@ class RescuePage extends ConsumerWidget {
     } catch (e) {
       debugPrint('Failed to launch phone dialer: $e');
     }
-
-    if (!launchedCorrectly) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).rescuePageEmergencyCallFailed,
-            ),
-          ),
-        );
-      }
-    }
   }
 
   void _handleHelpButtonTap(
@@ -86,9 +74,7 @@ class RescuePage extends ConsumerWidget {
             await viewModel.cancelHelpEvent();
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Help event cancelled'),
-                ),
+                const SnackBar(content: Text('Help event cancelled')),
               );
             }
           },
@@ -96,9 +82,7 @@ class RescuePage extends ConsumerWidget {
             await viewModel.completeHelpEvent();
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Help event completed'),
-                ),
+                const SnackBar(content: Text('Help event completed')),
               );
             }
           },
@@ -111,16 +95,6 @@ class RescuePage extends ConsumerWidget {
         builder: (dialogContext) => HelpRequestDialog(
           onConfirm: (needType) async {
             await viewModel.requestHelp(needType);
-            if (context.mounted) {
-              final t = AppLocalizations.of(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${t.rescuePageRequestHelp}: ${needType.toString()}',
-                  ),
-                ),
-              );
-            }
           },
         ),
       );
@@ -135,19 +109,16 @@ class RescuePage extends ConsumerWidget {
     final viewModel = ref.read(rescueViewModelProvider.notifier);
 
     // Listen for error messages
-    ref.listen<String?>(
-      rescueViewModelProvider.select((s) => s.errorMessage),
-      (previous, next) {
-        if (next != null && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(next),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-    );
+    ref.listen<String?>(rescueViewModelProvider.select((s) => s.errorMessage), (
+      previous,
+      next,
+    ) {
+      if (next != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next), backgroundColor: Colors.red),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: rescueTheme.pageBackground,
@@ -195,11 +166,8 @@ class RescuePage extends ConsumerWidget {
 
                     // Pulsating help button
                     PulsatingHelpButton(
-                      onTap: () => _handleHelpButtonTap(
-                        context,
-                        state,
-                        viewModel,
-                      ),
+                      onTap: () =>
+                          _handleHelpButtonTap(context, state, viewModel),
                       isActive: state.hasActiveEvent,
                       isLoading: state.isLoadingHelpOperation,
                     ),

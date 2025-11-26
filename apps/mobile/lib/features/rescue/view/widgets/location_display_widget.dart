@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import 'package:lumisovellus/features/map/providers.dart';
 
 /// Widget that displays the current location in DMM format
-class LocationDisplayWidget extends StatelessWidget {
+class LocationDisplayWidget extends ConsumerWidget {
   final Position? currentPosition;
   final bool isLoading;
 
@@ -83,8 +85,13 @@ class LocationDisplayWidget extends StatelessWidget {
     );
   }
 
+  void _handleShowOnMap(WidgetRef ref) {
+    // Signal the map to snap to location (this will also navigate to map if needed)
+    ref.read(snapToLocationProvider.notifier).state = true;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final rescueTheme = context.rescueTheme;
 
@@ -193,9 +200,9 @@ class LocationDisplayWidget extends StatelessWidget {
                     ),
                     SizedBox(
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          // TODO: implement show on map
-                        },
+                        onPressed: currentPosition != null
+                            ? () => _handleShowOnMap(ref)
+                            : null,
                         icon: Icon(
                           Icons.place,
                           color: rescueTheme.requestHelpButton,

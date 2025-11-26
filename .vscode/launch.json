@@ -9,7 +9,14 @@
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/apps/mobile/lib/main.dart",
-            "args": ["--dart-define=ACCESS_TOKEN=${config:mapboxApiKey}"]
+            "args": []
+        },
+        {
+            "name": "mobile (backend)",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/apps/mobile/lib/main.dart",
+            "args": ["--dart-define=USE_REAL_BACKEND=true"]
         }
     ]
 }

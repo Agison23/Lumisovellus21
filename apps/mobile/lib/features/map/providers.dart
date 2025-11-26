@@ -56,3 +56,8 @@ final areasLayerManagerProvider =
   ref.onDispose(() {});
   return m;
 });
+
+/// Provider to signal that the map should snap to user location
+/// When set to true, it will also navigate to the map view if not already there.
+/// This is used when a help event becomes active or when user requests to show location on map.
+final snapToLocationProvider = StateProvider<bool>((ref) => false);
