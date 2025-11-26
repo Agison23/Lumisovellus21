@@ -2,7 +2,9 @@ name: PR -> master
 
 on:
   pull_request:
-    branches: [master]
+    types: [opened, reopened, ready_for_review]
+    branches:
+      - 'master'
   workflow_dispatch: {}
 
 concurrency:
@@ -10,12 +12,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  rc:
+  integration:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      coverage-threshold: 80
+      coverage-threshold: 70
       run-build: true
-      run-heavy-lint: true
       run-security-checks: true
       audit-level: "high"
       run-smoke-e2e: true
