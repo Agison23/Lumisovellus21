@@ -108,7 +108,7 @@ jobs:
           fi
 
       - name: Typecheck
-        run: npm run typecheck
+        run: npm run typecheck -- --force
 
   build:
     runs-on: ubuntu-22.04
