@@ -1,7 +1,7 @@
 import 'zod-openapi';
 import { createDocument } from 'zod-openapi';
-import { openApiRoutes } from './routes';
-import { errorResponseSchema, healthResponseSchema } from './schemas';
+import { openApiRoutes } from './routes.js';
+import { errorResponseSchema, healthResponseSchema } from './schemas.js';
 
 // Base OpenAPI document structure
 const baseDocument = {

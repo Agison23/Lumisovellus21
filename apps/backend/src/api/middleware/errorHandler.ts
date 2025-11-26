@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { ApiResponseHandler } from './responseHandler';
+import { ApiResponseHandler } from './responseHandler.js';
 
 export const errorHandler = (
   error: Error,

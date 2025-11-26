@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { SnowTypesService } from '../../services/snowTypes/SnowTypesService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { SnowTypesService } from '../../services/snowTypes/SnowTypesService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import {
   createSnowTypeSchema,
   snowTypeIdSchema,
   addSecondarySnowTypesSchema,
   snowTypeResponseSchema,
   primarySnowTypeResponseSchema,
-} from '../../middleware/validation';
+} from '../../middleware/validation.js';
 
 export class SnowTypesController {
   private snowTypesService: SnowTypesService;

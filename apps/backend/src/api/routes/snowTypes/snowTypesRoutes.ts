@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SnowTypesController } from '../../controllers/snowTypes/SnowTypesController';
-import { authenticateToken, requireAdmin } from '../../middleware/auth';
+import { SnowTypesController } from '../../controllers/snowTypes/SnowTypesController.js';
+import { authenticateToken, requireAdmin } from '../../middleware/auth.js';
 
 const router = Router();
 const snowTypesController = new SnowTypesController();

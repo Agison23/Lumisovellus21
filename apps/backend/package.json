@@ -8,7 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
 
-    "build": "tsx build src/server.ts --outDir dist",
+    "build": "tsc -p tsconfig.json",
     "prebuild": "npm run clean",
 
     "test": "npm run test:docker",
@@ -29,7 +29,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
 
     "db:migrate": "prisma migrate dev",
     "db:migrate:prod": "prisma migrate deploy",

@@ -1,4 +1,4 @@
-import { BaseService } from '../BaseService';
+import { BaseService } from '../BaseService.js';
 import type { Weather } from '@prisma/client';
 
 interface WeatherData {

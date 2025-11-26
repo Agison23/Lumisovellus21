@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { HelpService } from '../../services/help/HelpService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { HelpService } from '../../services/help/HelpService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import { AuthenticatedRequest } from '../../types';
 import {
   helpEventAcceptanceSchema,
@@ -11,7 +11,7 @@ import {
   helpEventRescueeViewSchema,
   helpEventRescuerViewSchema,
   helpEventSummarySchema,
-} from '../../middleware/validation';
+} from '../../middleware/validation.js';
 import { z } from 'zod';
 
 export class HelpController {

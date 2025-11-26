@@ -1,6 +1,6 @@
-import { BaseService } from '../BaseService';
+import { BaseService } from '../BaseService.js';
 import { Review, ReviewRequest, SnowType, HazardType, Observation, GuideUpdate } from '../../types';
-import { generateSnowTypeIdentifier } from '../../../utils/snowTypeUtils';
+import { generateSnowTypeIdentifier } from '../../../utils/snowTypeUtils.js';
 
 export class ReviewsService extends BaseService {
 
