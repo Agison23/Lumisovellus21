@@ -168,8 +168,7 @@ class RescuePage extends ConsumerWidget {
                     PulsatingHelpButton(
                       onTap: () =>
                           _handleHelpButtonTap(context, state, viewModel),
-                      isActive: state.hasActiveEvent,
-                      isLoading: state.isLoadingHelpOperation,
+                      isActive: state.hasActiveEvent
                     ),
                     const SizedBox(height: 25),
                   ],

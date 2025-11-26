@@ -38,9 +38,9 @@ class EndEventDialog extends StatelessWidget {
             Navigator.of(context).pop();
             onCancel();
           },
-          child: Text(
+          child: const Text(
             'Cancel Event',
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Color.fromARGB(255, 172, 56, 48)),
           ),
         ),
         TextButton(
@@ -48,9 +48,9 @@ class EndEventDialog extends StatelessWidget {
             Navigator.of(context).pop();
             onComplete();
           },
-          child: Text(
+          child: const Text(
             'Complete Event',
-            style: TextStyle(color: Colors.green),
+            style: TextStyle(color: Color.fromARGB(255, 64, 147, 66)),
           ),
         ),
         TextButton(
