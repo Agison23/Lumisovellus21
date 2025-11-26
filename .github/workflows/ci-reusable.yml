@@ -21,9 +21,6 @@ on:
       run-smoke-e2e:
         type: boolean
         default: false
-      run-mobile-tests:
-        type: boolean
-        default: false
 
 jobs:
   validate:
@@ -51,6 +48,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      # Setup Flutter (only when not using act)
       - name: Setup Flutter (stable channel)
         if: ${{ env.ACT != 'true' }}
         uses: subosito/flutter-action@v2
@@ -59,6 +57,7 @@ jobs:
           flutter-version: '3.35.6'
           cache: false
 
+      # Mock Flutter when using act locally
       - name: Mock Flutter setup (local act)
         if: ${{ env.ACT == 'true' }}
         run: |
@@ -80,6 +79,7 @@ jobs:
           npm ci --prefer-offline --no-audit --fund=false
           npx turbo run pubget
 
+      # ADDED FOR ACT: Install Playwright browsers
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
@@ -96,7 +96,7 @@ jobs:
           fi
 
       - name: Lint (fast)
-        run: npx turbo run lint --filter='!mobile'
+        run: npm run lint
 
       - name: Lint (heavy)
         if: ${{ inputs.run-heavy-lint }}
@@ -111,7 +111,7 @@ jobs:
           fi
 
       - name: Typecheck
-        run: npm run typecheck -- --force
+        run: npm run typecheck
 
   build:
     runs-on: ubuntu-22.04
@@ -165,6 +165,7 @@ jobs:
 
       - run: npm ci --prefer-offline --no-audit --fund=false
 
+      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
@@ -223,71 +224,16 @@ jobs:
 
       - run: npm ci --prefer-offline --no-audit --fund=false
 
+      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
 
-      - name: Test (backend + web only)
-        run: npm run test:unit -- --filter='!mobile'
+      - name: Test
+        run: npm run test:unit
 
       - name: Enforce coverage gate (${{ inputs.coverage-threshold }}%)
         run: echo "Check test coverage"
-
-  mobile-tests:
-    runs-on: ubuntu-22.04
-    needs: validate
-    if: ${{ inputs.run-mobile-tests }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          sparse-checkout: |
-            apps/mobile
-            packages
-            turbo.json
-            package.json
-            package-lock.json
-
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.35.6'
-          cache: false
-
-      - name: Mock Flutter setup (local act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter setup under act"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
-      - name: Check Flutter & Dart version
-        run: |
-          flutter --version
-          dart --version
-
-      - name: Install mobile dependencies
-        working-directory: apps/mobile
-        run: flutter pub get
-
-      - name: Run Flutter tests
-        working-directory: apps/mobile
-        run: flutter test --coverage
-
-      - name: Upload mobile coverage
-        uses: codecov/codecov-action@v4
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: apps/mobile/coverage/lcov.info
-          flags: mobile
-          name: mobile-coverage
-          fail_ci_if_error: false
 
   security:
     runs-on: ubuntu-22.04
@@ -410,6 +356,7 @@ jobs:
           flutter --version
           dart --version
 
+      # ADDED FOR ACT
       - name: Install Playwright browsers (ACT)
         if: ${{ env.ACT == 'true' }}
         run: npx playwright install --with-deps
