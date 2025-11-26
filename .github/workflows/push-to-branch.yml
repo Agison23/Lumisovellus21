@@ -13,6 +13,7 @@ jobs:
   integration:
     uses: ./.github/workflows/ci-reusable.yml
     with:
+      run-mobile-tests: true
       coverage-threshold: 70
       run-heavy-lint: true
       run-security-checks: true

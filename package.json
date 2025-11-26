@@ -6,9 +6,9 @@
   "scripts": {
   "dev": "turbo run dev --parallel",
 
-  "test": "turbo run test",
-  "test:unit": "turbo run test:unit",
-  "test:integration": "turbo run test:integration",
+  "test": "turbo run test --filter=!mobile",
+  "test:unit": "turbo run test:unit --filter=!mobile",
+  "test:integration": "turbo run test:integration --filter=!mobile",
 
   "build": "turbo run build --filter=!mobile",
 
