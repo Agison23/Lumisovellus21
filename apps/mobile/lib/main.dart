@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +22,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final token = dotenv.env['ACCESS_TOKEN'] ?? '';
   MapboxOptions.setAccessToken(token);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final container = ProviderContainer();
   await container.read(authSessionProvider.notifier).loadSession();
@@ -64,6 +70,7 @@ class MyApp extends StatelessWidget {
               RescueTheme.dark(),
             ],
           ),
+          themeMode: ThemeMode.light,
           home: const MainShell(),
         );
       },

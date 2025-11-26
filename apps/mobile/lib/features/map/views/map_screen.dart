@@ -2,6 +2,8 @@ import 'package:geolocator/geolocator.dart' as geo;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lumisovellus/features/map/data/repositories/map_style_repository.dart';
+import 'package:lumisovellus/features/map/viewmodel/map_notifier.dart';
 import 'package:lumisovellus_api/lumisovellus_api.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
@@ -48,7 +50,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    final isOnline = ref.watch(connectivityProvider); // TODO: Refresh this properly on network change without recreating map
+    final isOnline = ref.watch(connectivityProvider);
     final areasMgr = ref.watch(areasLayerManagerProvider);
     final snowTypesState = ref.watch(snowTypesNotifierProvider).value;
     final snowTypes = snowTypesState?.snowTypes ?? const <SnowType>[];
@@ -59,12 +61,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     ref.listen(
       segmentsNotifierProvider.select((a) => a.value?.selectedId),
-      (_, id) => areasMgr.setSelectedId(id),
+      (_, id) {
+        areasMgr.setSelectedId(id);
+      },
     );
 
     ref.listen(
       segmentsNotifierProvider.select((a) => a.value?.hoveredId),
-      (_, id) => areasMgr.setHoveredId(id),
+      (_, id) {
+        areasMgr.setHoveredId(id);
+      },
     );
 
     ref.listen(
@@ -78,23 +84,32 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: Stack(
         children: [
           MapWidget(
-            // Can be used to force recreation of the map, but should be careful so as not to waste sessions
-            // key: Key(String.fromCharCodes(List.generate(5, (index) => Random().nextInt(33) + 89))),
             styleUri: 'mapbox://styles/mapbox/outdoors-v12',
             cameraOptions: CameraOptions(
               center: Point(coordinates: Position(24.07, 68.06)),
               zoom: 12,
-              pitch: 60, // change for 3D view
+              pitch: 60,
               bearing: 0,
             ),
             onTapListener: (ctx) async {
-              if (_map == null) return;
+              if (_map == null) {
+                return;
+              }
 
               final geometry = RenderedQueryGeometry.fromScreenCoordinate(ctx.touchPosition);
-              final options = RenderedQueryOptions(layerIds: ['areas-fill']);
-              final features = await _map!.queryRenderedFeatures(geometry, options);
+              final options = RenderedQueryOptions(
+                layerIds: [MapStyleRepository.areasFillId],
+              );
+
+              List<QueriedRenderedFeature>? features;
+              try {
+                features = (await _map!.queryRenderedFeatures(geometry, options)).cast<QueriedRenderedFeature>();
+              } catch (e) {
+                return;
+              }
 
               final first = features.firstOrNull;
+
               final notifier = ref.read(segmentsNotifierProvider.notifier);
               if (first == null) {
                 await areasMgr.setSelectedId(null);
@@ -129,12 +144,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               );
               final v = ref.read(segmentsNotifierProvider).value;
               await areasMgr.onStyleLoaded();
-              if (v?.segments != null) await areasMgr.setData(v!.segments!);
+              if (v?.segments != null) {
+                await areasMgr.setData(v!.segments!);
+              }
               await areasMgr.setSelectedId(v?.selectedId);
               await areasMgr.setHoveredId(v?.hoveredId);
             },
           ),
-
           if (!isOnline)
             Positioned(
               left: 0,
@@ -154,7 +170,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
               ),
             ),
-
           if (selectedSegment != null)
             Positioned(
               top: 32,
@@ -173,15 +188,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onClose: () => ref.read(segmentsNotifierProvider.notifier).select(null),
                 snowTypes: snowTypes,
                 hazards: const ['stones', 'branches'],
-              )
+              ),
             ),
-
           Positioned(
             bottom: 16,
             left: 16,
             child: FilterButton(t: t),
           ),
-
           Positioned(
             bottom: 16,
             right: 16,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373729587052",
+    "project_id": "snowledge-36e50",
+    "storage_bucket": "snowledge-36e50.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373729587052:android:0a4de584096e11ba280d49",
+        "android_client_info": {
+          "package_name": "com.snowledge.lumisovellus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZkWv0sF5CViVWrJV0zGV5DqwCUutx3w0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
