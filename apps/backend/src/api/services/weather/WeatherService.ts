@@ -1,5 +1,5 @@
 import { BaseService } from '../BaseService';
-import { Weather } from '@prisma/client';
+import type { Weather } from '@prisma/client';
 
 interface WeatherData {
   temperature: number | null;

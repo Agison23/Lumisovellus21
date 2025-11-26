@@ -5,7 +5,7 @@ import { errorResponseSchema, healthResponseSchema } from './schemas';
 
 // Base OpenAPI document structure
 const baseDocument = {
-  openapi: '3.0.0',
+  openapi: '3.0.0' as const,
   info: {
     title: 'Lumisovellus API',
     version: 'v2.0.0',
@@ -46,8 +46,8 @@ const baseDocument = {
   components: {
     securitySchemes: {
       BearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
+        type: 'http' as const,
+        scheme: 'bearer' as const,
         bearerFormat: 'JWT',
         description: 'Enter your JWT token (without the Bearer prefix)',
       },
