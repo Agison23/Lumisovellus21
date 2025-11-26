@@ -1,0 +1,120 @@
+name: Full Stack CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  # -------------------------
+  # BACKEND TESTS
+  # -------------------------
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install backend deps
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Setup test DB
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+          NODE_ENV: test
+          PORT: 3001
+          JWT_SECRET: test_jwt_secret_key_for_testing_only
+        run: |
+          sleep 10
+          npx prisma db push
+
+      - name: Run backend tests
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+        run: npm run test:coverage
+
+      - name: Upload backend coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+
+  # -------------------------
+  # BACKEND SECURITY
+  # -------------------------
+  backend-security:
+    runs-on: ubuntu-latest
+    needs: backend-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install backend deps
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: npm audit
+        working-directory: apps/backend
+        run: npm audit --audit-level=high
+
+  # -------------------------
+  # FRONTEND PIPELINE (reuses existing workflow)
+  # -------------------------
+  frontend:
+    needs: backend-tests
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      coverage-threshold: 70
+      run-build: true
+      run-heavy-lint: false
+      audit-level: critical
+      run-security-checks: false
+      run-smoke-e2e: false
+
+  # -------------------------
+  # OPTIONAL FINAL BUILD
+  # Only if both backend + frontend succeeded
+  # -------------------------
+  build:
+    runs-on: ubuntu-latest
+    needs: [backend-security, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Build phase placeholder"
