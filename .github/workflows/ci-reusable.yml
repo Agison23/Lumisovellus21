@@ -98,6 +98,9 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Patch npm optional dep bug
+        run: npm install -g npm@10.8.1
+
       - name: Install backend dependencies
         working-directory: apps/backend
         run: npm i --ignore-scripts
@@ -341,6 +344,9 @@ jobs:
           cache: npm
 
       - run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: Patch npm optional dep bug
+        run: npm install -g npm@10.8.1
 
       - name: Test
         run: npx turbo run test:unit
