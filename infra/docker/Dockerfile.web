@@ -6,6 +6,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy root manifests
 COPY package.json package-lock.json ./
+COPY packages ./packages
 
 # Optional: try to generate API client for web if the script exists (won't fail build)
 RUN npm run -s openapi:client:web || true

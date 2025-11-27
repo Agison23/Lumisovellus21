@@ -3,7 +3,7 @@
 import type { paths } from "@lumisovellus/api-client-web";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { apiUrl } from "@/lib/map/loaders";
+import { serverApiUrl } from "@/lib/map/loaders";
 
 export async function loginAction(email: string, password: string) {
   // Call your backend API here
@@ -11,7 +11,7 @@ export async function loginAction(email: string, password: string) {
     paths["/auth/login"]["post"]["requestBody"]["content"]["application/json"];
   const loginData: LoginBody = { email, password };
 
-  const response = await fetch(`${apiUrl}/auth/login`, {
+  const response = await fetch(`${serverApiUrl}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export async function logoutAction() {
   const accessToken = cookieStore.get("accessToken")?.value;
 
   if (accessToken) {
-    const res = await fetch(`${apiUrl}/auth/logout`, {
+    const res = await fetch(`${serverApiUrl}/auth/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -82,7 +82,7 @@ export async function logoutAction() {
 
 export async function verifyTokenAction(token: string) {
   try {
-    const response = await fetch(`${apiUrl}/auth/verify-token`, {
+    const response = await fetch(`${serverApiUrl}/auth/verify-token`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -116,7 +116,7 @@ export async function refreshTokenAction() {
       paths["/auth/refresh-token"]["post"]["requestBody"]["content"]["application/json"];
     const requestBody: RefreshBody = { refreshToken };
 
-    const response = await fetch(`${apiUrl}/auth/refresh-token`, {
+    const response = await fetch(`${serverApiUrl}/auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -165,7 +165,7 @@ export async function registerAction(
     paths["/auth/register"]["post"]["requestBody"]["content"]["application/json"];
   const requestBody: RegisterBody = { firstName, lastName, email, password };
 
-  const response = await fetch(`${apiUrl}/auth/register`, {
+  const response = await fetch(`${serverApiUrl}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
