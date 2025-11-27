@@ -24,11 +24,8 @@ services:
       target: deps
     container_name: lumisovellus-backend
     environment:
-      DATABASE_URL: mysql://lumisovellus:password@mysql:3306/lumisovellus
-      PORT: 4004
       NODE_ENV: development
-      CORS_ORIGIN: http://localhost:3000
-      JWT_SECRET: dev-secret-key
+      PORT: 4004
     ports:
       - '51000:4004'
     depends_on:

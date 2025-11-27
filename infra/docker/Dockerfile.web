@@ -48,4 +48,4 @@ COPY --from=builder /app/apps/web/public ./apps/web/public
 # Copy next.config if present
 COPY --from=builder /app/apps/web/next.config.ts ./apps/web/next.config.ts
 
-CMD ["sh", "-c", "npm --workspace=web start -- -p $PORT"]
+CMD ["npm", "--workspace=web", "start"]
