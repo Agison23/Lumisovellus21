@@ -38,7 +38,7 @@ import {
   saveControlState,
 } from "@/lib/map/control-state";
 import {
-  apiUrl,
+  clientApiUrl,
   fetchAreas,
   fetchMonitorData,
   fetchSnowTypes,
@@ -110,7 +110,7 @@ const submitGuideUpdate = async (data: {
   };
 
   const response = await fetch(
-    `${apiUrl}/api/v1/segments/${data.segmentId}/guideUpdate`,
+    `${clientApiUrl}/api/v1/segments/${data.segmentId}/guideUpdate`,
     {
       method: "POST",
       headers: {
@@ -156,7 +156,7 @@ const submitObservation = async (data: {
   };
 
   const response = await fetch(
-    `${apiUrl}/api/v1/segments/${data.segmentId}/reviews`,
+    `${clientApiUrl}/api/v1/segments/${data.segmentId}/reviews`,
     {
       method: "POST",
       headers: {
