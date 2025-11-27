@@ -312,7 +312,7 @@ jobs:
       - run: npm ci --prefer-offline --no-audit --fund=false
 
       - name: Build frontend
-        run: npm run build --filter=!backend
+        run: npm run build --filter=!./apps/backend...
 
   ######################################################################
   # FRONTEND TEST
@@ -343,7 +343,7 @@ jobs:
       - run: npm ci --prefer-offline --no-audit --fund=false
 
       - name: Test
-        run: npx turbo run test:unit --filter=!backend
+        run: npx turbo run test:unit --filter=!./apps/backend...
 
       - name: Coverage gate
         run: |
