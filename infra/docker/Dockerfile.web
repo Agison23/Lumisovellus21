@@ -22,7 +22,9 @@ FROM deps AS builder
 WORKDIR /app
 
 # Copy full repository (source files) for the build
-COPY . .
+COPY apps/web ./apps/web
+COPY packages ./packages
+COPY turbo.json ./
 
 # Build the Next.js app in the `web` workspace
 RUN npm --workspace=web run build
