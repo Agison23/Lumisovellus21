@@ -1,13 +1,13 @@
-'use client';
-import { useMutation } from '@tanstack/react-query';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { FormEvent, useState } from 'react';
-import { toast } from 'sonner';
-import { registerAction } from '../actions';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+"use client";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { FormEvent, useState } from "react";
+import { toast } from "sonner";
+import { registerAction } from "../actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const PASSWORD_REGEX =
   /^(?=.*[0-9])(?=.*[^\w\s])[A-Za-z0-9!@#$%^&*\-_+=~`|\\:;"'<>,.?/]{8,}$/;
@@ -28,32 +28,35 @@ function isPasswordValid(password: string) {
 }
 
 export default function RegisterPage() {
-  const t = useTranslations('RegisterPage');
+  const t = useTranslations("RegisterPage");
   const router = useRouter();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const validation = validatePassword(password);
 
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const firstName = formData.get('firstName') as string;
-    const lastName = formData.get('lastName') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const confirmPassword = formData.get('confirmPassword') as string;
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
     if (!email || !password || !firstName || !lastName || !confirmPassword) {
-      throw new Error(t('errors.missingFields'));
+      throw new Error(t("errors.missingFields"));
     }
 
     if (!isPasswordValid(password)) {
-      throw new Error(t('errors.passwordTooWeak'));
+      throw new Error(t("errors.passwordTooWeak"));
     }
 
     if (password !== confirmPassword) {
-      throw new Error(t('errors.passwordsMismatch'));
+      throw new Error(t("errors.passwordsMismatch"));
     }
 
-    await registerAction(firstName, lastName, email, password);
+    const result = await registerAction(firstName, lastName, email, password);
+    if (!result.success) {
+      throw new Error(result.error);
+    }
     return true;
   };
 
@@ -63,11 +66,11 @@ export default function RegisterPage() {
       // we need to revalidate the path to update the auth state
       router.refresh();
       // then redirect to the weather page
-      router.push('/');
+      router.push("/");
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error ? error.message : t('errors.registrationFailed')
+        error instanceof Error ? error.message : t("errors.registrationFailed"),
       );
     },
   });
@@ -78,10 +81,10 @@ export default function RegisterPage() {
         className="flex flex-col p-2 gap-4 rounded-md border border-accent max-w-md"
         onSubmit={formMutation.mutate}
       >
-        <p>{t('title')}</p>
+        <p>{t("title")}</p>
         <section className="flex gap-2 text-muted-foreground">
           <div className="flex flex-col gap-1">
-            <label htmlFor={t('firstName')}>{t('firstName')}</label>
+            <label htmlFor={t("firstName")}>{t("firstName")}</label>
             <Input
               className="text-primary"
               type="text"
@@ -90,7 +93,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor={t('lastName')}>{t('lastName')}</label>
+            <label htmlFor={t("lastName")}>{t("lastName")}</label>
             <Input
               className="text-primary"
               type="text"
@@ -100,7 +103,7 @@ export default function RegisterPage() {
           </div>
         </section>
         <section className="flex flex-col gap-1 text-muted-foreground">
-          <label htmlFor={t('email')}>{t('email')}</label>
+          <label htmlFor={t("email")}>{t("email")}</label>
           <Input
             className="text-primary"
             type="email"
@@ -109,7 +112,7 @@ export default function RegisterPage() {
           />
         </section>
         <section className="flex flex-col gap-1 text-muted-foreground">
-          <label htmlFor={t('password')}>{t('password')}</label>
+          <label htmlFor={t("password")}>{t("password")}</label>
           <Input
             className="text-primary"
             type="password"
@@ -119,29 +122,29 @@ export default function RegisterPage() {
             required={true}
           />
           <div className="text-xs mt-2 space-y-1">
-            <p className="font-semibold">{t('passwordRequirements.title')}:</p>
+            <p className="font-semibold">{t("passwordRequirements.title")}:</p>
             <div
-              className={`flex items-center gap-2 ${validation.minLength ? 'text-green-500' : 'text-red-500'}`}
+              className={`flex items-center gap-2 ${validation.minLength ? "text-green-500" : "text-red-500"}`}
             >
-              <span>{validation.minLength ? '✓' : '✗'}</span>
-              <span>{t('passwordRequirements.minLength')}</span>
+              <span>{validation.minLength ? "✓" : "✗"}</span>
+              <span>{t("passwordRequirements.minLength")}</span>
             </div>
             <div
-              className={`flex items-center gap-2 ${validation.hasNumber ? 'text-green-500' : 'text-red-500'}`}
+              className={`flex items-center gap-2 ${validation.hasNumber ? "text-green-500" : "text-red-500"}`}
             >
-              <span>{validation.hasNumber ? '✓' : '✗'}</span>
-              <span>{t('passwordRequirements.hasNumber')}</span>
+              <span>{validation.hasNumber ? "✓" : "✗"}</span>
+              <span>{t("passwordRequirements.hasNumber")}</span>
             </div>
             <div
-              className={`flex items-center gap-2 ${validation.hasSpecialChar ? 'text-green-500' : 'text-red-500'}`}
+              className={`flex items-center gap-2 ${validation.hasSpecialChar ? "text-green-500" : "text-red-500"}`}
             >
-              <span>{validation.hasSpecialChar ? '✓' : '✗'}</span>
-              <span>{t('passwordRequirements.hasSpecialChar')}</span>
+              <span>{validation.hasSpecialChar ? "✓" : "✗"}</span>
+              <span>{t("passwordRequirements.hasSpecialChar")}</span>
             </div>
           </div>
         </section>
         <section className="flex flex-col gap-1 text-muted-foreground">
-          <label htmlFor={t('confirmPassword')}>{t('confirmPassword')}</label>
+          <label htmlFor={t("confirmPassword")}>{t("confirmPassword")}</label>
           <Input
             className="text-primary"
             type="password"
@@ -151,13 +154,13 @@ export default function RegisterPage() {
         </section>
         <Button type="submit">
           {formMutation.isPending
-            ? t('buttons.registering')
-            : t('buttons.register')}
+            ? t("buttons.registering")
+            : t("buttons.register")}
         </Button>
       </form>
       <Link href="/login">
         <span className="text-muted-foreground hover:text-primary transition-colors duration-150">
-          {t('links.login')}
+          {t("links.login")}
         </span>
       </Link>
     </div>
