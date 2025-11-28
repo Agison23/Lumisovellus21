@@ -1,6 +1,3 @@
-export 'viewmodel/map_notifier.dart'
-    show segmentsNotifierProvider, snowTypesNotifierProvider;
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'data/repositories/map_style_repository.dart';
@@ -18,19 +15,21 @@ class AreasLayerManager {
   }
 
   Future<void> onStyleLoaded() async {
-    _styleReady = true;
-    if (_style == null) return;
+    if (_style == null) {
+      return;
+    }
 
     await _styleRepo.applyTerrainAndSky(_style!, exaggeration: 2.0);
 
-    if (_lastSegments != null) {
-      await _styleRepo.ensureAreasStyle(_style!, segments: _lastSegments);
-    }
+    await _styleRepo.ensureAreasStyle(_style!, segments: _lastSegments ?? const []);
+    _styleReady = true;
   }
 
   Future<void> setData(List<Segment> segments) async {
     _lastSegments = segments;
-    if (!_styleReady || _style == null) return;
+    if (!_styleReady || _style == null) {
+      return;
+    }
     await _styleRepo.setAreasData(_style!, segments);
   }
 

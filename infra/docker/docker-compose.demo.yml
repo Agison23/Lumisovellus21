@@ -1,4 +1,5 @@
 services:
+  # MySQL service restored to host port 3306
   mysql:
     image: mysql:8.0
     container_name: lumisovellus-mysql
@@ -7,8 +8,6 @@ services:
       MYSQL_DATABASE: lumisovellus
       MYSQL_USER: lumisovellus
       MYSQL_PASSWORD: password
-    ports:
-      - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -17,6 +16,7 @@ services:
       timeout: 20s
       retries: 10
 
+  # Backend service restored to host port 3001
   backend:
     build:
       context: ../../
@@ -24,13 +24,10 @@ services:
       target: deps
     container_name: lumisovellus-backend
     environment:
-      DATABASE_URL: mysql://lumisovellus:password@mysql:3306/lumisovellus
-      PORT: 3001
       NODE_ENV: development
-      CORS_ORIGIN: http://localhost:3000
-      JWT_SECRET: dev-secret-key
+      PORT: 4004
     ports:
-      - '3001:3001'
+      - '51000:4004'
     depends_on:
       mysql:
         condition: service_healthy
@@ -46,7 +43,7 @@ services:
           '--quiet',
           '--tries=1',
           '--spider',
-          'http://localhost:3001/health',
+          'http://localhost:4004/health',
         ]
       timeout: 10s
       retries: 5
@@ -57,14 +54,17 @@ services:
       dockerfile: infra/docker/Dockerfile.web
     container_name: lumisovellus-web
     ports:
-      - '3000:3000'
+      - '51001:51001'
     env_file:
       - ../../apps/web/.env
     environment:
       - NODE_ENV=production
+      - PORT=51001
+      - NEXT_TELEMETRY_DISABLED=1
     depends_on:
       backend:
         condition: service_healthy
+
 
 volumes:
   mysql_data:

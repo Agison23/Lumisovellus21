@@ -24,10 +24,13 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
+import { Textarea } from "../ui/textarea";
 import { Toggle } from "../ui/toggle";
 import MapLoadingOverlay from "./map-loading";
 import MonitorInfo from "./monitor-info";
+import { SnowTypeCombobox } from "./snow-type-combobox";
 import { getAccessTokenAction } from "@/app/(auth)/actions";
+import { useAuth } from "@/hooks/use-auth";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import {
   CONTROL_STORAGE_KEYS,
@@ -35,7 +38,7 @@ import {
   saveControlState,
 } from "@/lib/map/control-state";
 import {
-  apiUrl,
+  clientApiUrl,
   fetchAreas,
   fetchMonitorData,
   fetchSnowTypes,
@@ -69,9 +72,6 @@ import {
   getSnowTypeNameById,
   getTranslationKeyForSnowTypeName,
 } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
-import { SnowTypeCombobox } from "./snow-type-combobox";
-import { Textarea } from "../ui/textarea";
 
 const submitGuideUpdate = async (data: {
   segmentId: string | null;
@@ -110,7 +110,7 @@ const submitGuideUpdate = async (data: {
   };
 
   const response = await fetch(
-    `${apiUrl}/api/v1/segments/${data.segmentId}/guideUpdate`,
+    `${clientApiUrl}/api/v1/segments/${data.segmentId}/guideUpdate`,
     {
       method: "POST",
       headers: {
@@ -156,7 +156,7 @@ const submitObservation = async (data: {
   };
 
   const response = await fetch(
-    `${apiUrl}/api/v1/segments/${data.segmentId}/reviews`,
+    `${clientApiUrl}/api/v1/segments/${data.segmentId}/reviews`,
     {
       method: "POST",
       headers: {
