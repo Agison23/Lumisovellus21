@@ -7,8 +7,6 @@ describe("lib/snower/index", () => {
 
   beforeEach(() => {
     vi.stubGlobal("fetch", mockFetch);
-    process.env.SNOWER_USERNAME = "testuser";
-    process.env.SNOWER_PASSWORD = "testpass";
   });
 
   afterEach(() => {
@@ -31,7 +29,10 @@ describe("lib/snower/index", () => {
         API_ENDPOINTS.login,
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ username: "testuser", password: "testpass" }),
+          body: JSON.stringify({
+            username: process.env.SNOWER_USERNAME,
+            password: process.env.SNOWER_PASSWORD,
+          }),
         }),
       );
 
@@ -58,6 +59,9 @@ describe("lib/snower/index", () => {
 
     it("should handle fetch errors gracefully", async () => {
       const api = new SnowerAPI();
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
@@ -65,6 +69,8 @@ describe("lib/snower/index", () => {
       const result = await api.getMonitorList();
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0); // Should have defaults
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });
