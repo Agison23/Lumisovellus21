@@ -16,8 +16,7 @@ class LocationDisplayWidget extends ConsumerWidget {
     required this.isLoading,
   });
 
-  // Converts decimal degrees to degrees and minutes (DMM) with cardinal
-  // direction key. For example: 37.422 -> (37, 25.320, 'north') for latitude.
+  // Converts decimal degrees to degrees and minutes (DMM)
   (int degrees, String minutesStr, String directionKey) _toDmm(
     double value, {
     required bool isLatitude,
@@ -27,13 +26,20 @@ class LocationDisplayWidget extends ConsumerWidget {
     final minutes = (absVal - deg) * 60.0;
     final minutesFixed = minutes.toStringAsFixed(3);
     final minutesPadded = minutes < 10 ? '0$minutesFixed' : minutesFixed;
+
     final dirKey = value >= 0
         ? (isLatitude ? 'north' : 'east')
         : (isLatitude ? 'south' : 'west');
+
     return (deg, minutesPadded, dirKey);
   }
 
-  // Gets the localized direction string from a direction key.
+  // Safe converter: returns null if position is not available
+  (int, String, String)? _safeToDmm(Position? pos, {required bool lat}) {
+    if (pos == null) return null;
+    return _toDmm(lat ? pos.latitude : pos.longitude, isLatitude: lat);
+  }
+
   String _getDirectionString(
     String directionKey,
     AppLocalizations localizations,
@@ -86,7 +92,6 @@ class LocationDisplayWidget extends ConsumerWidget {
   }
 
   void _handleShowOnMap(WidgetRef ref) {
-    // Signal the map to snap to location (this will also navigate to map if needed)
     ref.read(snapToLocationProvider.notifier).state = true;
   }
 
@@ -94,6 +99,25 @@ class LocationDisplayWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final rescueTheme = context.rescueTheme;
+
+    // Convert coordinates or fallback to null
+    final lat = _safeToDmm(currentPosition, lat: true);
+    final lon = _safeToDmm(currentPosition, lat: false);
+
+    // Final printable values with "?" fallback
+    final localizations = AppLocalizations.of(context);
+
+    final latDeg = lat?.$1.toString() ?? '?';
+    final latMin = lat?.$2 ?? '?';
+    final latDir = lat != null
+        ? _getDirectionString(lat.$3, localizations)
+        : '?';
+
+    final lonDeg = lon?.$1.toString() ?? '?';
+    final lonMin = lon?.$2 ?? '?';
+    final lonDir = lon != null
+        ? _getDirectionString(lon.$3, localizations)
+        : '?';
 
     return Container(
       width: double.infinity,
@@ -107,143 +131,123 @@ class LocationDisplayWidget extends ConsumerWidget {
               const SizedBox(width: 8),
               Text(
                 t.currentLocation,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator())
-          else if (currentPosition != null)
-            Builder(
-              builder: (context) {
-                final localizations = AppLocalizations.of(context);
-                final (latDeg, latMin, latDirKey) = _toDmm(
-                  currentPosition!.latitude,
-                  isLatitude: true,
-                );
-                final (lonDeg, lonMin, lonDirKey) = _toDmm(
-                  currentPosition!.longitude,
-                  isLatitude: false,
-                );
-                final latDir = _getDirectionString(
-                  latDirKey,
-                  localizations,
-                );
-                final lonDir = _getDirectionString(
-                  lonDirKey,
-                  localizations,
-                );
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        const SizedBox(width: 40),
-                        Expanded(
-                          child: _coordCell(
-                            context,
-                            '$latDeg°',
-                            alignment: Alignment.centerLeft,
-                            minWidth: 64,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          flex: 2,
-                          child: _coordCell(
-                            context,
-                            latMin,
-                            alignment: Alignment.centerLeft,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        _coordDirCell(context, latDir),
-                        const SizedBox(width: 40),
-                      ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Latitude row
+              Row(
+                children: [
+                  const SizedBox(width: 40),
+                  Expanded(
+                    child: _coordCell(
+                      context,
+                      '$latDeg°',
+                      alignment: Alignment.centerLeft,
+                      minWidth: 64,
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const SizedBox(width: 40),
-                        Expanded(
-                          child: _coordCell(
-                            context,
-                            '$lonDeg°',
-                            alignment: Alignment.centerLeft,
-                            minWidth: 64,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          flex: 2,
-                          child: _coordCell(
-                            context,
-                            lonMin,
-                            alignment: Alignment.centerLeft,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        _coordDirCell(context, lonDir),
-                        const SizedBox(width: 40),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '${t.rescuePageAccuracy}: ${currentPosition!.accuracy.toStringAsFixed(1)} m',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                    ),
-                    SizedBox(
-                      child: ElevatedButton.icon(
-                        onPressed: currentPosition != null
-                            ? () => _handleShowOnMap(ref)
-                            : null,
-                        icon: Icon(
-                          Icons.place,
-                          color: rescueTheme.requestHelpButton,
-                        ),
-                        label: Text(
-                          t.rescuePageShowOnMap.toUpperCase(),
-                          style: rescueTheme.secondaryButtonStyle,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: rescueTheme.secondaryButtonBackground,
-                          foregroundColor: Theme.of(context).colorScheme.onSurface,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          side: BorderSide.none,
-                          shadowColor: Colors.transparent,
-                        ).copyWith(
-                          overlayColor: WidgetStateProperty.all(
-                            Colors.transparent,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            )
-          else
-            Text(
-              t.locationNotAvailable,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-            ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 2,
+                    child: _coordCell(
+                      context,
+                      latMin,
+                      alignment: Alignment.centerLeft,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _coordDirCell(context, latDir),
+                  const SizedBox(width: 40),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+
+              // Longitude row
+              Row(
+                children: [
+                  const SizedBox(width: 40),
+                  Expanded(
+                    child: _coordCell(
+                      context,
+                      '$lonDeg°',
+                      alignment: Alignment.centerLeft,
+                      minWidth: 64,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 2,
+                    child: _coordCell(
+                      context,
+                      lonMin,
+                      alignment: Alignment.centerLeft,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _coordDirCell(context, lonDir),
+                  const SizedBox(width: 40),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // Accuracy with fallback
+              Text(
+                '${t.rescuePageAccuracy}: '
+                '${currentPosition?.accuracy.toStringAsFixed(1) ?? '?'} m',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color:
+                          Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+
+              // Show on Map Button
+              SizedBox(
+                child: ElevatedButton.icon(
+                  onPressed: currentPosition != null
+                      ? () => _handleShowOnMap(ref)
+                      : null,
+                  icon: Icon(
+                    Icons.place,
+                    color: rescueTheme.requestHelpButton,
+                  ),
+                  label: Text(
+                    t.rescuePageShowOnMap.toUpperCase(),
+                    style: rescueTheme.secondaryButtonStyle,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        rescueTheme.secondaryButtonBackground,
+                    foregroundColor:
+                        Theme.of(context).colorScheme.onSurface,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: BorderSide.none,
+                    shadowColor: Colors.transparent,
+                  ).copyWith(
+                    overlayColor:
+                        WidgetStateProperty.all(Colors.transparent),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 }
-

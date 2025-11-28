@@ -108,18 +108,6 @@ class RescuePage extends ConsumerWidget {
     final state = ref.watch(rescueViewModelProvider);
     final viewModel = ref.read(rescueViewModelProvider.notifier);
 
-    // Listen for error messages
-    ref.listen<String?>(rescueViewModelProvider.select((s) => s.errorMessage), (
-      previous,
-      next,
-    ) {
-      if (next != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next), backgroundColor: Colors.red),
-        );
-      }
-    });
-
     return Scaffold(
       backgroundColor: rescueTheme.pageBackground,
       body: SafeArea(
