@@ -25,11 +25,11 @@ class EndEventDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0.0),
       actionsPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 12.0),
       title: Text(
-        'End Help Event',
+        t.rescueEndEventDialogTitle,
         style: rescueTheme.dialogTitleStyle,
       ),
       content: Text(
-        'How would you like to end this help event?',
+        t.rescueEndEventDialogDescription,
         style: rescueTheme.dialogRadioStyle,
       ),
       actions: [
@@ -38,9 +38,9 @@ class EndEventDialog extends StatelessWidget {
             Navigator.of(context).pop();
             onCancel();
           },
-          child: const Text(
-            'Cancel Event',
-            style: TextStyle(color: Color.fromARGB(255, 172, 56, 48)),
+          child: Text(
+            t.rescueEndEventDialogCancel,
+            style: const TextStyle(color: Color.fromARGB(255, 172, 56, 48)),
           ),
         ),
         TextButton(
@@ -48,9 +48,9 @@ class EndEventDialog extends StatelessWidget {
             Navigator.of(context).pop();
             onComplete();
           },
-          child: const Text(
-            'Complete Event',
-            style: TextStyle(color: Color.fromARGB(255, 64, 147, 66)),
+          child: Text(
+            t.rescueEndEventDialogComplete,
+            style: const TextStyle(color: Color.fromARGB(255, 64, 147, 66)),
           ),
         ),
         TextButton(

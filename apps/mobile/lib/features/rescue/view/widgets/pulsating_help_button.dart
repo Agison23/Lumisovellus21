@@ -136,7 +136,9 @@ class _PulsatingHelpButtonState extends State<PulsatingHelpButton>
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: buttonPadding),
                     child: AutoSizeText(
-                      widget.isActive ? 'End Event' : t.rescuePageRequestHelp,
+                      widget.isActive
+                          ? t.rescuePageEndEvent
+                          : t.rescuePageRequestHelp,
                       style: rescueTheme.requestHelpButtonStyle.copyWith(
                         color: rescueTheme.requestHelpButtonText,
                       ),

@@ -505,6 +505,36 @@ abstract class AppLocalizations {
   /// **'Request Help'**
   String get rescuePageRequestHelp;
 
+  /// No description provided for @rescuePageEndEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'End Event'**
+  String get rescuePageEndEvent;
+
+  /// No description provided for @rescueEndEventDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End Help Event'**
+  String get rescueEndEventDialogTitle;
+
+  /// No description provided for @rescueEndEventDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to end this help event?'**
+  String get rescueEndEventDialogDescription;
+
+  /// No description provided for @rescueEndEventDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Event'**
+  String get rescueEndEventDialogCancel;
+
+  /// No description provided for @rescueEndEventDialogComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Event'**
+  String get rescueEndEventDialogComplete;
+
   /// No description provided for @rescuePageRequestHelpConfirm.
   ///
   /// In en, this message translates to:
@@ -598,7 +628,7 @@ abstract class AppLocalizations {
   /// No description provided for @finnish.
   ///
   /// In en, this message translates to:
-  /// **'Finnish (Suomi)'**
+  /// **'Suomi'**
   String get finnish;
 
   /// No description provided for @userInfoNotImplemented.
