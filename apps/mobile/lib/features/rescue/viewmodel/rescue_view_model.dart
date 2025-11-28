@@ -98,27 +98,11 @@ class RescueViewModel extends StateNotifier<RescueState> {
       }
 
       // Get current position
-      // MOCK: Using a mocked position with 3-digit longitude for testing
-      final Position position = Position(
-        latitude: 60.123456,
-        longitude: 123.456789, // 3-digit longitude
-        timestamp: DateTime(2024, 1, 1),
-        accuracy: 5.0,
-        altitude: 0.0,
-        altitudeAccuracy: 0.0,
-        heading: 0.0,
-        headingAccuracy: 0.0,
-        speed: 0.0,
-        speedAccuracy: 0.0,
-        isMocked: true,
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
-
-      // Uncomment below to use real Geolocator instead of mock:
-      // Position position = await Geolocator.getCurrentPosition(
-      //   locationSettings: const LocationSettings(
-      //     accuracy: LocationAccuracy.high,
-      //   ),
-      // );
 
       state = state.copyWith(
         currentPosition: position,
