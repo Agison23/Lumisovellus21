@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/map/providers.dart';
+import 'responsive_layout.dart';
+
+const double _coordinateBorderRadiusBase = 18.0;
 
 /// Widget that displays the current location in DMM format
 class LocationDisplayWidget extends ConsumerWidget {
@@ -58,36 +62,91 @@ class LocationDisplayWidget extends ConsumerWidget {
     }
   }
 
-  Widget _coordCell(
-    BuildContext context,
-    String text, {
-    Alignment alignment = Alignment.center,
+  Widget _coordinateCell({
+    required ResponsiveLayout responsive,
+    required TextStyle textStyle,
+    required Color backgroundColor,
+    required String text,
     double? minWidth,
   }) {
-    final rescueTheme = context.rescueTheme;
+    final cellPadding = EdgeInsets.symmetric(
+      horizontal: responsive.scaleWidth(12.0),
+      vertical: responsive.scaleHeight(8.0),
+    );
+    final minCellHeight = responsive.scaleHeight(20.0);
+    final minCellWidth = minWidth ?? responsive.scaleWidth(54.0);
+    final borderRadius = responsive.scaleWidth(_coordinateBorderRadiusBase);
+
     return Container(
-      constraints: BoxConstraints(minHeight: 20, minWidth: minWidth ?? 0),
-      alignment: alignment,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: rescueTheme.coordinateCell,
-        borderRadius: BorderRadius.circular(10),
+      constraints: BoxConstraints(
+        minHeight: minCellHeight,
+        minWidth: minCellWidth,
       ),
-      child: Text(text, style: rescueTheme.coordinateCellStyle),
+      alignment: Alignment.center,
+      padding: cellPadding,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      child: AutoSizeText(
+        text,
+        style: textStyle,
+        maxLines: 1,
+        minFontSize: 10,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
-  Widget _coordDirCell(BuildContext context, String dir) {
-    final rescueTheme = context.rescueTheme;
-    return Container(
-      constraints: const BoxConstraints(minHeight: 20, minWidth: 48),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: rescueTheme.coordinateCell,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(dir, style: rescueTheme.coordinateDirectionStyle),
+  Widget _buildCoordinateRow({
+    required ResponsiveLayout responsive,
+    required double cellSpacing,
+    required String degrees,
+    required String minutes,
+    required String direction,
+    required double minDegreesWidth,
+    required double minDirectionWidth,
+    required TextStyle valueStyle,
+    required TextStyle directionStyle,
+    required Color backgroundColor,
+  }) {
+    final directionCell = _coordinateCell(
+      responsive: responsive,
+      textStyle: directionStyle,
+      backgroundColor: backgroundColor,
+      text: direction,
+      minWidth: minDirectionWidth,
+    );
+
+    return Row(
+      children: [
+        Expanded(
+          child: _coordinateCell(
+            responsive: responsive,
+            textStyle: valueStyle,
+            backgroundColor: backgroundColor,
+            text: '$degrees°',
+            minWidth: minDegreesWidth,
+          ),
+        ),
+        SizedBox(width: cellSpacing),
+        Expanded(
+          flex: 2,
+          child: _coordinateCell(
+            responsive: responsive,
+            textStyle: valueStyle,
+            backgroundColor: backgroundColor,
+            text: minutes,
+          ),
+        ),
+        SizedBox(width: cellSpacing),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: minDirectionWidth,
+          ),
+          child: directionCell,
+        ),
+      ],
     );
   }
 
@@ -99,6 +158,10 @@ class LocationDisplayWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
     final rescueTheme = context.rescueTheme;
+    final responsive = ResponsiveLayout(
+      context: context,
+      child: const SizedBox.shrink(),
+    );
 
     // Convert coordinates or fallback to null
     final lat = _safeToDmm(currentPosition, lat: true);
@@ -119,135 +182,162 @@ class LocationDisplayWidget extends ConsumerWidget {
         ? _getDirectionString(lon.$3, localizations)
         : '?';
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(width: 8),
-              Text(
-                t.currentLocation,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ],
+    // Responsive sizing
+    final horizontalPadding = responsive.scaleWidth(12.0);
+    final cellSpacing = responsive.scaleWidth(16.0);
+    final verticalSpacing = responsive.scaleHeight(8.0);
+    final buttonPadding = EdgeInsets.symmetric(
+      vertical: responsive.scaleHeight(12.0),
+      horizontal: responsive.scaleWidth(12.0),
+    );
+    final minDegreesWidth = responsive.scaleWidth(120.0);
+    final minDirectionWidth = responsive.scaleWidth(80.0);
+    final iconSize = responsive.scaleWidth(40.0);
+    final buttonBorderRadius = responsive.scaleWidth(8.0);
+    final maxContentWidth = responsive.scaleWidth(520.0);
+    final minContentWidth = responsive.scaleWidth(260.0);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            0,
+            horizontalPadding,
+            0,
           ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: responsive.scaleHeight(20.0),
             children: [
-              // Latitude row
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 40),
-                  Expanded(
-                    child: _coordCell(
-                      context,
-                      '$latDeg°',
-                      alignment: Alignment.centerLeft,
-                      minWidth: 64,
-                    ),
+                  SizedBox(width: cellSpacing),
+                  AutoSizeText(
+                    t.currentLocation,
+                    style:
+                        Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ) ??
+                        const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                    maxLines: 1,
+                    minFontSize: 16,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 2,
-                    child: _coordCell(
-                      context,
-                      latMin,
-                      alignment: Alignment.centerLeft,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  _coordDirCell(context, latDir),
-                  const SizedBox(width: 40),
                 ],
               ),
 
-              const SizedBox(height: 8),
-
-              // Longitude row
-              Row(
-                children: [
-                  const SizedBox(width: 40),
-                  Expanded(
-                    child: _coordCell(
-                      context,
-                      '$lonDeg°',
-                      alignment: Alignment.centerLeft,
-                      minWidth: 64,
-                    ),
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: maxContentWidth,
+                    minWidth: minContentWidth,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 2,
-                    child: _coordCell(
-                      context,
-                      lonMin,
-                      alignment: Alignment.centerLeft,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  _coordDirCell(context, lonDir),
-                  const SizedBox(width: 40),
-                ],
-              ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildCoordinateRow(
+                        responsive: responsive,
+                        cellSpacing: cellSpacing,
+                        degrees: latDeg,
+                        minutes: latMin,
+                        direction: latDir,
+                        minDegreesWidth: minDegreesWidth,
+                        minDirectionWidth: minDirectionWidth,
+                        valueStyle: rescueTheme.coordinateCellStyle,
+                        directionStyle: rescueTheme.coordinateDirectionStyle,
+                        backgroundColor: rescueTheme.coordinateCell,
+                      ),
 
-              const SizedBox(height: 10),
+                      SizedBox(height: cellSpacing),
 
-              // Accuracy with fallback
-              Text(
-                '${t.rescuePageAccuracy}: '
-                '${currentPosition?.accuracy.toStringAsFixed(1) ?? '?'} m',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color:
-                          Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
+                      _buildCoordinateRow(
+                        responsive: responsive,
+                        cellSpacing: cellSpacing,
+                        degrees: lonDeg,
+                        minutes: lonMin,
+                        direction: lonDir,
+                        minDegreesWidth: minDegreesWidth,
+                        minDirectionWidth: minDirectionWidth,
+                        valueStyle: rescueTheme.coordinateCellStyle,
+                        directionStyle: rescueTheme.coordinateDirectionStyle,
+                        backgroundColor: rescueTheme.coordinateCell,
+                      ),
 
-              // Show on Map Button
-              SizedBox(
-                child: ElevatedButton.icon(
-                  onPressed: currentPosition != null
-                      ? () => _handleShowOnMap(ref)
-                      : null,
-                  icon: Icon(
-                    Icons.place,
-                    color: rescueTheme.requestHelpButton,
-                  ),
-                  label: Text(
-                    t.rescuePageShowOnMap.toUpperCase(),
-                    style: rescueTheme.secondaryButtonStyle,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        rescueTheme.secondaryButtonBackground,
-                    foregroundColor:
-                        Theme.of(context).colorScheme.onSurface,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: BorderSide.none,
-                    shadowColor: Colors.transparent,
-                  ).copyWith(
-                    overlayColor:
-                        WidgetStateProperty.all(Colors.transparent),
+                      SizedBox(height: verticalSpacing * 2),
+
+                      // Accuracy with fallback
+                      AutoSizeText(
+                        '${t.rescuePageAccuracy}: '
+                        '${currentPosition?.accuracy.toStringAsFixed(1) ?? '?'} m',
+                        style:
+                            Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color:
+                                  Theme.of(context).colorScheme.onSurfaceVariant,
+                            ) ??
+                            TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
+
+                      // Show on Map Button
+                      SizedBox(
+                        child: ElevatedButton.icon(
+                          onPressed: currentPosition != null
+                              ? () => _handleShowOnMap(ref)
+                              : null,
+                          icon: Icon(
+                            Icons.place,
+                            color: rescueTheme.requestHelpButton,
+                            size: iconSize,
+                          ),
+                          label: AutoSizeText(
+                            t.rescuePageShowOnMap.toUpperCase(),
+                            style: rescueTheme.secondaryButtonStyle,
+                            maxLines: 1,
+                            minFontSize: 10,
+                          ),
+                          style:
+                              ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    rescueTheme.secondaryButtonBackground,
+                                foregroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface,
+                                padding: buttonPadding,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    buttonBorderRadius,
+                                  ),
+                                ),
+                                side: BorderSide.none,
+                                shadowColor: Colors.transparent,
+                              ).copyWith(
+                                overlayColor: WidgetStateProperty.all(
+                                  Colors.transparent,
+                                ),
+                              ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

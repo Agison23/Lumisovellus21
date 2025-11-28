@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import 'responsive_layout.dart';
 
 class PulsatingHelpButton extends StatefulWidget {
   final VoidCallback onTap;
@@ -48,7 +50,7 @@ class _PulsatingHelpButtonState extends State<PulsatingHelpButton>
     super.dispose();
   }
 
-  Widget _ring(double start, double end, Color color) {
+  Widget _ring(double start, double end, Color color, double buttonSize) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -62,8 +64,8 @@ class _PulsatingHelpButtonState extends State<PulsatingHelpButton>
         return Transform.scale(
           scale: 1 + progress * 0.5, // Reduced ring size
           child: Container(
-            width: 180,
-            height: 180,
+            width: buttonSize,
+            height: buttonSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: color.withOpacity((1 - progress) * 0.25),
@@ -82,59 +84,73 @@ class _PulsatingHelpButtonState extends State<PulsatingHelpButton>
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final rescueTheme = context.rescueTheme;
+    final responsive = ResponsiveLayout(
+      context: context,
+      child: const SizedBox.shrink(),
+    );
+
+    // Responsive button size - use the smaller dimension to ensure it fits
+    final buttonSize = responsive.minDimension * 0.50;
+    final buttonPadding = responsive.scaleWidth(1.0); // Reduced from 8.0
+    final shadowSpread = responsive.scaleWidth(14.0);
+    final shadowBlur = responsive.scaleWidth(20.0);
+
     final buttonColor = widget.isActive
-        ? rescueTheme.requestHelpButton.withOpacity(0.9)
+        ? rescueTheme.requestHelpButton.withValues(alpha: 0.9)
         : rescueTheme.requestHelpButton;
 
-    return GestureDetector(
-      key: const ValueKey('rescue.requestHelpButton'),
-      onTap: widget.onTap,
-      child: SizedBox(
-        width: 180,
-        height: 180,
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none, // Allow rings to overflow visually
-          children: [
-            // Pulsating rings (only when active)
-            if (widget.isActive) ...[
-              _ring(0.00, 0.50, buttonColor),
-              _ring(0.20, 0.70, buttonColor),
-              _ring(0.40, 0.90, buttonColor),
-            ],
-
-            // The button itself (static, no animation)
-            Container(
-              width: 180,
-              height: 180,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          key: const ValueKey('rescue.requestHelpButton'),
+          onTap: widget.onTap,
+          child: SizedBox(
+            width: buttonSize,
+            height: buttonSize,
+            child: Stack(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: buttonColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: rescueTheme.requestHelpButtonShadow,
-                    spreadRadius: 14,
-                    blurRadius: 20,
-                  ),
+              clipBehavior: Clip.none, // Allow rings to overflow visually
+              children: [
+                // Pulsating rings (only when active)
+                if (widget.isActive) ...[
+                  _ring(0.00, 0.50, buttonColor, buttonSize),
+                  _ring(0.20, 0.70, buttonColor, buttonSize),
+                  _ring(0.40, 0.90, buttonColor, buttonSize),
                 ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  widget.isActive
-                      ? 'End Event'
-                      : t.rescuePageRequestHelp,
-                  style: rescueTheme.requestHelpButtonStyle.copyWith(
-                    color: rescueTheme.requestHelpButtonText,
+
+                // The button itself (static, no animation)
+                Container(
+                  width: buttonSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: buttonColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: rescueTheme.requestHelpButtonShadow,
+                        spreadRadius: shadowSpread,
+                        blurRadius: shadowBlur,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: buttonPadding),
+                    child: AutoSizeText(
+                      widget.isActive ? 'End Event' : t.rescuePageRequestHelp,
+                      style: rescueTheme.requestHelpButtonStyle.copyWith(
+                        color: rescueTheme.requestHelpButtonText,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      minFontSize: 12,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
