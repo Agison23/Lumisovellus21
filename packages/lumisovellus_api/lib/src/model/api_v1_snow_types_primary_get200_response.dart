@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lumisovellus_api/src/model/primary_snow_type_with_secondaries.dart';
+import 'package:lumisovellus_api/src/model/primary_snow_type.dart';
 import 'package:lumisovellus_api/src/model/health_get200_response_meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -48,7 +48,7 @@ ApiV1SnowTypesPrimaryGet200Response({
   )
 
 
-  final List<PrimarySnowTypeWithSecondaries> data;
+  final List<PrimarySnowType> data;
 
 
 

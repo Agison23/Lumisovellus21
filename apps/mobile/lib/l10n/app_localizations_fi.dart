@@ -10,7 +10,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get snowAppInfo =>
-      'Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoja alueella vallitsevista lumiolosuhteista.';
+      'Pallaksen Pöllöt -lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista.';
 
   @override
   String get next => 'Seuraava';
@@ -68,7 +68,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get freshWetSnowDesc =>
-      'Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.';
+      'Lumi, josta voi helposti tehdä lumipallon. Märkää lunta muodostuu sateen ja suojasään takia.';
 
   @override
   String get powderSnow => 'Puuterilumi';
@@ -103,7 +103,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.';
+      'Kuori, joka murtuu hiihtäjän painosta. Kuoren alla lumi voi olla pehmeää ja upottavaa.';
 
   @override
   String get collapsingCrust => 'Rikkoutuva korppu';
@@ -336,7 +336,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settings => 'Asetukset';
 
   @override
-  String get callForHelp => 'Soita apua';
+  String get callForHelp => 'Hälytä apua';
 
   @override
   String get currentLocation => 'Nykyinen sijainti';
@@ -354,7 +354,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsPageSnowDefinitions => 'Lumimääritelmät';
 
   @override
-  String get settingsPageSnowDefinitionsSubtitle => 'Lumimääritelmät';
+  String get settingsPageSnowDefinitionsSubtitle =>
+      'Näytä lumityyppien määritelmät';
 
   @override
   String get language => 'Kieli';
@@ -366,10 +367,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get selectLanguage => 'Valitse kieli';
 
   @override
-  String get english => 'Englanti';
+  String get english => 'englanti';
 
   @override
-  String get finnish => 'Suomi';
+  String get finnish => 'suomi';
 
   @override
   String get userInfoNotImplemented => 'Käyttäjätietotoiminto tulossa pian';
@@ -474,7 +475,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get registeredSuccesfully => 'Rekisteröityminen onnistui';
 
   @override
-  String get loggedInAs => 'Kirjautunut sisään käyttäjällä';
+  String get loggedInAs => 'Kirjautunut sisään käyttäjänä';
 
   @override
   String get role => 'Rooli';
@@ -487,4 +488,41 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get logout => 'Kirjaudu ulos';
+
+  @override
+  String get guideHazards => 'Esteet';
+
+  @override
+  String get guideInfoFromUsers =>
+      'Alla oleva tieto perustuu muiden käyttäjien havaintoihin.';
+
+  @override
+  String get timeJustNow => 'juuri äsken';
+
+  @override
+  String get timeUnderMinuteAgo => 'alle minuutti sitten';
+
+  @override
+  String get timeOneMinuteAgo => '1 minuutti sitten';
+
+  @override
+  String timeNMinutesAgo(Object minutes) {
+    return '$minutes minuuttia sitten';
+  }
+
+  @override
+  String get timeOneHourAgo => '1 tunti sitten';
+
+  @override
+  String timeNHoursAgo(Object hours) {
+    return '$hours tuntia sitten';
+  }
+
+  @override
+  String get timeOneDayAgo => '1 päivä sitten';
+
+  @override
+  String timeNDaysAgo(Object days) {
+    return '$days päivää sitten';
+  }
 }

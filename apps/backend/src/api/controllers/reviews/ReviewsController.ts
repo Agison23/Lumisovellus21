@@ -1,8 +1,15 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { ReviewsService } from '../../services/reviews/ReviewsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
-import { reviewsQuerySchema, segmentObservationQuerySchema } from '../../middleware/validation';
+import {
+  reviewsQuerySchema,
+  segmentObservationQuerySchema,
+  observationSchema,
+  reviewResponseSchema,
+  snowTypeResponseSchema,
+} from '../../middleware/validation';
 
 export class ReviewsController {
   private reviewsService: ReviewsService;
@@ -14,7 +21,7 @@ export class ReviewsController {
   getAllSnowTypes = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const snowTypes = await this.reviewsService.getAllSnowTypes();
-      ApiResponseHandler.success(res, snowTypes);
+      ApiResponseHandler.success(res, snowTypes, 200, undefined, z.array(snowTypeResponseSchema));
     }
   );
 
@@ -53,7 +60,7 @@ export class ReviewsController {
           total,
           totalPages,
         },
-      });
+      }, z.array(observationSchema));
     }
   );
 
@@ -81,7 +88,7 @@ export class ReviewsController {
         return;
       }
 
-      ApiResponseHandler.success(res, observation);
+      ApiResponseHandler.success(res, observation, 200, undefined, observationSchema);
     }
   );
 
@@ -90,7 +97,7 @@ export class ReviewsController {
       const { id } = req.params;
       const reviewData = req.body;
       const review = await this.reviewsService.createReview(reviewData, id);
-      ApiResponseHandler.success(res, review, 201);
+      ApiResponseHandler.success(res, review, 201, undefined, reviewResponseSchema);
     }
   );
 }

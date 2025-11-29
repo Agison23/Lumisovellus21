@@ -24,7 +24,6 @@ RegisterRequest({
    this.lastName,
   required  this.email,
   required  this.password,
-   this.role,
 });
 
       /// User first name
@@ -79,19 +78,6 @@ RegisterRequest({
 
 
 
-      /// User role
-  @JsonKey(
-    
-    name: r'role',
-    required: false,
-    includeIfNull: false,
-  )
-
-
-  final RegisterRequestRoleEnum? role;
-
-
-
 
 
     @override
@@ -99,16 +85,14 @@ RegisterRequest({
       other.firstName == firstName &&
       other.lastName == lastName &&
       other.email == email &&
-      other.password == password &&
-      other.role == role;
+      other.password == password;
 
     @override
     int get hashCode =>
         firstName.hashCode +
         lastName.hashCode +
         email.hashCode +
-        password.hashCode +
-        role.hashCode;
+        password.hashCode;
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
 
@@ -120,25 +104,4 @@ RegisterRequest({
   }
 
 }
-
-/// User role
-enum RegisterRequestRoleEnum {
-    /// User role
-@JsonValue(r'NORMAL')
-NORMAL(r'NORMAL'),
-    /// User role
-@JsonValue(r'ADMIN')
-ADMIN(r'ADMIN'),
-    /// User role
-@JsonValue(r'RESCUE')
-RESCUE(r'RESCUE');
-
-const RegisterRequestRoleEnum(this.value);
-
-final String value;
-
-@override
-String toString() => value;
-}
-
 

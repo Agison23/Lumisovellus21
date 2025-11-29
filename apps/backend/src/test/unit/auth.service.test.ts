@@ -30,7 +30,6 @@ describe('AuthService Unit Tests', () => {
         lastName: 'Doe',
         email: 'john.doe@test.com',
         password: 'password123',
-        role: 'NORMAL' as const,
       };
 
       const result = await AuthService.register(userData);
@@ -40,7 +39,7 @@ describe('AuthService Unit Tests', () => {
           firstName: userData.firstName,
           lastName: userData.lastName,
           email: userData.email,
-          role: userData.role,
+          role: 'NORMAL',
         },
       });
 

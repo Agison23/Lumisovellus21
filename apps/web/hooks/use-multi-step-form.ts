@@ -1,18 +1,19 @@
 import { useState } from "react";
+import { Obstacles } from "@/components/map-3d";
 
 export interface SnowConditionFormData {
-  // Step 0 (Display): Area information - no inputs needed
-  areaId: string | null;
+  // Step 0 (Display): Segment information - no inputs needed
+  segmentId: string | null;
 
   // Step 1 (Select): Snow type selection
-  selectedSnowTypeId: number | null;
-  obstacleIds: number[] | null; // Optional array of obstacle IDs
+  selectedSnowTypeId: string | null;
+  obstacleIds: Obstacles | null; // Optional array of obstacle IDs
   description: string | null;
   timestamp: Date | null;
 }
 
 const initialFormData: SnowConditionFormData = {
-  areaId: null,
+  segmentId: null,
   selectedSnowTypeId: null,
   obstacleIds: null,
   description: null,

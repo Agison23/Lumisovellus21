@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
 import { ApiResponseHandler } from '../../middleware/responseHandler';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { AuthenticatedRequest, HazardType } from '../../types';
-import { segmentQuerySchema } from '../../middleware/validation';
+import { segmentQuerySchema, segmentSchema, guideUpdateSchema } from '../../middleware/validation';
 
 export class SegmentsController {
   private segmentsService: SegmentsService;
@@ -34,7 +35,7 @@ export class SegmentsController {
             ? segment.isLowerSegment.toString()
             : null,
       }));
-      ApiResponseHandler.success(res, normalizedSegments);
+      ApiResponseHandler.success(res, normalizedSegments, 200, undefined, z.array(segmentSchema));
     }
   );
 
@@ -116,7 +117,7 @@ export class SegmentsController {
           hazards: guideUpdateData.hazards as HazardType[],
         }
       );
-      ApiResponseHandler.success(res, guideUpdate);
+      ApiResponseHandler.success(res, guideUpdate, 200, undefined, guideUpdateSchema);
     }
   );
 }

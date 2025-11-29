@@ -1,5 +1,6 @@
 import { BaseService } from '../BaseService';
 import { Review, ReviewRequest, SnowType, HazardType, Observation, GuideUpdate } from '../../types';
+import { generateSnowTypeIdentifier } from '../../../utils/snowTypeUtils';
 
 export class ReviewsService extends BaseService {
 
@@ -20,6 +21,7 @@ export class ReviewsService extends BaseService {
 
       return snowTypes.map((snowType) => ({
         id: snowType.id.toString(),
+        identifier: generateSnowTypeIdentifier(snowType.name),
         name: snowType.name,
         colour: snowType.colour,
         skiability: snowType.skiability,
@@ -27,6 +29,7 @@ export class ReviewsService extends BaseService {
         explanation: snowType.explanation,
         secondaryTypes: snowType.primarySnowTypes.map((rel) => ({
           id: rel.secondarySnowType.id.toString(),
+          identifier: generateSnowTypeIdentifier(rel.secondarySnowType.name),
           name: rel.secondarySnowType.name,
           colour: rel.secondarySnowType.colour,
           skiability: rel.secondarySnowType.skiability,

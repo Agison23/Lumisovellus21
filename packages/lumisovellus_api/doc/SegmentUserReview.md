@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **submittedAt** | [**DateTime**](DateTime.md) |  | 
 **snowTypeId** | **String** |  | 
-**secondarySnowTypeId** | **String** |  | 
+**secondarySnowTypeId** | **String** |  | [optional] 
 **hazards** | **List&lt;String&gt;** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

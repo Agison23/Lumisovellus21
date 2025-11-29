@@ -40,7 +40,6 @@ ApiV1SnowTypesGet200Response({
 
 
 
-      /// List of snow types
   @JsonKey(
     
     name: r'data',

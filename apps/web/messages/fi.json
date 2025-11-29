@@ -30,6 +30,7 @@
         "danger": "Lumivyöryvaroitus"
       }
     },
+
     "errors": {
       "loadingData": "Lumitietojen lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
       "loadingSnowData": "Lumityyppien lataamisessa tapahtui virhe. Yritä myöhemmin uudelleen.",
@@ -77,87 +78,87 @@
         "minor": "vähäistä"
       },
       "snowTypes": {
-        "1": {
+        "crust": {
           "name": "Korppu",
           "description": "Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista."
         },
-        "2": {
+        "slush": {
           "name": "Sohjo",
           "description": "Vesipitoinen ja osittain sulanut lumi suojasäällä."
         },
-        "3": {
+        "ice": {
           "name": "Jää",
           "description": "Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena."
         },
-        "4": {
+        "fresh": {
           "name": "Uusi lumi",
           "description": "Vastasatanut pehmeä lumi."
         },
-        "5": {
+        "wind-blown": {
           "name": "Tuulen pieksemä lumi",
           "description": "Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi."
         },
-        "6": {
+        "sparse": {
           "name": "Vähäinen lumi",
           "description": ""
         },
-        "8": {
+        "bare-ground": {
           "name": "Lumeton maa",
           "description": ""
         },
-        "9": {
+        "powder-snow": {
           "name": "Vitilumi",
           "description": "Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta."
         },
-        "10": {
+        "powder": {
           "name": "Puuterilumi",
           "description": "Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella."
         },
-        "11": {
+        "wet": {
           "name": "Märkä uusi lumi",
           "description": "Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella."
         },
-        "12": {
+        "sastrugi": {
           "name": "Sastrugi",
           "description": "Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista."
         },
-        "13": {
+        "wavy": {
           "name": "Aaltoileva lumi",
           "description": "Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa."
         },
-        "14": {
+        "wind-packed": {
           "name": "Tuiskulumi",
           "description": "Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle."
         },
-        "15": {
+        "thin-crust": {
           "name": "Ohut korppu",
           "description": "Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa."
         },
-        "16": {
+        "breakable-crust": {
           "name": "Rikkoutuva korppu",
           "description": "Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta."
         },
-        "17": {
+        "bearing-crust": {
           "name": "Kantava korppu",
           "description": "Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä."
         },
-        "18": {
+        "breakable-ice": {
           "name": "Rikkoutuva jää",
           "description": "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros."
         },
-        "19": {
+        "softening-snow": {
           "name": "Kastuva lumi",
           "description": "Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi."
         },
-        "20": {
+        "saturated-snow": {
           "name": "Saturoitunut lumi",
           "description": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi"
         },
-        "21": {
+        "stones": {
           "name": "Kiviä",
           "description": ""
         },
-        "22": {
+        "branches": {
           "name": "Oksia",
           "description": ""
         }
@@ -194,8 +195,17 @@
     }
   },
   "WeatherPage": {
-    "title": "Sää",
-    "loading": "Ladataan säätietoja..."
+	"title": "Sää",
+	"loading": "Ladataan säätietoja...",
+	"avgWindTitle": "Keskimääräinen tuuli (3 päivää)",
+	"windDirection": "suunnassa {deg}°",
+	"tempTitle": "Lämpötila (3 päivää)",
+	"min": "Minimi",
+	"max": "Maksimi",
+	"maxWindTitle": "Suurin tuulennopeus (3 päivää)",
+	"snowChangeTitle": "Lumensyvyyden muutos (7 päivää)",
+	"aboveFreezingTitle": "Päivät nollan yläpuolella (3 päivää)",
+	"noAboveFreezing": "Ei päiviä nollan yläpuolella."
   },
   "DefinitionsPage": {
     "title": "Selitteet"
@@ -203,17 +213,57 @@
   "Dashboard": {
     "title": "Hallintapaneeli",
     "OverviewPage": {
-      "title": "Yleiskatsaus"
+      "title": "Yleiskatsaus",
+      "greetings": {
+        "morning": "Hyvää huomenta, {name}",
+        "day": "Hyvää päivää, {name}",
+        "afternoon": "Hyvää iltapäivää, {name}",
+        "evening": "Hyvää iltaa, {name}",
+        "night": "Hyvää yötä, {name}"
+      },
+      "user": {
+        "email": "Sähköposti",
+        "role": "Rooli",
+        "id": "ID"
+      }
     },
     "SegmentsPage": {
       "search": {
         "placeholder": "Etsi segmenttejä..."
       },
+      "newButton": "Uusi segmentti",
       "title": "Segmentit",
       "avalanche": {
         "avalancheDanger": "Lumivyöryvaroitus: ",
         "true": "Tosi",
         "false": "Epätosi"
+      },
+      "createDialog": {
+        "title": "Luo uusi segmentti",
+        "name": "Nimi",
+        "terrain": "Maasto",
+        "id": "Tunnus",
+        "coordinates": {
+          "title": "Koordinaatit",
+          "latitude": "Leveysaste",
+          "longitude": "Pituusaste",
+          "addCoordinate": "Lisää koordinaatti"
+        },
+        "avalanche": {
+          "title": "Lumivyöry",
+          "toggleAvalancheWarning": "Alue on altis lumivyöryille"
+        },
+        "buttons": {
+          "cancel": "Peruuta",
+          "create": "Luo",
+          "creating": "Luodaan..."
+        },
+        "errors": {
+          "createFailed": "Segmentin luominen epäonnistui. Yritä uudelleen."
+        },
+        "success": {
+          "createSuccessful": "Segmentti luotu onnistuneesti."
+        }
       },
       "editDialog": {
         "title": "Muokkaa {name}",
@@ -253,10 +303,60 @@
       }
     },
     "UsersPage": {
-      "title": "Käyttäjät"
+      "title": "Käyttäjät",
+      "loading": "Ladataan käyttäjiä...",
+      "errors": {
+        "loadingFailed": "Käyttäjien lataaminen epäonnistui. Yritä uudelleen myöhemmin."
+      },
+      "search": {
+        "placeholder": "Etsi käyttäjiä..."
+      },
+      "labels": {
+        "email": "Sähköposti",
+        "role": "Rooli",
+        "id": "ID"
+      },
+      "editDialog": {
+        "title": "Muokkaa {email}",
+        "email": "Sähköposti",
+        "firstName": "Etunimi",
+        "lastName": "Sukunimi",
+        "role": "Rooli",
+        "rolePlaceholder": "Valitse rooli",
+        "buttons": {
+          "cancel": "Peruuta",
+          "save": "Tallenna",
+          "saving": "Tallennetaan..."
+        },
+        "errors": {
+          "saveFailed": "Tallennus epäonnistui. Yritä uudelleen."
+        },
+        "success": {
+          "saveSuccessful": "Muutokset tallennettu onnistuneesti."
+        }
+      }
     },
     "ReportsPage": {
-      "title": "Raportit"
+      "title": "Raportit",
+      "loading": "Ladataan raportteja...",
+      "errors": {
+        "loadingFailed": "Raporttien lataaminen epäonnistui. Yritä uudelleen myöhemmin."
+      },
+      "search": {
+        "placeholder": "Etsi raportteja..."
+      },
+      "labels": {
+        "id": "ID",
+        "date": "Päivämäärä",
+        "snowType": "Lumityyppi",
+        "location": "Sijainti",
+        "description": "Kuvaus",
+        "hazards": "Kohtelia",
+        "primarySnowType": "Ensisijainen lumityyppi",
+        "secondarySnowType": "Toissijainen lumityyppi",
+        "guideUpdates": "Oppaiden päivitykset",
+        "userReviews": "Käyttäjien raportit"
+      }
     },
     "Sidebar": {
       "title": "Hallintapaneeli"

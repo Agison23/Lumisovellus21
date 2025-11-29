@@ -15,7 +15,6 @@ export interface RegisterData {
   lastName?: string;
   email: string;
   password: string;
-  role?: 'NORMAL' | 'PREMIUM' | 'ADMIN' | 'RESCUE';
 }
 
 export interface AuthResponse {
@@ -24,7 +23,7 @@ export interface AuthResponse {
     firstName: string;
     lastName: string | null;
     email: string | null;
-    role: 'NORMAL' | 'PREMIUM' | 'ADMIN' | 'RESCUE';
+    role: 'NORMAL' | 'PREMIUM' | 'ADMIN' | 'RESCUE' | 'GUIDE';
   };
   accessToken: string;
   refreshToken: string;
@@ -68,7 +67,7 @@ export class AuthService {
         lastName: data.lastName,
         email: data.email,
         password: hashedPassword,
-        role: data.role || 'NORMAL',
+        role: 'NORMAL',
       },
       select: {
         id: true,

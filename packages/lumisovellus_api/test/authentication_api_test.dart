@@ -56,7 +56,7 @@ void main() {
     //
     // Get new access token using refresh token
     //
-    //Future<AuthRegisterPost201Response> authRefreshTokenPost(RefreshTokenRequest refreshTokenRequest) async
+    //Future<AuthRefreshTokenPost200Response> authRefreshTokenPost(RefreshTokenRequest refreshTokenRequest) async
     test('test authRefreshTokenPost', () async {
       // TODO
     });

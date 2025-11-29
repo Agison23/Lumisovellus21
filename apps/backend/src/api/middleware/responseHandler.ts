@@ -1,13 +1,49 @@
 import { Response } from 'express';
+import { z } from 'zod';
 import { ApiResponse } from '../types';
+import { successResponseSchema } from '../openapi/schemas';
+
+// Helper to recursively transform Date objects to ISO strings for validation
+function transformDatesToISO(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (obj instanceof Date) {
+    return obj.toISOString();
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(transformDatesToISO);
+  }
+  if (typeof obj === 'object') {
+    const transformed: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      transformed[key] = transformDatesToISO(value);
+    }
+    return transformed;
+  }
+  return obj;
+}
 
 export class ApiResponseHandler {
   static success<T>(
     res: Response,
     data: T,
     statusCode: number = 200,
-    meta?: any
+    meta?: any,
+    schema?: z.ZodTypeAny
   ): void {
+    if (!schema) {
+      res.status(statusCode).json({
+        success: true,
+        data,
+        meta: {
+          ...meta,
+          timestamp: new Date().toISOString(),
+        },
+      });
+      return;
+    } 
+
     const response: ApiResponse<T> = {
       success: true,
       data,
@@ -16,6 +52,35 @@ export class ApiResponseHandler {
         timestamp: new Date().toISOString(),
       },
     };
+
+    try {
+      const responseSchema = successResponseSchema(schema);
+      // Transform Date objects to ISO strings before validation
+      const transformedResponse = transformDatesToISO(response);
+      responseSchema.parse(transformedResponse);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error('Response validation failed:', {
+          path: res.req.path,
+          method: res.req.method,
+          errors: error.issues,
+          data,
+        });
+        this.error(
+          res,
+          'RESPONSE_SCHEMA_INVALID',
+          'Response schema validation failed',
+          500,
+          error.issues
+        );
+        return;
+      }
+
+      console.error('Unexpected response validation error:', error);
+      this.internalError(res, 'Unexpected response validation error');
+      return;
+    }
+
     res.status(statusCode).json(response);
   }
 
