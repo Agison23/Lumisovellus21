@@ -235,6 +235,22 @@ class AppLocalizationsFi extends AppLocalizations {
   String get rescuePageRequestHelp => 'Pyydä apua';
 
   @override
+  String get rescuePageEndEvent => 'Lopeta tapahtuma';
+
+  @override
+  String get rescueEndEventDialogTitle => 'Lopeta avunpyyntö';
+
+  @override
+  String get rescueEndEventDialogDescription =>
+      'Kuinka haluat lopettaa tämän avunpyynnön?';
+
+  @override
+  String get rescueEndEventDialogCancel => 'Peruuta avunpyyntö';
+
+  @override
+  String get rescueEndEventDialogComplete => 'Merkitse valmiiksi';
+
+  @override
   String get rescuePageRequestHelpConfirm =>
       'Lähetetäänkö avunpyyntö lähellä oleville pelastajille?';
 
@@ -279,10 +295,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get selectLanguage => 'Valitse kieli';
 
   @override
-  String get english => 'englanti';
+  String get english => 'English';
 
   @override
-  String get finnish => 'suomi';
+  String get finnish => 'Suomi';
 
   @override
   String get userInfoNotImplemented => 'Käyttäjätietotoiminto tulossa pian';
