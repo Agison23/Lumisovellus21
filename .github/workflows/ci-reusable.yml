@@ -42,9 +42,6 @@ jobs:
             frontend:
               - "!apps/backend/**"
 
-  ######################################################################
-  # BACKEND LINT JOB (always runs)
-  ######################################################################
   backend-lint:
     runs-on: ubuntu-latest
     needs: detect-changes
@@ -71,9 +68,6 @@ jobs:
         working-directory: apps/backend
         run: npm run lint
 
-  ######################################################################
-  # BACKEND TEST JOB (always runs)
-  ######################################################################
   backend-test:
     runs-on: ubuntu-latest
     needs: backend-lint
@@ -154,9 +148,6 @@ jobs:
           lcov-file: apps/backend/coverage/lcov.info
           delete-old-comments: true
 
-  ######################################################################
-  # BACKEND SECURITY JOB
-  ######################################################################
   backend-security:
     runs-on: ubuntu-latest
     needs: backend-test
@@ -183,9 +174,6 @@ jobs:
         run: npx audit-ci --config audit-ci.json
         continue-on-error: true
 
-  ######################################################################
-  # BACKEND BUILD JOB
-  ######################################################################
   backend-build:
     runs-on: ubuntu-latest
     needs: backend-security
@@ -210,9 +198,6 @@ jobs:
         working-directory: apps/backend
         run: npm run build
 
-  ######################################################################
-  # FRONTEND VALIDATE (runs only if changes aren't backend-only)
-  ######################################################################
   validate:
     runs-on: ubuntu-22.04
     needs: detect-changes
@@ -297,9 +282,6 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-  ######################################################################
-  # FRONTEND BUILD
-  ######################################################################
   build:
     runs-on: ubuntu-22.04
     needs: validate
@@ -328,9 +310,6 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-  ######################################################################
-  # FRONTEND TEST
-  ######################################################################
   test:
     runs-on: ubuntu-22.04
     needs: validate
@@ -371,9 +350,6 @@ jobs:
         run: |
           echo "Checking threshold ${{ inputs.coverage-threshold }}%"
 
-  ######################################################################
-  # FRONTEND SECURITY
-  ######################################################################
   security:
     runs-on: ubuntu-22.04
     needs: validate
@@ -392,9 +368,6 @@ jobs:
       - name: npm audit
         run: npm audit --audit-level=${{ inputs.audit-level }}
 
-  ######################################################################
-  # FRONTEND SMOKE
-  ######################################################################
   smoke:
     runs-on: ubuntu-22.04
     needs: [validate, build, test, security]
