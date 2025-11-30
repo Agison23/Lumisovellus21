@@ -16,6 +16,7 @@ jobs:
     with:
       coverage-threshold: 70
       run-heavy-lint: true
-      run-security-checks: true
+      run-security-checks: false
       audit-level: "high"
+      run-backend-full: false
     secrets: inherit

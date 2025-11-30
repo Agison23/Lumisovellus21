@@ -21,6 +21,9 @@ on:
       run-smoke-e2e:
         type: boolean
         default: false
+      run-backend-full:
+        type: boolean
+        default: true
 
 jobs:
   detect-changes:
@@ -151,6 +154,7 @@ jobs:
   backend-security:
     runs-on: ubuntu-latest
     needs: backend-test
+    if: ${{ inputs.run-backend-full }}
 
     steps:
       - uses: actions/checkout@v4
@@ -177,6 +181,7 @@ jobs:
   backend-build:
     runs-on: ubuntu-latest
     needs: backend-security
+    if: ${{ inputs.run-backend-full }}
 
     steps:
       - uses: actions/checkout@v4
