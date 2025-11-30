@@ -7,6 +7,10 @@ describe("lib/snower/index", () => {
 
   beforeEach(() => {
     vi.stubGlobal("fetch", mockFetch);
+    // Mock environment variables required by SnowerAPI
+    vi.stubEnv("SNOWER_API_KEY", "test-api-key");
+    vi.stubEnv("SNOWER_USERNAME", "test-username");
+    vi.stubEnv("SNOWER_PASSWORD", "test-password");
   });
 
   afterEach(() => {
@@ -30,8 +34,8 @@ describe("lib/snower/index", () => {
         expect.objectContaining({
           method: "POST",
           body: JSON.stringify({
-            username: process.env.SNOWER_USERNAME,
-            password: process.env.SNOWER_PASSWORD,
+            username: "test-username",
+            password: "test-password",
           }),
         }),
       );
