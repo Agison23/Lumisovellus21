@@ -6,22 +6,26 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy root manifests
 COPY package.json package-lock.json ./
+COPY packages ./packages
+
+# Optional: try to generate API client for web if the script exists (won't fail build)
+RUN npm run -s openapi:client:web || true
+COPY ./packages/api-client-web/index.ts ./packages/api-client-web/index.ts
 
 # Copy only the web workspace manifest so npm can create node_modules for the web workspace if needed
 COPY apps/web/package.json ./apps/web/package.json
 
 # Install dependencies according to package-lock.json (cacheable layer)
-RUN npm ci --no-audit --prefer-offline
+RUN npm ci --no-audit --prefer-offline --workspace=web --ignore-scripts
 
 # Stage 2: build the web app
 FROM deps AS builder
 WORKDIR /app
 
 # Copy full repository (source files) for the build
-COPY . .
-
-# Optional: try to generate API client for web if the script exists (won't fail build)
-RUN npm run -s openapi:client:web || true
+COPY apps/web ./apps/web
+COPY packages ./packages
+COPY turbo.json ./
 
 # Build the Next.js app in the `web` workspace
 RUN npm --workspace=web run build

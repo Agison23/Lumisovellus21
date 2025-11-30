@@ -5,9 +5,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    reporters: ["html"],
+    reporters: ["default", "html"],
     outputFile: "vitest-results/index.html",
     environment: "jsdom",
+    setupFiles: ["./vitest.setup.ts"],
     deps: {
       optimizer: {
         web: {

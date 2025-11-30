@@ -1,5 +1,4 @@
 services:
-  # MySQL service restored to host port 3306
   mysql:
     image: mysql:8.0
     container_name: lumisovellus-mysql
@@ -18,20 +17,16 @@ services:
       timeout: 20s
       retries: 10
 
-  # Backend service restored to host port 3001
   backend:
     build:
       context: ../../
       dockerfile: infra/docker/Dockerfile.backend
-      # IMPORTANT: Use the 'deps' stage for development, as it has npm and node_modules,
-      # but not the final stripped-down 'runner' image.
       target: deps
     container_name: lumisovellus-backend
     environment:
       DATABASE_URL: mysql://lumisovellus:password@mysql:3306/lumisovellus
       PORT: 3001
       NODE_ENV: development
-      # CORS_ORIGIN updated to original frontend host port 3000
       CORS_ORIGIN: http://localhost:3000
       JWT_SECRET: dev-secret-key
     ports:
@@ -40,14 +35,36 @@ services:
       mysql:
         condition: service_healthy
     volumes:
-      # Bind mount the app source
       - ../../apps/backend:/app
-      # Anonymous volume for node_modules (prevents host node_modules from overwriting)
       - /app/node_modules
-    # Updated command to be non-interactive
-    # Use 'db push' for development (syncs schema without creating migration files)
-    # Or use 'migrate deploy' if migrations already exist
-    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed  && npm run dev"
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed && npm run dev"
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:3001/health',
+        ]
+      timeout: 10s
+      retries: 5
+
+  web:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.web
+    container_name: lumisovellus-web
+    ports:
+      - '3000:3000'
+    env_file:
+      - ../../apps/web/.env
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   mysql_data:
