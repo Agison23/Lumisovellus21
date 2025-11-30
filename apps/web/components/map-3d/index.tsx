@@ -1,8 +1,8 @@
 "use client";
+
 import type { paths } from "@lumisovellus/api-client-web";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FeatureCollection, Polygon } from "geojson";
-
 import {
   ActivityIcon,
   LandPlot,
@@ -21,13 +21,19 @@ import Map, {
 } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { toast } from "sonner";
+
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
+import { Textarea } from "../ui/textarea";
 import { Toggle } from "../ui/toggle";
+
 import MapLoadingOverlay from "./map-loading";
 import MonitorInfo from "./monitor-info";
+import { SnowTypeCombobox } from "./snow-type-combobox";
+
 import { getAccessTokenAction } from "@/app/(auth)/actions";
+import { useAuth } from "@/hooks/use-auth";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import {
   CONTROL_STORAGE_KEYS,
@@ -69,9 +75,6 @@ import {
   getSnowTypeNameById,
   getTranslationKeyForSnowTypeName,
 } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
-import { SnowTypeCombobox } from "./snow-type-combobox";
-import { Textarea } from "../ui/textarea";
 
 const submitGuideUpdate = async (data: {
   segmentId: string | null;

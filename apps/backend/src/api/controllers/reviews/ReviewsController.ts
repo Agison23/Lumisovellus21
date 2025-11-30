@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { ReviewsService } from '../../services/reviews/ReviewsService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { ReviewsService } from '../../services/reviews/ReviewsService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import {
   reviewsQuerySchema,
   segmentObservationQuerySchema,
   observationSchema,
   reviewResponseSchema,
   snowTypeResponseSchema,
-} from '../../middleware/validation';
+} from '../../middleware/validation.js';
 
 export class ReviewsController {
   private reviewsService: ReviewsService;

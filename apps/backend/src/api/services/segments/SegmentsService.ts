@@ -1,4 +1,4 @@
-import { BaseService } from '../BaseService';
+import { BaseService } from '../BaseService.js';
 import { Segment, GuideUpdate, UserReviewItem, HazardType } from '../../types';
 
 export interface SegmentQueryParams {

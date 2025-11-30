@@ -285,10 +285,9 @@ export const locationUpdateSchema = z
 export const batteryUpdateSchema = z
   .object({
     batteryStatus: z
-      .enum(['low', 'normal'], {
-        errorMap: () => ({
-          message: 'Battery status must be either "low" or "normal"',
-        }),
+      .enum(['low', 'normal'])
+      .refine(() => true, {
+        message: 'Battery status must be either "low" or "normal"',
       })
       .meta({ description: 'Battery status', example: 'normal' }),
   })

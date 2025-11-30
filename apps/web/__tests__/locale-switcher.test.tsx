@@ -1,10 +1,14 @@
+"use client";
 
 import { cleanup, render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { useLocale } from 'next-intl'
 import React from 'react'
-import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Mock next-intl hooks used by LocaleSwitcher so outputs are deterministic
+import { AuthProvider } from '@/hooks/use-auth'
+
 vi.mock('next-intl', () => {
   const mockUseLocale = vi.fn(() => 'en')
   return {
@@ -18,7 +22,6 @@ vi.mock('next-intl', () => {
   }
 })
 
-// Mock setUserLocale to track calls
 vi.mock('@/i18n/locale', () => ({
   setUserLocale: vi.fn()
 }))
@@ -26,25 +29,36 @@ vi.mock('@/i18n/locale', () => ({
 import LocaleSwitcher from '../components/locale-switcher'
 import { LocaleSwitcherSelect } from '../components/locale-switcher/locale-switcher-select'
 
-// Access the mocked functions after imports
 const mockUseLocale = vi.mocked(useLocale)
 
-// Reset mocks and DOM before each test
 beforeEach(() => {
   vi.clearAllMocks()
-  mockUseLocale.mockReturnValue('en') // Reset to default
+  mockUseLocale.mockReturnValue('en')
 })
 
-// Clean up DOM after each test
 afterEach(() => {
   cleanup()
 })
 
+function renderWithProviders(ui: React.ReactNode) {
+  const queryClient = new QueryClient()
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        isLoggedIn={false}
+        user={null}
+      >
+        {ui}
+      </AuthProvider>
+    </QueryClientProvider>
+  )
+}
+
 test('LocaleSwitcher shows translated current locale label for English', () => {
   mockUseLocale.mockReturnValue('en')
-  render(<LocaleSwitcher />)
+  renderWithProviders(<LocaleSwitcher />)
 
-  // The Select trigger renders as a combobox/button with the visible selected label
   const combobox = screen.getByRole('combobox')
   expect(combobox.textContent).toContain('English')
   expect(combobox.textContent).not.toContain('Suomi')
@@ -52,7 +66,7 @@ test('LocaleSwitcher shows translated current locale label for English', () => {
 
 test('LocaleSwitcher shows translated current locale label for Finnish', () => {
   mockUseLocale.mockReturnValue('fi')
-  render(<LocaleSwitcher />)
+  renderWithProviders(<LocaleSwitcher />)
 
   const combobox = screen.getByRole('combobox')
   expect(combobox.textContent).toContain('Suomi')
@@ -60,7 +74,7 @@ test('LocaleSwitcher shows translated current locale label for Finnish', () => {
 })
 
 test('LocaleSwitcherSelect renders with correct default value and label', () => {
-  render(
+  renderWithProviders(
     <LocaleSwitcherSelect
       defaultValue="en"
       items={[

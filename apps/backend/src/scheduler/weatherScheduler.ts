@@ -1,5 +1,5 @@
 import * as cron from 'node-cron';
-import { WeatherService } from '../api/services/weather/WeatherService';
+import { WeatherService } from '../api/services/weather/WeatherService.js';
 
 /**
  * Weather Scheduler

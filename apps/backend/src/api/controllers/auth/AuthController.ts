@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { AuthService } from '../../services/auth/AuthService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
+import { AuthService } from '../../services/auth/AuthService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
 import { AuthenticatedRequest } from '../../types';
 import {
   loginSchema,
@@ -10,8 +10,8 @@ import {
   updateProfileSchema,
   refreshTokenSchema,
   resetPasswordSchema,
-} from '../../middleware/validation';
-import { authResponseSchema, userSchema, tokenPairSchema, messageResponseSchema, verifyTokenResponseSchema } from '../../openapi/routes';
+} from '../../middleware/validation.js';
+import { authResponseSchema, userSchema, tokenPairSchema, messageResponseSchema, verifyTokenResponseSchema } from '../../openapi/routes.js';
 
 export class AuthController {
   static async register(req: Request, res: Response): Promise<void> {
