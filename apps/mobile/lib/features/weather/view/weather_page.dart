@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
+import '../data/model/weather_state.dart';
+import '../viewmodel/weather_state_provider.dart';
 
-class WeatherPage extends StatelessWidget {
+class WeatherPage extends ConsumerStatefulWidget {
 
   const WeatherPage({super.key});
-  
+  @override
+  ConsumerState<WeatherPage> createState() => _WeatherPageState();
+}
+
+class _WeatherPageState extends ConsumerState<WeatherPage> {
+  num maxTemperature = 0.0;
+
   @override
   Widget build(BuildContext context) {
+
     final localised = AppLocalizations.of(context);
+    const String empty = "XX";
+
+    //final WeatherState? weatherState = ref.watch(weatherStateProvider).value;
+    //final bool gotState = ref.watch(weatherStateProvider).hasValue;
+    WeatherState weatherState = WeatherState(tempMax: 99, tempMin: -99, daysAboveZero: 111, windDirection: 0, windAvg: 0, windMax: 0, snowDepthChange: 0);
+    bool gotState = true;
 
     return Container( // Gradient background
         decoration: const BoxDecoration(
@@ -22,8 +38,7 @@ class WeatherPage extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child:
-            Center(
+          child: Center(
               child: Container( // Round-cornered semitransparent decoration
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.all(20),
@@ -47,9 +62,9 @@ class WeatherPage extends StatelessWidget {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.thermostat,
                       children: [
-                        WeatherLine(label: localised.highest, value: "5 °C"),
-                        WeatherLine(label: localised.lowest, value: "-6 °C"),
-                        WeatherLine(label: localised.countDaysAboveFreezing, value: "1")
+                        WeatherLine(label: localised.highest, value: gotState ? weatherState!.tempMax.toString() : empty),
+                        WeatherLine(label: localised.lowest, value: gotState ? weatherState!.tempMin.toString() : empty),
+                        WeatherLine(label: localised.countDaysAboveFreezing, value: gotState ? weatherState!.daysAboveZero.toString() : empty)
                       ]
                     ),
 
@@ -60,8 +75,8 @@ class WeatherPage extends StatelessWidget {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.air,
                       children: [
-                        WeatherLine(label: localised.avgSpeed, value: "3 m/s"),
-                        WeatherLine(label: localised.maxWind, value: "8 m/s"),
+                        WeatherLine(label: localised.avgSpeed, value: "333 m/s"),
+                        WeatherLine(label: localised.maxWind, value: "888 m/s"),
                         WeatherLine(label: localised.avgDirection, value: "${localised.south} (184 °)")
                       ]
                     ),
@@ -73,17 +88,15 @@ class WeatherPage extends StatelessWidget {
                       subtitle: localised.lastSevenDays,
                       icon: Icons.ac_unit, // ac_unit looks like a snowflake as of 2025
                       children: [
-                        WeatherLine(label: localised.snowDepthChange, value: "+2 cm")
+                        WeatherLine(label: localised.snowDepthChange, value: "+222 cm")
                       ]
                     )     
-            ],
-          ),
-        ),
-      )
-    )
-  );
-              
-
+                  ],
+                ),
+              ),
+          )
+        )
+    );
   }
 }
 
@@ -159,89 +172,11 @@ class WeatherBox extends StatelessWidget {
                   ]
                 ), // End of title+subtitle+icon
               
-              // Start of info rows
-              
               const SizedBox(height: 8),
               
               Column(
                 children: children
               )
-              
-              /*
-              // --- Maximum Row ---
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Maximum",
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      "11°C",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Divider
-              const Divider(thickness: 2, height: 4),
-
-              // --- Average Row ---
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Average",
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      "5°C",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Divider
-              const Divider(thickness: 2, height: 4),
-
-              // --- Minimum Row ---
-              Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Minimum",
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        "2°C",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                */
-
-              // End of info rows
               ]
             )
     );
