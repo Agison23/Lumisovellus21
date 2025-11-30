@@ -12,16 +12,30 @@ final weatherStateProvider = FutureProvider<WeatherState>((ref) async {
 
   final weatherService = ref.watch(weatherServiceProvider);
 
-  final WeatherMetric tempMaxMetric = await weatherService.fetchMaxTemperature();
+  final WeatherMetric tempMaxMetric;
+  final WeatherMetric tempMinMetric;
+  final WeatherFilterDaysResponse daysMetric;
+  final WeatherMetric windDirectionMetric;
+  final WeatherMetric windAvgMetric;
+  final WeatherMetric windMaxMetric;
+  final WeatherMetric snowDepthMetric;
+
+  tempMaxMetric = await weatherService.fetchMaxTemperature();
+  tempMinMetric = await weatherService.fetchMinTemperature();
+  daysMetric = await weatherService.fetchDaysAboveZero();
+  windDirectionMetric = await weatherService.fetchWindDirection();
+  windAvgMetric = await weatherService.fetchWindAverage();
+  windMaxMetric = await weatherService.fetchMaxWind();
+  //snowDepthMetric = await weatherService.fetchSnowDepthChange();
 
   final weatherState = WeatherState(
     tempMax: tempMaxMetric.value.toDouble(),
-    tempMin: 0.0,
-    daysAboveZero: 0,
-    windDirection: 0.0,
-    windAvg: 0.0,
-    windMax: 0.0,
-    snowDepthChange: 0.0,
+    tempMin: tempMinMetric.value.toDouble(),
+    daysAboveZero: daysMetric.matches.length,
+    windDirection: windDirectionMetric.value.toDouble(),
+    windAvg: windAvgMetric.value.toDouble(),
+    windMax: windMaxMetric.value.toDouble(),
+    snowDepthChange: -999 //snowDepthMetric.value.toDouble()
   );
   return weatherState;
 });

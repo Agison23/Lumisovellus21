@@ -12,7 +12,6 @@ class WeatherPage extends ConsumerStatefulWidget {
 }
 
 class _WeatherPageState extends ConsumerState<WeatherPage> {
-  num maxTemperature = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +19,26 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
     final localised = AppLocalizations.of(context);
     const String empty = "XX";
 
-    //final WeatherState? weatherState = ref.watch(weatherStateProvider).value;
-    //final bool gotState = ref.watch(weatherStateProvider).hasValue;
-    WeatherState weatherState = WeatherState(tempMax: 99, tempMin: -99, daysAboveZero: 111, windDirection: 0, windAvg: 0, windMax: 0, snowDepthChange: 0);
-    bool gotState = true;
+    final WeatherState? weatherState = ref.watch(weatherStateProvider).value;
+    final bool gotState = ref.watch(weatherStateProvider).hasValue;
+
+    List<String> windDirectionNames = [
+                                        localised.north,
+                                        localised.northeast,
+                                        localised.east,
+                                        localised.southeast,
+                                        localised.south,
+                                        localised.southwest,
+                                        localised.west,
+                                        localised.northwest,
+                                      ];
+    String windDirectionName = "";
+    if(gotState) {
+      final double directionDegrees = weatherState!.windDirection.toDouble();
+      final int directionIndex = ((directionDegrees+22.5)/45.0).floor() % 8;
+      windDirectionName = windDirectionNames[directionIndex];
+    }
+    
 
     return Container( // Gradient background
         decoration: const BoxDecoration(
@@ -62,8 +77,8 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.thermostat,
                       children: [
-                        WeatherLine(label: localised.highest, value: gotState ? weatherState!.tempMax.toString() : empty),
-                        WeatherLine(label: localised.lowest, value: gotState ? weatherState!.tempMin.toString() : empty),
+                        WeatherLine(label: localised.highest, value: gotState ? weatherState!.tempMax.toStringAsFixed(1) : empty),
+                        WeatherLine(label: localised.lowest, value: gotState ? weatherState!.tempMin.toStringAsFixed(1) : empty),
                         WeatherLine(label: localised.countDaysAboveFreezing, value: gotState ? weatherState!.daysAboveZero.toString() : empty)
                       ]
                     ),
@@ -75,9 +90,9 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.air,
                       children: [
-                        WeatherLine(label: localised.avgSpeed, value: "333 m/s"),
-                        WeatherLine(label: localised.maxWind, value: "888 m/s"),
-                        WeatherLine(label: localised.avgDirection, value: "${localised.south} (184 °)")
+                        WeatherLine(label: localised.avgSpeed, value: gotState ? weatherState!.windAvg.toStringAsFixed(1) : empty),
+                        WeatherLine(label: localised.maxWind, value: gotState ? weatherState!.windMax.toStringAsFixed(1) : empty),
+                        WeatherLine(label: localised.avgDirection, value: "$windDirectionName (${gotState ? weatherState!.windDirection.toStringAsFixed(0) : empty} °)")
                       ]
                     ),
 
@@ -88,7 +103,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastSevenDays,
                       icon: Icons.ac_unit, // ac_unit looks like a snowflake as of 2025
                       children: [
-                        WeatherLine(label: localised.snowDepthChange, value: "+222 cm")
+                        WeatherLine(label: localised.snowDepthChange, value: weatherState!.snowDepthChange != null ? weatherState.snowDepthChange!.toStringAsFixed(1) : empty)
                       ]
                     )     
                   ],
