@@ -9,5 +9,12 @@ export default defineConfig({
     outputFile: "vitest-results/index.html",
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
+    deps: {
+      optimizer: {
+        web: {
+          enabled: false,
+        },
+      },
+    },
   },
 });

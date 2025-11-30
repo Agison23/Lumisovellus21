@@ -3,19 +3,40 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+
+    /* ESM build target */
     "module": "ESNext",
     "target": "ES2022",
-    "noImplicitAny": false,
+
+    /* Required for ESM in Node */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+
+    /* Emit settings */
     "noEmit": false,
     "declaration": false,
     "sourceMap": true,
     "composite": false,
+
+    /* Type checking */
+    "noImplicitAny": false,
+
+    /* test types */
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/**/*", "prisma/seed.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
+
+  "include": [
+    "src/**/*",
+    "prisma/seed.ts"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
+
   "ts-node": {
     "esm": true
   }

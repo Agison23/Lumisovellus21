@@ -9,6 +9,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 
 export default function WeatherView() {
