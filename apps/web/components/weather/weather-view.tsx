@@ -11,46 +11,139 @@ import {
 import { useTranslations } from "next-intl";
 
 import { useEffect, useState } from "react";
+import { api } from "../../lib/weather/api";
 
 export default function WeatherView() {
   const t = useTranslations("WeatherPage");
 
-  const [snowflakes, setSnowflakes] = useState<
-    {
-      left: string;
-      top: string;
-      size: string;
-      delay: string;
-      duration: string;
-    }[]
-  >([]);
+  const [snowflakes, setSnowflakes] = useState<Array<{
+    left: string;
+    top: string;
+    size: string;
+    delay: string;
+    duration: string;
+  }>>([]);
+
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const items = Array.from({ length: 40 }).map(() => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * -100}%`,
-      size: `${Math.random() * 1.2 + 0.6}rem`,
-      delay: `${Math.random() * 10}s`,
-      duration: `${Math.random() * 12 + 10}s`,
-    }));
-    setSnowflakes(items);
+  const items = Array.from({ length: 40 }).map(() => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * -100}%`,
+    size: `${Math.random() * 1.2 + 0.6}rem`,
+    delay: `${Math.random() * 10}s`,
+    duration: `${Math.random() * 12 + 10}s`,
+  }));
+
+  setSnowflakes(items);
   }, []);
 
-  const weatherData = {
-    averageWind: { speed: 6.2, direction: 315 },
-    temperature: { min: -5.3, max: 3.8 },
-    maxWindSpeed: 10.1,
-    snowDepthChange: 4,
-    daysAboveFreezing: [
-      { date: "2025-11-09", avgTemp: 1.2 },
-      { date: "2025-11-08", avgTemp: 0.5 },
-    ],
-  };
+  useEffect(() => {
+  async function loadWeather() {
+    try {
+      const DAYS_SHORT = 3;
+      const DAYS_SNOW = 7;
+
+      const [
+      avgWindSpeedRes,
+      avgWindDirRes,
+      minTempRes,
+      maxTempRes,
+      maxWindRes,
+      snowChangeRes,
+      daysAboveFreezingRes,
+      ] = await Promise.all([
+      fetch(api(`/weather/average?item=windSpeed&days=${DAYS_SHORT}`)),
+      fetch(api(`/weather/average?item=windDirection&days=${DAYS_SHORT}`)),
+      fetch(api(`/weather/minimum?item=temperature&days=${DAYS_SHORT}`)),
+      fetch(api(`/weather/maximum?item=temperature&days=${DAYS_SHORT}`)),
+      fetch(api(`/weather/maximum?item=windSpeed&days=${DAYS_SHORT}`)),
+      fetch(api(`/weather/change?item=snowDepth&days=${DAYS_SNOW}`)),
+      fetch(api(`/weather/filterDays?item=temperature&days=${DAYS_SHORT}&threshold=0`)),
+      ]);
+
+
+      const [
+        avgWindSpeed,
+        avgWindDir,
+        minTemp,
+        maxTemp,
+        maxWind,
+        snowChange,
+        daysAboveFreezing,
+      ] = await Promise.all([
+        avgWindSpeedRes.json(),
+        avgWindDirRes.json(),
+        minTempRes.json(),
+        maxTempRes.json(),
+        maxWindRes.json(),
+        snowChangeRes.json(),
+        daysAboveFreezingRes.json(),
+      ]);
+
+      setWeatherData({
+        averageWind: {
+          speed:
+            avgWindSpeed.success && avgWindSpeed.data?.value != null
+              ? avgWindSpeed.data.value
+              : null,
+          direction:
+            avgWindDir.success && avgWindDir.data?.value != null
+              ? avgWindDir.data.value
+              : null,
+        },
+
+        temperature: {
+          min:
+            minTemp.success && minTemp.data?.value != null
+              ? minTemp.data.value
+              : null,
+          max:
+            maxTemp.success && maxTemp.data?.value != null
+              ? maxTemp.data.value
+              : null,
+        },
+
+        maxWindSpeed:
+          maxWind.success && maxWind.data?.value != null
+            ? maxWind.data.value
+            : null,
+
+        snowDepthChange:
+          snowChange.success && snowChange.data?.value != null
+            ? snowChange.data.value
+            : null,
+
+        daysAboveFreezing:
+          daysAboveFreezing.success && daysAboveFreezing.data?.matches
+            ? daysAboveFreezing.data.matches
+            : [],
+      });
+
+      } catch (err) {
+      console.error("Failed to load weather:", err);
+      } finally {
+      setLoading(false);
+      }
+    }
+
+    loadWeather();
+  }, []);
+
+
+  if (loading || !weatherData) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <p>{t("loading")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full flex flex-col items-center py-16 px-6 overflow-y-auto select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {snowflakes.map((f, i) => (
+        {snowflakes.map((f: any, i) => (
           <div
             key={i}
             className="absolute animate-snow text-gray-400 dark:text-white/40"
@@ -73,75 +166,108 @@ export default function WeatherView() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
-          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
+          {/* Avg Wind */}
+          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
               <h4 className="text-xl font-semibold">{t("avgWindTitle")}</h4>
             </div>
+
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
               <p className="text-3xl font-bold text-primary">
-                {weatherData.averageWind.speed} m/s
+                {weatherData.averageWind.speed !== null
+                  ? `${weatherData.averageWind.speed} m/s`
+                  : t("notAvailable")}
               </p>
+
               <span className="text-3xl font-bold text-primary">-</span>
+
               <p className="text-3xl font-bold text-primary">
-                {t("windDirection", { deg: weatherData.averageWind.direction })}
+                {weatherData.averageWind.direction !== null
+                  ? t("windDirection", { deg: weatherData.averageWind.direction })
+                  : t("notAvailable")}
               </p>
             </div>
           </div>
 
-          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
+          {/* Temperature */}
+          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Thermometer size={36} className="text-red-500" />
               <h4 className="text-xl font-semibold">{t("tempTitle")}</h4>
             </div>
+
             <div className="text-lg space-y-1">
+              {/* Min */}
               <p className="text-blue-500 flex items-center gap-1">
-                <ArrowDown size={16} /> {t("min")}:{" "}
-                <span className="font-semibold">
-                  {weatherData.temperature.min} °C
-                </span>
+                <ArrowDown size={16} /> {t("min")}:
+                {weatherData.temperature.min !== null ? (
+                  <span className="font-semibold">
+                    {" "}
+                    {weatherData.temperature.min} °C
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground"> {t("notAvailable")}</span>
+                )}
               </p>
+
+              {/* Max */}
               <p className="text-red-500 flex items-center gap-1">
-                <ArrowUp size={16} /> {t("max")}:{" "}
-                <span className="font-semibold">
-                  {weatherData.temperature.max} °C
-                </span>
+                <ArrowUp size={16} /> {t("max")}:
+                {weatherData.temperature.max !== null ? (
+                  <span className="font-semibold">
+                    {" "}
+                    {weatherData.temperature.max} °C
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground"> {t("notAvailable")}</span>
+                )}
               </p>
             </div>
           </div>
 
-          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
+          {/* Max Wind */}
+          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
               <h4 className="text-xl font-semibold">{t("maxWindTitle")}</h4>
             </div>
-            <p className="text-3xl font-bold">{weatherData.maxWindSpeed} m/s</p>
+
+            <p className="text-3xl font-bold">
+              {weatherData.maxWindSpeed !== null
+                ? `${weatherData.maxWindSpeed} m/s`
+                : t("notAvailable")}
+            </p>
           </div>
 
-          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
+          {/* Snow Depth Change */}
+          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Snowflake size={36} className="text-cyan-500" />
               <h4 className="text-xl font-semibold">{t("snowChangeTitle")}</h4>
             </div>
+
             <p className="text-3xl font-bold text-green-500">
-              +{weatherData.snowDepthChange} cm
+              {weatherData.snowDepthChange !== null
+                ? `+${weatherData.snowDepthChange} cm`
+                : t("notAvailable")}
             </p>
           </div>
 
-          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md dark:shadow-black/[0.4] hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out">
+          {/* Days Above Freezing */}
+          <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <ThermometerSnowflake size={36} className="text-yellow-400" />
-              <h4 className="text-xl font-semibold">
-                {t("aboveFreezingTitle")}
-              </h4>
+              <h4 className="text-xl font-semibold">{t("aboveFreezingTitle")}</h4>
             </div>
+
             {weatherData.daysAboveFreezing.length > 0 ? (
               <ul className="list-disc list-inside text-lg mt-2">
-                {weatherData.daysAboveFreezing.map((d) => (
+                {weatherData.daysAboveFreezing.map((d: any) => (
                   <li key={d.date}>
                     {d.date} —{" "}
                     <span className="font-semibold text-primary">
-                      {d.avgTemp} °C
+                      {d.averageTemperature} °C
                     </span>
                   </li>
                 ))}
