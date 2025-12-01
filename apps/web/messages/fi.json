@@ -209,7 +209,8 @@
     "maxWindTitle": "Suurin tuulennopeus (3 päivää)",
     "snowChangeTitle": "Lumensyvyyden muutos (7 päivää)",
     "aboveFreezingTitle": "Päivät nollan yläpuolella (3 päivää)",
-    "noAboveFreezing": "Ei päiviä nollan yläpuolella."
+    "noAboveFreezing": "Ei päiviä nollan yläpuolella.",
+    "notAvailable": "Tietoa ei ole saatavilla"
   },
   "DefinitionsPage": {
     "title": "Selitteet"
