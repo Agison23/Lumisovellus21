@@ -94,7 +94,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.11.1
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -162,7 +162,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.11.1
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -189,7 +189,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.11.1
           cache: npm
 
       - name: Install backend dependencies
@@ -227,7 +227,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.0"
+          node-version: "24.11.1"
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -308,7 +308,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.0"
+          node-version: "24.11.1"
           cache: npm
 
       - run: npm ci --prefer-offline --no-audit --fund=false
@@ -336,7 +336,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.0"
+          node-version: "24.11.1"
           cache: npm
 
       - run: npm ci --prefer-offline --no-audit --fund=false
@@ -366,7 +366,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.0"
+          node-version: "24.11.1"
           cache: npm
 
       - run: npm ci --prefer-offline --no-audit --fund=false
