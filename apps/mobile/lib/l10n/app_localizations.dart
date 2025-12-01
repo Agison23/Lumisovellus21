@@ -268,7 +268,11 @@ abstract class AppLocalizations {
   /// No description provided for @thinCrustDesc.
   ///
   /// In en, this message translates to:
+<<<<<<< HEAD
   /// **'A crust that breaks from the weight of a skier. Under the crust, a foot may sink deep.'**
+=======
+  /// **'A crust that that breaks from the weight of a skier. Under the crust, the snow can be submersive.'**
+>>>>>>> weather-backend-integration
   String get thinCrustDesc;
 
   /// No description provided for @collapsingCrust.
@@ -1008,6 +1012,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+<<<<<<< HEAD
 
   /// No description provided for @guideHazards.
   ///
@@ -1068,6 +1073,8 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days} days ago'**
   String timeNDaysAgo(Object days);
+=======
+>>>>>>> weather-backend-integration
 }
 
 class _AppLocalizationsDelegate

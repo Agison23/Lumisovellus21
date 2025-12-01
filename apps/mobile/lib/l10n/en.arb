@@ -161,5 +161,10 @@
   "timeOneHourAgo": "1 hour ago",
   "timeNHoursAgo": "{hours} hours ago",
   "timeOneDayAgo": "1 day ago",
-  "timeNDaysAgo": "{days} days ago"
+  "timeNDaysAgo": "{days} days ago",
+  "dataPointUnavailable": "Unknown",
+  "degrees": "°",
+  "degreesCelsius": "°C",
+  "metersPerSecond": "m/s",
+  "centimeters": "cm"
 }

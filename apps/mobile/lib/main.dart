@@ -6,7 +6,7 @@ import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/rescue/view/rescue_page.dart';
 import 'package:lumisovellus/features/settings/view/settings_page.dart';
 import 'package:lumisovellus/features/map/views/map_screen.dart';
-import 'features/weather/view/weather_page.dart';
+import 'package:lumisovellus/features/weather/view/weather_page.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 
