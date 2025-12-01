@@ -212,7 +212,20 @@
   "notAvailable": "Data not available"
   },
   "DefinitionsPage": {
-    "title": "Definitions"
+    "title": "Definitions",
+    "loading": "Loading snow types...",
+    "errors": {
+      "loadingFailed": "Failed to load snow types. Please try again later."
+    },
+    "search": {
+      "placeholder": "Search snow types..."
+    },
+    "labels": {
+      "snowTypes": "Snow Types",
+      "description": "Description",
+      "noDescription": "No description available"
+    },
+    "noResults": "No snow types found matching your search."
   },
   "Dashboard": {
     "title": "Dashboard",

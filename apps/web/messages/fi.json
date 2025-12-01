@@ -213,7 +213,20 @@
     "notAvailable": "Tietoa ei ole saatavilla"
   },
   "DefinitionsPage": {
-    "title": "Selitteet"
+    "title": "Selitteet",
+    "loading": "Ladataan lumityyppejä...",
+    "errors": {
+      "loadingFailed": "Lumityyppien lataus epäonnistui. Yritä myöhemmin uudelleen."
+    },
+    "search": {
+      "placeholder": "Etsi lumityyppejä..."
+    },
+    "labels": {
+      "snowTypes": "Lumityypit",
+      "description": "Kuvaus",
+      "noDescription": "Kuvausta ei saatavilla"
+    },
+    "noResults": "Hakuasi vastaavia lumityyppejä ei löytynyt."
   },
   "Dashboard": {
     "title": "Hallintapaneeli",
