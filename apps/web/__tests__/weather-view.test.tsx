@@ -2,17 +2,14 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import WeatherView from "../components/weather/weather-view";
 
-// ----- Translation mock -----
-// We preserve key ("windDirection") and include interpolated values ("250")
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, vars?: any) => {
-    const label = key.split(".").at(-1); // e.g., "windDirection"
+    const label = key.split(".").at(-1);
     if (vars) return `${label} ${Object.values(vars).join(" ")}`;
     return label;
   },
 }));
 
-// ----- Helper: mock sequential fetch responses -----
 function mockFetchSequence(responses: any[]) {
   vi.stubGlobal(
     "fetch",
@@ -30,9 +27,6 @@ describe("WeatherView", () => {
     vi.restoreAllMocks();
   });
 
-  // --------------------------------------------------------------------
-  // POSITIVE CASE
-  // --------------------------------------------------------------------
   it("renders weather data when API responses are successful", async () => {
     mockFetchSequence([
       { success: true, data: { value: 5 } },   // avg wind speed
@@ -62,9 +56,6 @@ describe("WeatherView", () => {
     });
   });
 
-  // --------------------------------------------------------------------
-  // NEGATIVE CASE: missing values
-  // --------------------------------------------------------------------
   it("renders 'notAvailable' when API returns missing values", async () => {
     mockFetchSequence([
       { success: false },
@@ -79,7 +70,6 @@ describe("WeatherView", () => {
     render(<WeatherView />);
 
     await waitFor(() => {
-      // match trimming whitespace
       const notAvailElems = screen.getAllByText((t) =>
         t.trim() === "notAvailable"
       );
@@ -89,9 +79,6 @@ describe("WeatherView", () => {
     });
   });
 
-  // --------------------------------------------------------------------
-  // NEGATIVE CASE: network failure
-  // --------------------------------------------------------------------
   it("handles network failures gracefully", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network fail")));
 
