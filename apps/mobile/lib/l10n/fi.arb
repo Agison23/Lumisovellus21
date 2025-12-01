@@ -152,5 +152,9 @@
   "phoneNumber": "Puhelinnumero",
   "registeredAt": "Rekisteröitynyt",
   "logout": "Kirjaudu ulos",
-  "dataPointUnavailable": "Tuntematon"
+  "dataPointUnavailable": "Tuntematon",
+  "degrees": "°",
+  "degreesCelsius": "°C",
+  "metersPerSecond": "m/s",
+  "centimeters": "cm"
 }

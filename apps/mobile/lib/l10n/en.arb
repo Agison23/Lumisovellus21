@@ -152,5 +152,9 @@
   "phoneNumber": "Phone number",
   "registeredAt": "Registered at",
   "logout": "Logout",
-  "dataPointUnavailable": "Unknown"
+  "dataPointUnavailable": "Unknown",
+  "degrees": "°",
+  "degreesCelsius": "°C",
+  "metersPerSecond": "m/s",
+  "centimeters": "cm"
 }

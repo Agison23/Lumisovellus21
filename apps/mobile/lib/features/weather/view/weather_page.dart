@@ -76,9 +76,20 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.thermostat,
                       children: [
-                        WeatherLine(label: localised.highest, value: weatherState?.tempMax?.toStringAsFixed(1) ?? empty),
-                        WeatherLine(label: localised.lowest, value: weatherState?.tempMin?.toStringAsFixed(1) ?? empty),
-                        WeatherLine(label: localised.countDaysAboveFreezing, value: weatherState?.daysAboveZero?.toString() ?? empty)
+                        WeatherLine(
+                          label: localised.highest,
+                          value: weatherState?.tempMax?.toStringAsFixed(1) ?? empty,
+                          unit: localised.degreesCelsius
+                        ),
+                        WeatherLine(
+                          label: localised.lowest,
+                          value: weatherState?.tempMin?.toStringAsFixed(1) ?? empty,
+                          unit: localised. degreesCelsius
+                        ),
+                        WeatherLine(
+                          label: localised.countDaysAboveFreezing,
+                          value: weatherState?.daysAboveZero?.toString() ?? empty,
+                        )
                       ]
                     ),
 
@@ -89,9 +100,22 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.air,
                       children: [
-                        WeatherLine(label: localised.avgSpeed, value: weatherState?.windAvg?.toStringAsFixed(1) ?? empty),
-                        WeatherLine(label: localised.maxWind, value: weatherState?.windMax?.toStringAsFixed(1) ?? empty),
-                        WeatherLine(label: localised.avgDirection, value: "$windDirectionName (${weatherState?.windDirection?.toStringAsFixed(0) ?? empty} °)")
+                        WeatherLine(
+                          label: localised.avgSpeed,
+                          value: weatherState?.windAvg?.toStringAsFixed(1) ?? empty,
+                          unit: localised.metersPerSecond
+                        ),
+                        WeatherLine(
+                          label: localised.maxWind,
+                          value: weatherState?.windMax?.toStringAsFixed(1) ?? empty,
+                          unit: localised.metersPerSecond
+                        ),
+                        WeatherLine(
+                          label: localised.avgDirection,
+                          value: weatherState?.windDirection != null ?
+                            "$windDirectionName (${weatherState?.windDirection?.toStringAsFixed(0)} ${localised.degrees})"
+                            : empty,
+                        )
                       ]
                     ),
 
@@ -102,7 +126,8 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastSevenDays,
                       icon: Icons.ac_unit, // ac_unit looks like a snowflake as of 2025
                       children: [
-                        WeatherLine(label: localised.snowDepthChange, value: weatherState?.snowDepthChange?.toStringAsFixed(1) ?? empty)
+                        WeatherLine(label: localised.snowDepthChange,
+                        value: weatherState?.snowDepthChange?.toStringAsFixed(1) ?? empty)
                       ]
                     )     
                   ],
@@ -201,11 +226,13 @@ class WeatherLine extends StatelessWidget {
   
   final String label;
   final String value;
+  final String? unit;
 
   const WeatherLine({
                 super.key,
                 required this.label,
-                required this.value
+                required this.value,
+                this.unit
               });
   
   @override
@@ -219,7 +246,7 @@ class WeatherLine extends StatelessWidget {
           ),
         ),
         Text(
-          value,
+          "$value ${unit ?? ""}",
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
