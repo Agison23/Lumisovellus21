@@ -101,7 +101,8 @@ jobs:
       - name: Patch npm optional dep bug
         run: npm install -g npm@10.8.1
       
-      - name: Install missing Rollup native binary (fix Vitest optional dep bug)
+      - name: Install missing Rollup native binary
+        working-directory: apps/backend
         run: |
           echo "Installing Rollup native binary"
           npm install @rollup/rollup-linux-x64-gnu --no-save || true
