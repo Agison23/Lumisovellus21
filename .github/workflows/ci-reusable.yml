@@ -234,24 +234,6 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Setup Flutter (stable channel)
-        if: ${{ env.ACT != 'true' }}
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          flutter-version: "3.35.6"
-          cache: false
-
-      - name: Mock Flutter (act)
-        if: ${{ env.ACT == 'true' }}
-        run: |
-          echo "Simulating Flutter"
-          mkdir -p /usr/local/bin
-          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
-          chmod +x /usr/local/bin/flutter
-          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
-          chmod +x /usr/local/bin/dart
-
       - name: Enable Corepack
         run: corepack enable
 
