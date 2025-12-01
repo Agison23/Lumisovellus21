@@ -236,6 +236,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rescuePageRequestHelp => 'Request Help';
 
   @override
+  String get rescuePageEndEvent => 'End Event';
+
+  @override
+  String get rescueEndEventDialogTitle => 'End Help Event';
+
+  @override
+  String get rescueEndEventDialogDescription =>
+      'How would you like to end this help event?';
+
+  @override
+  String get rescueEndEventDialogCancel => 'Cancel Event';
+
+  @override
+  String get rescueEndEventDialogComplete => 'Complete Event';
+
+  @override
   String get rescuePageRequestHelpConfirm =>
       'Send help request to nearby rescuers?';
 
@@ -283,7 +299,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
-  String get finnish => 'Finnish (Suomi)';
+  String get finnish => 'Suomi';
 
   @override
   String get userInfoNotImplemented => 'User information feature coming soon';

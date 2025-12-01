@@ -8,6 +8,8 @@ class ApiClient {
   final UsersApi users;
   final WeatherApi weather;
   final SnowTypesApi snowTypes;
+  final HelpEventsApi helpEvents;
+
   final AuthenticationApi auth;
 
   String? _token;
@@ -20,6 +22,7 @@ class ApiClient {
     this.users,
     this.weather,
     this.snowTypes,
+    this.helpEvents,
     this.auth,
     this._token,
     this._on401,
@@ -39,6 +42,7 @@ class ApiClient {
       UsersApi(dio),
       WeatherApi(dio),
       SnowTypesApi(dio),
+      HelpEventsApi(dio),
       AuthenticationApi(dio),
       token,
       on401,

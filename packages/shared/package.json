@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "echo \"Shared package has no build step\"",
     "test": "echo \"Warning: No test specified\" && exit 0",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

@@ -1,0 +1,70 @@
+services:
+  # MySQL service restored to host port 3306
+  mysql:
+    image: mysql:8.0
+    container_name: lumisovellus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lumisovellus
+      MYSQL_USER: lumisovellus
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+
+  # Backend service restored to host port 3001
+  backend:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.backend
+      target: deps
+    container_name: lumisovellus-backend
+    environment:
+      NODE_ENV: development
+      PORT: 4004
+    ports:
+      - '51000:4004'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../../apps/backend:/app
+      - /app/node_modules
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed && npm run dev"
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:4004/health',
+        ]
+      timeout: 10s
+      retries: 5
+
+  web:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.web
+    container_name: lumisovellus-web
+    ports:
+      - '51001:51001'
+    env_file:
+      - ../../apps/web/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=51001
+      - NEXT_TELEMETRY_DISABLED=1
+    depends_on:
+      backend:
+        condition: service_healthy
+
+
+volumes:
+  mysql_data:

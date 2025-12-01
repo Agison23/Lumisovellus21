@@ -16,7 +16,6 @@ class MapStyleRepository {
   static const areasLabelsId = 'areas-labels';
   static const areasDangerId = 'areas-avalanche-danger-outline';
 
-  /// Add DEM source + terrain + hillshade + sky
   Future<void> applyTerrainAndSky(
     StyleManager style, {
     double exaggeration = 2.0,
@@ -33,34 +32,36 @@ class MapStyleRepository {
       ),
     );
 
-    await style.setStyleTerrain(jsonEncode({
-      "source": demSourceId,
-      "exaggeration": exaggeration,
-    }));
+    await style.setStyleTerrain(
+      jsonEncode({'source': demSourceId, 'exaggeration': exaggeration}),
+    );
 
     if (await style.styleLayerExists(hillshadeLayerId)) {
       await style.removeStyleLayer(hillshadeLayerId);
     }
-    await style.addLayer(HillshadeLayer(
+    await style.addLayer(
+      HillshadeLayer(
         id: hillshadeLayerId,
         sourceId: demSourceId,
         hillshadeExaggeration: 1.0,
         visibility: Visibility.VISIBLE,
-    ));
+      ),
+    );
 
     if (await style.styleLayerExists(skyLayerId)) {
       await style.removeStyleLayer(skyLayerId);
     }
-    await style.addLayer(SkyLayer(
+    await style.addLayer(
+      SkyLayer(
         id: skyLayerId,
         skyType: SkyType.ATMOSPHERE,
         skyAtmosphereSunIntensity: 12.0,
-    ));
+      ),
+    );
   }
 
-  // Convert the provided segments to FeatureCollection used by MapBox
   Map<String, dynamic> _segmentsToFeatureCollection(List<Segment> segments) {
-    final filtered = segments.where((s) => s.name != 'Metsä'); // Legacy segment that covers whole area
+    final filtered = segments.where((s) => s.name != 'Metsä');
 
     return {
       'type': 'FeatureCollection',
@@ -85,106 +86,125 @@ class MapStyleRepository {
     };
   }
 
-  // Recreate the `areas` GeoJSON source and all its layers.
   Future<void> ensureAreasStyle(StyleManager style, {List<Segment>? segments}) async {
     final fc = segments != null
-      ? _segmentsToFeatureCollection(segments)
-      : {'type': 'FeatureCollection', 'features': <dynamic>[]};
+        ? _segmentsToFeatureCollection(segments)
+        : {'type': 'FeatureCollection', 'features': <dynamic>[]};
     final data = jsonEncode(fc);
 
-    for (final id in [
-      areasLabelsId,
-      areasSelectedId,
-      areasHoverId,
-      areasDangerId,
-      areasOutlineId,
-      areasFillId,
-    ]) {
-      if (await style.styleLayerExists(id)) {
-        await style.removeStyleLayer(id);
-      }
-    }
-    if (await style.styleSourceExists(areasSourceId)) {
-      await style.removeStyleSource(areasSourceId);
+    final sourceExists = await style.styleSourceExists(areasSourceId);
+    if (!sourceExists) {
+      await style.addSource(GeoJsonSource(id: areasSourceId, data: data));
+    } else {
+      await style.setStyleSourceProperty(areasSourceId, 'data', data);
     }
 
-    await style.addSource(GeoJsonSource(id: areasSourceId, data: data));
+    if (!await style.styleLayerExists(areasFillId)) {
+      await style.addLayer(
+        FillLayer(
+          id: areasFillId,
+          sourceId: areasSourceId,
+          fillColor: 0xFFFFFFFF,
+          fillOpacity: 0.1,
+          visibility: Visibility.VISIBLE,
+          fillSortKeyExpression: [
+            'case',
+            ['has', 'isLowerSegment'],
+            1,
+            0,
+          ],
+        ),
+      );
+    }
 
-    await style.addLayer(FillLayer(
-        id: areasFillId,
-        sourceId: areasSourceId,
-        fillColor: 0xFFFFFFFF,
-        fillOpacity: 0.1,
-    ));
-
-    await style.addLayer(FillLayer(
+    if (!await style.styleLayerExists(areasHoverId)) {
+      await style.addLayer(FillLayer(
         id: areasHoverId,
         sourceId: areasSourceId,
         fillColor: 0xFFFFFFFF,
         fillOpacity: 0.3,
-        filter: ["==", ["get", "id"], ""],
+        filter: ['==', ['get', 'id'], ''],
       ));
+    }
 
-    await style.addLayer(LineLayer(
+    if (!await style.styleLayerExists(areasOutlineId)) {
+      await style.addLayer(LineLayer(
         id: areasOutlineId,
         sourceId: areasSourceId,
         lineColor: 0xFF2C3E50,
         lineWidth: 2.0,
         lineOpacity: 0.5,
-    ));
+      ));
+    }
 
-    await style.addLayer(LineLayer(
+    if (!await style.styleLayerExists(areasDangerId)) {
+      await style.addLayer(LineLayer(
         id: areasDangerId,
         sourceId: areasSourceId,
         lineColor: 0xFFFF0000,
         lineWidth: 3.0,
-      filter: ["==", ["get", "avalancheDanger"], true],
-    ));
+        filter: ['==', ['get', 'avalancheDanger'], true],
+      ));
+    }
 
-    await style.addLayer(FillLayer(
+    if (!await style.styleLayerExists(areasSelectedId)) {
+      await style.addLayer(FillLayer(
         id: areasSelectedId,
         sourceId: areasSourceId,
         fillColor: 0xFF000000,
         fillOpacity: 0.2,
-        filter: ["==", ["get", "id"], ""],
-    ));
+        filter: ['==', ['get', 'id'], ''],
+      ));
+    }
 
-    await style.addLayer(SymbolLayer(
+    if (!await style.styleLayerExists(areasLabelsId)) {
+      await style.addLayer(SymbolLayer(
         id: areasLabelsId,
         sourceId: areasSourceId,
-        textFieldExpression: ["get", "name"],
+        textFieldExpression: ['get', 'name'],
         textSize: 14.0,
         textOffset: const [0.0, 0.0],
         textColor: 0xFFFFFFFF,
         textHaloColor: 0xFF000000,
         textHaloWidth: 2.0,
-    ));
+      ));
+    }
   }
 
-  // Update only the GeoJSON data (recreate if the source is missing).
   Future<void> setAreasData(StyleManager style, List<Segment> segments) async {
-    final fc = _segmentsToFeatureCollection(segments);
-    final data = jsonEncode(fc);
-    final exists = await style.styleSourceExists(areasSourceId);
-    if (!exists) {
-      await ensureAreasStyle(style, segments: segments);
-      return;
-    }
-    await style.setStyleSourceProperty(areasSourceId, 'data', data);
+    await ensureAreasStyle(style, segments: segments);
   }
 
   Future<void> setHoverFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasHoverId)) return;
-    await style.setStyleLayerProperty(areasHoverId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
+    await style.setStyleLayerProperty(areasHoverId, 'filter', [
+      '==',
+      [
+        'coalesce',
+        ['get', 'id'],
+        ['id'],
+      ],
+      id ?? '__none__',
+    ]);
   }
-
 
   Future<void> setSelectedFilter(StyleManager style, {String? id}) async {
     if (!await style.styleLayerExists(areasSelectedId)) return;
-    await style.setStyleLayerProperty(areasSelectedId, 'filter', ["==", ["coalesce", ["get", "id"], ["id"]], id ?? "__none__"]);
+    await style.setStyleLayerProperty(areasSelectedId, 'filter', [
+      '==',
+      [
+        'coalesce',
+        ['get', 'id'],
+        ['id'],
+      ],
+      id ?? '__none__',
+    ]);
   }
 
-  Future<void> setAreasVisibility(StyleManager style, {required bool visible}) async {
+  Future<void> setAreasVisibility(
+    StyleManager style, {
+    required bool visible,
+  }) async {
     const ids = [
       areasFillId,
       areasHoverId,
@@ -195,7 +215,11 @@ class MapStyleRepository {
     ];
     for (final id in ids) {
       if (await style.styleLayerExists(id)) {
-        await style.setStyleLayerProperty(id, 'visibility', visible ? 'visible' : 'none');
+        await style.setStyleLayerProperty(
+          id,
+          'visibility',
+          visible ? 'visible' : 'none',
+        );
       }
     }
   }
