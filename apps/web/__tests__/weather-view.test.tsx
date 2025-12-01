@@ -3,14 +3,14 @@ import { render, screen, waitFor } from "@testing-library/react";
 import WeatherView from "../components/weather/weather-view";
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string, vars?: any) => {
+  useTranslations: () => (key: string, vars?: Record<string, unknown>) => {
     const label = key.split(".").at(-1);
     if (vars) return `${label} ${Object.values(vars).join(" ")}`;
     return label;
   },
 }));
 
-function mockFetchSequence(responses: any[]) {
+function mockFetchSequence(responses: Array<Record<string, unknown> | null>) {
   vi.stubGlobal(
     "fetch",
     vi.fn().mockImplementation(() => {

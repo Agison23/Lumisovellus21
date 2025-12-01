@@ -13,6 +13,19 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { api } from "../../lib/weather/api";
 
+interface DayAboveFreezing {
+  date: string;
+  averageTemperature: number;
+}
+
+interface WeatherData {
+  averageWind: { speed: number | null; direction: number | null };
+  temperature: { min: number | null; max: number | null };
+  maxWindSpeed: number | null;
+  snowDepthChange: number | null;
+  daysAboveFreezing: DayAboveFreezing[];
+}
+
 export default function WeatherView() {
   const t = useTranslations("WeatherPage");
 
@@ -24,113 +37,121 @@ export default function WeatherView() {
     duration: string;
   }>>([]);
 
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const items = Array.from({ length: 40 }).map(() => ({
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * -100}%`,
-    size: `${Math.random() * 1.2 + 0.6}rem`,
-    delay: `${Math.random() * 10}s`,
-    duration: `${Math.random() * 12 + 10}s`,
-  }));
+    const items = Array.from({ length: 40 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * -100}%`,
+      size: `${Math.random() * 1.2 + 0.6}rem`,
+      delay: `${Math.random() * 10}s`,
+      duration: `${Math.random() * 12 + 10}s`,
+    }));
 
-  setSnowflakes(items);
+    setSnowflakes(items);
   }, []);
 
   useEffect(() => {
-  async function loadWeather() {
-    try {
-      const DAYS_SHORT = 3;
-      const DAYS_SNOW = 7;
+    async function loadWeather() {
+      try {
+        const DAYS_SHORT = 3;
+        const DAYS_SNOW = 7;
 
-      const [
-      avgWindSpeedRes,
-      avgWindDirRes,
-      minTempRes,
-      maxTempRes,
-      maxWindRes,
-      snowChangeRes,
-      daysAboveFreezingRes,
-      ] = await Promise.all([
-      fetch(api(`/weather/average?item=windSpeed&days=${DAYS_SHORT}`)),
-      fetch(api(`/weather/average?item=windDirection&days=${DAYS_SHORT}`)),
-      fetch(api(`/weather/minimum?item=temperature&days=${DAYS_SHORT}`)),
-      fetch(api(`/weather/maximum?item=temperature&days=${DAYS_SHORT}`)),
-      fetch(api(`/weather/maximum?item=windSpeed&days=${DAYS_SHORT}`)),
-      fetch(api(`/weather/change?item=snowDepth&days=${DAYS_SNOW}`)),
-      fetch(api(`/weather/filterDays?item=temperature&days=${DAYS_SHORT}&threshold=0`)),
-      ]);
+        const [
+          avgWindSpeedRes,
+          avgWindDirRes,
+          minTempRes,
+          maxTempRes,
+          maxWindRes,
+          snowChangeRes,
+          daysAboveFreezingRes,
+        ] = await Promise.all([
+          fetch(api(`/weather/average?item=windSpeed&days=${DAYS_SHORT}`)),
+          fetch(api(`/weather/average?item=windDirection&days=${DAYS_SHORT}`)),
+          fetch(api(`/weather/minimum?item=temperature&days=${DAYS_SHORT}`)),
+          fetch(api(`/weather/maximum?item=temperature&days=${DAYS_SHORT}`)),
+          fetch(api(`/weather/maximum?item=windSpeed&days=${DAYS_SHORT}`)),
+          fetch(api(`/weather/change?item=snowDepth&days=${DAYS_SNOW}`)),
+          fetch(
+            api(
+              `/weather/filterDays?item=temperature&days=${DAYS_SHORT}&threshold=0`
+            )
+          ),
+        ]);
 
+        const [
+          avgWindSpeed,
+          avgWindDir,
+          minTemp,
+          maxTemp,
+          maxWind,
+          snowChange,
+          daysAboveFreezing,
+        ] = await Promise.all([
+          avgWindSpeedRes.json(),
+          avgWindDirRes.json(),
+          minTempRes.json(),
+          maxTempRes.json(),
+          maxWindRes.json(),
+          snowChangeRes.json(),
+          daysAboveFreezingRes.json(),
+        ]);
 
-      const [
-        avgWindSpeed,
-        avgWindDir,
-        minTemp,
-        maxTemp,
-        maxWind,
-        snowChange,
-        daysAboveFreezing,
-      ] = await Promise.all([
-        avgWindSpeedRes.json(),
-        avgWindDirRes.json(),
-        minTempRes.json(),
-        maxTempRes.json(),
-        maxWindRes.json(),
-        snowChangeRes.json(),
-        daysAboveFreezingRes.json(),
-      ]);
+        setWeatherData({
+          averageWind: {
+            speed:
+              avgWindSpeed.success && avgWindSpeed.data?.value != null
+                ? avgWindSpeed.data.value
+                : null,
+            direction:
+              avgWindDir.success && avgWindDir.data?.value != null
+                ? avgWindDir.data.value
+                : null,
+          },
 
-      setWeatherData({
-        averageWind: {
-          speed:
-            avgWindSpeed.success && avgWindSpeed.data?.value != null
-              ? avgWindSpeed.data.value
+          temperature: {
+            min:
+              minTemp.success && minTemp.data?.value != null
+                ? minTemp.data.value
+                : null,
+            max:
+              maxTemp.success && maxTemp.data?.value != null
+                ? maxTemp.data.value
+                : null,
+          },
+
+          maxWindSpeed:
+            maxWind.success && maxWind.data?.value != null
+              ? maxWind.data.value
               : null,
-          direction:
-            avgWindDir.success && avgWindDir.data?.value != null
-              ? avgWindDir.data.value
+
+          snowDepthChange:
+            snowChange.success && snowChange.data?.value != null
+              ? snowChange.data.value
               : null,
-        },
 
-        temperature: {
-          min:
-            minTemp.success && minTemp.data?.value != null
-              ? minTemp.data.value
-              : null,
-          max:
-            maxTemp.success && maxTemp.data?.value != null
-              ? maxTemp.data.value
-              : null,
-        },
-
-        maxWindSpeed:
-          maxWind.success && maxWind.data?.value != null
-            ? maxWind.data.value
-            : null,
-
-        snowDepthChange:
-          snowChange.success && snowChange.data?.value != null
-            ? snowChange.data.value
-            : null,
-
-        daysAboveFreezing:
-          daysAboveFreezing.success && daysAboveFreezing.data?.matches
-            ? daysAboveFreezing.data.matches
-            : [],
-      });
-
+          daysAboveFreezing:
+            daysAboveFreezing.success &&
+            Array.isArray(daysAboveFreezing.data?.matches)
+              ? daysAboveFreezing.data.matches.map((m: unknown) => {
+                  const cast = m as DayAboveFreezing;
+                  return {
+                    date: cast.date,
+                    averageTemperature: cast.averageTemperature,
+                  };
+                })
+              : [],
+        });
       } catch (err) {
-      console.error("Failed to load weather:", err);
+        console.error("Failed to load weather:", err);
       } finally {
-      setLoading(false);
+        setLoading(false);
       }
     }
 
     loadWeather();
   }, []);
-
 
   if (loading || !weatherData) {
     return (
@@ -143,7 +164,7 @@ export default function WeatherView() {
   return (
     <div className="relative w-full h-full flex flex-col items-center py-16 px-6 overflow-y-auto select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {snowflakes.map((f: any, i) => (
+        {snowflakes.map((f, i) => (
           <div
             key={i}
             className="absolute animate-snow text-gray-400 dark:text-white/40"
@@ -184,7 +205,9 @@ export default function WeatherView() {
 
               <p className="text-3xl font-bold text-primary">
                 {weatherData.averageWind.direction !== null
-                  ? t("windDirection", { deg: weatherData.averageWind.direction })
+                  ? t("windDirection", {
+                      deg: weatherData.averageWind.direction,
+                    })
                   : t("notAvailable")}
               </p>
             </div>
@@ -198,7 +221,6 @@ export default function WeatherView() {
             </div>
 
             <div className="text-lg space-y-1">
-              {/* Min */}
               <p className="text-blue-500 flex items-center gap-1">
                 <ArrowDown size={16} /> {t("min")}:
                 {weatherData.temperature.min !== null ? (
@@ -207,11 +229,13 @@ export default function WeatherView() {
                     {weatherData.temperature.min} °C
                   </span>
                 ) : (
-                  <span className="text-muted-foreground"> {t("notAvailable")}</span>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    {t("notAvailable")}
+                  </span>
                 )}
               </p>
 
-              {/* Max */}
               <p className="text-red-500 flex items-center gap-1">
                 <ArrowUp size={16} /> {t("max")}:
                 {weatherData.temperature.max !== null ? (
@@ -220,7 +244,10 @@ export default function WeatherView() {
                     {weatherData.temperature.max} °C
                   </span>
                 ) : (
-                  <span className="text-muted-foreground"> {t("notAvailable")}</span>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    {t("notAvailable")}
+                  </span>
                 )}
               </p>
             </div>
@@ -263,7 +290,7 @@ export default function WeatherView() {
 
             {weatherData.daysAboveFreezing.length > 0 ? (
               <ul className="list-disc list-inside text-lg mt-2">
-                {weatherData.daysAboveFreezing.map((d: any) => (
+                {weatherData.daysAboveFreezing.map((d) => (
                   <li key={d.date}>
                     {d.date} —{" "}
                     <span className="font-semibold text-primary">
