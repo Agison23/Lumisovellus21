@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
-import { WeatherService } from '../../services/weather/WeatherService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { WeatherService } from '../../services/weather/WeatherService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import {
   weatherAverageQuerySchema,
   weatherChangeQuerySchema,
   weatherFilterDaysQuerySchema,
   weatherMaximumQuerySchema,
   weatherMinimumQuerySchema,
-} from '../../middleware/validation';
+} from '../../middleware/validation.js';
 import { z } from 'zod';
-import { weatherMetricSchema, weatherFilterDaysResponseSchema } from '../../openapi/routes';
+import { weatherMetricSchema, weatherFilterDaysResponseSchema } from '../../openapi/routes.js';
 
 type WeatherMetricType = 'average' | 'minimum' | 'maximum' | 'change';
 

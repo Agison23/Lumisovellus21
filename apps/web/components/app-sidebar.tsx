@@ -56,7 +56,7 @@ export default function AppSidebar() {
               </Button>
             </Link>
           )}
-          <SidebarTrigger className="bg-background">
+          <SidebarTrigger className="bg-background md:hidden">
             <CrossIcon />
           </SidebarTrigger>
         </div>

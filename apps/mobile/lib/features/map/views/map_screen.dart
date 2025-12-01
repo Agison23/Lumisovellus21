@@ -80,6 +80,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       },
     );
 
+    // Listen for snap-to-location signal (when help event becomes active)
+    ref.listen<bool>(
+      snapToLocationProvider,
+      (previous, next) {
+        if (next && _map != null) {
+          // Reset the signal and snap to location
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(snapToLocationProvider.notifier).state = false;
+            _goToUserLocation();
+          });
+        }
+      },
+    );
+
     return Scaffold(
       body: Stack(
         children: [

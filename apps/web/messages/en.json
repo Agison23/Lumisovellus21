@@ -198,19 +198,34 @@
     }
   },
   "WeatherPage": {
-    "title": "Weather",
-    "avgWindTitle": "Average Wind (3 days)",
-    "windDirection": "at {deg}°",
-    "tempTitle": "Temperature (3 days)",
-    "min": "Min",
-    "max": "Max",
-    "maxWindTitle": "Max Wind Speed (3 days)",
-    "snowChangeTitle": "Snow Depth Change (7 days)",
-    "aboveFreezingTitle": "Days Above Freezing (3 days)",
-    "noAboveFreezing": "No days above freezing."
+  "title": "Weather",
+  "loading": "Loading weather data...",
+  "avgWindTitle": "Average Wind (3 days)",
+  "windDirection": "at {deg}°",
+  "tempTitle": "Temperature (3 days)",
+  "min": "Min",
+  "max": "Max",
+  "maxWindTitle": "Max Wind Speed (3 days)",
+  "snowChangeTitle": "Snow Depth Change (7 days)",
+  "aboveFreezingTitle": "Days Above Freezing (3 days)",
+  "noAboveFreezing": "No days above freezing.",
+  "notAvailable": "Data not available"
   },
   "DefinitionsPage": {
-    "title": "Definitions"
+    "title": "Definitions",
+    "loading": "Loading snow types...",
+    "errors": {
+      "loadingFailed": "Failed to load snow types. Please try again later."
+    },
+    "search": {
+      "placeholder": "Search snow types..."
+    },
+    "labels": {
+      "snowTypes": "Snow Types",
+      "description": "Description",
+      "noDescription": "No description available"
+    },
+    "noResults": "No snow types found matching your search."
   },
   "Dashboard": {
     "title": "Dashboard",

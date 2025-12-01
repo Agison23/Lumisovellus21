@@ -12,9 +12,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validation:
+  job:
     uses: ./.github/workflows/ci-reusable.yml
     with:
-      coverage-threshold: 70
-      audit-level: "critical"
+      coverage-threshold: 80
+      run-build: true
+      run-heavy-lint: true
+      run-security-checks: true
+      audit-level: "high"
+      run-smoke-e2e: true
     secrets: inherit

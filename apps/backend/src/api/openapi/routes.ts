@@ -38,8 +38,8 @@ import {
   snowTypeResponseSchema,
   primarySnowTypeResponseSchema,
   reviewResponseSchema,
-} from '../middleware/validation';
-import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas';
+} from '../middleware/validation.js';
+import { successResponseSchema, errorResponseSchema, healthResponseSchema } from './schemas.js';
 
 // Helper to create success response
 const createSuccessResponse = (dataSchema: z.ZodTypeAny, description: string) => ({

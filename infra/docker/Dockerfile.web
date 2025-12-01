@@ -1,5 +1,5 @@
 # Stage 1: install deps for all workspaces (cacheable)
-FROM node:24.11.0-bullseye-slim AS deps
+FROM node:24.11.1-bullseye-slim AS deps
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -31,7 +31,7 @@ COPY turbo.json ./
 RUN npm --workspace=web run build
 
 # Stage 3: runtime image
-FROM node:24.11.0-bullseye-slim AS runner
+FROM node:24.11.1-bullseye-slim AS runner
 WORKDIR /app
 
 # Copy package.json so workspace commands are still available

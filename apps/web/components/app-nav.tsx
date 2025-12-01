@@ -37,19 +37,24 @@ export default function Nav() {
 
   return (
     <NavigationMenu className="w-full flex flex-1 max-w-full">
-      <NavigationMenuList className=" w-full flex-1 bg-background rounded-md sm:p-1 pointer-events-auto border border-accent shadow-md">
+      <NavigationMenuList className="w-full flex-1 bg-background rounded-md p-0 sm:p-1 pointer-events-auto border border-accent shadow-md flex flex-row sm:flex-row md:flex-row">
         {visibleRoutes.map((route) => (
           <NavigationMenuItem
             key={route.path}
-            className={
+            className={`flex-1 sm:flex-initial ${
               isCurrentPath(route.path) ? "underline underline-offset-4" : ""
-            }
+            }`}
           >
             <NavigationMenuLink asChild>
               <Link href={route.path}>
-                <div className="flex gap-2 items-center sm:flex-row flex-col w-full">
+                <div className="flex gap-2 items-center justify-center sm:justify-start flex-col sm:flex-row w-full p-2 sm:p-0">
                   <NavigationItemIcon {...route} />
-                  {tApp(route.i18nKey)}
+                  <span className="hidden sm:inline">
+                    {tApp(route.i18nKey)}
+                  </span>
+                  <span className="sm:hidden text-xs text-center">
+                    {tApp(route.i18nKey)}
+                  </span>
                 </div>
               </Link>
             </NavigationMenuLink>

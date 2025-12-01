@@ -5,7 +5,10 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { serverApiUrl } from "@/lib/map/loaders";
 
-export async function loginAction(email: string, password: string) {
+export async function loginAction(
+  email: string,
+  password: string,
+): Promise<{ success: true } | { success: false; error: string }> {
   // Call your backend API here
   type LoginBody =
     paths["/auth/login"]["post"]["requestBody"]["content"]["application/json"];
@@ -24,7 +27,7 @@ export async function loginAction(email: string, password: string) {
     type ErrorResponse =
       paths["/auth/login"]["post"]["responses"]["400"]["content"]["application/json"];
     const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error.message || "Login failed");
+    return { success: false, error: errorData.error.message || "Login failed" };
   }
   type LoginResponse =
     paths["/auth/login"]["post"]["responses"]["200"]["content"]["application/json"];
@@ -37,14 +40,14 @@ export async function loginAction(email: string, password: string) {
   cookieStore.set("accessToken", accessToken, {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     sameSite: "strict",
   });
   cookieStore.set("refreshToken", refreshToken, {
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-    secure: true,
+    maxAge: 60 * 60 * 24 * 30,
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     sameSite: "strict",
   });
@@ -53,7 +56,9 @@ export async function loginAction(email: string, password: string) {
   return { success: true };
 }
 
-export async function logoutAction() {
+export async function logoutAction(): Promise<
+  { success: true } | { success: false; error: string }
+> {
   const cookieStore = await cookies();
   // we need to post to /auth/logout with accessToken as authorization header
   const accessToken = cookieStore.get("accessToken")?.value;
@@ -70,7 +75,7 @@ export async function logoutAction() {
     type LogoutResponse =
       paths["/auth/logout"]["post"]["responses"]["200"]["content"]["application/json"];
     if (!res.ok) {
-      throw new Error("Logout failed");
+      return { success: false, error: "Logout failed" };
     }
   }
   cookieStore.delete("accessToken");
@@ -160,7 +165,7 @@ export async function registerAction(
   lastName: string | undefined,
   email: string,
   password: string,
-) {
+): Promise<{ success: true } | { success: false; error: string }> {
   type RegisterBody =
     paths["/auth/register"]["post"]["requestBody"]["content"]["application/json"];
   const requestBody: RegisterBody = { firstName, lastName, email, password };
@@ -178,7 +183,10 @@ export async function registerAction(
     type ErrorResponse =
       paths["/auth/register"]["post"]["responses"]["400"]["content"]["application/json"];
     const errorData: ErrorResponse = await response.json();
-    throw new Error(errorData.error.message || "Registration failed");
+    return {
+      success: false,
+      error: errorData.error.message || "Registration failed",
+    };
   }
 
   type RegisterResponse =
@@ -202,7 +210,7 @@ export async function registerAction(
   });
 
   revalidatePath("/");
-  return true;
+  return { success: true };
 }
 
 export async function getAccessTokenAction() {

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { HealthService } from '../../services/health/HealthService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { healthResponseSchema } from '../../openapi/schemas';
+import { HealthService } from '../../services/health/HealthService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { healthResponseSchema } from '../../openapi/schemas.js';
 
 export class HealthController {
   private healthService: HealthService;

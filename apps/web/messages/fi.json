@@ -209,10 +209,24 @@
     "maxWindTitle": "Suurin tuulennopeus (3 päivää)",
     "snowChangeTitle": "Lumensyvyyden muutos (7 päivää)",
     "aboveFreezingTitle": "Päivät nollan yläpuolella (3 päivää)",
-    "noAboveFreezing": "Ei päiviä nollan yläpuolella."
+    "noAboveFreezing": "Ei päiviä nollan yläpuolella.",
+    "notAvailable": "Tietoa ei ole saatavilla"
   },
   "DefinitionsPage": {
-    "title": "Selitteet"
+    "title": "Selitteet",
+    "loading": "Ladataan lumityyppejä...",
+    "errors": {
+      "loadingFailed": "Lumityyppien lataus epäonnistui. Yritä myöhemmin uudelleen."
+    },
+    "search": {
+      "placeholder": "Etsi lumityyppejä..."
+    },
+    "labels": {
+      "snowTypes": "Lumityypit",
+      "description": "Kuvaus",
+      "noDescription": "Kuvausta ei saatavilla"
+    },
+    "noResults": "Hakuasi vastaavia lumityyppejä ei löytynyt."
   },
   "Dashboard": {
     "title": "Hallintapaneeli",

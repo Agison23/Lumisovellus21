@@ -1,4 +1,4 @@
-import { BaseService } from '../BaseService';
+import { BaseService } from '../BaseService.js';
 import { HealthResponse } from '../../types';
 
 export class HealthService extends BaseService {

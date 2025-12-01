@@ -1,4 +1,4 @@
-import '../models/snow_type.dart';
+import '../model/snow_type.dart';
 
 class SnowDefinitionsData {
   static const AvalancheWarning avalancheWarning = AvalancheWarning(

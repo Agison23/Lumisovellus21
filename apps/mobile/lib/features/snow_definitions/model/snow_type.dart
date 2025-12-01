@@ -23,3 +23,5 @@ class AvalancheWarning {
     required this.iconPath,
   });
 }
+
+

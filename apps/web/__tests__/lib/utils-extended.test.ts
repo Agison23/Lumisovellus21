@@ -1,14 +1,55 @@
 import { describe, it, expect } from "vitest";
 import { getSnowTypeNameById } from "../../lib/utils";
+import { SnowTypesResponse } from "@/lib/map/loaders";
 
 describe("utils - extended", () => {
   describe("getSnowTypeNameById", () => {
-    const mockSnowTypes = [
-      { id: "1", name: "Korppu" },
-      { id: "2", name: "Sohjo" },
-      { id: "3", name: "Jää" },
-      { id: "4", name: "Uusi lumi" },
-      { id: "5", name: "Tuulen pieksemä lumi" },
+    const mockSnowTypes: SnowTypesResponse["data"] = [
+      {
+        id: "1",
+        name: "Korppu",
+        identifier: "",
+        colour: "",
+        skiability: null,
+        primarySnowTypeId: null,
+        explanation: null,
+      },
+      {
+        id: "2",
+        name: "Sohjo",
+        identifier: "",
+        colour: "",
+        skiability: null,
+        primarySnowTypeId: null,
+        explanation: null,
+      },
+      {
+        id: "3",
+        name: "Jää",
+        identifier: "",
+        colour: "",
+        skiability: null,
+        primarySnowTypeId: null,
+        explanation: null,
+      },
+      {
+        id: "4",
+        name: "Uusi lumi",
+        identifier: "",
+        colour: "",
+        skiability: null,
+        primarySnowTypeId: null,
+        explanation: null,
+      },
+      {
+        id: "5",
+        name: "Tuulen pieksemä lumi",
+        identifier: "",
+        colour: "",
+        skiability: null,
+        primarySnowTypeId: null,
+        explanation: null,
+      },
     ];
 
     it("should return snow type name for valid ID", () => {
@@ -38,17 +79,49 @@ describe("utils - extended", () => {
     });
 
     it("should handle array with duplicate IDs (returns first match)", () => {
-      const snowTypesWithDuplicates = [
-        { id: "1", name: "First" },
-        { id: "1", name: "Second" },
+      const snowTypesWithDuplicates: SnowTypesResponse["data"] = [
+        {
+          id: "1",
+          name: "First",
+          identifier: "",
+          colour: "",
+          skiability: null,
+          primarySnowTypeId: null,
+          explanation: null,
+        },
+        {
+          id: "1",
+          name: "Second",
+          identifier: "",
+          colour: "",
+          skiability: null,
+          primarySnowTypeId: null,
+          explanation: null,
+        },
       ];
       expect(getSnowTypeNameById(snowTypesWithDuplicates, "1")).toBe("First");
     });
 
     it("should handle snow types with special characters in names", () => {
-      const specialSnowTypes = [
-        { id: "1", name: "Lumi-kivi" },
-        { id: "2", name: "Lumi (härkkä)" },
+      const specialSnowTypes: SnowTypesResponse["data"] = [
+        {
+          id: "1",
+          name: "Lumi-kivi",
+          identifier: "",
+          colour: "",
+          skiability: null,
+          primarySnowTypeId: null,
+          explanation: null,
+        },
+        {
+          id: "2",
+          name: "Lumi (härkkä)",
+          identifier: "",
+          colour: "",
+          skiability: null,
+          primarySnowTypeId: null,
+          explanation: null,
+        },
       ];
       expect(getSnowTypeNameById(specialSnowTypes, "1")).toBe("Lumi-kivi");
       expect(getSnowTypeNameById(specialSnowTypes, "2")).toBe("Lumi (härkkä)");

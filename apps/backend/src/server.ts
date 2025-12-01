@@ -6,10 +6,10 @@ import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 
 // Import new API router
-import apiRouter from './api/routes';
-import { errorHandler, notFoundHandler } from './api/middleware/errorHandler';
-import { WeatherScheduler } from './scheduler/weatherScheduler';
-import { openApiDocument } from './api/openapi/document';
+import apiRouter from './api/routes/index.js';
+import { errorHandler, notFoundHandler } from './api/middleware/errorHandler.js';
+import { WeatherScheduler } from './scheduler/weatherScheduler.js';
+import { openApiDocument } from './api/openapi/document.js';
 
 // Function to get swagger options without auth
 async function getSwaggerOptions() {

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { BaseService } from '../BaseService';
+import { BaseService } from '../BaseService.js';
 import {
   HelpEventCreate,
   HelpEventLocation,

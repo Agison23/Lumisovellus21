@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SegmentsController } from '../../controllers/segments/SegmentsController';
-import { authenticateToken, requireAdmin } from '../../middleware/auth';
+import { SegmentsController } from '../../controllers/segments/SegmentsController.js';
+import { authenticateToken, requireAdmin } from '../../middleware/auth.js';
 
 const router = Router();
 const segmentsController = new SegmentsController();
