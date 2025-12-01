@@ -106,6 +106,9 @@ jobs:
         run: |
           echo "Installing Rollup native binary"
           npm install @rollup/rollup-linux-x64-gnu --no-save || true
+      
+      - name: Install Rollup native binary in root
+        run: npm install @rollup/rollup-linux-x64-gnu --no-save || true
 
       - name: Install backend dependencies
         working-directory: apps/backend
