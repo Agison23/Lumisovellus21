@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { z } from 'zod';
 import { ApiResponse } from '../types';
-import { successResponseSchema } from '../openapi/schemas';
+import { successResponseSchema } from '../openapi/schemas.js';
 
 // Helper to recursively transform Date objects to ISO strings for validation
 function transformDatesToISO(obj: any): any {

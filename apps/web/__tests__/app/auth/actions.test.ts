@@ -76,9 +76,14 @@ describe("Auth Actions", () => {
 
       global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
+      // instead of erroring, we return a {success: false}
+
       await expect(
         loginAction("test@example.com", "wrong_password"),
-      ).rejects.toThrow("Invalid credentials");
+      ).resolves.toEqual({
+        error: "Invalid credentials",
+        success: false,
+      });
     });
 
     it("should throw error with default message when API doesn't return message", async () => {
@@ -91,7 +96,10 @@ describe("Auth Actions", () => {
 
       await expect(
         loginAction("test@example.com", "wrong_password"),
-      ).rejects.toThrow("Login failed");
+      ).resolves.toEqual({
+        error: "Login failed",
+        success: false,
+      });
     });
 
     it("should handle network errors", async () => {
@@ -140,7 +148,10 @@ describe("Auth Actions", () => {
 
       global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-      await expect(logoutAction()).rejects.toThrow("Logout failed");
+      await expect(logoutAction()).resolves.toEqual({
+        error: "Logout failed",
+        success: false,
+      });
     });
   });
 
@@ -174,11 +185,15 @@ describe("Auth Actions", () => {
     });
 
     it("should handle network errors gracefully", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
 
       const result = await verifyTokenAction("token_123");
 
       expect(result).toEqual({ valid: false, user: null });
+      consoleErrorSpy.mockRestore();
     });
 
     it("should return null user when API doesn't return user data", async () => {
@@ -252,6 +267,9 @@ describe("Auth Actions", () => {
     });
 
     it("should handle network errors gracefully", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       mockCookieStore.get.mockReturnValue({ value: "refresh_token_456" });
 
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
@@ -259,6 +277,7 @@ describe("Auth Actions", () => {
       const result = await refreshTokenAction();
 
       expect(result).toEqual({ success: false });
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -284,7 +303,9 @@ describe("Auth Actions", () => {
         "password123",
       );
 
-      expect(result).toBe(true);
+      expect(result).toStrictEqual({
+        success: true,
+      });
       expect(mockCookieStore.set).toHaveBeenCalledWith(
         "accessToken",
         "access_token_123",
@@ -313,7 +334,7 @@ describe("Auth Actions", () => {
         "password123",
       );
 
-      expect(result).toBe(true);
+      expect(result).toStrictEqual({ success: true });
     });
 
     it("should throw error on failed registration", async () => {
@@ -328,7 +349,10 @@ describe("Auth Actions", () => {
 
       await expect(
         registerAction("John", "Doe", "existing@example.com", "password123"),
-      ).rejects.toThrow("Email already exists");
+      ).resolves.toEqual({
+        error: "Email already exists",
+        success: false,
+      });
     });
 
     it("should throw default error message if not provided", async () => {
@@ -341,7 +365,10 @@ describe("Auth Actions", () => {
 
       await expect(
         registerAction("John", "Doe", "newuser@example.com", "password123"),
-      ).rejects.toThrow("Registration failed");
+      ).resolves.toEqual({
+        error: "Registration failed",
+        success: false,
+      });
     });
   });
 

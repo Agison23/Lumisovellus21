@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import healthRoutes from './health/healthRoutes';
-import segmentsRoutes from './segments/segmentsRoutes';
-import reviewsRoutes from './reviews/reviewsRoutes';
-import usersRoutes from './users/usersRoutes';
-import helpRoutes from './help/helpRoutes';
-import authRoutes from './auth/authRoutes';
-import weatherRoutes from './weather/weatherRoutes';
-import snowTypesRoutes from './snowTypes/snowTypesRoutes';
+import healthRoutes from './health/healthRoutes.js';
+import segmentsRoutes from './segments/segmentsRoutes.js';
+import reviewsRoutes from './reviews/reviewsRoutes.js';
+import usersRoutes from './users/usersRoutes.js';
+import helpRoutes from './help/helpRoutes.js';
+import authRoutes from './auth/authRoutes.js';
+import weatherRoutes from './weather/weatherRoutes.js';
+import snowTypesRoutes from './snowTypes/snowTypesRoutes.js';
 
 const apiRouter = Router();
 

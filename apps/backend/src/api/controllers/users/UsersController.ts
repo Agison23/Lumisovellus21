@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { UsersService } from '../../services/users/UsersService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { UsersService } from '../../services/users/UsersService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import { AuthenticatedRequest } from '../../types';
-import { AuthService } from '../../services/auth/AuthService';
-import { updateUserSchema } from '../../middleware/validation';
-import { userSchema, statusResponseSchema, userRoleResponseSchema, messageResponseSchema } from '../../openapi/routes';
+import { AuthService } from '../../services/auth/AuthService.js';
+import { updateUserSchema } from '../../middleware/validation.js';
+import { userSchema, statusResponseSchema, userRoleResponseSchema, messageResponseSchema } from '../../openapi/routes.js';
 
 export class UsersController {
   private usersService: UsersService;

@@ -20,11 +20,13 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     if (!email || !password) {
-      toast.error(t("errors.missingFields"));
-      return false;
+      throw new Error(t("errors.missingFields"));
     }
 
-    await loginAction(email, password);
+    const result = await loginAction(email, password);
+    if (!result.success) {
+      throw new Error(result.error);
+    }
     return true;
   };
 

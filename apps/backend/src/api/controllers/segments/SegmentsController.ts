@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService';
-import { ApiResponseHandler } from '../../middleware/responseHandler';
-import { asyncHandler } from '../../middleware/errorHandler';
+import { SegmentsService, SegmentQueryParams } from '../../services/segments/SegmentsService.js';
+import { ApiResponseHandler } from '../../middleware/responseHandler.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import { AuthenticatedRequest, HazardType } from '../../types';
-import { segmentQuerySchema, segmentSchema, guideUpdateSchema } from '../../middleware/validation';
+import { segmentQuerySchema, segmentSchema, guideUpdateSchema } from '../../middleware/validation.js';
 
 export class SegmentsController {
   private segmentsService: SegmentsService;
