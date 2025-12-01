@@ -17,10 +17,9 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   Widget build(BuildContext context) {
 
     final localised = AppLocalizations.of(context);
-    const String empty = "XX";
+    final String empty = localised.dataPointUnavailable;
 
     final WeatherState? weatherState = ref.watch(weatherStateProvider).value;
-    final bool gotState = ref.watch(weatherStateProvider).hasValue;
 
     List<String> windDirectionNames = [
                                         localised.north,
@@ -33,8 +32,8 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                                         localised.northwest,
                                       ];
     String windDirectionName = "";
-    if(gotState) {
-      final double directionDegrees = weatherState!.windDirection.toDouble();
+    if(weatherState?.windDirection != null) {
+      final double directionDegrees = weatherState!.windDirection!.toDouble();
       final int directionIndex = ((directionDegrees+22.5)/45.0).floor() % 8;
       windDirectionName = windDirectionNames[directionIndex];
     }
@@ -77,9 +76,9 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.thermostat,
                       children: [
-                        WeatherLine(label: localised.highest, value: gotState ? weatherState!.tempMax.toStringAsFixed(1) : empty),
-                        WeatherLine(label: localised.lowest, value: gotState ? weatherState!.tempMin.toStringAsFixed(1) : empty),
-                        WeatherLine(label: localised.countDaysAboveFreezing, value: gotState ? weatherState!.daysAboveZero.toString() : empty)
+                        WeatherLine(label: localised.highest, value: weatherState?.tempMax?.toStringAsFixed(1) ?? empty),
+                        WeatherLine(label: localised.lowest, value: weatherState?.tempMin?.toStringAsFixed(1) ?? empty),
+                        WeatherLine(label: localised.countDaysAboveFreezing, value: weatherState?.daysAboveZero?.toString() ?? empty)
                       ]
                     ),
 
@@ -90,9 +89,9 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastThreeDays,
                       icon: Icons.air,
                       children: [
-                        WeatherLine(label: localised.avgSpeed, value: gotState ? weatherState!.windAvg.toStringAsFixed(1) : empty),
-                        WeatherLine(label: localised.maxWind, value: gotState ? weatherState!.windMax.toStringAsFixed(1) : empty),
-                        WeatherLine(label: localised.avgDirection, value: "$windDirectionName (${gotState ? weatherState!.windDirection.toStringAsFixed(0) : empty} °)")
+                        WeatherLine(label: localised.avgSpeed, value: weatherState?.windAvg?.toStringAsFixed(1) ?? empty),
+                        WeatherLine(label: localised.maxWind, value: weatherState?.windMax?.toStringAsFixed(1) ?? empty),
+                        WeatherLine(label: localised.avgDirection, value: "$windDirectionName (${weatherState?.windDirection?.toStringAsFixed(0) ?? empty} °)")
                       ]
                     ),
 
@@ -103,7 +102,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
                       subtitle: localised.lastSevenDays,
                       icon: Icons.ac_unit, // ac_unit looks like a snowflake as of 2025
                       children: [
-                        WeatherLine(label: localised.snowDepthChange, value: weatherState!.snowDepthChange != null ? weatherState.snowDepthChange!.toStringAsFixed(1) : empty)
+                        WeatherLine(label: localised.snowDepthChange, value: weatherState?.snowDepthChange?.toStringAsFixed(1) ?? empty)
                       ]
                     )     
                   ],

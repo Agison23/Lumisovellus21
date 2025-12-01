@@ -151,5 +151,6 @@
   "role": "Role",
   "phoneNumber": "Phone number",
   "registeredAt": "Registered at",
-  "logout": "Logout"
+  "logout": "Logout",
+  "dataPointUnavailable": "Unknown"
 }

@@ -12,30 +12,64 @@ final weatherStateProvider = FutureProvider<WeatherState>((ref) async {
 
   final weatherService = ref.watch(weatherServiceProvider);
 
-  final WeatherMetric tempMaxMetric;
-  final WeatherMetric tempMinMetric;
-  final WeatherFilterDaysResponse daysMetric;
-  final WeatherMetric windDirectionMetric;
-  final WeatherMetric windAvgMetric;
-  final WeatherMetric windMaxMetric;
-  final WeatherMetric snowDepthMetric;
+  WeatherMetric? tempMaxMetric;
+  WeatherMetric? tempMinMetric;
+  WeatherFilterDaysResponse? daysMetric;
+  WeatherMetric? windDirectionMetric;
+  WeatherMetric? windAvgMetric;
+  WeatherMetric? windMaxMetric;
+  WeatherMetric? snowDepthMetric;
 
-  tempMaxMetric = await weatherService.fetchMaxTemperature();
-  tempMinMetric = await weatherService.fetchMinTemperature();
-  daysMetric = await weatherService.fetchDaysAboveZero();
-  windDirectionMetric = await weatherService.fetchWindDirection();
-  windAvgMetric = await weatherService.fetchWindAverage();
-  windMaxMetric = await weatherService.fetchMaxWind();
-  //snowDepthMetric = await weatherService.fetchSnowDepthChange();
+  try {
+    tempMaxMetric = await weatherService.fetchMaxTemperature();
+  } on Exception {
+    tempMaxMetric = null;
+  }
+
+  try {
+    tempMinMetric = await weatherService.fetchMinTemperature();
+  } on Exception {
+    tempMinMetric = null;
+  }
+
+  try{
+    daysMetric = await weatherService.fetchDaysAboveZero();
+  } on Exception {
+    daysMetric = null;
+  }
+
+  try {
+    windDirectionMetric = await weatherService.fetchWindDirection();
+  } on Exception {
+    windDirectionMetric = null;
+  }
+
+  try {
+    windAvgMetric = await weatherService.fetchWindAverage();
+  } on Exception {
+    windAvgMetric = null;
+  }
+
+  try {
+    windMaxMetric = await weatherService.fetchMaxWind();
+  } on Exception {
+    windMaxMetric = null;
+  }
+
+  try {
+    snowDepthMetric = await weatherService.fetchSnowDepthChange();
+  } on Exception {
+    snowDepthMetric = null;
+  }
 
   final weatherState = WeatherState(
-    tempMax: tempMaxMetric.value.toDouble(),
-    tempMin: tempMinMetric.value.toDouble(),
-    daysAboveZero: daysMetric.matches.length,
-    windDirection: windDirectionMetric.value.toDouble(),
-    windAvg: windAvgMetric.value.toDouble(),
-    windMax: windMaxMetric.value.toDouble(),
-    snowDepthChange: -999 //snowDepthMetric.value.toDouble()
+    tempMax: tempMaxMetric?.value.toDouble(),
+    tempMin: tempMinMetric?.value.toDouble(),
+    daysAboveZero: daysMetric?.matches.length,
+    windDirection: windDirectionMetric?.value.toDouble(),
+    windAvg: windAvgMetric?.value.toDouble(),
+    windMax: windMaxMetric?.value.toDouble(),
+    snowDepthChange: snowDepthMetric?.value.toDouble()
   );
   return weatherState;
 });

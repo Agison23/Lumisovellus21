@@ -62,11 +62,15 @@ class WeatherService {
   }
 
   Future<WeatherMetric> fetchSnowDepthChange() async {
-    final Response<WeatherAverageGet200Response> res = await api.weather.weatherChangeGet(item: "snowDepth", days: 7);
-    final body = res.data;
-    if (body == null || body.success != true) {
-      throw Exception('Failed to load weather data');
+    try {
+      final Response<WeatherAverageGet200Response> res = await api.weather.weatherChangeGet(item: "snowDepth");
+      final body = res.data;
+      if (body == null || body.success != true) {
+        throw Exception('Failed to load weather data');
+      }
+      return body.data;
+    } on DioException {
+        throw Exception('Failed to load weather data');
     }
-    return body.data;
   }
 }
