@@ -13,27 +13,27 @@ class AppLocalizationsFi extends AppLocalizations {
       'Pallaksen Pöllöt -lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista.';
 
   @override
-  String get next => 'Seuraava';
+  String get next => 'Jatka';
 
   @override
   String get sharingLocation => 'SIJAINTITIEDON JAKAMINEN';
 
   @override
   String get rescueFeatureInfo =>
-      'Sovelluksen pelastustoiminto kerää tietoja sijainnistasi. Sen avulla tarjoamme pelastamiseen tukea. Sijaintia käyttäen pelastuslaitos voi hyödyntää reittiäsi ja voit pyytää apua ympärillä olevilta kulkijoilta. Myös sinä voit auttaa muita. Voit koska tahansa poistaa sijainnin käytöstä.';
+      'Sovelluksen pelastustoiminto kerää tietoa sijainnistasi. Tämän avulla voimme tarjota apua pelastustilanteissa. Pelastusviranomaiset näkevät reittisi ja sovellus voi pyytää apua muilta käyttäjiltä ympärilläsi. Voit myös auttaa muita käyttäjiä. Sijainnin jakamisen voi poistaa käytöstä milloin tahansa.';
 
   @override
-  String get allowSharing => 'SALLI JAKO';
+  String get allowSharing => 'SALLI JAKAMINEN';
 
   @override
-  String get noLocationShare => 'Älä salli sijaintia';
+  String get noLocationShare => 'Älä salli sijainnin jakamista';
 
   @override
-  String get correctInfo => 'Syötäthän oikeat tietosi';
+  String get correctInfo => 'Varmista, että syötät oikeat tiedot';
 
   @override
   String get infoUsage =>
-      'Tietojasi käytetään sovelluksen pelastustoimintoon.\nToiminnon avulla pelastuslaitos voi hälytyksen tapahtuessa löytää sinut helpommin.';
+      'Tietojasi käytetään sovelluksen pelastustoimintoon. Toiminto auttaa pelastuspalvelua löytämään sinut helpommin.';
 
   @override
   String get fName => 'Etunimi';
@@ -68,7 +68,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get freshWetSnowDesc =>
-      'Lumi, josta voi helposti tehdä lumipallon. Märkää lunta muodostuu sateen ja suojasään takia.';
+      'Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.';
 
   @override
   String get powderSnow => 'Puuterilumi';
@@ -103,7 +103,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get thinCrustDesc =>
-      'Kuori, joka murtuu hiihtäjän painosta. Kuoren alla lumi voi olla pehmeää ja upottavaa.';
+      'Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.';
 
   @override
   String get collapsingCrust => 'Rikkoutuva korppu';
@@ -541,4 +541,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String timeNDaysAgo(Object days) {
     return '$days päivää sitten';
   }
+
+  @override
+  String get dataPointUnavailable => 'Tuntematon';
+
+  @override
+  String get degrees => '°';
+
+  @override
+  String get degreesCelsius => '°C';
+
+  @override
+  String get metersPerSecond => 'm/s';
+
+  @override
+  String get centimeters => 'cm';
 }

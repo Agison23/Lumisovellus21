@@ -541,4 +541,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String timeNDaysAgo(Object days) {
     return '$days days ago';
   }
+
+  @override
+  String get dataPointUnavailable => 'Unknown';
+
+  @override
+  String get degrees => '°';
+
+  @override
+  String get degreesCelsius => '°C';
+
+  @override
+  String get metersPerSecond => 'm/s';
+
+  @override
+  String get centimeters => 'cm';
 }
