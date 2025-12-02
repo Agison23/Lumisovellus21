@@ -63,9 +63,23 @@ class MapStyleRepository {
   Map<String, dynamic> _segmentsToFeatureCollection(List<Segment> segments) {
     final filtered = segments.where((s) => s.name != 'Metsä');
 
+    final normalSegments = <Segment>[];
+    final lowerSegments = <Segment>[];
+
+    for (final s in filtered) {
+      if (s.isLowerSegment != null) {
+        lowerSegments.add(s);
+      } else {
+        normalSegments.add(s);
+      }
+    }
+
+    // Lower segments take priority so they are clickable
+    final ordered = [...lowerSegments, ...normalSegments];
+
     return {
       'type': 'FeatureCollection',
-      'features': filtered.map((s) {
+      'features': ordered.map((s) {
         return {
           'type': 'Feature',
           'properties': {
