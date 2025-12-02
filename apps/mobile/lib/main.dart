@@ -10,6 +10,7 @@ import 'package:lumisovellus/features/rescue/viewmodel/rescue_view_model.dart';
 import 'package:lumisovellus/features/settings/view/settings_page.dart';
 import 'package:lumisovellus/features/map/views/map_screen.dart';
 import 'package:lumisovellus/features/map/providers.dart';
+import 'package:lumisovellus/features/weather/view/weather_page.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 
@@ -94,7 +95,7 @@ class _MainShellState extends ConsumerState<MainShell> {
   final List<Widget> _pages = const [
     RescuePage(),
     MapScreen(), 
-    _WeatherPlaceholder(),
+    WeatherPage(),
     SettingsPage(),
   ];
 
@@ -204,14 +205,5 @@ class _MainShellState extends ConsumerState<MainShell> {
         ),
       ),
     );
-  }
-}
-
-class _WeatherPlaceholder extends StatelessWidget {
-  const _WeatherPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(backgroundColor: Colors.white, body: Center(child: Text('Weather screen coming soon!')));
   }
 }
