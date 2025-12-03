@@ -150,6 +150,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               );
             },
             onStyleLoadedListener: (_) async {
+              await _goToUserLocation();
               await _map?.location.updateSettings(
                 LocationComponentSettings(
                   enabled: true,
@@ -169,7 +170,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 100,
+              bottom: 40,
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -178,7 +179,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    t.mapOfflineModeMessage,
+                    s?.segments == null ? t.mapOfflineModeMessageNoData : t.mapOfflineModeMessage,
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),

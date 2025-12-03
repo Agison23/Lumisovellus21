@@ -182,6 +182,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'You\'re offline - showing saved map data';
 
   @override
+  String get mapOfflineModeMessageNoData =>
+      'You\'re offline - no map data available';
+
+  @override
   String get weather => 'Weather';
 
   @override

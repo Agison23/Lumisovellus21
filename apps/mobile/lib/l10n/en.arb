@@ -51,6 +51,7 @@
   "saturatedSnowDesc": "Completely wet , slushing and whipped cream like snow.",
   "littleSnow": "Little snow",
   "mapOfflineModeMessage": "You''re offline - showing saved map data",
+  "mapOfflineModeMessageNoData": "You''re offline - no map data available",
   "weather": "Weather",
   "dayBeforeYesterday": "2 days ago",
   "yesterday": "Yesterday",

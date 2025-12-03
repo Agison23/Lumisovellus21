@@ -34,9 +34,7 @@ class SnowTypesState {
   });
 
   SnowTypesState copyWith({
-    List<SnowType>? snowTypes,
-    Object? selectedId = _sentinel,
-    Object? hoveredId = _sentinel,
+    List<SnowType>? snowTypes
   }) {
     return SnowTypesState(
       snowTypes: snowTypes ?? this.snowTypes

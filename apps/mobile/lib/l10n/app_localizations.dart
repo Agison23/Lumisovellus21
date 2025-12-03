@@ -403,6 +403,12 @@ abstract class AppLocalizations {
   /// **'You\'\'re offline - showing saved map data'**
   String get mapOfflineModeMessage;
 
+  /// No description provided for @mapOfflineModeMessageNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'\'re offline - no map data available'**
+  String get mapOfflineModeMessageNoData;
+
   /// No description provided for @weather.
   ///
   /// In en, this message translates to:

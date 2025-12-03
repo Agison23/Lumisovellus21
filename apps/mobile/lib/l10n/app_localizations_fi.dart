@@ -182,6 +182,10 @@ class AppLocalizationsFi extends AppLocalizations {
       'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
 
   @override
+  String get mapOfflineModeMessageNoData =>
+      'Olet offline-tilassa - karttatietoja ei saatavilla';
+
+  @override
   String get weather => 'Sää';
 
   @override

@@ -51,6 +51,7 @@
   "saturatedSnowDesc": "Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi.",
   "littleSnow": "Vähäinen lumi",
   "mapOfflineModeMessage": "Olet offline-tilassa - käytetään tallennettuja karttatietoja",
+  "mapOfflineModeMessageNoData": "Olet offline-tilassa - karttatietoja ei saatavilla",
   "weather": "Sää",
   "dayBeforeYesterday": "Toissapäivänä",
   "yesterday": "Eilen",
