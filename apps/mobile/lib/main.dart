@@ -12,6 +12,7 @@ import 'package:lumisovellus/features/map/views/map_screen.dart';
 import 'package:lumisovellus/features/map/providers.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
+import 'package:lumisovellus/core/config/app_configuration_provider.dart';
 
 // Global locale notifier for simple app-wide locale switching.
 // Replace with your preferred state management/localization solution as needed.
@@ -20,19 +21,43 @@ final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
-  final token = dotenv.env['ACCESS_TOKEN'] ?? '';
-  MapboxOptions.setAccessToken(token);
 
+  // Load .env file if available (for local development)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    // .env file is optional - continue without it
+    debugPrint('Note: .env file not found, using defaults and Remote Config');
+  }
+
+  // Initialize Firebase first (required for Remote Config)
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Create provider container for the app
   final container = ProviderContainer();
+  
+  // Wait for configuration to load (this will fetch Remote Config)
+  final config = await container.read(appConfigurationProvider.future);
+  
+  // Set Mapbox access token from centralized configuration
+  if (config.mapboxAccessToken.isNotEmpty) {
+    MapboxOptions.setAccessToken(config.mapboxAccessToken);
+  } else {
+    debugPrint('Warning: Mapbox access token is empty');
+  }
+
+  // Load auth session
   await container.read(authSessionProvider.notifier).loadSession();
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

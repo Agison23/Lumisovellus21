@@ -63,6 +63,7 @@ dependencies:
   lumisovellus_api:
     path: ../../packages/lumisovellus_api
   firebase_core: ^4.2.1
+  firebase_remote_config: ^6.1.2
   auto_mappr_annotation: ^2.3.0
 
 dev_dependencies:
