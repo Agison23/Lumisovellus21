@@ -172,5 +172,8 @@
   "degrees": "°",
   "degreesCelsius": "°C",
   "metersPerSecond": "m/s",
-  "centimeters": "cm"
+  "centimeters": "cm",
+  "stones": "Stones",
+  "branches": "Branches",
+  "translationMissing": "Error: Translation missing"
 }

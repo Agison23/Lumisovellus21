@@ -1134,6 +1134,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'cm'**
   String get centimeters;
+
+  /// No description provided for @stones.
+  ///
+  /// In en, this message translates to:
+  /// **'Stones'**
+  String get stones;
+
+  /// No description provided for @branches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get branches;
+
+  /// No description provided for @translationMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Translation missing'**
+  String get translationMissing;
 }
 
 class _AppLocalizationsDelegate

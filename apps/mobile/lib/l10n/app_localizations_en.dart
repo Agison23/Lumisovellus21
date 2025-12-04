@@ -560,4 +560,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get centimeters => 'cm';
+
+  @override
+  String get stones => 'Stones';
+
+  @override
+  String get branches => 'Branches';
+
+  @override
+  String get translationMissing => 'Error: Translation missing';
 }
