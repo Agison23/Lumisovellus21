@@ -1111,7 +1111,7 @@ export default function Map3d() {
                               : ""
                           }
                         >
-                          Stones
+                          {t("reportForm.obstacles.stones.name")}
                         </Button>
                         <Button
                           variant="outline"
@@ -1135,7 +1135,7 @@ export default function Map3d() {
                               : ""
                           }
                         >
-                          Branches
+                          {t("reportForm.obstacles.branches.name")}
                         </Button>
                       </div>
                     </div>
