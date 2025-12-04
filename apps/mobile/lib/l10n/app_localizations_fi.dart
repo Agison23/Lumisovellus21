@@ -568,5 +568,5 @@ class AppLocalizationsFi extends AppLocalizations {
   String get branches => 'Oksia';
 
   @override
-  String get translationMissing => 'Error: Translation missing';
+  String get translationMissing => 'Virhe: Käännös puuttuu';
 }
