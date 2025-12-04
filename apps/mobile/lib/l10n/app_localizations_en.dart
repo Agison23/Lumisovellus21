@@ -454,4 +454,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String timeNDaysAgo(Object days) {
     return '$days days ago';
   }
+
+  @override
+  String get errorNoInternetConnection =>
+      'No internet connection. Please check your network and try again.';
+
+  @override
+  String get errorConnectionFailed =>
+      'Connection failed. Please try again later.';
+
+  @override
+  String get errorRequestHelpFailed =>
+      'Failed to request help. Please try again.';
+
+  @override
+  String get errorCancelHelpFailed =>
+      'Failed to cancel help request. Please try again.';
+
+  @override
+  String get errorCompleteHelpFailed =>
+      'Failed to complete help request. Please try again.';
+
+  @override
+  String get errorServerUnavailable =>
+      'Server is temporarily unavailable. Please try again later.';
+
+  @override
+  String get errorUnknown => 'An unexpected error occurred. Please try again.';
 }

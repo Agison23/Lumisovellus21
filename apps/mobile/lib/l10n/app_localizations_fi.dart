@@ -453,4 +453,31 @@ class AppLocalizationsFi extends AppLocalizations {
   String timeNDaysAgo(Object days) {
     return '$days päivää sitten';
   }
+
+  @override
+  String get errorNoInternetConnection =>
+      'Ei internet-yhteyttä. Tarkista verkkoyhteytesi ja yritä uudelleen.';
+
+  @override
+  String get errorConnectionFailed =>
+      'Yhteys epäonnistui. Yritä myöhemmin uudelleen.';
+
+  @override
+  String get errorRequestHelpFailed =>
+      'Avunpyyntö epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorCancelHelpFailed =>
+      'Avunpyynnön peruutus epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorCompleteHelpFailed =>
+      'Avunpyynnön valmistuminen epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorServerUnavailable =>
+      'Palvelin on tilapäisesti poissa käytöstä. Yritä myöhemmin uudelleen.';
+
+  @override
+  String get errorUnknown => 'Odottamaton virhe tapahtui. Yritä uudelleen.';
 }

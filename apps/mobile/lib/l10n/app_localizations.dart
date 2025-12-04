@@ -924,6 +924,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days} days ago'**
   String timeNDaysAgo(Object days);
+
+  /// No description provided for @errorNoInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network and try again.'**
+  String get errorNoInternetConnection;
+
+  /// No description provided for @errorConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed. Please try again later.'**
+  String get errorConnectionFailed;
+
+  /// No description provided for @errorRequestHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to request help. Please try again.'**
+  String get errorRequestHelpFailed;
+
+  /// No description provided for @errorCancelHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to cancel help request. Please try again.'**
+  String get errorCancelHelpFailed;
+
+  /// No description provided for @errorCompleteHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to complete help request. Please try again.'**
+  String get errorCompleteHelpFailed;
+
+  /// No description provided for @errorServerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Server is temporarily unavailable. Please try again later.'**
+  String get errorServerUnavailable;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get errorUnknown;
 }
 
 class _AppLocalizationsDelegate

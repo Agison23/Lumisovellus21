@@ -137,5 +137,12 @@
   "timeOneHourAgo": "1 hour ago",
   "timeNHoursAgo": "{hours} hours ago",
   "timeOneDayAgo": "1 day ago",
-  "timeNDaysAgo": "{days} days ago"
+  "timeNDaysAgo": "{days} days ago",
+  "errorNoInternetConnection": "No internet connection. Please check your network and try again.",
+  "errorConnectionFailed": "Connection failed. Please try again later.",
+  "errorRequestHelpFailed": "Failed to request help. Please try again.",
+  "errorCancelHelpFailed": "Failed to cancel help request. Please try again.",
+  "errorCompleteHelpFailed": "Failed to complete help request. Please try again.",
+  "errorServerUnavailable": "Server is temporarily unavailable. Please try again later.",
+  "errorUnknown": "An unexpected error occurred. Please try again."
 }

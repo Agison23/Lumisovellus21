@@ -137,5 +137,12 @@
   "timeOneHourAgo": "1 tunti sitten",
   "timeNHoursAgo": "{hours} tuntia sitten",
   "timeOneDayAgo": "1 päivä sitten",
-  "timeNDaysAgo": "{days} päivää sitten"
+  "timeNDaysAgo": "{days} päivää sitten",
+  "errorNoInternetConnection": "Ei internet-yhteyttä. Tarkista verkkoyhteytesi ja yritä uudelleen.",
+  "errorConnectionFailed": "Yhteys epäonnistui. Yritä myöhemmin uudelleen.",
+  "errorRequestHelpFailed": "Avunpyyntö epäonnistui. Yritä uudelleen.",
+  "errorCancelHelpFailed": "Avunpyynnön peruutus epäonnistui. Yritä uudelleen.",
+  "errorCompleteHelpFailed": "Avunpyynnön valmistuminen epäonnistui. Yritä uudelleen.",
+  "errorServerUnavailable": "Palvelin on tilapäisesti poissa käytöstä. Yritä myöhemmin uudelleen.",
+  "errorUnknown": "Odottamaton virhe tapahtui. Yritä uudelleen."
 }

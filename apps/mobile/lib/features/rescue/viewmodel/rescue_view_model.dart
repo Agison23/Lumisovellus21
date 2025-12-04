@@ -5,6 +5,8 @@ import '../domain/use_cases/request_help_use_case.dart';
 import '../domain/use_cases/cancel_help_use_case.dart';
 import '../domain/use_cases/complete_help_use_case.dart';
 import '../providers.dart';
+import 'package:lumisovellus/core/errors/error_message_helper.dart';
+import 'package:lumisovellus/l10n/app_localizations.dart';
 
 /// State for the rescue page
 class RescueState {
@@ -44,19 +46,25 @@ class RescueState {
   }
 }
 
+/// Provider for rescue error messages (used for snackbars)
+final rescueErrorProvider = StateProvider<String?>((ref) => null);
+
 /// ViewModel for the rescue page
 class RescueViewModel extends StateNotifier<RescueState> {
   final RequestHelpUseCase _requestHelpUseCase;
   final CancelHelpUseCase _cancelHelpUseCase;
   final CompleteHelpUseCase _completeHelpUseCase;
+  final Ref _ref;
 
   RescueViewModel({
     required RequestHelpUseCase requestHelpUseCase,
     required CancelHelpUseCase cancelHelpUseCase,
     required CompleteHelpUseCase completeHelpUseCase,
+    required Ref ref,
   })  : _requestHelpUseCase = requestHelpUseCase,
         _cancelHelpUseCase = cancelHelpUseCase,
         _completeHelpUseCase = completeHelpUseCase,
+        _ref = ref,
         super(const RescueState()) {
     _getCurrentLocation();
   }
@@ -123,18 +131,23 @@ class RescueViewModel extends StateNotifier<RescueState> {
   }
 
   /// Request help with the specified need type
-  Future<void> requestHelp(HelpNeedType needType) async {
+  /// 
+  /// [localizations] is required to generate localized error messages.
+  Future<void> requestHelp(
+    HelpNeedType needType,
+    AppLocalizations localizations,
+  ) async {
     if (state.currentPosition == null) {
-      state = state.copyWith(
-        errorMessage: 'Location not available',
-      );
+      _ref.read(rescueErrorProvider.notifier).state =
+          localizations.locationNotAvailable;
       return;
     }
 
-    state = state.copyWith(
-      isLoadingHelpOperation: true,
-      clearErrorMessage: true,
-    );
+      state = state.copyWith(
+        isLoadingHelpOperation: true,
+        clearErrorMessage: true,
+      );
+    _ref.read(rescueErrorProvider.notifier).state = null; // Clear previous errors
 
     try {
       final location = Location(
@@ -153,22 +166,30 @@ class RescueViewModel extends StateNotifier<RescueState> {
         isLoadingHelpOperation: false,
         clearErrorMessage: true,
       );
+      _ref.read(rescueErrorProvider.notifier).state = null;
     } catch (e) {
       state = state.copyWith(
         isLoadingHelpOperation: false,
-        errorMessage: 'Failed to request help: $e',
+      );
+      _ref.read(rescueErrorProvider.notifier).state =
+          ErrorMessageHelper.getHelpRequestErrorMessage(
+        e,
+        localizations,
       );
     }
   }
 
   /// Cancel the active help event
-  Future<void> cancelHelpEvent() async {
+  /// 
+  /// [localizations] is required to generate localized error messages.
+  Future<void> cancelHelpEvent(AppLocalizations localizations) async {
     if (state.activeHelpEvent == null) return;
 
     state = state.copyWith(
       isLoadingHelpOperation: true,
       clearErrorMessage: true,
     );
+    _ref.read(rescueErrorProvider.notifier).state = null;
 
     try {
       await _cancelHelpUseCase.execute(state.activeHelpEvent!.requestId);
@@ -177,22 +198,30 @@ class RescueViewModel extends StateNotifier<RescueState> {
         isLoadingHelpOperation: false,
         clearErrorMessage: true,
       );
+      _ref.read(rescueErrorProvider.notifier).state = null;
     } catch (e) {
       state = state.copyWith(
         isLoadingHelpOperation: false,
-        errorMessage: 'Failed to cancel help event: $e',
+      );
+      _ref.read(rescueErrorProvider.notifier).state =
+          ErrorMessageHelper.getCancelHelpErrorMessage(
+        e,
+        localizations,
       );
     }
   }
 
   /// Complete the active help event
-  Future<void> completeHelpEvent() async {
+  /// 
+  /// [localizations] is required to generate localized error messages.
+  Future<void> completeHelpEvent(AppLocalizations localizations) async {
     if (state.activeHelpEvent == null) return;
 
     state = state.copyWith(
       isLoadingHelpOperation: true,
       clearErrorMessage: true,
     );
+    _ref.read(rescueErrorProvider.notifier).state = null;
 
     try {
       await _completeHelpUseCase.execute(state.activeHelpEvent!.requestId);
@@ -201,10 +230,15 @@ class RescueViewModel extends StateNotifier<RescueState> {
         isLoadingHelpOperation: false,
         clearErrorMessage: true,
       );
+      _ref.read(rescueErrorProvider.notifier).state = null;
     } catch (e) {
       state = state.copyWith(
         isLoadingHelpOperation: false,
-        errorMessage: 'Failed to complete help event: $e',
+      );
+      _ref.read(rescueErrorProvider.notifier).state =
+          ErrorMessageHelper.getCompleteHelpErrorMessage(
+        e,
+        localizations,
       );
     }
   }
@@ -217,6 +251,7 @@ final rescueViewModelProvider =
     requestHelpUseCase: ref.watch(requestHelpUseCaseProvider),
     cancelHelpUseCase: ref.watch(cancelHelpUseCaseProvider),
     completeHelpUseCase: ref.watch(completeHelpUseCaseProvider),
+    ref: ref,
   );
 });
 
