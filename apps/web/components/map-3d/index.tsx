@@ -180,16 +180,17 @@ export type Obstacles = {
 
 const HazardBadges = ({ hazards }: { hazards: ("stones" | "branches")[] }) => {
   if (!hazards || hazards.length === 0) return null;
+  const t = useTranslations("MapPage.reportForm.obstacles");
   return (
     <div className="flex gap-1 mt-1">
       {hazards.includes("stones") && (
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs">
-          🪨 Stones
+          🪨 {t("stones.name")}
         </span>
       )}
       {hazards.includes("branches") && (
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 text-orange-800 text-xs">
-          🌿 Branches
+          🌿 {t("branches.name")}
         </span>
       )}
     </div>
@@ -237,7 +238,8 @@ export default function Map3d() {
 
   const t = useTranslations("MapPage");
 
-  const userRole = useAuth().user?.role;
+  const user = useAuth().user;
+  const userRole = user?.role;
 
   // DATA LOADERS:
   const {
@@ -601,6 +603,7 @@ export default function Map3d() {
         <Layer {...hillshadeLayer} />
         {!isLoading && (
           <>
+            {/* Monitors layer */}
             {showMonitors && (
               <>
                 <Source id="monitors" type="geojson" data={monitorsGeoJson}>
@@ -673,11 +676,12 @@ export default function Map3d() {
         )}
       </Map>
 
+      {/* VISIBLE CONTROLS */}
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="absolute bg-background text-primary bottom-9 left-2"
+            className="absolute bg-background text-primary bottom-18 sm:bottom-9 left-2"
           >
             <MapPlus />
           </Button>
@@ -850,9 +854,11 @@ export default function Map3d() {
                   </>
                 )}
                 <div className="flex gap-2">
-                  <Button onClick={() => form.goToStep(1)}>
-                    {t("reportForm.buttons.addObservation")}
-                  </Button>
+                  {user && (
+                    <Button onClick={() => form.goToStep(1)}>
+                      {t("reportForm.buttons.addObservation")}
+                    </Button>
+                  )}
                   <Button
                     variant="secondary"
                     onClick={() => setSelectedArea(null)}
@@ -874,36 +880,40 @@ export default function Map3d() {
                   </p>
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium">
-                      Primary Snow Types
+                      {t("reportForm.labels.primarySnowTypes")}
                     </label>
                     <SnowTypeCombobox
                       value={guidePrimary1}
                       onChange={setGuidePrimary1}
                       options={snowTypeOptions}
-                      placeholder="Primary Snow Type 1"
+                      placeholder={`${t("reportForm.labels.primarySnowType")} 1`}
                     />
                     <SnowTypeCombobox
                       value={guidePrimary2}
                       onChange={setGuidePrimary2}
                       options={snowTypeOptions}
-                      placeholder="Primary Snow Type 2"
+                      placeholder={`${t("reportForm.labels.primarySnowType")} 2`}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium">
-                      Secondary Snow Types
+                      {t("reportForm.labels.secondarySnowTypes")}
                     </label>
                     <SnowTypeCombobox
                       value={guideSecondary1}
                       onChange={setGuideSecondary1}
                       options={snowTypeOptions}
-                      placeholder="Secondary Snow Type 1"
+                      placeholder={
+                        t("reportForm.labels.secondarySnowType") + " 1"
+                      }
                     />
                     <SnowTypeCombobox
                       value={guideSecondary2}
                       onChange={setGuideSecondary2}
                       options={snowTypeOptions}
-                      placeholder="Secondary Snow Type 2"
+                      placeholder={
+                        t("reportForm.labels.secondarySnowType") + " 2"
+                      }
                     />
                   </div>
                 </div>
@@ -926,7 +936,7 @@ export default function Map3d() {
                         selectedObstacles.stones ? "ring-green-500 ring-2" : ""
                       }
                     >
-                      Stones
+                      {t("reportForm.obstacles.stones.name")}
                     </Button>
                     <Button
                       variant="outline"
@@ -943,7 +953,7 @@ export default function Map3d() {
                           : ""
                       }
                     >
-                      Branches
+                      {t("reportForm.obstacles.branches.name")}
                     </Button>
                   </div>
                 </div>
