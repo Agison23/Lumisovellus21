@@ -37,17 +37,17 @@ export default function Nav() {
 
   return (
     <NavigationMenu className="w-full flex flex-1 max-w-full">
-      <NavigationMenuList className="w-full flex-1 bg-background rounded-md p-0 sm:p-1 pointer-events-auto border border-accent shadow-md flex flex-row sm:flex-row md:flex-row">
+      <NavigationMenuList className="w-screen sm:w-auto bg-background rounded-md p-1 pointer-events-auto border border-accent shadow-md flex flex-row">
         {visibleRoutes.map((route) => (
           <NavigationMenuItem
             key={route.path}
-            className={`flex-1 sm:flex-initial ${
+            className={`flex-1 ${
               isCurrentPath(route.path) ? "underline underline-offset-4" : ""
             }`}
           >
             <NavigationMenuLink asChild>
               <Link href={route.path}>
-                <div className="flex gap-2 items-center justify-center sm:justify-start flex-col sm:flex-row w-full p-2 sm:p-0">
+                <div className="flex gap-1 items-center justify-center sm:justify-start flex-col sm:flex-row w-full sm:p-0">
                   <NavigationItemIcon {...route} />
                   <span className="hidden sm:inline">
                     {tApp(route.i18nKey)}
