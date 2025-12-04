@@ -179,8 +179,8 @@ export type Obstacles = {
 };
 
 const HazardBadges = ({ hazards }: { hazards: ("stones" | "branches")[] }) => {
-  if (!hazards || hazards.length === 0) return null;
   const t = useTranslations("MapPage.reportForm.obstacles");
+  if (!hazards || hazards.length === 0) return null;
   return (
     <div className="flex gap-1 mt-1">
       {hazards.includes("stones") && (
@@ -558,6 +558,7 @@ export default function Map3d() {
       </div>
     );
   }
+
   return (
     <div className="relative w-full h-full">
       <MapLoadingOverlay
