@@ -172,5 +172,8 @@
   "degrees": "°",
   "degreesCelsius": "°C",
   "metersPerSecond": "m/s",
-  "centimeters": "cm"
+  "centimeters": "cm",
+  "stones": "Kiviä",
+  "branches": "Oksia",
+  "translationMissing": "Virhe: Käännös puuttuu"
 }

@@ -560,4 +560,13 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get centimeters => 'cm';
+
+  @override
+  String get stones => 'Kiviä';
+
+  @override
+  String get branches => 'Oksia';
+
+  @override
+  String get translationMissing => 'Error: Translation missing';
 }
