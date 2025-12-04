@@ -3,15 +3,68 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/features/settings/view/widgets/auth_page.dart';
 import 'package:lumisovellus/l10n/app_localizations.dart';
 import 'package:lumisovellus/features/snow_definitions/view/snow_definitions_page.dart';
-import 'package:lumisovellus/main.dart';
 import 'package:country_flags/country_flags.dart';
+import 'package:lumisovellus/core/settings/default_tab_provider.dart';
+import 'package:lumisovellus/core/i18n/locale_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
-  void _showLanguageDialog(BuildContext context) {
+  void _showDefaultTabDialog(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
-    final currentLocale = localeNotifier.value;
+    final currentDefaultTab = ref.watch(defaultTabProvider);
+
+    final tabs = [
+      (Icons.local_hospital, TabIndex.rescue, t.settingsDefaultTabRescue),
+      (Icons.map, TabIndex.map, t.settingsDefaultTabMap),
+      (Icons.cloud, TabIndex.weather, t.settingsDefaultTabWeather),
+      (Icons.settings, TabIndex.settings, t.settingsDefaultTabSettings),
+    ];
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(t.settingsDefaultTab),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: tabs.map((tab) {
+            final (icon, index, displayName) = tab;
+            final isSelected = currentDefaultTab == index;
+
+            return Container(
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Icon(icon, color: isSelected 
+                    ? Theme.of(context).primaryColor 
+                    : Colors.grey.shade700),
+                title: Text(displayName),
+                onTap: () {
+                  ref.read(defaultTabProvider.notifier).setDefaultTab(index);
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+          }).toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(t.dialogCancel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    final currentLocale = ref.watch(localeProvider) ?? const Locale('en');
 
     final languages = [('GB', 'en', t.english), ('FI', 'fi', t.finnish)];
 
@@ -26,25 +79,11 @@ class SettingsPage extends ConsumerWidget {
             final (countryCode, localeCode, displayName) = language;
             final isSelected = currentLocale.languageCode == localeCode;
 
-            // return ListTile(
-            //   leading: CountryFlag.fromCountryCode(
-            //     countryCode,
-            //     theme: const ImageTheme(shape: Circle()),
-            //   ),
-            //   title: Text(displayName),
-            //   trailing: isSelected
-            //       ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor)
-            //       : null,
-            //   onTap: () {
-            //     localeNotifier.value = Locale(localeCode);
-            //     Navigator.of(context).pop();
-            //   },
-            // );
             return Container(
               decoration: BoxDecoration(
                 color: isSelected
                     ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
-                    : Colors.transparent, // highlight color
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: ListTile(
@@ -54,7 +93,7 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 title: Text(displayName),
                 onTap: () {
-                  localeNotifier.value = Locale(localeCode);
+                  ref.read(localeProvider.notifier).setLanguageCode(localeCode);
                   Navigator.of(context).pop();
                 },
               ),
@@ -64,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(t.dialogCancel),
           ),
         ],
       ),
@@ -130,10 +169,18 @@ class SettingsPage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     _buildSettingsCard(
                       context: context,
+                      icon: Icons.home_rounded,
+                      title: t.settingsDefaultTab,
+                      subtitle: t.settingsDefaultTabSubtitle,
+                      onTap: () => _showDefaultTabDialog(context, ref),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildSettingsCard(
+                      context: context,
                       icon: Icons.language_rounded,
                       title: t.language,
                       subtitle: t.languageSubtitle,
-                      onTap: () => _showLanguageDialog(context),
+                      onTap: () => _showLanguageDialog(context, ref),
                     ),
                   ],
                 ),

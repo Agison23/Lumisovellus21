@@ -966,6 +966,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred. Please try again.'**
   String get errorUnknown;
+
+  /// No description provided for @settingsDefaultTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Tab'**
+  String get settingsDefaultTab;
+
+  /// No description provided for @settingsDefaultTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which screen to show when the app starts'**
+  String get settingsDefaultTabSubtitle;
+
+  /// No description provided for @settingsDefaultTabRescue.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get settingsDefaultTabRescue;
+
+  /// No description provided for @settingsDefaultTabMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get settingsDefaultTabMap;
+
+  /// No description provided for @settingsDefaultTabWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get settingsDefaultTabWeather;
+
+  /// No description provided for @settingsDefaultTabSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsDefaultTabSettings;
 }
 
 class _AppLocalizationsDelegate

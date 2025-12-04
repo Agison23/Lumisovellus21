@@ -144,5 +144,11 @@
   "errorCancelHelpFailed": "Failed to cancel help request. Please try again.",
   "errorCompleteHelpFailed": "Failed to complete help request. Please try again.",
   "errorServerUnavailable": "Server is temporarily unavailable. Please try again later.",
-  "errorUnknown": "An unexpected error occurred. Please try again."
+  "errorUnknown": "An unexpected error occurred. Please try again.",
+  "settingsDefaultTab": "Default Tab",
+  "settingsDefaultTabSubtitle": "Choose which screen to show when the app starts",
+  "settingsDefaultTabRescue": "Rescue",
+  "settingsDefaultTabMap": "Map",
+  "settingsDefaultTabWeather": "Weather",
+  "settingsDefaultTabSettings": "Settings"
 }

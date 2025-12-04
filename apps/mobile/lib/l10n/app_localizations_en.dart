@@ -481,4 +481,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnknown => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String get settingsDefaultTab => 'Default Tab';
+
+  @override
+  String get settingsDefaultTabSubtitle =>
+      'Choose which screen to show when the app starts';
+
+  @override
+  String get settingsDefaultTabRescue => 'Rescue';
+
+  @override
+  String get settingsDefaultTabMap => 'Map';
+
+  @override
+  String get settingsDefaultTabWeather => 'Weather';
+
+  @override
+  String get settingsDefaultTabSettings => 'Settings';
 }

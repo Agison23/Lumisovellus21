@@ -13,10 +13,8 @@ import 'package:lumisovellus/features/map/providers.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:lumisovellus/core/auth/viewmodel/auth_notifier.dart';
 import 'package:lumisovellus/core/config/app_configuration_provider.dart';
-
-// Global locale notifier for simple app-wide locale switching.
-// Replace with your preferred state management/localization solution as needed.
-final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('en'));
+import 'package:lumisovellus/core/settings/default_tab_provider.dart';
+import 'package:lumisovellus/core/i18n/locale_provider.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -65,9 +63,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Locale>(
-      valueListenable: localeNotifier,
-      builder: (context, locale, _) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // Use persisted locale from provider, fallback to English
+        final locale = ref.watch(localeProvider) ?? const Locale('en');
+        
         return MaterialApp(
           navigatorKey: navigatorKey,
           title: 'RescueApp',
@@ -113,8 +113,18 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
-  int _currentIndex = 0;
+  int? _currentIndex; // null until we load from provider
   bool _previousHasActiveEvent = false;
+  bool _hasUserChangedTab = false; // Track if user manually changed tabs
+  
+  void _setCurrentIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+      _hasUserChangedTab = true; // Mark that user manually changed tabs
+    });
+  }
+  
+  int get currentIndex => _currentIndex ?? TabIndex.map;
 
   final List<Widget> _pages = const [
     RescuePage(),
@@ -157,14 +167,32 @@ class _MainShellState extends ConsumerState<MainShell> {
   Widget build(BuildContext context) {
     final rescueState = ref.watch(rescueViewModelProvider);
     final hasActiveEvent = rescueState.hasActiveEvent;
+    
+    // Watch the default tab provider - it will update when async load completes
+    final defaultTab = ref.watch(defaultTabProvider);
+    debugPrint('MainShell: Watching defaultTabProvider, value: $defaultTab, _currentIndex: $_currentIndex, _hasUserChangedTab: $_hasUserChangedTab');
+    
+    // Update current index from provider only on initial load (before user changes tabs)
+    // This handles both the initial null state and when the provider updates after async load
+    if (!_hasUserChangedTab && _currentIndex != defaultTab) {
+      // Provider value has changed (either initial load or after async load completes)
+      debugPrint('MainShell: Updating _currentIndex from $_currentIndex to $defaultTab');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_hasUserChangedTab) {
+          setState(() {
+            _currentIndex = defaultTab;
+          });
+        }
+      });
+    }
 
     // Listen for snap-to-location requests - navigate to map if not already there
     ref.listen<bool>(snapToLocationProvider, (previous, next) {
-      if (next && _currentIndex != 1 && mounted) {
+      if (next && currentIndex != TabIndex.map && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             setState(() {
-              _currentIndex = 1; // Navigate to Map screen
+              _currentIndex = TabIndex.map; // Navigate to Map screen
             });
           }
         });
@@ -172,7 +200,7 @@ class _MainShellState extends ConsumerState<MainShell> {
     });
 
     // Listen for when help event becomes active and navigate to map
-    if (hasActiveEvent && !_previousHasActiveEvent && _currentIndex != 1) {
+    if (hasActiveEvent && !_previousHasActiveEvent && currentIndex != TabIndex.map) {
       // Use WidgetsBinding to ensure the build is complete before changing state
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -184,7 +212,7 @@ class _MainShellState extends ConsumerState<MainShell> {
 
     _previousHasActiveEvent = hasActiveEvent;
 
-    final isRescueSelected = _currentIndex == 0;
+    final isRescueSelected = currentIndex == TabIndex.rescue;
     // When Rescue is selected and has active event, use reddish color for selected items
     // (Note: This affects all selected items, but since only one can be selected at a time, it's acceptable)
     final selectedColor = (hasActiveEvent && isRescueSelected)
@@ -192,7 +220,7 @@ class _MainShellState extends ConsumerState<MainShell> {
         : _normalSelectedColor;
 
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -206,11 +234,11 @@ class _MainShellState extends ConsumerState<MainShell> {
           iconSize: 30,
           backgroundColor: Theme.of(context).extension<RescueTheme>()?.pageBackground ??
               const Color(0xFAFAFAFA),
-          currentIndex: _currentIndex,
+          currentIndex: currentIndex,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: selectedColor,
           unselectedItemColor: _normalUnselectedColor,
-          onTap: (idx) => setState(() => _currentIndex = idx),
+          onTap: (idx) => _setCurrentIndex(idx),
           items: [
             _buildRescueNavItem(context, isRescueSelected, hasActiveEvent),
             BottomNavigationBarItem(

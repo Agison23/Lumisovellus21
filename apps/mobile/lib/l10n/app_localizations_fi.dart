@@ -480,4 +480,23 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Odottamaton virhe tapahtui. Yritä uudelleen.';
+
+  @override
+  String get settingsDefaultTab => 'Oletusvälilehti';
+
+  @override
+  String get settingsDefaultTabSubtitle =>
+      'Valitse näytettävä näyttö sovelluksen käynnistyessä';
+
+  @override
+  String get settingsDefaultTabRescue => 'Pelastus';
+
+  @override
+  String get settingsDefaultTabMap => 'Kartta';
+
+  @override
+  String get settingsDefaultTabWeather => 'Sää';
+
+  @override
+  String get settingsDefaultTabSettings => 'Asetukset';
 }
