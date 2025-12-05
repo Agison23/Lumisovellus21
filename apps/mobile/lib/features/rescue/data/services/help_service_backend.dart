@@ -89,7 +89,7 @@ class BackendHelpService implements HelpService {
       status: HelpEventStatusUpdateStatusEnum.cancelled,
     );
 
-    var response = await apiClient.helpEvents.helpEventsEventIdPatch(
+    await apiClient.helpEvents.helpEventsEventIdPatch(
       eventId: requestId,
       helpEventStatusUpdate: statusUpdate,
     );
@@ -101,7 +101,7 @@ class BackendHelpService implements HelpService {
       status: HelpEventStatusUpdateStatusEnum.completed,
     );
 
-    var response = await apiClient.helpEvents.helpEventsEventIdPatch(
+    await apiClient.helpEvents.helpEventsEventIdPatch(
       eventId: requestId,
       helpEventStatusUpdate: statusUpdate,
     );

@@ -59,7 +59,7 @@ class ApiClient {
         },
         onError: (e, h) {
           if (e.response?.statusCode == 401 && client._on401 != null) {
-            client._on401!(e.requestOptions, e.response!);
+            client._on401(e.requestOptions, e.response!);
           }
           h.next(e);
         },

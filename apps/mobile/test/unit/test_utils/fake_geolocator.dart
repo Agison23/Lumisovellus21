@@ -1,21 +1,19 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart';
 
-/// Installs a fake Geolocator that returns the provided values.
 void installFakeGeolocator({
   required bool serviceEnabled,
   required LocationPermission permission,
   required Position? position,
 }) {
-  GeolocatorPlatform.instance = _FakeGeolocator(
+  GeolocatorPlatform.instance = FakeGeolocator(
     serviceEnabled: serviceEnabled,
     permission: permission,
     position: position,
   );
 }
 
-class _FakeGeolocator extends GeolocatorPlatform {
-  _FakeGeolocator({
+class FakeGeolocator extends GeolocatorPlatform {
+  FakeGeolocator({
     required this.serviceEnabled,
     required this.permission,
     required this.position,
@@ -36,11 +34,7 @@ class _FakeGeolocator extends GeolocatorPlatform {
 
   @override
   Future<Position> getCurrentPosition({LocationSettings? locationSettings}) async {
-    if (position == null) {
-      throw Exception('No position');
-    }
+    if (position == null) throw Exception('No position');
     return position!;
   }
 }
-
-
