@@ -569,4 +569,50 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get translationMissing => 'Virhe: Käännös puuttuu';
+
+  @override
+  String get errorNoInternetConnection =>
+      'Ei internet-yhteyttä. Tarkista verkkoyhteytesi ja yritä uudelleen.';
+
+  @override
+  String get errorConnectionFailed =>
+      'Yhteys epäonnistui. Yritä myöhemmin uudelleen.';
+
+  @override
+  String get errorRequestHelpFailed =>
+      'Avunpyyntö epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorCancelHelpFailed =>
+      'Avunpyynnön peruutus epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorCompleteHelpFailed =>
+      'Avunpyynnön valmistuminen epäonnistui. Yritä uudelleen.';
+
+  @override
+  String get errorServerUnavailable =>
+      'Palvelin on tilapäisesti poissa käytöstä. Yritä myöhemmin uudelleen.';
+
+  @override
+  String get errorUnknown => 'Odottamaton virhe tapahtui. Yritä uudelleen.';
+
+  @override
+  String get settingsDefaultTab => 'Oletusvälilehti';
+
+  @override
+  String get settingsDefaultTabSubtitle =>
+      'Valitse näytettävä näyttö sovelluksen käynnistyessä';
+
+  @override
+  String get settingsDefaultTabRescue => 'Pelastus';
+
+  @override
+  String get settingsDefaultTabMap => 'Kartta';
+
+  @override
+  String get settingsDefaultTabWeather => 'Sää';
+
+  @override
+  String get settingsDefaultTabSettings => 'Asetukset';
 }
