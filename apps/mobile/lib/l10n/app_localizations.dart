@@ -178,7 +178,7 @@ abstract class AppLocalizations {
   /// No description provided for @avalancheWarningDesc.
   ///
   /// In en, this message translates to:
-  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.'**
+  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.'**
   String get avalancheWarningDesc;
 
   /// No description provided for @snowTypes.
@@ -208,7 +208,7 @@ abstract class AppLocalizations {
   /// No description provided for @freshWetSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point'**
+  /// **'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.'**
   String get freshWetSnowDesc;
 
   /// No description provided for @powderSnow.
@@ -280,7 +280,7 @@ abstract class AppLocalizations {
   /// No description provided for @collapsingCrustDesc.
   ///
   /// In en, this message translates to:
-  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath.'**
+  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.'**
   String get collapsingCrustDesc;
 
   /// No description provided for @windpackedSnow.
@@ -328,7 +328,7 @@ abstract class AppLocalizations {
   /// No description provided for @windblownSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from wind.'**
+  /// **'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from the wind.'**
   String get windblownSnowDesc;
 
   /// No description provided for @ice.
@@ -388,7 +388,7 @@ abstract class AppLocalizations {
   /// No description provided for @saturatedSnowDesc.
   ///
   /// In en, this message translates to:
-  /// **'Completely wet , slushing and whipped cream like snow.'**
+  /// **'Completely wet, slushing and whipped cream-like snow.'**
   String get saturatedSnowDesc;
 
   /// No description provided for @littleSnow.
@@ -574,7 +574,7 @@ abstract class AppLocalizations {
   /// No description provided for @maxWind.
   ///
   /// In en, this message translates to:
-  /// **'Maximum windspeed'**
+  /// **'Maximum wind speed'**
   String get maxWind;
 
   /// No description provided for @lastThreeDays.
@@ -646,7 +646,7 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageHelpRequestDescription.
   ///
   /// In en, this message translates to:
-  /// **'Help-request alerts and sends your location to nearby rescuers'**
+  /// **'A help request alerts and sends your location to nearby rescuers'**
   String get rescuePageHelpRequestDescription;
 
   /// No description provided for @rescuePageEmergencyCallDescription.
@@ -1012,7 +1012,7 @@ abstract class AppLocalizations {
   /// No description provided for @registeredSuccesfully.
   ///
   /// In en, this message translates to:
-  /// **'Registered succesfully'**
+  /// **'Registered successfully'**
   String get registeredSuccesfully;
 
   /// No description provided for @loggedInAs.
