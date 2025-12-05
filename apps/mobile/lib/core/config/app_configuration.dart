@@ -9,19 +9,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// 3. Build-time defaults (lowest priority)
 class AppConfiguration {
   final String backendBaseUrl;
-  final bool useRealBackend;
   final String mapboxAccessToken;
 
   const AppConfiguration({
     required this.backendBaseUrl,
-    required this.useRealBackend,
     required this.mapboxAccessToken,
   });
 
   /// Creates configuration from build-time defaults.
   /// These are the fallback values if no other source provides them.
   factory AppConfiguration.fromDefaults() {
-    const useReal = bool.fromEnvironment('USE_REAL_BACKEND', defaultValue: true);
     const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
       defaultValue: 'https://beta.lumisovellus.fi/backend-api',
@@ -33,7 +30,6 @@ class AppConfiguration {
 
     return const AppConfiguration(
       backendBaseUrl: baseUrl,
-      useRealBackend: useReal,
       mapboxAccessToken: mapboxToken,
     );
   }
@@ -42,14 +38,10 @@ class AppConfiguration {
   /// This is typically used only in development.
   AppConfiguration applyEnvOverrides() {
     final envBaseUrl = dotenv.env['BACKEND_URL'];
-    final envUseReal = dotenv.env['USE_REAL_BACKEND'];
     final envMapboxToken = dotenv.env['MAPBOX_ACCESS_TOKEN'];
 
     return AppConfiguration(
       backendBaseUrl: envBaseUrl ?? backendBaseUrl,
-      useRealBackend: envUseReal != null
-          ? envUseReal.toLowerCase() == 'true'
-          : useRealBackend,
       mapboxAccessToken: envMapboxToken ?? mapboxAccessToken,
     );
   }
@@ -58,12 +50,10 @@ class AppConfiguration {
   /// Remote Config values take highest precedence.
   AppConfiguration applyRemoteConfig({
     String? backendBaseUrl,
-    bool? useRealBackend,
     String? mapboxAccessToken,
   }) {
     return AppConfiguration(
       backendBaseUrl: backendBaseUrl ?? this.backendBaseUrl,
-      useRealBackend: useRealBackend ?? this.useRealBackend,
       mapboxAccessToken: mapboxAccessToken ?? this.mapboxAccessToken,
     );
   }
@@ -71,12 +61,10 @@ class AppConfiguration {
   /// Creates a copy with updated values.
   AppConfiguration copyWith({
     String? backendBaseUrl,
-    bool? useRealBackend,
     String? mapboxAccessToken,
   }) {
     return AppConfiguration(
       backendBaseUrl: backendBaseUrl ?? this.backendBaseUrl,
-      useRealBackend: useRealBackend ?? this.useRealBackend,
       mapboxAccessToken: mapboxAccessToken ?? this.mapboxAccessToken,
     );
   }
@@ -85,7 +73,6 @@ class AppConfiguration {
   String toString() {
     return 'AppConfiguration('
         'backendBaseUrl: $backendBaseUrl, '
-        'useRealBackend: $useRealBackend, '
         'mapboxAccessToken: ${mapboxAccessToken.isNotEmpty ? "***" : "empty"}'
         ')';
   }

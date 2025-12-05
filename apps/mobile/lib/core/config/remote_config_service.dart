@@ -66,7 +66,6 @@ Future<FirebaseRemoteConfig> createRemoteConfig() async {
   // Set defaults that match what's in Firebase console
   await remoteConfig.setDefaults({
     'BACKEND_URL': 'https://beta.lumisovellus.fi/backend-api',
-    'USE_REAL_BACKEND': true,
     'MAPBOX_ACCESS_TOKEN': '',
   });
 

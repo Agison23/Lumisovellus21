@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lumisovellus/core/config/app_configuration_provider.dart';
 import 'package:lumisovellus/core/network/providers.dart';
 import 'data/services/help_service.dart';
-import 'data/services/help_service_fake.dart';
+import 'data/services/help_service_stub.dart';
 import 'data/services/help_service_backend.dart';
 import 'data/repositories/help_repository_impl.dart';
 import 'domain/repositories/help_repository.dart';
@@ -16,13 +15,17 @@ final _inMemoryHelpStoreProvider = Provider<InMemoryHelpStore>((ref) {
 });
 
 final _helpServiceProvider = Provider<HelpService>((ref) {
-  final config = ref.watch(appConfigurationSyncProvider);
-  if (config.useRealBackend) {
-    final apiClient = ref.watch(apiClientProvider);
-    return BackendHelpService(apiClient: apiClient);
+  // Check build-time flag to determine if we should use stub backend
+  // By default, always use real backend unless USE_STUB_BACKEND is set to true
+  const useStubBackend = bool.fromEnvironment('USE_STUB_BACKEND', defaultValue: false);
+  
+  if (useStubBackend) {
+    final store = ref.watch(_inMemoryHelpStoreProvider);
+    return StubHelpService(store);
   }
-  final store = ref.watch(_inMemoryHelpStoreProvider);
-  return FakeHelpService(store);
+  
+  final apiClient = ref.watch(apiClientProvider);
+  return BackendHelpService(apiClient: apiClient);
 });
 
 // Repository layer providers

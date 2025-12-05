@@ -48,12 +48,10 @@ final appConfigurationProvider = FutureProvider<AppConfiguration>((ref) async {
 
     // Apply Remote Config overrides
     final remoteBackendUrl = remoteConfigService.getString('BACKEND_URL');
-    final remoteUseRealBackend = remoteConfigService.getBool('USE_REAL_BACKEND');
     final remoteMapboxToken = remoteConfigService.getString('MAPBOX_ACCESS_TOKEN');
 
     config = config.applyRemoteConfig(
       backendBaseUrl: remoteBackendUrl,
-      useRealBackend: remoteUseRealBackend, // This will use the value from Remote Config or default
       mapboxAccessToken: remoteMapboxToken,
     );
   } catch (e) {

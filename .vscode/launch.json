@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mobile",
+            "name": "mobile (real backend)",
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/apps/mobile/lib/main.dart",
             "args": []
         },
         {
-            "name": "mobile (backend)",
+            "name": "mobile (stub backend)",
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/apps/mobile/lib/main.dart",
-            "args": ["--dart-define=USE_REAL_BACKEND=true"]
+            "args": ["--dart-define=USE_STUB_BACKEND=true"]
         }
     ]
 }
