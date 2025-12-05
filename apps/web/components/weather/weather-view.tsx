@@ -26,16 +26,21 @@ interface WeatherData {
   daysAboveFreezing: DayAboveFreezing[];
 }
 
+const round1 = (v: number | null) =>
+  v === null ? null : Math.round(v * 10) / 10;
+
 export default function WeatherView() {
   const t = useTranslations("WeatherPage");
 
-  const [snowflakes, setSnowflakes] = useState<Array<{
-    left: string;
-    top: string;
-    size: string;
-    delay: string;
-    duration: string;
-  }>>([]);
+  const [snowflakes, setSnowflakes] = useState<
+    Array<{
+      left: string;
+      top: string;
+      size: string;
+      delay: string;
+      duration: string;
+    }>
+  >([]);
 
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,33 +107,33 @@ export default function WeatherView() {
           averageWind: {
             speed:
               avgWindSpeed.success && avgWindSpeed.data?.value != null
-                ? avgWindSpeed.data.value
+                ? round1(avgWindSpeed.data.value)
                 : null,
             direction:
               avgWindDir.success && avgWindDir.data?.value != null
-                ? avgWindDir.data.value
+                ? round1(avgWindDir.data.value)
                 : null,
           },
 
           temperature: {
             min:
               minTemp.success && minTemp.data?.value != null
-                ? minTemp.data.value
+                ? round1(minTemp.data.value)
                 : null,
             max:
               maxTemp.success && maxTemp.data?.value != null
-                ? maxTemp.data.value
+                ? round1(maxTemp.data.value)
                 : null,
           },
 
           maxWindSpeed:
             maxWind.success && maxWind.data?.value != null
-              ? maxWind.data.value
+              ? round1(maxWind.data.value)
               : null,
 
           snowDepthChange:
             snowChange.success && snowChange.data?.value != null
-              ? snowChange.data.value
+              ? round1(snowChange.data.value)
               : null,
 
           daysAboveFreezing:
@@ -138,7 +143,7 @@ export default function WeatherView() {
                   const cast = m as DayAboveFreezing;
                   return {
                     date: cast.date,
-                    averageTemperature: cast.averageTemperature,
+                    averageTemperature: round1(cast.averageTemperature),
                   };
                 })
               : [],
@@ -187,7 +192,6 @@ export default function WeatherView() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
-          {/* Avg Wind */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col justify-between shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
@@ -213,7 +217,6 @@ export default function WeatherView() {
             </div>
           </div>
 
-          {/* Temperature */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Thermometer size={36} className="text-red-500" />
@@ -253,7 +256,6 @@ export default function WeatherView() {
             </div>
           </div>
 
-          {/* Max Wind */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Wind size={36} className="text-primary" />
@@ -267,7 +269,6 @@ export default function WeatherView() {
             </p>
           </div>
 
-          {/* Snow Depth Change */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <Snowflake size={36} className="text-cyan-500" />
@@ -281,11 +282,12 @@ export default function WeatherView() {
             </p>
           </div>
 
-          {/* Days Above Freezing */}
           <div className="bg-card border-2 border-black rounded-3xl p-8 flex flex-col shadow-md hover:scale-[1.02] transition-all">
             <div className="flex items-center gap-3 mb-4">
               <ThermometerSnowflake size={36} className="text-yellow-400" />
-              <h4 className="text-xl font-semibold">{t("aboveFreezingTitle")}</h4>
+              <h4 className="text-xl font-semibold">
+                {t("aboveFreezingTitle")}
+              </h4>
             </div>
 
             {weatherData.daysAboveFreezing.length > 0 ? (

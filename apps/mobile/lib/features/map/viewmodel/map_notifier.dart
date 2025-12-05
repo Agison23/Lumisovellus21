@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/network/providers.dart';
 import 'package:lumisovellus/features/map/data/repositories/snow_types_repository.dart';
@@ -18,11 +19,33 @@ final segmentsRepositoryProvider = Provider<SegmentsRepository>(
 );
 
 class SegmentsNotifier extends AutoDisposeAsyncNotifier<SegmentsState> {
+  Timer? _timer;
+  var _initialized = false;
+
   @override
   Future<SegmentsState> build() async {
+    final isOnline = ref.watch(connectivityProvider);
+    final previous = state.valueOrNull;
+
+    if (!_initialized) {
+      _initialized = true;
+      _timer = Timer.periodic(const Duration(minutes: 1), (_) => refresh());
+      ref.onDispose(() {
+        _timer?.cancel();
+      });
+    }
+
+    if (!isOnline) {
+      return previous ?? const SegmentsState();
+    }
+
     final repo = ref.watch(segmentsRepositoryProvider);
     final segments = await repo.getAreas();
-    return SegmentsState(segments: segments);
+    return SegmentsState(
+      segments: segments,
+      selectedId: previous?.selectedId,
+      hoveredId: previous?.hoveredId,
+    );
   }
 
   void select(String? id) =>
@@ -32,6 +55,9 @@ class SegmentsNotifier extends AutoDisposeAsyncNotifier<SegmentsState> {
       state = state.whenData((s) => s.copyWith(hoveredId: id));
 
   Future<void> refresh() async {
+    final isOnline = ref.read(connectivityProvider);
+    if (!isOnline) return;
+
     final repo = ref.read(segmentsRepositoryProvider);
     final segments = await repo.getAreas();
     state = state.whenData((s) => s.copyWith(segments: segments));
@@ -52,11 +78,38 @@ final snowTypesRepositoryProvider = Provider<SnowTypesRepository>(
 );
 
 class SnowTypesNotifier extends AutoDisposeAsyncNotifier<SnowTypesState> {
+  Timer? _timer;
+  var _initialized = false;
+
   @override
   Future<SnowTypesState> build() async {
+    final isOnline = ref.watch(connectivityProvider);
+    final previous = state.valueOrNull;
+
+    if (!_initialized) {
+      _initialized = true;
+      _timer = Timer.periodic(const Duration(minutes: 1), (_) => refresh());
+      ref.onDispose(() {
+        _timer?.cancel();
+      });
+    }
+
+    if (!isOnline) {
+      return previous ?? const SnowTypesState();
+    }
+
     final repo = ref.watch(snowTypesRepositoryProvider);
     final snowTypes = await repo.getSnowTypes();
     return SnowTypesState(snowTypes: snowTypes);
+  }
+
+  Future<void> refresh() async {
+    final isOnline = ref.read(connectivityProvider);
+    if (!isOnline) return;
+
+    final repo = ref.read(snowTypesRepositoryProvider);
+    final snowTypes = await repo.getSnowTypes();
+    state = state.whenData((s) => s.copyWith(snowTypes: snowTypes));
   }
 }
 

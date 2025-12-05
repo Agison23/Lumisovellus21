@@ -48,17 +48,11 @@ class AppLocalizationsFi extends AppLocalizations {
   String get definitions => 'MÄÄRITELMÄT';
 
   @override
-  String get snowDefinitionsPageTitle => 'Määritelmät';
-
-  @override
   String get avalancheWarning => 'Lumivyöryvaroitus';
 
   @override
-  String get noAvalancheWarning => 'Ei lumivyöryvaroitusta';
-
-  @override
   String get avalancheWarningDesc =>
-      'Pallaksen lumialueet sisältävät useita kuruja, kuten Pyhäkuru, Palkaskuru, Rihmakuru, sekä kaikki 25 asteen jyrkät rinteet Lommoltunturilla, Keimiötunturilla ja Lehmäkerolla. Pienempiä yksittäisiä lumivyöryjä voi esiintyä myös muualla jyrkillä alueilla. Lumivyöryn todennäköisyys kasvaa säämuutosten myötä.';
+      'Pallaksen lumivyöryalueet sisältävät useita kuroja kuten Pyhäkuru, Palkaskuru, Rihmakuru ja kaikki yli 25 asteen jyrkät rinteet Lommoltunturissa, Keimiötunturissa ja Lehmäkerossa. Yksittäisiä pienempiä lumivyöryjä voi esiintyä myös muualla jyrkän maaston läheisyydessä. Lumivyöryjen todennäköisyys kasvaa säämuutosten myötä.';
 
   @override
   String get snowTypes => 'Lumityypit';
@@ -67,83 +61,84 @@ class AppLocalizationsFi extends AppLocalizations {
   String get newSnow => 'Uusi lumi';
 
   @override
-  String get newSnowDesc => 'Vasta satanut pehmeä lumi.';
+  String get newSnowDesc => 'Vastasatanut pehmeä lumi.';
 
   @override
-  String get freshWetSnow => 'Tuore märkä lumi';
+  String get freshWetSnow => 'Märkä uusi lumi';
 
   @override
   String get freshWetSnowDesc =>
-      'Lumi, josta voi helposti tehdä lumipallon. Märkää lunta muodostuu sateen ja suojasään takia.';
+      'Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.';
 
   @override
-  String get powderSnow => 'Höylälumi';
+  String get powderSnow => 'Puuterilumi';
 
   @override
   String get powderSnowDesc =>
-      'Tuore, irtonainen ja erittäin kevyt lumi. Höylälumet esiintyvät tyynellä ja erittäin kylmällä säällä.';
+      'Vastasatanutta, irtonaista ja höyhenenkevyttä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.';
 
   @override
-  String get freshSnow => 'Tuore lumi';
+  String get freshSnow => 'Vitilumi';
 
   @override
   String get freshSnowDesc =>
-      'Tuore, kevyt, pehmeä ja hieman pakkautunut lumi.';
+      'Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.';
 
   @override
-  String get crust => 'Kuori';
+  String get crust => 'Korppu';
 
   @override
   String get crustDesc =>
-      'Kova kuori lumipinnalla. Kuori voi olla tasainen tai epätasainen.';
+      'Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.';
 
   @override
-  String get concrete => 'Betonilumi';
+  String get concrete => 'Kantava korppu';
 
   @override
-  String get concreteDesc => 'Kova ja tiivis lumikuori, yleensä erittäin kova.';
+  String get concreteDesc =>
+      'Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.';
 
   @override
-  String get thinCrust => 'Ohut kuori';
+  String get thinCrust => 'Ohut korppu';
 
   @override
   String get thinCrustDesc =>
-      'Kuori, joka murtuu hiihtäjän painosta. Kuoren alla lumi voi olla pehmeää ja upottavaa.';
+      'Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.';
 
   @override
-  String get collapsingCrust => 'Murtuva kuori';
+  String get collapsingCrust => 'Rikkoutuva korppu';
 
   @override
   String get collapsingCrustDesc =>
-      'Kiinteä, mutta ajoittain murtuva lumikuori. Kuori voi olla erittäin paksu, jos alla on huokoista lunta.';
+      'Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.';
 
   @override
-  String get windpackedSnow => 'Tuulen pakkauttama lumi';
+  String get windpackedSnow => 'Tuulen pieksemä lumi';
 
   @override
   String get windpackedSnowDesc =>
-      'Tuulen kovettamaa lunta, joka on epätasainen monin paikoin.';
+      'Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.';
 
   @override
-  String get driftsAndBanks => 'Tuulen muokkaamat kinokset ja paikat';
+  String get driftsAndBanks => 'Aaltoileva lumi';
 
   @override
   String get driftsAndBanksDesc =>
-      'Tuoreen lumen alue, jonka tuuli on muokannut. Aallot ovat pehmeitä ja helposti murrettavia.';
+      'Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa.';
 
   @override
   String get sastrug => 'Sastrugi';
 
   @override
   String get sastrugDesc =>
-      'Tuulen aiheuttama aaltoileva lumi, joka on kova, jäinen ja teräväreunainen.';
+      'Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista.';
 
   @override
-  String get windblownSnow => 'Tuulen siirtämä lumi';
+  String get windblownSnow => 'Tuiskulumi';
 
   @override
   String get windblownSnowDesc =>
-      'Tasainen, tuulen kerrostama ja tiivistynyt lumi. Tuulen siirtämää lunta voi kerääntyä ilman uutta lumisadetta, jos tuuli liikuttaa lunta paikasta toiseen. Usein muodostuu tuulen suojapuolelle tunturissa.';
+      'Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.';
 
   @override
   String get ice => 'Jää';
@@ -185,6 +180,106 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get mapOfflineModeMessage =>
       'Olet offline-tilassa - käytetään tallennettuja karttatietoja';
+
+  @override
+  String get mapOfflineModeMessageNoData =>
+      'Olet offline-tilassa - karttatietoja ei saatavilla';
+
+  @override
+  String get weather => 'Sää';
+
+  @override
+  String get dayBeforeYesterday => 'Toissapäivänä';
+
+  @override
+  String get yesterday => 'Eilen';
+
+  @override
+  String get now => 'Nyt';
+
+  @override
+  String get temperature => 'Lämpötila';
+
+  @override
+  String get snowDepth => 'Lumen syvyys';
+
+  @override
+  String get wind => 'Tuuli';
+
+  @override
+  String get airPressure => 'Ilmanpaine';
+
+  @override
+  String get north => 'Pohjoinen';
+
+  @override
+  String get northeast => 'Koillinen';
+
+  @override
+  String get east => 'Itä';
+
+  @override
+  String get southeast => 'Kaakko';
+
+  @override
+  String get south => 'Etelä';
+
+  @override
+  String get southwest => 'Lounas';
+
+  @override
+  String get west => 'Länsi';
+
+  @override
+  String get northwest => 'Luode';
+
+  @override
+  String get trend => 'Muutokset';
+
+  @override
+  String get lastFewDaysWeather => 'Lähipäivien sää';
+
+  @override
+  String get snowDepthChange => 'Lumensyvyyden kasvu';
+
+  @override
+  String get temperature3Days => 'Lämpötila 3 vuorokauden aikana';
+
+  @override
+  String get highest => 'Korkein';
+
+  @override
+  String get lowest => 'Matalin';
+
+  @override
+  String get countDaysAboveFreezing => 'Suojapäivien määrä';
+
+  @override
+  String get daysAboveFreezing => 'Suojapäivät';
+
+  @override
+  String get wind3Days => 'Tuuli 3 vuorokauden aikana';
+
+  @override
+  String get avgSpeed => 'Keskimääräinen nopeus';
+
+  @override
+  String get avgDirection => 'Keskimääräinen suunta';
+
+  @override
+  String get maxWind => 'Kovin tuuli';
+
+  @override
+  String get lastThreeDays => 'Viimeiset 3 päivää';
+
+  @override
+  String get lastSevenDays => 'Viimeiset 7 päivää';
+
+  @override
+  String get snowDefinitionsPageTitle => 'Määritelmät';
+
+  @override
+  String get noAvalancheWarning => 'Ei lumivyöryvaroitusta';
 
   @override
   String get close => 'Sulje';
@@ -256,9 +351,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get map => 'Kartta';
-
-  @override
-  String get weather => 'Sää';
 
   @override
   String get settings => 'Asetukset';
@@ -453,6 +545,30 @@ class AppLocalizationsFi extends AppLocalizations {
   String timeNDaysAgo(Object days) {
     return '$days päivää sitten';
   }
+
+  @override
+  String get dataPointUnavailable => 'Tuntematon';
+
+  @override
+  String get degrees => '°';
+
+  @override
+  String get degreesCelsius => '°C';
+
+  @override
+  String get metersPerSecond => 'm/s';
+
+  @override
+  String get centimeters => 'cm';
+
+  @override
+  String get stones => 'Kiviä';
+
+  @override
+  String get branches => 'Oksia';
+
+  @override
+  String get translationMissing => 'Virhe: Käännös puuttuu';
 
   @override
   String get errorNoInternetConnection =>
