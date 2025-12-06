@@ -192,6 +192,7 @@ class MockApiClient extends _i1.Mock implements _i4.ApiClient {
 class MockSegmentsApi extends _i1.Mock implements _i3.SegmentsApi {
   @override
   _i5.Future<_i2.Response<_i3.ApiV1SegmentsGet200Response>> apiV1SegmentsGet({
+    String? observationDays,
     String? bbox,
     String? minLat,
     String? minLng,
@@ -208,6 +209,7 @@ class MockSegmentsApi extends _i1.Mock implements _i3.SegmentsApi {
   }) =>
       (super.noSuchMethod(
             Invocation.method(#apiV1SegmentsGet, [], {
+              #observationDays: observationDays,
               #bbox: bbox,
               #minLat: minLat,
               #minLng: minLng,
@@ -227,6 +229,7 @@ class MockSegmentsApi extends _i1.Mock implements _i3.SegmentsApi {
                   _FakeResponse_8<_i3.ApiV1SegmentsGet200Response>(
                     this,
                     Invocation.method(#apiV1SegmentsGet, [], {
+                      #observationDays: observationDays,
                       #bbox: bbox,
                       #minLat: minLat,
                       #minLng: minLng,
@@ -248,6 +251,7 @@ class MockSegmentsApi extends _i1.Mock implements _i3.SegmentsApi {
                   _FakeResponse_8<_i3.ApiV1SegmentsGet200Response>(
                     this,
                     Invocation.method(#apiV1SegmentsGet, [], {
+                      #observationDays: observationDays,
                       #bbox: bbox,
                       #minLat: minLat,
                       #minLng: minLng,
