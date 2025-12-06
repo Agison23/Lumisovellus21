@@ -9,7 +9,6 @@ class ApiClient {
   final WeatherApi weather;
   final SnowTypesApi snowTypes;
   final HelpEventsApi helpEvents;
-
   final AuthenticationApi auth;
 
   String? _token;
