@@ -1,6 +1,44 @@
-node_modules
-dist
 .env
 
 # TurboRepo cache
 .turbo
+
+# Node dependencies
+node_modules/
+
+# Logs
+*.log
+
+# Runtime data
+pids/
+*.pid
+
+# Build outputs / caches
+dist/
+build/
+.cache
+.next/
+.nuxt/
+
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# SQLite / database files
+*.sqlite
+*.db
+*.sqlite-journal
+*.sqlite-lock
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.sqlite-lock
+*.sqlite-wal
+*.sqlite-shm

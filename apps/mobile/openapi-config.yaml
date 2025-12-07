@@ -1,0 +1,14 @@
+generatorName: dart-dio
+inputSpec: apps/backend/openapi.json
+outputDir: packages/lumisovellus_api
+
+additionalProperties:
+  pubName: lumisovellus_api
+  pubDescription: Generated client for Lumisovellus API
+  pubVersion: 0.1.0
+  pubHomepage: https://lumisovellus.fi
+
+  serializationLibrary: json_serializable
+  useEnumExtension: true
+  dateLibrary: core
+  hideGenerationTimestamp: true

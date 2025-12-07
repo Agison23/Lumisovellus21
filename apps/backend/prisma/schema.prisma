@@ -1,0 +1,326 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  firstName    String         @map("firstName") @db.VarChar(255)
+  lastName     String?        @map("lastName") @db.VarChar(255)
+  email        String?        @unique @db.VarChar(255)
+  password     String?        @db.VarChar(255)
+  role         UserRole       @default(NORMAL)
+  devId        String?        @unique @map("dev_id") @db.VarChar(255)
+  ipAddress    String?        @map("ip_address") @db.VarChar(255)
+  phoneNumber  String?        @map("phone_number") @db.VarChar(255)
+  lowBattery   Int            @default(0) @map("low_battery")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  helpRequests HelpRequest?
+  locationData LocationData[]
+  helpGiven    NearbyUser[]   @relation("HelpGiver")
+  helpReceived NearbyUser[]   @relation("HelpReceiver")
+  snowUpdates  SnowUpdate[]
+  userReviews  UserReview[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id
+  name        String   @unique @db.VarChar(50)
+  permissions String   @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+model Segment {
+  id              String       @id
+  name            String       @unique @db.VarChar(100)
+  terrain         String       @db.VarChar(100)
+  avalancheDanger Boolean      @default(false) @map("avalancheDanger")
+  isLowerSegment  Int?         @map("isLowerSegment")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  coordinates     Coordinate[]
+  snowUpdates     SnowUpdate[]
+  userReviews     UserReview[]
+
+  @@map("segments")
+}
+
+model Coordinate {
+  id         String   @id
+  segment    String   @map("segment")
+  order      Int      @map("order")
+  latitude   Float    @map("latitude")
+  longitude  Float    @map("longitude")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  segmentRel Segment  @relation(fields: [segment], references: [id], onDelete: Cascade)
+
+  @@unique([order, segment])
+  @@index([segment], map: "coordinates_segment_fkey")
+  @@map("coordinates")
+}
+
+model SnowType {
+  id                            String                @id
+  name                          String                @unique @db.VarChar(50)
+  colour                        String                @db.VarChar(15)
+  skiability                    Int?
+  primarySnowTypeId             String?               @map("primary_snow_type_id")
+  explanation                   String?               @db.Text
+  createdAt                     DateTime              @default(now()) @map("created_at")
+  updatedAt                     DateTime              @updatedAt @map("updated_at")
+  snowUpdateConditions          SnowUpdateCondition[] @relation("ConditionPrimarySnowType")
+  secondarySnowUpdateConditions SnowUpdateCondition[] @relation("ConditionSecondarySnowType")
+  userReviews                   UserReview[]           @relation("ReviewPrimarySnowType")
+  secondaryUserReviews          UserReview[]           @relation("ReviewSecondarySnowType")
+  primarySnowTypes              SnowTypeSecondary[]   @relation("PrimarySnowType")
+  secondarySnowTypes            SnowTypeSecondary[]   @relation("SecondarySnowType")
+  primarySnowType               SnowType?             @relation("PrimarySnowTypeReference", fields: [primarySnowTypeId], references: [id], onDelete: SetNull)
+  secondarySnowTypesRef         SnowType[]            @relation("PrimarySnowTypeReference")
+
+  @@index([primarySnowTypeId], map: "snow_types_primary_snow_type_id_fkey")
+  @@map("snowTypes")
+}
+
+model SnowTypeSecondary {
+  id                  String   @id @default(uuid())
+  primarySnowTypeId   String   @map("primary_snow_type_id")
+  secondarySnowTypeId String   @map("secondary_snow_type_id")
+  createdAt           DateTime @default(now()) @map("created_at")
+  primarySnowType     SnowType @relation("PrimarySnowType", fields: [primarySnowTypeId], references: [id], onDelete: Cascade)
+  secondarySnowType   SnowType @relation("SecondarySnowType", fields: [secondarySnowTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([primarySnowTypeId, secondarySnowTypeId])
+  @@index([primarySnowTypeId], map: "snow_type_secondary_primary_fkey")
+  @@index([secondarySnowTypeId], map: "snow_type_secondary_secondary_fkey")
+  @@map("snow_type_secondary")
+}
+
+model UserReview {
+  id                   String                      @id
+  time                 DateTime                    @default(now())
+  segment              String                      @map("segment")
+  snowType             String?                     @map("snowType")
+  secondarySnowType   String?                     @map("secondarySnowType")
+  hazards              Json?                       @db.Json
+  comment              String?                     @db.Text
+  userId               String?                     @map("user_id") @db.VarChar(255)
+  createdAt            DateTime                    @default(now()) @map("created_at")
+  updatedAt            DateTime                    @updatedAt @map("updated_at")
+  snowUpdateReferences SnowUpdateReviewReference[]
+  segmentRel           Segment                     @relation(fields: [segment], references: [id], onDelete: Cascade)
+  snowTypeRel          SnowType?                   @relation("ReviewPrimarySnowType", fields: [snowType], references: [id])
+  secondarySnowTypeRel SnowType?                   @relation("ReviewSecondarySnowType", fields: [secondarySnowType], references: [id])
+  user                 User?                       @relation(fields: [userId], references: [id])
+
+  @@index([segment], map: "userReviews_segment_fkey")
+  @@index([snowType], map: "userReviews_snowType_fkey")
+  @@index([secondarySnowType], map: "userReviews_secondarySnowType_fkey")
+  @@index([userId], map: "userReviews_user_id_fkey")
+  @@map("userReviews")
+}
+
+model SnowUpdate {
+  id               String                      @id @default(uuid())
+  creator          String                      @map("creator") @db.VarChar(255)
+  segment          String                      @map("segment")
+  time             DateTime                    @default(now())
+  description      String?                     @db.Text
+  status           SnowUpdateStatus            @default(ACTIVE)
+  priority         Int                         @default(1)
+  weather          String?                     @db.VarChar(100)
+  temperature      Float?
+  windSpeed        Float?
+  visibility       Int?
+  hazards          Json?                       @db.Json
+  createdAt        DateTime                    @default(now()) @map("created_at")
+  updatedAt        DateTime                    @updatedAt @map("updated_at")
+  attachments      SnowUpdateAttachment[]
+  snowConditions   SnowUpdateCondition[]
+  reviewReferences SnowUpdateReviewReference[]
+  creatorRel       User                        @relation(fields: [creator], references: [id], onDelete: Cascade)
+  segmentRel       Segment                     @relation(fields: [segment], references: [id], onDelete: Cascade)
+
+  @@index([creator], map: "snow_updates_creator_fkey")
+  @@index([segment], map: "snow_updates_segment_fkey")
+  @@index([status], map: "snow_updates_status_fkey")
+  @@index([time], map: "snow_updates_time_fkey")
+  @@index([priority], map: "snow_updates_priority_fkey")
+  @@map("snow_updates")
+}
+
+model SnowUpdateCondition {
+  id                   String     @id @default(uuid())
+  updateId             String     @map("update_id")
+  snowType             String     @map("snow_type")
+  secondarySnowType    String?    @map("secondary_snow_type")
+  layer                SnowLayer  @default(SURFACE)
+  depth                Float?
+  coverage             Int?
+  quality              Int?
+  hardness             Int?
+  moisture             Int?
+  notes                String?    @db.Text
+  createdAt            DateTime   @default(now()) @map("created_at")
+  snowTypeRel          SnowType   @relation("ConditionPrimarySnowType", fields: [snowType], references: [id])
+  secondarySnowTypeRel SnowType?  @relation("ConditionSecondarySnowType", fields: [secondarySnowType], references: [id])
+  updateRel            SnowUpdate @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@unique([updateId, layer, snowType])
+  @@index([updateId], map: "snow_update_conditions_update_fkey")
+  @@index([snowType], map: "snow_update_conditions_snow_type_fkey")
+  @@index([secondarySnowType], map: "snow_update_conditions_secondary_snow_type_fkey")
+  @@index([layer], map: "snow_update_conditions_layer_fkey")
+  @@map("snow_conditions")
+}
+
+model SnowUpdateReviewReference {
+  id        String     @id @default(uuid())
+  updateId  String     @map("update_id")
+  reviewId  String     @map("review_id")
+  relevance Int        @default(1)
+  notes     String?    @db.Text
+  createdAt DateTime   @default(now()) @map("created_at")
+  reviewRel UserReview @relation(fields: [reviewId], references: [id])
+  updateRel SnowUpdate @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@unique([updateId, reviewId])
+  @@index([updateId], map: "snow_update_review_refs_update_fkey")
+  @@index([reviewId], map: "snow_update_review_refs_review_fkey")
+  @@map("snow_review_references")
+}
+
+model SnowUpdateAttachment {
+  id        String             @id @default(uuid())
+  updateId  String             @map("update_id")
+  filename  String             @db.VarChar(255)
+  fileType  SnowUpdateFileType @map("file_type")
+  fileSize  Int                @map("file_size")
+  filePath  String             @map("file_path") @db.VarChar(500)
+  caption   String?            @db.VarChar(500)
+  createdAt DateTime           @default(now()) @map("created_at")
+  updateRel SnowUpdate         @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  @@index([updateId], map: "snow_update_attachments_update_fkey")
+  @@index([fileType], map: "snow_update_attachments_file_type_fkey")
+  @@map("snow_attachments")
+}
+
+model LocationData {
+  id        String   @id
+  userId    String   @map("user_id") @db.VarChar(255)
+  timestamp Int
+  gpsCoord  String   @map("gpscoord") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, timestamp])
+  @@map("location_data")
+}
+
+model HelpRequest {
+  id               String          @id
+  userId           String          @unique @map("user_id") @db.VarChar(255)
+  timestamp        Int
+  gpsCoord         String          @map("gpscoord") @db.VarChar(255)
+  helpType         String          @map("help_type") @db.VarChar(100)
+  roomId           String          @map("room_id") @db.VarChar(255)
+  status           HelpEventStatus @default(active)
+  locationAccuracy Float?          @map("location_accuracy")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  user             User            @relation(fields: [userId], references: [id])
+  helpReceived     NearbyUser[]    @relation("HelpReceiver")
+
+  @@map("help_requests")
+}
+
+model NearbyUser {
+  id            String      @id
+  helpGiver     String      @map("help_giver") @db.VarChar(255)
+  helpRequester String      @map("help_requester") @db.VarChar(255)
+  state         Int
+  acceptedAt    DateTime?   @map("accepted_at")
+  acceptedLatitude  Float?  @map("accepted_latitude")
+  acceptedLongitude Float?  @map("accepted_longitude")
+  acceptedAccuracy  Float?  @map("accepted_accuracy")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  giver         User        @relation("HelpGiver", fields: [helpGiver], references: [id], map: "nearby_users_help_giver_fkey")
+  requester     User        @relation("HelpReceiver", fields: [helpRequester], references: [id], map: "nearby_users_help_receiver_fkey")
+  helpReq       HelpRequest @relation("HelpReceiver", fields: [helpRequester], references: [userId], map: "nearby_users_help_request_fkey")
+
+  @@unique([helpGiver, helpRequester])
+  @@index([helpRequester], map: "nearby_users_help_request_fkey")
+  @@map("help_notifications")
+}
+
+model Weather {
+  id               String   @id @default(uuid())
+  timestamp        DateTime @default(now())
+  temperature      Float?
+  windSpeed        Float?   @map("wind_speed")
+  windDirection    Float?   @map("wind_direction")
+  airPressure      Float?   @map("air_pressure")
+  snowDepth        Float?   @map("snow_depth")
+  relativeHumidity Float?   @map("relative_humidity")
+  dewPoint         Float?   @map("dew_point")
+  precipitation    Float?
+  visibility       Float?
+  cloudCover       Int?     @map("cloud_cover")
+  stationId        String?  @map("station_id") @db.VarChar(50)
+  stationName      String?  @map("station_name") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([timestamp])
+  @@index([stationId])
+  @@map("weather")
+}
+
+enum SnowUpdateStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum SnowLayer {
+  SURFACE
+  MIDDLE
+  BASE
+}
+
+enum SnowUpdateFileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+}
+
+enum UserRole {
+  NORMAL
+  PREMIUM
+  ADMIN
+  RESCUE
+  GUIDE
+
+  @@map("user_role")
+}
+
+enum HelpEventStatus {
+  active
+  completed
+  cancelled
+}
