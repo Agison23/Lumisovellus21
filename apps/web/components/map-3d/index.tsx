@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable react/prop-types */
 import type { paths } from "@lumisovellus/api-client-web";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FeatureCollection, Polygon } from "geojson";
@@ -68,7 +69,7 @@ import type {
   InteractiveAreaProperties,
   UpdateData,
 } from "@/lib/map/mock-data";
-import { calculatePolygonArea } from "@/lib/map/utils";
+import { calculatePolygonArea, isPolygonInsidePolygon } from "@/lib/map/utils";
 import type { Monitor } from "@/lib/snower/types";
 import {
   getSnowTypeNameById,
@@ -120,7 +121,7 @@ const submitGuideUpdate = async (data: {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(requestBody),
-    },
+    }
   );
 
   if (!response.ok) throw new Error("Failed to submit guide update");
@@ -136,7 +137,7 @@ const submitObservation = async (data: {
   // Validate required fields
   if (!data.segmentId || !data.selectedSnowTypeId || !data.timestamp) {
     throw new Error(
-      "Missing required fields: areaId, selectedSnowTypeId, or timestamp",
+      "Missing required fields: areaId, selectedSnowTypeId, or timestamp"
     );
   }
 
@@ -166,7 +167,7 @@ const submitObservation = async (data: {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(requestBody),
-    },
+    }
   );
 
   if (!response.ok) throw new Error("Failed to submit observation");
@@ -301,7 +302,7 @@ export default function Map3d() {
     onError: (error) => {
       toast.error(
         t("reportForm.messages.submitError") +
-          (error instanceof Error ? ` ${error.message}` : ""),
+          (error instanceof Error ? ` ${error.message}` : "")
       );
     },
   });
@@ -320,7 +321,7 @@ export default function Map3d() {
     onError: (error) => {
       toast.error(
         t("reportForm.messages.submitError") +
-          (error instanceof Error ? ` ${error.message}` : ""),
+          (error instanceof Error ? ` ${error.message}` : "")
       );
     },
   });
@@ -332,64 +333,99 @@ export default function Map3d() {
       selectedSnowTypeId: selectedSnowTypeId,
       obstacleIds: selectedObstacles,
     },
-    3,
+    3
   );
 
   const snowTypeOptions = useMemo(() => {
     return snowTypes.map((st) => ({
       value: st.id,
       label: t(
-        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(st.name)}.name`,
+        `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(st.name)}.name`
       ),
     }));
   }, [snowTypes, t]);
 
   // MEMOIZED GEOJSON DATA:
-  const areasGeoJson = useMemo<FeatureCollection<Polygon, Segment>>(
-    () => ({
+  const areasGeoJson = useMemo<FeatureCollection<Polygon, Segment>>(() => {
+    // Sort areas by size descending (larger areas rendered first, smaller on top)
+    const sortedAreas = [...areas].sort((a, b) => {
+      const areaA = calculatePolygonArea(a.points);
+      const areaB = calculatePolygonArea(b.points);
+      return areaB - areaA;
+    });
+
+    // For each area, find inner areas that should be cut out as holes
+    const areasWithHoles = sortedAreas.map((area) => {
+      // Find all smaller polygons that are inside this one
+      const innerAreas = sortedAreas.filter((otherArea) => {
+        if (otherArea.id === area.id) return false;
+        const otherSize = calculatePolygonArea(otherArea.points);
+        const thisSize = calculatePolygonArea(area.points);
+        // Only consider smaller polygons
+        if (otherSize >= thisSize) return false;
+        // Check if the other polygon is inside this one
+        return isPolygonInsidePolygon(otherArea.points, area.points);
+      });
+
+      return { area, innerAreas };
+    });
+
+    return {
       type: "FeatureCollection",
-      features: [...areas]
-        .sort((a, b) => {
-          const areaA = calculatePolygonArea(a.points);
-          const areaB = calculatePolygonArea(b.points);
-          return areaB - areaA; // Descending order
-        })
-        .map((area) => {
-          // convert points [{lat,lng}] to a GeoJSON linear ring [[lng,lat], ...]
-          const ring: [number, number][] = area.points.map((p) => [
+      features: areasWithHoles.map(({ area, innerAreas }) => {
+        // Convert outer ring points to GeoJSON format
+        const outerRing: [number, number][] = area.points.map((p) => [
+          p.lng,
+          p.lat,
+        ]);
+        // Ensure the ring is closed
+        if (outerRing.length > 0) {
+          const first = outerRing[0];
+          const last = outerRing[outerRing.length - 1];
+          if (first[0] !== last[0] || first[1] !== last[1]) {
+            outerRing.push(first);
+          }
+        }
+
+        // Create hole rings for inner areas (must be in opposite winding order)
+        const holeRings = innerAreas.map((innerArea) => {
+          const holeRing: [number, number][] = innerArea.points.map((p) => [
             p.lng,
             p.lat,
           ]);
-          // ensure the ring is closed (first point equals last point)
-          if (ring.length > 0) {
-            const first = ring[0];
-            const last = ring[ring.length - 1];
+          // Ensure the ring is closed
+          if (holeRing.length > 0) {
+            const first = holeRing[0];
+            const last = holeRing[holeRing.length - 1];
             if (first[0] !== last[0] || first[1] !== last[1]) {
-              ring.push(first);
+              holeRing.push(first);
             }
           }
-          return {
-            type: "Feature" as const,
-            geometry: {
-              type: "Polygon" as const,
-              coordinates: [ring],
-            },
-            properties: area,
-          };
-        }),
-    }),
-    [areas],
-  );
+          // Reverse the hole ring to ensure correct winding order (holes should be clockwise if outer is counter-clockwise)
+          return holeRing.reverse();
+        });
+
+        return {
+          type: "Feature" as const,
+          geometry: {
+            type: "Polygon" as const,
+            coordinates: [outerRing, ...holeRings],
+          },
+          properties: area,
+        };
+      }),
+    };
+  }, [areas]);
 
   // Filters for hover and selected states
   const hoverFilter = useMemo<FilterSpecification>(
     () => ["==", ["get", "id"], hoveredAreaId ?? ""] as FilterSpecification,
-    [hoveredAreaId],
+    [hoveredAreaId]
   );
 
   const selectedFilter = useMemo<FilterSpecification>(
     () => ["==", ["get", "id"], selectedArea?.id ?? ""] as FilterSpecification,
-    [selectedArea],
+    [selectedArea]
   );
 
   const monitorsGeoJson = useMemo<FeatureCollection>(
@@ -398,8 +434,7 @@ export default function Map3d() {
       features: monitors
         .filter(
           (monitor) =>
-            monitor.snowDepth !== "No Data" ||
-            monitor.temperature !== "No Data",
+            monitor.snowDepth !== "No Data" || monitor.temperature !== "No Data"
         )
         .map((monitor) => ({
           type: "Feature" as const,
@@ -414,23 +449,56 @@ export default function Map3d() {
           },
         })),
     }),
-    [monitors],
+    [monitors]
   );
 
   // EVENT HANDLERS:
   // Handle mouse move to detect hover over areas
-  const handleMouseMove = useCallback((event: MapMouseEvent) => {
-    const hoveredFeature = event.features?.[0];
-    event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
+  const handleMouseMove = useCallback(
+    (event: MapMouseEvent) => {
+      const features = event.features;
+      event.target.getCanvas().style.cursor =
+        features && features.length > 0 ? "pointer" : "";
 
-    // If hovering over an area, set hoveredAreaId, else clear it
-    if (hoveredFeature) {
-      const properties = hoveredFeature.properties as InteractiveAreaProperties;
-      setHoveredAreaId(properties.id);
-    } else {
-      setHoveredAreaId(null);
-    }
-  }, []);
+      // If hovering over areas, find the smallest (topmost) one
+      if (features && features.length > 0) {
+        // Filter to only area features and find the smallest one
+        const areaFeatures = features.filter(
+          (f) => f.layer?.id === "areas-fill"
+        );
+
+        if (areaFeatures.length > 0) {
+          // Find the area with the smallest size (it's rendered on top)
+          // Since areas are sorted by size descending in areasGeoJson,
+          // the last matching feature in the array is the smallest
+          let smallestFeature = areaFeatures[0];
+          let smallestArea = Infinity;
+
+          for (const feature of areaFeatures) {
+            const props = feature.properties as Segment;
+            // Calculate area from the segment's points if available
+            const segment = areas.find((a) => a.id === props.id);
+            if (segment) {
+              const area = calculatePolygonArea(segment.points);
+              if (area < smallestArea) {
+                smallestArea = area;
+                smallestFeature = feature;
+              }
+            }
+          }
+
+          const properties =
+            smallestFeature.properties as InteractiveAreaProperties;
+          setHoveredAreaId(properties.id);
+        } else {
+          setHoveredAreaId(null);
+        }
+      } else {
+        setHoveredAreaId(null);
+      }
+    },
+    [areas]
+  );
 
   // Handle mouse leave to clear hover state
   const handleMouseLeave = useCallback((event: MapMouseEvent) => {
@@ -441,7 +509,7 @@ export default function Map3d() {
   // Handle click events on the map
   const handleClick = useCallback(
     (event: MapMouseEvent) => {
-      const feature = event.features?.[0];
+      const features = event.features;
 
       // Reset form state on any click
       setSelectedSnowCategoryId(null);
@@ -452,9 +520,12 @@ export default function Map3d() {
       });
 
       // Check if a monitor was clicked
-      if (feature?.layer?.id === "monitors-points") {
+      const monitorFeature = features?.find(
+        (f) => f.layer?.id === "monitors-points"
+      );
+      if (monitorFeature) {
         const monitor = monitors.find(
-          (m) => m.name === feature.properties?.name,
+          (m) => m.name === monitorFeature.properties?.name
         );
         // If monitor found, set it as selected and clear area selection
         if (monitor) {
@@ -464,8 +535,12 @@ export default function Map3d() {
         }
       }
 
-      // Handle area clicks as before
-      if (!feature) {
+      // Handle area clicks - find the smallest (topmost) area
+      const areaFeatures = features?.filter(
+        (f) => f.layer?.id === "areas-fill"
+      );
+
+      if (!areaFeatures || areaFeatures.length === 0) {
         setSelectedArea(null);
         setSelectedMonitor(null);
         form.reset();
@@ -473,9 +548,25 @@ export default function Map3d() {
         return;
       }
 
+      // Find the smallest area (rendered on top)
+      let smallestFeature = areaFeatures[0];
+      let smallestArea = Infinity;
+
+      for (const feature of areaFeatures) {
+        const props = feature.properties as Segment;
+        const segment = areas.find((a) => a.id === props.id);
+        if (segment) {
+          const area = calculatePolygonArea(segment.points);
+          if (area < smallestArea) {
+            smallestArea = area;
+            smallestFeature = feature;
+          }
+        }
+      }
+
       // If an area was clicked, set it as selected
       // Clear any selected monitor for clarity
-      const properties = feature.properties as Segment;
+      const properties = smallestFeature.properties as Segment;
       setSelectedArea(properties);
       setSelectedMonitor(null);
       // Also reset the form to step 0 with the new segmentId
@@ -485,7 +576,7 @@ export default function Map3d() {
       form.goToStep(0);
       submitMutation.reset();
     },
-    [monitors, form, submitMutation],
+    [monitors, form, submitMutation, areas]
   );
 
   // Handle map load event to manage loading overlay
@@ -624,7 +715,7 @@ export default function Map3d() {
                     .filter(
                       (monitor) =>
                         monitor.temperature !== "No Data" ||
-                        monitor.snowDepth !== "No Data",
+                        monitor.snowDepth !== "No Data"
                     )
                     .map((monitor) => (
                       <Marker
@@ -780,32 +871,52 @@ export default function Map3d() {
                                     <div key={snowTypeId}>
                                       <p className="font-medium text-lg">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId
+                                            )
+                                          )}.name`
                                         )}
                                       </p>
                                       <p className="text-xs">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId
+                                            )
+                                          )}.description`
                                         )}
                                       </p>
                                     </div>
-                                  ),
+                                  )
                                 )}
                                 {updateData.guideUpdate.secondarySnowTypeIds.map(
                                   (snowTypeId) => (
                                     <div key={snowTypeId}>
                                       <p className="font-medium text-sm">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId
+                                            )
+                                          )}.name`
                                         )}
                                       </p>
                                       <p className="text-xs">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId
+                                            )
+                                          )}.description`
                                         )}
                                       </p>
                                     </div>
-                                  ),
+                                  )
                                 )}
                                 <HazardBadges
                                   hazards={updateData.guideUpdate.hazards}
@@ -825,16 +936,26 @@ export default function Map3d() {
                                 >
                                   <p className="font-medium text-sm">
                                     {t(
-                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.name`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                        getSnowTypeNameById(
+                                          snowTypes,
+                                          review.snowTypeId
+                                        )
+                                      )}.name`
                                     )}
                                     :{" "}
                                     {getPrettyTimeDiff(
-                                      new Date(review.submittedAt),
+                                      new Date(review.submittedAt)
                                     )}
                                   </p>
                                   <p className="text-xs">
                                     {t(
-                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.description`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                        getSnowTypeNameById(
+                                          snowTypes,
+                                          review.snowTypeId
+                                        )
+                                      )}.description`
                                     )}
                                   </p>
                                   <HazardBadges
@@ -887,13 +1008,17 @@ export default function Map3d() {
                       value={guidePrimary1}
                       onChange={setGuidePrimary1}
                       options={snowTypeOptions}
-                      placeholder={`${t("reportForm.labels.primarySnowType")} 1`}
+                      placeholder={`${t(
+                        "reportForm.labels.primarySnowType"
+                      )} 1`}
                     />
                     <SnowTypeCombobox
                       value={guidePrimary2}
                       onChange={setGuidePrimary2}
                       options={snowTypeOptions}
-                      placeholder={`${t("reportForm.labels.primarySnowType")} 2`}
+                      placeholder={`${t(
+                        "reportForm.labels.primarySnowType"
+                      )} 2`}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -1033,7 +1158,9 @@ export default function Map3d() {
                               }}
                             >
                               {t(
-                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowType.id))}.name`,
+                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                  getSnowTypeNameById(snowTypes, snowType.id)
+                                )}.name`
                               )}
                             </Button>
                           ))}
@@ -1059,7 +1186,7 @@ export default function Map3d() {
                           .filter(
                             (st) =>
                               st.primarySnowTypeId === selectedSnowCategoryId ||
-                              st.id === selectedSnowCategoryId,
+                              st.id === selectedSnowCategoryId
                           )
                           .map((snowType) => (
                             <Button
@@ -1076,14 +1203,21 @@ export default function Map3d() {
 														`}
                             >
                               {t(
-                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowType.id))}.name`,
+                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                  getSnowTypeNameById(snowTypes, snowType.id)
+                                )}.name`
                               )}
                             </Button>
                           ))}
                       </div>
                       <p className="text-center">
                         {t(
-                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, selectedSnowTypeId || ""))}.description`,
+                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                            getSnowTypeNameById(
+                              snowTypes,
+                              selectedSnowTypeId || ""
+                            )
+                          )}.description`
                         )}
                       </p>
                     </div>
