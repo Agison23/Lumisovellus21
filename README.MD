@@ -1,141 +1,245 @@
-# # North Star
+# Lumisovellus
 
-## Backend API
+Monorepo for the Lumisovellus project: backend API, web dashboard and Flutter mobile app.
 
-### Docker Development
+## Overview
 
-For running with Docker:
+- **Backend**: Node.js + Express + Prisma API, MySQL  
+- **Web**: Next.js 15 + React 19, TypeScript, shadcn/ui, Maplibre  
+- **Mobile**: Flutter + Riverpod, MVVM, offline-friendly architecture with Drift 
 
-1. **Copy environment file:**
+Monorepo tooling:
 
-   ```bash
-   cp .env.example .env
-   ```
+- **Package manager**: npm workspaces  
+- **Task runner**: Turborepo  
+- **OpenAPI**: Backend emits `openapi.json`, used to generate web & mobile clients  
 
-2. **Build and run containers:**
+## Repository structure
 
-   ```bash
-   docker-compose up --build
-   ```
+```text
+apps/
+  backend/   # API, DB, OpenAPI spec
+  mobile/    # Flutter app
+  web/       # Next.js web client
+docs/
+  mobile/    # Mobile architecture, caching, env/dev container
+  web/       # Web architecture & conventions
+infra/
+  docker/    # Docker & DB infra
+legacy/      # Old implementation, kept for reference
+packages/
+  api-client-web/  # TS client from OpenAPI
+  eslint-config/
+  shared/
+  templates/
+  tsconfig/
+```
 
-3. **Access the backend container:**
-   ```bash
-   docker-compose exec backend sh
-   ```
+## Getting started (monorepo)
 
-### Local Development
+From repo root:
 
-#### Running the Backend
+```bash
+npm install
+cd infra/docker && docker compose up mysql -d && cd ../..
+npm run dev
+```
 
-1. **Navigate to the backend directory:**
+This will:
 
-   ```bash
-   cd apps/backend
-   ```
+- start the backend (with DB from Docker)  
+- start the web app  
+- start the mobile tooling; for full mobile hot reload, see below  
 
-2. **Install dependencies:**
+Useful root scripts:
 
-   ```bash
-   npm install
-   ```
+```bash
+npm run dev              # start all dev targets via turbo
+npm test                 # run tests (web + backend, mobile excluded)
+npm run lint             # lint (web + backend)
+npm run build            # build (web + backend)
+npm run verify           # openapi:check + lint + typecheck + test + build
+```
 
-3. **Set up the database:**
+### Environment
 
-   ```bash
-   # Create and copy .env file
-   cp .env.example .env
+Backend:
 
-   # Generate Prisma client
-   npm run db:generate
-   ```
+- Copy `apps/backend/.env.example` → `apps/backend/.env`  
+- Set `DATABASE_URL`, for Docker dev typically:
 
-4. **Run database migrations:**
+  ```text
+  mysql://lumisovellus:password@mysql:3306/lumisovellus
+  ```
 
-   ```bash
-   npm run db:migrate
-   ```
+Mobile:
 
-5. **Seed the database with default data:**
+- Copy `apps/mobile/.env.example` → `apps/mobile/.env`  
+- Set `MAPBOX_ACCESS_TOKEN` to your public Mapbox token  
 
-   ```bash
-   npm run db:seed
-   ```
+More detailed Dev Container + Android emulator instructions: see `docs/mobile/`.
 
-6. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+## Backend (apps/backend)
 
-The server will start on **http://localhost:3001**
+Tech: Node.js, Express, Prisma, MySQL, Vitest.
 
-### API Documentation (Swagger)
+### Run backend only
 
-Once the server is running, you can access the Swagger documentation at:
+```bash
+cd apps/backend
+npm install
+cp .env.example .env
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
 
-**http://localhost:3001/api-docs**
+Server runs at:
 
-This interactive documentation allows you to:
+- API: `http://localhost:3001`
 
-- Browse all available endpoints
-- Test API endpoints directly from the browser
-- View request/response schemas
-- See authentication requirements
+### API docs
 
-### Default Users
+Swagger / OpenAPI UI:
 
-The seed script creates the following test users:
+- `http://localhost:3001/api-docs`
 
-| Email                  | Password  | Role   | Description             |
-| ---------------------- | --------- | ------ | ----------------------- |
-| admin@lumisovellus.fi  | admin123  | ADMIN  | Administrative access   |
-| user@lumisovellus.fi   | user123   | NORMAL | Regular user account    |
-| rescue@lumisovellus.fi | rescue123 | RESCUE | Rescue operator account |
+The seed script creates test users (admin/user/rescue) for quick authentication; see the backend docs for exact credentials.
 
-You can use these credentials to authenticate and test the API endpoints.
+More backend details (auth, testing, etc.):  
+`apps/backend/AUTHENTICATION.md`, `apps/backend/TESTING.md`.
 
+## Web (apps/web)
 
-### API Endpoints
+Tech: Next.js 15, React 19, TypeScript, Tailwind, shadcn/ui, next-intl, react-map-gl / Maplibre.
 
-Authentication
-- POST `/auth/register`: Create a new account (email/password); returns access and refresh tokens.
-- POST `/auth/login`: Authenticate with credentials; returns access and refresh tokens.
-- POST `/auth/refresh-token`: Exchange a valid refresh token for fresh tokens.
-- POST `/auth/reset-password`: Send password reset email if the address exists.
-- POST `/auth/logout` (Auth): Invalidate the current session for the bearer token.
-- GET `/auth/profile` (Auth): Return profile of the authenticated user.
-- PUT `/auth/profile` (Auth): Update profile fields of the authenticated user.
-- PUT `/auth/change-password` (Auth): Change password given current and new passwords.
-- GET `/auth/verify-token` (Auth): Validate token; returns token status and basic user info.
+High-level:
 
-Health
-- GET `/health`: Liveness/status endpoint including API version and timestamp.
+- `app/` – Next.js app router, layouts and routes  
+- `components/` – shared UI + shadcn components  
+- `lib/` – utilities, Map, API helpers  
+- `messages/` + `i18n/` – localization  
+- `__tests__/` – unit, integration & e2e tests (Vitest + Playwright)  
 
-Users
-- POST `/api/v1/users/:deviceId/location` (Auth): Upsert latest GPS coordinates for a device; used for rescue proximity and tracking.
-- POST `/api/v1/users/:deviceId/battery` (Auth): Report device battery level (`low` or `normal`).
-- POST `/api/v1/users/:deviceId/role` (Auth + Admin): Set a user's role; returns role and permissions.
-- GET `/api/v1/users/:deviceId/role` (Auth): Get a user's role and effective permissions by deviceId.
-- GET `/api/v1/users` (Auth + Admin): List all users with key fields for admin dashboards.
-- GET `/api/v1/users/me` (Auth): Current user's profile snapshot and flags (e.g., `lowBattery`).
-- PUT `/api/v1/users/:id` (Auth + Admin): Update user fields (name, email, role, phone) by ID.
-- DELETE `/api/v1/users/:id` (Auth + Admin): Delete user account and related data by ID.
+To run web in isolation:
 
-Segments & Observations
-- GET `/api/v1/segments`: List segments; supports either `bbox` (OGC order `minLng,minLat,maxLng,maxLat`) or explicit `minLat|minLng|maxLat|maxLng` filters plus `search`/`updatedSince`. Each segment includes up to 3 of the latest user reviews and the most recent guide update, if available.
-- GET `/api/v1/segments/:id/observations`: Combined guide update and recent user reviews for a single segment; accepts `days` (default 3) and `limit` (default 3) query parameters.
-- POST `/api/v1/segments/:id/guideUpdate` (Auth + Admin): Create or replace the active guide update for a segment with up to two primary/secondary snow types.
+```bash
+cd apps/web
+npm install
+npm run dev
+```
 
-Reviews
-- GET `/api/v1/snow-types`: Enumerate allowed snow/surface types for reviews.
-- GET `/api/v1/observations`: Latest observations (reviews and guide updates) across segments; supports `days` (default 3), `limit`, `page`, and `pageSize`.
-- GET `/api/v1/segments/:id/observations`: Same observation payload scoped to a single segment; accepts `days`/`limit` query params.
-- POST `/api/v1/segments/:id/reviews` (Auth): Create a review for a segment with rating/comments.
+Architecture, routing, testing and best practices are documented in:
 
-Help Events
-- POST `/help/events` (Auth): Start a new help event (need type + location) and notify nearby users.
-- GET `/help/events/nearby` (Auth): List active events within a configurable radius of the caller.
-- GET `/help/events/{eventId}/view` (Auth): Context-aware view (rescuee vs. rescuer) with participants and latest status.
-- POST `/help/events/{eventId}/acceptance` + DELETE `/help/events/{eventId}/acceptance` (Auth): Join or withdraw from an event as a rescuer.
-- PATCH `/help/events/{eventId}` (Auth): Rescuee cancels or completes the event.
-- GET `/help/events/{eventId}/stream` (Auth): Reserved for the upcoming push/streaming channel (currently returns 501).
+- `docs/web/`
 
+## Mobile (apps/mobile)
+
+Tech: Flutter, Riverpod, feature-first MVVM, Drift for offline caching, Firebase.
+
+### Architecture
+
+- Feature-first MVVM with Riverpod  
+- Layers: View → ViewModel (Notifier) → Repository → Service  
+- `core/` for shared widgets/utilities  
+- Drift backing offline cache (unused legacy tiles today, extendable to segments/reviews/etc.)  
+
+Detailed architecture and Drift-based caching docs:
+
+- `docs/mobile/`
+
+### Running mobile in dev
+
+Inside the dev container (or local environment with Flutter tooling):
+
+```bash
+cd apps/mobile
+npm run dev
+```
+
+The mobile dev script will:
+
+- connect ADB to the host emulator (`adb connect host.docker.internal:5555`)  
+- set up port forwarding to backend (`adb reverse tcp:3001 tcp:3001`)  
+- start `flutter run` with hot reload (press `r` in the terminal)  
+
+### Backend integration (mobile)
+
+Currently wired:
+
+- **Auth**: `POST /auth/register`, `POST /auth/login`, `GET /api/v1/users/me`  
+- **Map & Reviews**:
+  - `GET /api/v1/segments`
+  - `GET /api/v1/snow-types`
+  - `POST /api/v1/segments/{id}/reviews`
+
+Other views (guide updates, rescue, some weather) are in various mock/partial states and not fully integrated yet.
+
+### Firebase & APK builds
+
+For full steps, see `docs/mobile/` and `apps/mobile/README.md`. Rough outline:
+
+```bash
+cd apps/mobile
+# Firebase CLI
+curl -sL https://firebase.tools | bash
+firebase login
+
+# FlutterFire CLI
+dart pub global activate flutterfire_cli
+flutterfire configure --project=snowledge-36e50
+
+# Build debug APK
+flutter build apk --debug
+```
+
+APK output is under:
+
+```text
+apps/mobile/build/app/outputs/flutter-apk/
+```
+
+## Testing
+
+### Monorepo (web + backend)
+
+From repo root:
+
+```bash
+npm test         # turbo run test --filter=!mobile
+npm run test:unit
+npm run test:integration
+npm run lint
+npm run typecheck
+npm run build
+npm run verify   # full check before PR
+```
+
+### Mobile tests
+
+```bash
+cd apps/mobile
+
+# Unit & widget tests
+flutter test
+
+# Integration tests
+flutter test test/integration/
+
+# Coverage
+flutter test --coverage
+genhtml coverage/lcov.info -o coverage/html
+```
+
+Integration test details live in:
+
+- `apps/mobile/test/integration/README.md`
+
+---
+
+For deeper details about a specific app, check:
+
+- `docs/web/` for web architecture  
+- `docs/mobile/` for mobile architecture, caching and Dev Container setup  
+- `apps/backend/` docs for backend-specific auth, DB and testing information  
