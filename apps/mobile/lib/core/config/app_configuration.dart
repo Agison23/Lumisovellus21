@@ -21,7 +21,7 @@ class AppConfiguration {
   factory AppConfiguration.fromDefaults() {
     const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'https://beta.lumisovellus.fi/backend-api',
+      defaultValue: '',
     );
     const mapboxToken = String.fromEnvironment(
       'MAPBOX_ACCESS_TOKEN',

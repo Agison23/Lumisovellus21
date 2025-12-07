@@ -39,6 +39,9 @@ final appConfigurationProvider = FutureProvider<AppConfiguration>((ref) async {
     }
   }
 
+  const useRemoteConfig = bool.fromEnvironment('USE_REMOTE_CONFIG', defaultValue: true);
+  if (!useRemoteConfig) return config;
+
   // Fetch and apply Remote Config values (highest priority)
   try {
     final remoteConfigService = await ref.watch(remoteConfigServiceProvider.future);
