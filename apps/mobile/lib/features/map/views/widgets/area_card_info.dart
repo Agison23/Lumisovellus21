@@ -32,9 +32,15 @@ class AreaCardInfo extends StatelessWidget {
     return null;
   }
 
-  String _hazardLabel(String value) {
-    if (value.isEmpty) return value;
-    return value[0].toUpperCase() + value.substring(1);
+  String _capitalizeFirst(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
+
+  String _hazardLabel(String key) {
+    if (key.isEmpty) return key;
+    final map = {'stones': t.stones, 'branches': t.branches};
+    return map[key] ?? t.translationMissing;
   }
 
   String _daysAgoText(DateTime submittedAt) {
@@ -73,7 +79,9 @@ class AreaCardInfo extends StatelessWidget {
           if (guideHazards.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
-              '${t.guideHazards}: ${guideHazards.join(', ')}',
+              '${t.guideHazards}: ${_capitalizeFirst(
+                guideHazards.map((h) => _hazardLabel(h.value)).join(', ')
+              )}',
               style: theme.textTheme.bodySmall,
             ),
           ],
@@ -117,7 +125,9 @@ class AreaCardInfo extends StatelessWidget {
                   if (review.hazards.isNotEmpty) ...[
                     const SizedBox(height: 6),
                     Text(
-                      '${t.obstacles}: ${review.hazards.map(_hazardLabel).join(', ')}',
+                      '${t.obstacles}: ${_capitalizeFirst(
+                        review.hazards.map(_hazardLabel).join(', ')
+                      )}',
                       style: theme.textTheme.bodySmall,
                     ),
                   ],

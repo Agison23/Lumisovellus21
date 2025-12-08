@@ -24,6 +24,7 @@ class SegmentsApi {
   /// Retrieve all ski segments with their coordinates and terrain information. Supports filtering by bounding box, search, and updatedSince.
   ///
   /// Parameters:
+  /// * [observationDays] - Number of days to look back for reviews and observations in a segment
   /// * [bbox] - Bounding box to filter segments (format: \"minLat,minLng,maxLat,maxLng\")
   /// * [minLat] - Minimum latitude of bounding box
   /// * [minLng] - Minimum longitude of bounding box
@@ -41,6 +42,7 @@ class SegmentsApi {
   /// Returns a [Future] containing a [Response] with a [ApiV1SegmentsGet200Response] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ApiV1SegmentsGet200Response>> apiV1SegmentsGet({ 
+    String? observationDays,
     String? bbox,
     String? minLat,
     String? minLng,
@@ -69,6 +71,7 @@ class SegmentsApi {
     );
 
     final _queryParameters = <String, dynamic>{
+      if (observationDays != null) r'observationDays': observationDays,
       if (bbox != null) r'bbox': bbox,
       if (minLat != null) r'minLat': minLat,
       if (minLng != null) r'minLng': minLng,

@@ -9,6 +9,7 @@ export interface SegmentQueryParams {
   maxLng?: number;
   search?: string;
   updatedSince?: string; // ISO 8601 date string
+  observationDays?: number;
 }
 
 export class SegmentsService extends BaseService {
@@ -51,30 +52,21 @@ export class SegmentsService extends BaseService {
   }
 
   /**
-   * Get the latest guide update (SnowUpdate created by admin) for a segment
+   * Get the latest guide update (SnowUpdate created by admin or guide) for a segment
    */
   private async getGuideUpdateForSegment(
     segmentId: string,
     since?: Date
   ): Promise<GuideUpdate | null> {
     try {
-      // First, find admin users who created updates for this segment
-      const adminUsers = await this.prisma.user.findMany({
-        where: { role: 'ADMIN' },
-        select: { id: true },
-      });
-      const adminUserIds = adminUsers.map((u) => u.id);
-
-      if (adminUserIds.length === 0) {
-        return null;
-      }
-
-      // Get the latest active SnowUpdate created by an admin
+      // Get the latest active SnowUpdate created by an admin or guide
       const guideUpdate = await this.prisma.snowUpdate.findFirst({
         where: {
           segment: segmentId,
           status: 'ACTIVE',
-          creator: { in: adminUserIds },
+          creatorRel: {
+            role: { in: ['ADMIN', 'GUIDE'] },
+          },
           ...(since
             ? {
                 time: {
@@ -98,19 +90,25 @@ export class SegmentsService extends BaseService {
       const secondarySnowTypeIds: string[] = [];
 
       for (const condition of guideUpdate.snowConditions) {
-        if (condition.snowType && !primarySnowTypeIds.includes(condition.snowType)) {
+        if (
+          condition.snowType &&
+          !primarySnowTypeIds.includes(condition.snowType)
+        ) {
           primarySnowTypeIds.push(condition.snowType);
         }
-        if (condition.secondarySnowType && !secondarySnowTypeIds.includes(condition.secondarySnowType)) {
+        if (
+          condition.secondarySnowType &&
+          !secondarySnowTypeIds.includes(condition.secondarySnowType)
+        ) {
           secondarySnowTypeIds.push(condition.secondarySnowType);
         }
       }
 
       // Parse hazards from JSON if it exists
       const hazards = (guideUpdate as any).hazards
-        ? (Array.isArray((guideUpdate as any).hazards)
-            ? ((guideUpdate as any).hazards as HazardType[])
-            : JSON.parse((guideUpdate as any).hazards as string))
+        ? Array.isArray((guideUpdate as any).hazards)
+          ? ((guideUpdate as any).hazards as HazardType[])
+          : JSON.parse((guideUpdate as any).hazards as string)
         : [];
 
       // Limit to max 2 each
@@ -132,23 +130,29 @@ export class SegmentsService extends BaseService {
    */
   private async getUserReviewsForSegment(
     segmentId: string,
-    limit: number = 3
+    limit: number = 3,
+    observationDays: number = 3
   ): Promise<UserReviewItem[]> {
     try {
+      const where: any = { segment: segmentId };
+
+      if (observationDays) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - observationDays);
+        where.time = { gte: cutoff };
+      }
+
       const reviews = await this.prisma.userReview.findMany({
-        where: {
-          segment: segmentId,
-        },
+        where,
         orderBy: { time: 'desc' },
         take: limit,
       });
 
       return reviews.map((review) => {
-        // Parse hazards from JSON if it exists
         const hazards = review.hazards
-          ? (Array.isArray(review.hazards)
-              ? (review.hazards as HazardType[])
-              : JSON.parse(review.hazards as string))
+          ? Array.isArray(review.hazards)
+            ? (review.hazards as HazardType[])
+            : JSON.parse(review.hazards as string)
           : [];
 
         return {
@@ -189,13 +193,17 @@ export class SegmentsService extends BaseService {
         }
       }
 
+      const observationDays = queryParams?.observationDays || 3;
+      const observationsSince = new Date()
+      observationsSince.setDate(observationsSince.getDate() - observationDays);
+
       // Transform and filter segments
       // First, get guide updates and user reviews for all segments in parallel
       const segmentsWithExtras = await Promise.all(
-        segments.map(async (segment) => {
+        segments.map(async (segment) => { 
           const [guideUpdate, userReviews] = await Promise.all([
-            this.getGuideUpdateForSegment(segment.id),
-            this.getUserReviewsForSegment(segment.id),
+            this.getGuideUpdateForSegment(segment.id, observationsSince),
+            this.getUserReviewsForSegment(segment.id, 3, observationDays),
           ]);
 
           return {
@@ -285,6 +293,14 @@ export class SegmentsService extends BaseService {
       hazards: HazardType[];
     }
   ): Promise<GuideUpdate> {
+    // Declare outside try block for error logging
+    let conditionsToCreate: Array<{
+      id: string;
+      snowType: string;
+      secondarySnowType?: string;
+      layer: 'SURFACE' | 'MIDDLE' | 'BASE';
+    }> = [];
+
     try {
       // Validate snow type IDs exist
       if (guideUpdateData.primarySnowTypeIds.length > 2) {
@@ -323,9 +339,6 @@ export class SegmentsService extends BaseService {
         where: {
           segment: segmentId,
           status: 'ACTIVE',
-          creatorRel: {
-            role: 'ADMIN',
-          },
         },
         data: {
           status: 'ARCHIVED',
@@ -336,12 +349,7 @@ export class SegmentsService extends BaseService {
       // Strategy: Use SURFACE layer for first primary (with first secondary if exists)
       //           Use MIDDLE layer for second primary (with second secondary if exists)
       //           Use BASE layer if we have more secondary types than primary types
-      const conditionsToCreate: Array<{
-        id: string;
-        snowType: string;
-        secondarySnowType?: string;
-        layer: 'SURFACE' | 'MIDDLE' | 'BASE';
-      }> = [];
+      conditionsToCreate = [];
 
       // Handle primary snow types
       guideUpdateData.primarySnowTypeIds.forEach((primaryId, index) => {
@@ -361,7 +369,10 @@ export class SegmentsService extends BaseService {
       });
 
       // Handle remaining secondary snow types (if we have more secondaries than primaries)
-      if (guideUpdateData.secondarySnowTypeIds.length > guideUpdateData.primarySnowTypeIds.length) {
+      if (
+        guideUpdateData.secondarySnowTypeIds.length >
+        guideUpdateData.primarySnowTypeIds.length
+      ) {
         // We need to attach remaining secondary types
         // Use the first primary type as base, or if no primaries, use the first secondary as base
         const basePrimaryType =
@@ -401,7 +412,9 @@ export class SegmentsService extends BaseService {
           status: 'ACTIVE',
           priority: 1,
           time: new Date(),
-          ...(guideUpdateData.hazards.length > 0 && { hazards: guideUpdateData.hazards }),
+          ...(guideUpdateData.hazards.length > 0 && {
+            hazards: guideUpdateData.hazards,
+          }),
           snowConditions: {
             create: conditionsToCreate,
           },
@@ -419,11 +432,19 @@ export class SegmentsService extends BaseService {
         hazards: guideUpdateData.hazards,
       };
     } catch (error) {
+      console.error('Failed to create guide update:', error);
+      console.error(
+        'Conditions to create:',
+        JSON.stringify(conditionsToCreate, null, 2)
+      );
+      console.error(
+        'Guide update data:',
+        JSON.stringify(guideUpdateData, null, 2)
+      );
       if (error instanceof Error) {
         throw error;
       }
       throw new Error('Failed to create guide update');
     }
   }
-
 }

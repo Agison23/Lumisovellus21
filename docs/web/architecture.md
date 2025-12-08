@@ -8,14 +8,16 @@ Before we start, here are some best practices to follow when working on the web 
 
 1. We use [TypeScript](https://www.typescriptlang.org/) for type safety. Always prefer typing your variables, function parameters, and return types. Current linting rules punish for using `any` type for a reason, do not try to bypass it.
 2. We have a lucky chance of using a modern framework (Next.js 15) and React 19. These include:
-    - Everything defaults to server components. This keeps bundles small and pages fast. Only add `"use client"` when you need:
 
-        - Event handlers (`onClick`, `onChange` etc.)
-        - Browser APIs (e.g. `localStorage`, `navigator` etc.)
-        - State (`useState`, `useReducer` etc.)
-        - Effects (`useEffect`, `useLayoutEffect` etc.)
+   - Everything defaults to server components. This keeps bundles small and pages fast. Only add `"use client"` when you need:
 
-    - Modern React features like `use`, `<Suspense>`, `useActionState` etc.
+     - Event handlers (`onClick`, `onChange` etc.)
+     - Browser APIs (e.g. `localStorage`, `navigator` etc.)
+     - State (`useState`, `useReducer` etc.)
+     - Effects (`useEffect`, `useLayoutEffect` etc.)
+
+   - Modern React features like `use`, `<Suspense>`, `useActionState` etc.
+
 3. `useEffect` is a great footgun. You should avoid it unless absolutely necessary. Prefer async server components and fetching data with `fetch` or using React Query. There are most likely better ways to do what you want without `useEffect`.
 4. Ensure all interactions are responsive. i.e. use spinners, loading states, and optimistic updates where necessary.
 
@@ -46,11 +48,11 @@ web/
 ├── __tests__               <-- Test files
 │   ├── e2e/                <-- End-to-end tests
 │   └── page.test.tsx       <-- Example test file.
-├── app                     <-- Main application code          
+├── app                     <-- Main application code
 │   ├── selitteet/          <-- Next.js uses file-system based routing
-│   │   └── page.tsx        <-- Each folder represents a route (here: 
+│   │   └── page.tsx        <-- Each folder represents a route (here:
 /about)
-│   ├── weather/            
+│   ├── weather/
 │   │   └── page.tsx        <-- Route: /weather
 │   ├── favicon.ico
 │   ├── globals.css         <-- Global styles
@@ -111,13 +113,31 @@ More about structure can be found at [Project structure and organization](https:
 - [Vitest](https://vitest.dev/) is used for unit and integration tests.
 - [Playwright](https://playwright.dev/) is used for end-to-end tests.
 
+### Running tests
+
+The web abblication has both unit tests and end-to-end (e2e) tests. You can run them using the following commands:
+
+- To run all tests (both unit and e2e):
+
+  ```bash
+  npm run test
+  ```
+
+- To run only unit tests:
+
+  ```bash
+  npm run test:unit
+  ```
+
+- To run only e2e tests:
+
+  ```bash
+  npm run test:e2e
+  ```
+
 ### Map
 
-- We utilize [react-map-gl](https://visgl.github.io/react-map-gl/) for rendering maps in the application with Maplibre GL as the underlying library.
-- Sources
-  - Glyphs from maplibre
-  - OSM from [OpenStreetMap](https://www.openstreetmap.org/)
-  - Terrain and hillside shading from Terrarium
+- We utilize [react-map-gl](https://visgl.github.io/react-map-gl/) for rendering maps using Mapbox.
 
 ## Localization
 
@@ -138,8 +158,8 @@ Locale files are stored in the `messages/` folder as JSON files:
 Using localized strings in page components:
 
 ```tsx
-import {useTranslations} from 'next-intl';
- 
+import { useTranslations } from 'next-intl';
+
 export default function HomePage() {
   const t = useTranslations('HomePage');
   return <h1>{t('title')}</h1>;
@@ -149,8 +169,8 @@ export default function HomePage() {
 or in async components with `getTranslations`:
 
 ```tsx
-import {getTranslations} from 'next-intl/server';
- 
+import { getTranslations } from 'next-intl/server';
+
 export default async function HomePage() {
   const t = await getTranslations('HomePage');
   return <h1>{t('title')}</h1>;
@@ -171,3 +191,15 @@ export default async function HomePage() {
 - Use async Server Components for data fetching where possible (fetch, database calls).
 - Use fetch with Next.js caching options when needed: `fetch(url, { next: { revalidate: 60 } })`.
 - For client interactivity or real-time features, fetch inside Client Components using [React Query](https://tanstack.com/query/v5/docs/framework/react/overview) always! Avoid fetching using `useEffect` or similar hooks unless absolutely necessary.
+
+## Environment variables
+
+See .env.example for the list of environment variables used in the web application.
+
+## Generating the API client
+
+In the project root, run:
+
+```bash
+npm run openapi:client:web
+```

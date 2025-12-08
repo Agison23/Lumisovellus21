@@ -65,7 +65,7 @@ class AuthPage extends ConsumerWidget {
 class _UserProfile extends ConsumerWidget {
   final User user;
 
-  const _UserProfile({required this.user, super.key});
+  const _UserProfile({required this.user});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

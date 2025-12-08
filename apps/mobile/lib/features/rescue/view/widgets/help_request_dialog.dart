@@ -37,11 +37,7 @@ class _HelpRequestDialogState extends State<HelpRequestDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile<String>(
-            title: Text(
-              t.rescuePageHealthIssue,
-              style: rescueTheme.dialogRadioStyle,
-            ),
+          RadioMenuButton<String>(
             value: 'health',
             groupValue: _selectedNeed,
             onChanged: (value) {
@@ -49,14 +45,12 @@ class _HelpRequestDialogState extends State<HelpRequestDialog> {
                 _selectedNeed = value;
               });
             },
-            dense: true,
-            visualDensity: VisualDensity.compact,
-          ),
-          RadioListTile<String>(
-            title: Text(
-              t.rescuePageEquipmentIssue,
+            child: Text(
+              t.rescuePageHealthIssue,
               style: rescueTheme.dialogRadioStyle,
             ),
+          ),
+          RadioMenuButton<String>(
             value: 'equipment',
             groupValue: _selectedNeed,
             onChanged: (value) {
@@ -64,14 +58,12 @@ class _HelpRequestDialogState extends State<HelpRequestDialog> {
                 _selectedNeed = value;
               });
             },
-            dense: true,
-            visualDensity: VisualDensity.compact,
-          ),
-          RadioListTile<String>(
-            title: Text(
-              t.rescuePageImLost,
+            child: Text(
+              t.rescuePageEquipmentIssue,
               style: rescueTheme.dialogRadioStyle,
             ),
+          ),
+          RadioMenuButton<String>(
             value: 'lost',
             groupValue: _selectedNeed,
             onChanged: (value) {
@@ -79,8 +71,10 @@ class _HelpRequestDialogState extends State<HelpRequestDialog> {
                 _selectedNeed = value;
               });
             },
-            dense: true,
-            visualDensity: VisualDensity.compact,
+            child: Text(
+              t.rescuePageImLost,
+              style: rescueTheme.dialogRadioStyle,
+            ),
           ),
         ],
       ),
@@ -109,4 +103,3 @@ class _HelpRequestDialogState extends State<HelpRequestDialog> {
     );
   }
 }
-

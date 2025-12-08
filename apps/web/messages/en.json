@@ -68,6 +68,12 @@
         "selectSnowType": "Select snow type",
         "specifySnowType": "Specify snow type"
       },
+      "labels": {
+        "primarySnowTypes": "Primary snow types",
+        "secondarySnowTypes": "Secondary snow types",
+        "primarySnowType": "Primary snow type",
+        "secondarySnowType": "Secondary snow type"
+      },
       "generalSnowTypes": {
         "fresh": "new/freshly fallen snow",
         "windblown": "windblown",
@@ -171,7 +177,15 @@
         "close": "Close"
       },
       "obstacles": {
-        "description": "Obstacles"
+        "description": "Obstacles",
+        "stones": {
+          "name": "Stones",
+          "description": ""
+        },
+        "branches": {
+          "name": "Branches",
+          "description": ""
+        }
       },
       "messages": {
         "submitError": "Failed to submit observation. Please try again.",
@@ -198,18 +212,18 @@
     }
   },
   "WeatherPage": {
-  "title": "Weather",
-  "loading": "Loading weather data...",
-  "avgWindTitle": "Average Wind (3 days)",
-  "windDirection": "at {deg}°",
-  "tempTitle": "Temperature (3 days)",
-  "min": "Min",
-  "max": "Max",
-  "maxWindTitle": "Max Wind Speed (3 days)",
-  "snowChangeTitle": "Snow Depth Change (7 days)",
-  "aboveFreezingTitle": "Days Above Freezing (3 days)",
-  "noAboveFreezing": "No days above freezing.",
-  "notAvailable": "Data not available"
+    "title": "Weather",
+    "loading": "Loading weather data...",
+    "avgWindTitle": "Average Wind (3 days)",
+    "windDirection": "at {deg}°",
+    "tempTitle": "Temperature (3 days)",
+    "min": "Min",
+    "max": "Max",
+    "maxWindTitle": "Max Wind Speed (3 days)",
+    "snowChangeTitle": "Snow Depth Change (7 days)",
+    "aboveFreezingTitle": "Days Above Freezing (3 days)",
+    "noAboveFreezing": "No days above freezing.",
+    "notAvailable": "Data not available"
   },
   "DefinitionsPage": {
     "title": "Definitions",

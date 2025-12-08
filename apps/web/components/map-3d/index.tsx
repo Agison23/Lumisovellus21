@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable react/prop-types */
 import type { paths } from "@lumisovellus/api-client-web";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FeatureCollection, Polygon } from "geojson";
@@ -68,7 +69,7 @@ import type {
   InteractiveAreaProperties,
   UpdateData,
 } from "@/lib/map/mock-data";
-import { calculatePolygonArea } from "@/lib/map/utils";
+import { calculatePolygonArea, isPolygonInsidePolygon } from "@/lib/map/utils";
 import type { Monitor } from "@/lib/snower/types";
 import {
   getSnowTypeNameById,
@@ -179,17 +180,18 @@ export type Obstacles = {
 };
 
 const HazardBadges = ({ hazards }: { hazards: ("stones" | "branches")[] }) => {
+  const t = useTranslations("MapPage.reportForm.obstacles");
   if (!hazards || hazards.length === 0) return null;
   return (
     <div className="flex gap-1 mt-1">
       {hazards.includes("stones") && (
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-100 text-amber-800 text-xs">
-          🪨 Stones
+          🪨 {t("stones.name")}
         </span>
       )}
       {hazards.includes("branches") && (
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 text-orange-800 text-xs">
-          🌿 Branches
+          🌿 {t("branches.name")}
         </span>
       )}
     </div>
@@ -237,7 +239,8 @@ export default function Map3d() {
 
   const t = useTranslations("MapPage");
 
-  const userRole = useAuth().user?.role;
+  const user = useAuth().user;
+  const userRole = user?.role;
 
   // DATA LOADERS:
   const {
@@ -343,41 +346,76 @@ export default function Map3d() {
   }, [snowTypes, t]);
 
   // MEMOIZED GEOJSON DATA:
-  const areasGeoJson = useMemo<FeatureCollection<Polygon, Segment>>(
-    () => ({
+  const areasGeoJson = useMemo<FeatureCollection<Polygon, Segment>>(() => {
+    // Sort areas by size descending (larger areas rendered first, smaller on top)
+    const sortedAreas = [...areas].sort((a, b) => {
+      const areaA = calculatePolygonArea(a.points);
+      const areaB = calculatePolygonArea(b.points);
+      return areaB - areaA;
+    });
+
+    // For each area, find inner areas that should be cut out as holes
+    const areasWithHoles = sortedAreas.map((area) => {
+      // Find all smaller polygons that are inside this one
+      const innerAreas = sortedAreas.filter((otherArea) => {
+        if (otherArea.id === area.id) return false;
+        const otherSize = calculatePolygonArea(otherArea.points);
+        const thisSize = calculatePolygonArea(area.points);
+        // Only consider smaller polygons
+        if (otherSize >= thisSize) return false;
+        // Check if the other polygon is inside this one
+        return isPolygonInsidePolygon(otherArea.points, area.points);
+      });
+
+      return { area, innerAreas };
+    });
+
+    return {
       type: "FeatureCollection",
-      features: [...areas]
-        .sort((a, b) => {
-          const areaA = calculatePolygonArea(a.points);
-          const areaB = calculatePolygonArea(b.points);
-          return areaB - areaA; // Descending order
-        })
-        .map((area) => {
-          // convert points [{lat,lng}] to a GeoJSON linear ring [[lng,lat], ...]
-          const ring: [number, number][] = area.points.map((p) => [
+      features: areasWithHoles.map(({ area, innerAreas }) => {
+        // Convert outer ring points to GeoJSON format
+        const outerRing: [number, number][] = area.points.map((p) => [
+          p.lng,
+          p.lat,
+        ]);
+        // Ensure the ring is closed
+        if (outerRing.length > 0) {
+          const first = outerRing[0];
+          const last = outerRing[outerRing.length - 1];
+          if (first[0] !== last[0] || first[1] !== last[1]) {
+            outerRing.push(first);
+          }
+        }
+
+        // Create hole rings for inner areas (must be in opposite winding order)
+        const holeRings = innerAreas.map((innerArea) => {
+          const holeRing: [number, number][] = innerArea.points.map((p) => [
             p.lng,
             p.lat,
           ]);
-          // ensure the ring is closed (first point equals last point)
-          if (ring.length > 0) {
-            const first = ring[0];
-            const last = ring[ring.length - 1];
+          // Ensure the ring is closed
+          if (holeRing.length > 0) {
+            const first = holeRing[0];
+            const last = holeRing[holeRing.length - 1];
             if (first[0] !== last[0] || first[1] !== last[1]) {
-              ring.push(first);
+              holeRing.push(first);
             }
           }
-          return {
-            type: "Feature" as const,
-            geometry: {
-              type: "Polygon" as const,
-              coordinates: [ring],
-            },
-            properties: area,
-          };
-        }),
-    }),
-    [areas],
-  );
+          // Reverse the hole ring to ensure correct winding order (holes should be clockwise if outer is counter-clockwise)
+          return holeRing.reverse();
+        });
+
+        return {
+          type: "Feature" as const,
+          geometry: {
+            type: "Polygon" as const,
+            coordinates: [outerRing, ...holeRings],
+          },
+          properties: area,
+        };
+      }),
+    };
+  }, [areas]);
 
   // Filters for hover and selected states
   const hoverFilter = useMemo<FilterSpecification>(
@@ -472,7 +510,7 @@ export default function Map3d() {
   // Handle click events on the map
   const handleClick = useCallback(
     (event: MapMouseEvent) => {
-      const feature = event.features?.[0];
+      const features = event.features;
 
       // Reset form state on any click
       setSelectedSnowCategoryId(null);
@@ -511,9 +549,25 @@ export default function Map3d() {
         return;
       }
 
+      // Find the smallest area (rendered on top)
+      let smallestFeature = areaFeatures[0];
+      let smallestArea = Infinity;
+
+      for (const feature of areaFeatures) {
+        const props = feature.properties as Segment;
+        const segment = areas.find((a) => a.id === props.id);
+        if (segment) {
+          const area = calculatePolygonArea(segment.points);
+          if (area < smallestArea) {
+            smallestArea = area;
+            smallestFeature = feature;
+          }
+        }
+      }
+
       // If an area was clicked, set it as selected
       // Clear any selected monitor for clarity
-      const properties = feature.properties as Segment;
+      const properties = smallestFeature.properties as Segment;
       setSelectedArea(properties);
       setSelectedMonitor(null);
       // Also reset the form to step 0 with the new segmentId
@@ -596,6 +650,7 @@ export default function Map3d() {
       </div>
     );
   }
+
   return (
     <div className="relative w-full h-full">
       <MapLoadingOverlay
@@ -641,6 +696,7 @@ export default function Map3d() {
         <Layer {...hillshadeLayer} />
         {!isLoading && (
           <>
+            {/* Monitors layer */}
             {showMonitors && (
               <>
                 <Source id="monitors" type="geojson" data={monitorsGeoJson}>
@@ -718,11 +774,12 @@ export default function Map3d() {
         )}
       </Map>
 
+      {/* VISIBLE CONTROLS */}
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="absolute bg-background text-primary bottom-9 left-2"
+            className="absolute bg-background text-primary bottom-18 sm:bottom-9 left-2"
           >
             <MapPlus />
           </Button>
@@ -925,9 +982,11 @@ export default function Map3d() {
                   </>
                 )}
                 <div className="flex gap-2">
-                  <Button onClick={() => form.goToStep(1)}>
-                    {t("reportForm.buttons.addObservation")}
-                  </Button>
+                  {user && (
+                    <Button onClick={() => form.goToStep(1)}>
+                      {t("reportForm.buttons.addObservation")}
+                    </Button>
+                  )}
                   <Button
                     variant="secondary"
                     onClick={() => setSelectedArea(null)}
@@ -949,7 +1008,7 @@ export default function Map3d() {
                   </p>
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium">
-                      Primary Snow Types
+                      {t("reportForm.labels.primarySnowTypes")}
                     </label>
                     <SnowTypeCombobox
                       value={guidePrimary1}
@@ -970,19 +1029,23 @@ export default function Map3d() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-medium">
-                      Secondary Snow Types
+                      {t("reportForm.labels.secondarySnowTypes")}
                     </label>
                     <SnowTypeCombobox
                       value={guideSecondary1}
                       onChange={setGuideSecondary1}
                       options={snowTypeOptions}
-                      placeholder="Secondary Snow Type 1"
+                      placeholder={
+                        t("reportForm.labels.secondarySnowType") + " 1"
+                      }
                     />
                     <SnowTypeCombobox
                       value={guideSecondary2}
                       onChange={setGuideSecondary2}
                       options={snowTypeOptions}
-                      placeholder="Secondary Snow Type 2"
+                      placeholder={
+                        t("reportForm.labels.secondarySnowType") + " 2"
+                      }
                     />
                   </div>
                 </div>
@@ -1005,7 +1068,7 @@ export default function Map3d() {
                         selectedObstacles.stones ? "ring-green-500 ring-2" : ""
                       }
                     >
-                      Stones
+                      {t("reportForm.obstacles.stones.name")}
                     </Button>
                     <Button
                       variant="outline"
@@ -1022,7 +1085,7 @@ export default function Map3d() {
                           : ""
                       }
                     >
-                      Branches
+                      {t("reportForm.obstacles.branches.name")}
                     </Button>
                   </div>
                 </div>
@@ -1188,7 +1251,7 @@ export default function Map3d() {
                               : ""
                           }
                         >
-                          Stones
+                          {t("reportForm.obstacles.stones.name")}
                         </Button>
                         <Button
                           variant="outline"
@@ -1212,7 +1275,7 @@ export default function Map3d() {
                               : ""
                           }
                         >
-                          Branches
+                          {t("reportForm.obstacles.branches.name")}
                         </Button>
                       </div>
                     </div>

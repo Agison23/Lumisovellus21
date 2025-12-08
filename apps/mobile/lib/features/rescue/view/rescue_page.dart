@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumisovellus/core/theme/rescue_theme.dart';
+import 'package:lumisovellus/l10n/app_localizations.dart';
 
 import '../viewmodel/rescue_view_model.dart';
 import 'widgets/emergency_call_widget.dart';
@@ -10,18 +11,44 @@ import 'widgets/responsive_layout.dart';
 
 /// Main page for the rescue feature
 /// Displays location, allows requesting help, and calling emergency services
-class RescuePage extends ConsumerWidget {
+class RescuePage extends ConsumerStatefulWidget {
   const RescuePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RescuePage> createState() => _RescuePageState();
+}
+
+class _RescuePageState extends ConsumerState<RescuePage> {
+  @override
+  Widget build(BuildContext context) {
     final rescueTheme = context.rescueTheme;
     final state = ref.watch(rescueViewModelProvider);
     final viewModel = ref.read(rescueViewModelProvider.notifier);
     final responsive = context.responsive;
+    final localizations = AppLocalizations.of(context);
 
     final basePadding = responsive.scaleWidth(28.0);
     final verticalSpacing = responsive.scaleHeight(24.0);
+
+    // Listen to errors and show snackbars
+    ref.listen<String?>(rescueErrorProvider, (previous, next) {
+      if (next != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next),
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: localizations.close,
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: rescueTheme.pageBackground,

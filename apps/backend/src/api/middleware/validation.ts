@@ -473,6 +473,12 @@ export const querySchema = z
 // Segment query parameters
 export const segmentQuerySchema = z
   .object({
+    observationDays: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number().int().min(1).max(30))
+      .optional()
+      .meta({ description: 'Number of days to look back for reviews and observations in a segment', example: '3' }),
     bbox: z
       .string()
       .optional()

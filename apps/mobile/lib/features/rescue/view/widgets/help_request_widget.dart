@@ -21,23 +21,36 @@ class HelpRequestWidget extends StatelessWidget {
   });
 
   void _handleHelpButtonTap(BuildContext context) {
+    final t = AppLocalizations.of(context);
     if (state.hasActiveEvent) {
       showDialog(
         context: context,
         builder: (dialogContext) => EndEventDialog(
           onCancel: () async {
-            await viewModel.cancelHelpEvent();
+            await viewModel.cancelHelpEvent(t);
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Help event cancelled')),
+                SnackBar(
+                  content: Text(t.rescueEndEventDialogCancel),
+                  action: SnackBarAction(
+                    label: t.close,
+                    onPressed: () {},
+                  ),
+                ),
               );
             }
           },
           onComplete: () async {
-            await viewModel.completeHelpEvent();
+            await viewModel.completeHelpEvent(t);
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Help event completed')),
+                SnackBar(
+                  content: Text(t.rescueEndEventDialogComplete),
+                  action: SnackBarAction(
+                    label: t.close,
+                    onPressed: () {},
+                  ),
+                ),
               );
             }
           },
@@ -48,7 +61,7 @@ class HelpRequestWidget extends StatelessWidget {
         context: context,
         builder: (dialogContext) => HelpRequestDialog(
           onConfirm: (needType) async {
-            await viewModel.requestHelp(needType);
+            await viewModel.requestHelp(needType, t);
           },
         ),
       );
