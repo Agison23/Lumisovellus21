@@ -58,23 +58,14 @@ export class SegmentsService extends BaseService {
     since?: Date
   ): Promise<GuideUpdate | null> {
     try {
-      // First, find admin users who created updates for this segment
-      const adminUsers = await this.prisma.user.findMany({
-        where: { role: 'ADMIN' },
-        select: { id: true },
-      });
-      const adminUserIds = adminUsers.map((u) => u.id);
-
-      if (adminUserIds.length === 0) {
-        return null;
-      }
-
-      // Get the latest active SnowUpdate created by an admin
+      // Get the latest active SnowUpdate created by an admin or guide
       const guideUpdate = await this.prisma.snowUpdate.findFirst({
         where: {
           segment: segmentId,
           status: 'ACTIVE',
-          creator: { in: adminUserIds },
+          creatorRel: {
+            role: { in: ['ADMIN', 'GUIDE'] },
+          },
           ...(since
             ? {
                 time: {
@@ -323,9 +314,6 @@ export class SegmentsService extends BaseService {
         where: {
           segment: segmentId,
           status: 'ACTIVE',
-          creatorRel: {
-            role: 'ADMIN',
-          },
         },
         data: {
           status: 'ARCHIVED',
