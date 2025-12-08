@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { SegmentsController } from '../../controllers/segments/SegmentsController.js';
-import { authenticateToken, requireAdmin } from '../../middleware/auth.js';
+import { authenticateToken, requireAdmin, requireRole } from '../../middleware/auth.js';
 
 const router = Router();
 const segmentsController = new SegmentsController();
@@ -179,7 +179,7 @@ router.get('/api/v1/segments', segmentsController.getAllSegments);
 router.post(
   '/api/v1/segments/:id/guideUpdate',
   authenticateToken,
-  requireAdmin,
+  requireRole(['ADMIN', 'GUIDE']),
   segmentsController.createOrUpdateGuideUpdate
 );
 
