@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
+import { useSidebar } from "../ui/sidebar";
 import { Textarea } from "../ui/textarea";
 import { Toggle } from "../ui/toggle";
 
@@ -204,6 +205,7 @@ export default function Map3d() {
   const [isLoading, setIsLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
   const hasLoadedRef = useRef(false);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
   const [selectedSnowCategoryId, setSelectedSnowCategoryId] = useState<
     string | null | undefined
   >(null);
@@ -225,11 +227,6 @@ export default function Map3d() {
   const [showAreas, setShowAreas] = useState(true);
   const [showMonitors, setShowMonitors] = useState(true);
 
-  useEffect(() => {
-    setShowAreas(loadControlState(CONTROL_STORAGE_KEYS.SHOW_AREAS, true));
-    setShowMonitors(loadControlState(CONTROL_STORAGE_KEYS.SHOW_MONITORS, true));
-  }, []);
-
   // Guide form state
   const [guidePrimary1, setGuidePrimary1] = useState<string | null>(null);
   const [guidePrimary2, setGuidePrimary2] = useState<string | null>(null);
@@ -241,6 +238,25 @@ export default function Map3d() {
 
   const user = useAuth().user;
   const userRole = user?.role;
+
+  // Track sidebar state to resize map when it changes
+  const { state: sidebarState } = useSidebar();
+
+  useEffect(() => {
+    setShowAreas(loadControlState(CONTROL_STORAGE_KEYS.SHOW_AREAS, true));
+    setShowMonitors(loadControlState(CONTROL_STORAGE_KEYS.SHOW_MONITORS, true));
+  }, []);
+
+  // Resize map when sidebar state changes
+  useEffect(() => {
+    if (mapRef.current) {
+      // Delay resize to allow CSS transition to complete
+      const timer = setTimeout(() => {
+        mapRef.current?.resize();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [sidebarState]);
 
   // DATA LOADERS:
   const {
@@ -660,6 +676,11 @@ export default function Map3d() {
       />
 
       <Map
+        ref={(ref) => {
+          if (ref) {
+            mapRef.current = ref.getMap();
+          }
+        }}
         initialViewState={viewState}
         style={{ width: "100%", height: "100%" }}
         maxTileCacheSize={500}
