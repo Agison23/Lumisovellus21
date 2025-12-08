@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import Providers from "./providers";
 import Nav from "@/components/app-nav";
 import AppSidebar from "@/components/app-sidebar";
+import PersistentMap from "@/components/persistent-map";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import {
   SidebarInset,
@@ -59,12 +60,15 @@ export default async function RootLayout({
                 <div className="w-[100dvw] h-[100dvh] flex flex-row overflow-hidden">
                   <AppSidebar />
                   <SidebarInset className="relative flex flex-col gap-2 flex-1">
-                    <div className="w-max flex justify-start items-center absolute z-10 p-2">
+                    <div className="w-max flex justify-start items-center absolute z-20 p-2">
                       <SidebarTrigger className="bg-background" />
                     </div>
-                    <div className="flex-1 w-full h-full rounded-xl overflow-clip">
+                    <div className="flex-1 w-full h-full rounded-xl overflow-clip relative">
                       <Providers>
-                        {children}
+                        <PersistentMap />
+                        <div className="relative z-10 w-full h-full pointer-events-none [&>*]:pointer-events-auto">
+                          {children}
+                        </div>
                         <Toaster position="bottom-left" />
                       </Providers>
                     </div>

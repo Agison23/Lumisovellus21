@@ -388,7 +388,7 @@
     "title": "Pallaksen Pöllöt",
     "p1": "Pallaksen Pöllöjen tuottama lumisovellus tarjoaa tietoa alueella vallitsevista lumiolosuhteista. Aktiivisessa käytössä sovellus on helmikuusta toukokuuhun. Tunturialue on jaettu segmentteihin, joiden sisällä lumi on tyypillisesti hyvin samanlaista.",
     "p2": "Sovelluksen tiedot ovat oppaiden subjektiivisia havaintoja ja olosuhteet voivat muuttua nopeasti. Lumitietoja hyödynnettäessä kannattaakin huomioida havainnon aikaleima, sekä mitä lisätietoa segmentistä on annettu ja mitä säädata alueesta kertoo. Tunturissa kulkija on itse vastuussa havaintojen soveltamisesta, eikä sovellus miltään osin vähennä omaa vastuuta.",
-    "p3": "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä ja koko kaudelta löydät sääpainikkeen takaa.",
+    "p3": "Jokaisen segmentin tarkempi lumitieto aukeaa sitä klikkaamalla. Tietoa säästä viime päiviltä löydät sääpainikkeen takaa.",
     "p4": "Muistathan jakaa sijaintisi jonkun kanssa, esimerkiksi Whatsappilla. Pidetään huolta itsestämme, tunturista ja sen kauneudesta."
   },
   "LoginPage": {

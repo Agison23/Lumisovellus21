@@ -38,21 +38,23 @@ export default function AppSidebar() {
             <Button
               variant="outline"
               size="sm"
-              className="w-max px-2"
+              className="w-max gap-2"
               aria-label={t("logIn.logOut")}
               onClick={handleLogout}
             >
               <LogOutIcon className="size-4" />
+              <span>{t("logIn.logOut")}</span>
             </Button>
           ) : (
             <Link href="/login">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-max px-2"
+                className="w-max gap-2"
                 aria-label={t("logIn.logIn")}
               >
                 <LogInIcon className="size-4" />
+                <span>{t("logIn.logIn")}</span>
               </Button>
             </Link>
           )}

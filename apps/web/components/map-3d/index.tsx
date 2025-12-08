@@ -417,18 +417,51 @@ export default function Map3d() {
 
   // EVENT HANDLERS:
   // Handle mouse move to detect hover over areas
-  const handleMouseMove = useCallback((event: MapMouseEvent) => {
-    const hoveredFeature = event.features?.[0];
-    event.target.getCanvas().style.cursor = hoveredFeature ? "pointer" : "";
+  const handleMouseMove = useCallback(
+    (event: MapMouseEvent) => {
+      const features = event.features;
+      event.target.getCanvas().style.cursor =
+        features && features.length > 0 ? "pointer" : "";
 
-    // If hovering over an area, set hoveredAreaId, else clear it
-    if (hoveredFeature) {
-      const properties = hoveredFeature.properties as InteractiveAreaProperties;
-      setHoveredAreaId(properties.id);
-    } else {
-      setHoveredAreaId(null);
-    }
-  }, []);
+      // If hovering over areas, find the smallest (topmost) one
+      if (features && features.length > 0) {
+        // Filter to only area features and find the smallest one
+        const areaFeatures = features.filter(
+          (f) => f.layer?.id === "areas-fill",
+        );
+
+        if (areaFeatures.length > 0) {
+          // Find the area with the smallest size (it's rendered on top)
+          // Since areas are sorted by size descending in areasGeoJson,
+          // the last matching feature in the array is the smallest
+          let smallestFeature = areaFeatures[0];
+          let smallestArea = Infinity;
+
+          for (const feature of areaFeatures) {
+            const props = feature.properties as Segment;
+            // Calculate area from the segment's points if available
+            const segment = areas.find((a) => a.id === props.id);
+            if (segment) {
+              const area = calculatePolygonArea(segment.points);
+              if (area < smallestArea) {
+                smallestArea = area;
+                smallestFeature = feature;
+              }
+            }
+          }
+
+          const properties =
+            smallestFeature.properties as InteractiveAreaProperties;
+          setHoveredAreaId(properties.id);
+        } else {
+          setHoveredAreaId(null);
+        }
+      } else {
+        setHoveredAreaId(null);
+      }
+    },
+    [areas],
+  );
 
   // Handle mouse leave to clear hover state
   const handleMouseLeave = useCallback((event: MapMouseEvent) => {
@@ -450,9 +483,12 @@ export default function Map3d() {
       });
 
       // Check if a monitor was clicked
-      if (feature?.layer?.id === "monitors-points") {
+      const monitorFeature = features?.find(
+        (f) => f.layer?.id === "monitors-points",
+      );
+      if (monitorFeature) {
         const monitor = monitors.find(
-          (m) => m.name === feature.properties?.name,
+          (m) => m.name === monitorFeature.properties?.name,
         );
         // If monitor found, set it as selected and clear area selection
         if (monitor) {
@@ -462,8 +498,12 @@ export default function Map3d() {
         }
       }
 
-      // Handle area clicks as before
-      if (!feature) {
+      // Handle area clicks - find the smallest (topmost) area
+      const areaFeatures = features?.filter(
+        (f) => f.layer?.id === "areas-fill",
+      );
+
+      if (!areaFeatures || areaFeatures.length === 0) {
         setSelectedArea(null);
         setSelectedMonitor(null);
         form.reset();
@@ -483,7 +523,7 @@ export default function Map3d() {
       form.goToStep(0);
       submitMutation.reset();
     },
-    [monitors, form, submitMutation],
+    [monitors, form, submitMutation, areas],
   );
 
   // Handle map load event to manage loading overlay
@@ -628,7 +668,12 @@ export default function Map3d() {
                         longitude={monitor.lng}
                         latitude={monitor.lat}
                         offset={[0, -35]}
-                        className="bg-background p-1 rounded-md "
+                        className="bg-background p-1 rounded-md cursor-pointer"
+                        onClick={(e) => {
+                          e.originalEvent.stopPropagation();
+                          setSelectedMonitor(monitor);
+                          setSelectedArea(null);
+                        }}
                       >
                         <div>
                           {monitor.temperature !== "No Data" && (
@@ -775,12 +820,22 @@ export default function Map3d() {
                                     <div key={snowTypeId}>
                                       <p className="font-medium text-lg">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId,
+                                            ),
+                                          )}.name`,
                                         )}
                                       </p>
                                       <p className="text-xs">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId,
+                                            ),
+                                          )}.description`,
                                         )}
                                       </p>
                                     </div>
@@ -791,12 +846,22 @@ export default function Map3d() {
                                     <div key={snowTypeId}>
                                       <p className="font-medium text-sm">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.name`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId,
+                                            ),
+                                          )}.name`,
                                         )}
                                       </p>
                                       <p className="text-xs">
                                         {t(
-                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowTypeId))}.description`,
+                                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                            getSnowTypeNameById(
+                                              snowTypes,
+                                              snowTypeId,
+                                            ),
+                                          )}.description`,
                                         )}
                                       </p>
                                     </div>
@@ -820,7 +885,12 @@ export default function Map3d() {
                                 >
                                   <p className="font-medium text-sm">
                                     {t(
-                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.name`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                        getSnowTypeNameById(
+                                          snowTypes,
+                                          review.snowTypeId,
+                                        ),
+                                      )}.name`,
                                     )}
                                     :{" "}
                                     {getPrettyTimeDiff(
@@ -829,7 +899,12 @@ export default function Map3d() {
                                   </p>
                                   <p className="text-xs">
                                     {t(
-                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, review.snowTypeId))}.description`,
+                                      `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                        getSnowTypeNameById(
+                                          snowTypes,
+                                          review.snowTypeId,
+                                        ),
+                                      )}.description`,
                                     )}
                                   </p>
                                   <HazardBadges
@@ -880,13 +955,17 @@ export default function Map3d() {
                       value={guidePrimary1}
                       onChange={setGuidePrimary1}
                       options={snowTypeOptions}
-                      placeholder="Primary Snow Type 1"
+                      placeholder={`${t(
+                        "reportForm.labels.primarySnowType",
+                      )} 1`}
                     />
                     <SnowTypeCombobox
                       value={guidePrimary2}
                       onChange={setGuidePrimary2}
                       options={snowTypeOptions}
-                      placeholder="Primary Snow Type 2"
+                      placeholder={`${t(
+                        "reportForm.labels.primarySnowType",
+                      )} 2`}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -1022,7 +1101,9 @@ export default function Map3d() {
                               }}
                             >
                               {t(
-                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowType.id))}.name`,
+                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                  getSnowTypeNameById(snowTypes, snowType.id),
+                                )}.name`,
                               )}
                             </Button>
                           ))}
@@ -1065,14 +1146,21 @@ export default function Map3d() {
 														`}
                             >
                               {t(
-                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, snowType.id))}.name`,
+                                `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                                  getSnowTypeNameById(snowTypes, snowType.id),
+                                )}.name`,
                               )}
                             </Button>
                           ))}
                       </div>
                       <p className="text-center">
                         {t(
-                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(getSnowTypeNameById(snowTypes, selectedSnowTypeId || ""))}.description`,
+                          `reportForm.snowTypes.${getTranslationKeyForSnowTypeName(
+                            getSnowTypeNameById(
+                              snowTypes,
+                              selectedSnowTypeId || "",
+                            ),
+                          )}.description`,
                         )}
                       </p>
                     </div>
