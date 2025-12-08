@@ -89,19 +89,25 @@ export class SegmentsService extends BaseService {
       const secondarySnowTypeIds: string[] = [];
 
       for (const condition of guideUpdate.snowConditions) {
-        if (condition.snowType && !primarySnowTypeIds.includes(condition.snowType)) {
+        if (
+          condition.snowType &&
+          !primarySnowTypeIds.includes(condition.snowType)
+        ) {
           primarySnowTypeIds.push(condition.snowType);
         }
-        if (condition.secondarySnowType && !secondarySnowTypeIds.includes(condition.secondarySnowType)) {
+        if (
+          condition.secondarySnowType &&
+          !secondarySnowTypeIds.includes(condition.secondarySnowType)
+        ) {
           secondarySnowTypeIds.push(condition.secondarySnowType);
         }
       }
 
       // Parse hazards from JSON if it exists
       const hazards = (guideUpdate as any).hazards
-        ? (Array.isArray((guideUpdate as any).hazards)
-            ? ((guideUpdate as any).hazards as HazardType[])
-            : JSON.parse((guideUpdate as any).hazards as string))
+        ? Array.isArray((guideUpdate as any).hazards)
+          ? ((guideUpdate as any).hazards as HazardType[])
+          : JSON.parse((guideUpdate as any).hazards as string)
         : [];
 
       // Limit to max 2 each
@@ -137,9 +143,9 @@ export class SegmentsService extends BaseService {
       return reviews.map((review) => {
         // Parse hazards from JSON if it exists
         const hazards = review.hazards
-          ? (Array.isArray(review.hazards)
-              ? (review.hazards as HazardType[])
-              : JSON.parse(review.hazards as string))
+          ? Array.isArray(review.hazards)
+            ? (review.hazards as HazardType[])
+            : JSON.parse(review.hazards as string)
           : [];
 
         return {
@@ -349,7 +355,10 @@ export class SegmentsService extends BaseService {
       });
 
       // Handle remaining secondary snow types (if we have more secondaries than primaries)
-      if (guideUpdateData.secondarySnowTypeIds.length > guideUpdateData.primarySnowTypeIds.length) {
+      if (
+        guideUpdateData.secondarySnowTypeIds.length >
+        guideUpdateData.primarySnowTypeIds.length
+      ) {
         // We need to attach remaining secondary types
         // Use the first primary type as base, or if no primaries, use the first secondary as base
         const basePrimaryType =
@@ -389,7 +398,9 @@ export class SegmentsService extends BaseService {
           status: 'ACTIVE',
           priority: 1,
           time: new Date(),
-          ...(guideUpdateData.hazards.length > 0 && { hazards: guideUpdateData.hazards }),
+          ...(guideUpdateData.hazards.length > 0 && {
+            hazards: guideUpdateData.hazards,
+          }),
           snowConditions: {
             create: conditionsToCreate,
           },
@@ -413,5 +424,4 @@ export class SegmentsService extends BaseService {
       throw new Error('Failed to create guide update');
     }
   }
-
 }
