@@ -282,6 +282,14 @@ export class SegmentsService extends BaseService {
       hazards: HazardType[];
     }
   ): Promise<GuideUpdate> {
+    // Declare outside try block for error logging
+    let conditionsToCreate: Array<{
+      id: string;
+      snowType: string;
+      secondarySnowType?: string;
+      layer: 'SURFACE' | 'MIDDLE' | 'BASE';
+    }> = [];
+
     try {
       // Validate snow type IDs exist
       if (guideUpdateData.primarySnowTypeIds.length > 2) {
@@ -330,12 +338,7 @@ export class SegmentsService extends BaseService {
       // Strategy: Use SURFACE layer for first primary (with first secondary if exists)
       //           Use MIDDLE layer for second primary (with second secondary if exists)
       //           Use BASE layer if we have more secondary types than primary types
-      const conditionsToCreate: Array<{
-        id: string;
-        snowType: string;
-        secondarySnowType?: string;
-        layer: 'SURFACE' | 'MIDDLE' | 'BASE';
-      }> = [];
+      conditionsToCreate = [];
 
       // Handle primary snow types
       guideUpdateData.primarySnowTypeIds.forEach((primaryId, index) => {
@@ -418,6 +421,15 @@ export class SegmentsService extends BaseService {
         hazards: guideUpdateData.hazards,
       };
     } catch (error) {
+      console.error('Failed to create guide update:', error);
+      console.error(
+        'Conditions to create:',
+        JSON.stringify(conditionsToCreate, null, 2)
+      );
+      console.error(
+        'Guide update data:',
+        JSON.stringify(guideUpdateData, null, 2)
+      );
       if (error instanceof Error) {
         throw error;
       }
