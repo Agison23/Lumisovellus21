@@ -172,5 +172,21 @@
   "degrees": "°",
   "degreesCelsius": "°C",
   "metersPerSecond": "m/s",
-  "centimeters": "cm"
+  "centimeters": "cm",
+  "stones": "Kiviä",
+  "branches": "Oksia",
+  "translationMissing": "Virhe: Käännös puuttuu",
+  "errorNoInternetConnection": "Ei internet-yhteyttä. Tarkista verkkoyhteytesi ja yritä uudelleen.",
+  "errorConnectionFailed": "Yhteys epäonnistui. Yritä myöhemmin uudelleen.",
+  "errorRequestHelpFailed": "Avunpyyntö epäonnistui. Yritä uudelleen.",
+  "errorCancelHelpFailed": "Avunpyynnön peruutus epäonnistui. Yritä uudelleen.",
+  "errorCompleteHelpFailed": "Avunpyynnön valmistuminen epäonnistui. Yritä uudelleen.",
+  "errorServerUnavailable": "Palvelin on tilapäisesti poissa käytöstä. Yritä myöhemmin uudelleen.",
+  "errorUnknown": "Odottamaton virhe tapahtui. Yritä uudelleen.",
+  "settingsDefaultTab": "Oletusvälilehti",
+  "settingsDefaultTabSubtitle": "Valitse näytettävä näyttö sovelluksen käynnistyessä",
+  "settingsDefaultTabRescue": "Pelastus",
+  "settingsDefaultTabMap": "Kartta",
+  "settingsDefaultTabWeather": "Sää",
+  "settingsDefaultTabSettings": "Asetukset"
 }

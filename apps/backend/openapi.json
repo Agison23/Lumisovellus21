@@ -1041,6 +1041,16 @@
         "parameters": [
           {
             "in": "query",
+            "name": "observationDays",
+            "schema": {
+              "description": "Number of days to look back for reviews and observations in a segment",
+              "example": "3",
+              "type": "string"
+            },
+            "description": "Number of days to look back for reviews and observations in a segment"
+          },
+          {
+            "in": "query",
             "name": "bbox",
             "schema": {
               "description": "Bounding box to filter segments (format: \"minLat,minLng,maxLat,maxLng\")",

@@ -52,7 +52,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avalancheWarningDesc =>
-      'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru,Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero.Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain.The likelihood of an avalanche increases with weather changes.';
+      'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.';
 
   @override
   String get snowTypes => 'Snow types';
@@ -68,14 +68,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get freshWetSnowDesc =>
-      'Snow, from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point';
+      'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.';
 
   @override
   String get powderSnow => 'Powder snow';
 
   @override
   String get powderSnowDesc =>
-      'Fresh, loose ja extremely light snow. Powder snowfall occurs in calm and very cold weather.';
+      'Fresh, loose and extremely light snow. Powder snowfall occurs in calm and very cold weather.';
 
   @override
   String get freshSnow => 'Fresh snow';
@@ -109,7 +109,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collapsingCrustDesc =>
-      'Firm, however occasionally breaking crust of snow. The crust can be extremely thick, if there is porous snow underneath.';
+      'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.';
 
   @override
   String get windpackedSnow => 'Windpacked snow';
@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driftsAndBanksDesc =>
-      'An area of new snow shaped by the wind. waves are soft and easy to break.';
+      'An area of new snow shaped by the wind. Waves are soft and easy to break.';
 
   @override
   String get sastrug => 'Sastrug';
@@ -137,7 +137,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get windblownSnowDesc =>
-      'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from wind.';
+      'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from the wind.';
 
   @override
   String get ice => 'Ice';
@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'A hard and unbreakable icy layer on the surface of the snow. Hard, glazed surface caused by melt-freeze process.';
 
   @override
-  String get breakableIce => 'Brekable ice';
+  String get breakableIce => 'Breakable ice';
 
   @override
   String get breakableIceDesc =>
@@ -172,7 +172,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saturatedSnowDesc =>
-      'Completely wet , slushing and whipped cream like snow.';
+      'Completely wet, slushing and whipped cream-like snow.';
 
   @override
   String get littleSnow => 'Little snow';
@@ -267,7 +267,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get avgDirection => 'Average direction';
 
   @override
-  String get maxWind => 'Maximum windspeed';
+  String get maxWind => 'Maximum wind speed';
 
   @override
   String get lastThreeDays => 'Last three days';
@@ -304,7 +304,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescuePageHelpRequestDescription =>
-      'Help-request alerts and sends your location to nearby rescuers';
+      'A help request alerts and sends your location to nearby rescuers';
 
   @override
   String get rescuePageEmergencyCallDescription =>
@@ -492,7 +492,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loggedIn => 'Logged in';
 
   @override
-  String get registeredSuccesfully => 'Registered succesfully';
+  String get registeredSuccesfully => 'Registered successfully';
 
   @override
   String get loggedInAs => 'Logged in as';
@@ -560,4 +560,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get centimeters => 'cm';
+
+  @override
+  String get stones => 'Stones';
+
+  @override
+  String get branches => 'Branches';
+
+  @override
+  String get translationMissing => 'Error: Translation missing';
+
+  @override
+  String get errorNoInternetConnection =>
+      'No internet connection. Please check your network and try again.';
+
+  @override
+  String get errorConnectionFailed =>
+      'Connection failed. Please try again later.';
+
+  @override
+  String get errorRequestHelpFailed =>
+      'Failed to request help. Please try again.';
+
+  @override
+  String get errorCancelHelpFailed =>
+      'Failed to cancel help request. Please try again.';
+
+  @override
+  String get errorCompleteHelpFailed =>
+      'Failed to complete help request. Please try again.';
+
+  @override
+  String get errorServerUnavailable =>
+      'Server is temporarily unavailable. Please try again later.';
+
+  @override
+  String get errorUnknown => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String get settingsDefaultTab => 'Default Tab';
+
+  @override
+  String get settingsDefaultTabSubtitle =>
+      'Choose which screen to show when the app starts';
+
+  @override
+  String get settingsDefaultTabRescue => 'Rescue';
+
+  @override
+  String get settingsDefaultTabMap => 'Map';
+
+  @override
+  String get settingsDefaultTabWeather => 'Weather';
+
+  @override
+  String get settingsDefaultTabSettings => 'Settings';
 }

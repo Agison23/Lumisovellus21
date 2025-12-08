@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lumisovellus/features/rescue/data/services/help_service_fake.dart';
+import 'package:lumisovellus/features/rescue/data/services/help_service_stub.dart';
 import 'package:lumisovellus/features/rescue/data/services/help_service.dart';
 import 'package:lumisovellus/features/rescue/domain/models/help_need_type.dart';
 
 void main() {
-  test('FakeHelpService stores requests and returns response', () async {
+  test('StubHelpService stores requests and returns response', () async {
     final store = InMemoryHelpStore();
-    final service = FakeHelpService(store);
+    final service = StubHelpService(store);
 
     final resp = await service.requestHelp(
       ServiceHelpRequest(needType: HelpNeedType.health),
@@ -16,9 +16,9 @@ void main() {
     expect(store.responses.containsKey(resp.requestId), isTrue);
   });
 
-  test('FakeHelpService cancelHelp removes response', () async {
+  test('StubHelpService cancelHelp removes response', () async {
     final store = InMemoryHelpStore();
-    final service = FakeHelpService(store);
+    final service = StubHelpService(store);
 
     final resp = await service.requestHelp(
       ServiceHelpRequest(needType: HelpNeedType.equipment),

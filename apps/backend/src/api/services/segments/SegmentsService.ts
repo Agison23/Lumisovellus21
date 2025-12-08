@@ -9,6 +9,7 @@ export interface SegmentQueryParams {
   maxLng?: number;
   search?: string;
   updatedSince?: string; // ISO 8601 date string
+  observationDays?: number;
 }
 
 export class SegmentsService extends BaseService {
@@ -129,19 +130,25 @@ export class SegmentsService extends BaseService {
    */
   private async getUserReviewsForSegment(
     segmentId: string,
-    limit: number = 3
+    limit: number = 3,
+    observationDays: number = 3
   ): Promise<UserReviewItem[]> {
     try {
+      const where: any = { segment: segmentId };
+
+      if (observationDays) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - observationDays);
+        where.time = { gte: cutoff };
+      }
+
       const reviews = await this.prisma.userReview.findMany({
-        where: {
-          segment: segmentId,
-        },
+        where,
         orderBy: { time: 'desc' },
         take: limit,
       });
 
       return reviews.map((review) => {
-        // Parse hazards from JSON if it exists
         const hazards = review.hazards
           ? Array.isArray(review.hazards)
             ? (review.hazards as HazardType[])
@@ -186,13 +193,17 @@ export class SegmentsService extends BaseService {
         }
       }
 
+      const observationDays = queryParams?.observationDays || 3;
+      const observationsSince = new Date()
+      observationsSince.setDate(observationsSince.getDate() - observationDays);
+
       // Transform and filter segments
       // First, get guide updates and user reviews for all segments in parallel
       const segmentsWithExtras = await Promise.all(
-        segments.map(async (segment) => {
+        segments.map(async (segment) => { 
           const [guideUpdate, userReviews] = await Promise.all([
-            this.getGuideUpdateForSegment(segment.id),
-            this.getUserReviewsForSegment(segment.id),
+            this.getGuideUpdateForSegment(segment.id, observationsSince),
+            this.getUserReviewsForSegment(segment.id, 3, observationDays),
           ]);
 
           return {

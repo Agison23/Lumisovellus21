@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 
 # **apiV1SegmentsGet**
-> ApiV1SegmentsGet200Response apiV1SegmentsGet(bbox, minLat, minLng, maxLat, maxLng, search, updatedSince)
+> ApiV1SegmentsGet200Response apiV1SegmentsGet(observationDays, bbox, minLat, minLng, maxLat, maxLng, search, updatedSince)
 
 Get all segments
 
@@ -25,6 +25,7 @@ Retrieve all ski segments with their coordinates and terrain information. Suppor
 import 'package:lumisovellus_api/api.dart';
 
 final api = LumisovellusApi().getSegmentsApi();
+final String observationDays = 3; // String | Number of days to look back for reviews and observations in a segment
 final String bbox = 64.0,25.0,66.0,30.0; // String | Bounding box to filter segments (format: \"minLat,minLng,maxLat,maxLng\")
 final String minLat = 64.0; // String | Minimum latitude of bounding box
 final String minLng = 25.0; // String | Minimum longitude of bounding box
@@ -34,7 +35,7 @@ final String search = tunturi; // String | Search term to filter segments by nam
 final DateTime updatedSince = 2024-01-01T00:00Z; // DateTime | Return only segments updated since this date (ISO 8601 format)
 
 try {
-    final response = api.apiV1SegmentsGet(bbox, minLat, minLng, maxLat, maxLng, search, updatedSince);
+    final response = api.apiV1SegmentsGet(observationDays, bbox, minLat, minLng, maxLat, maxLng, search, updatedSince);
     print(response);
 } catch on DioException (e) {
     print('Exception when calling SegmentsApi->apiV1SegmentsGet: $e\n');
@@ -45,6 +46,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **observationDays** | **String**| Number of days to look back for reviews and observations in a segment | [optional] 
  **bbox** | **String**| Bounding box to filter segments (format: \"minLat,minLng,maxLat,maxLng\") | [optional] 
  **minLat** | **String**| Minimum latitude of bounding box | [optional] 
  **minLng** | **String**| Minimum longitude of bounding box | [optional] 

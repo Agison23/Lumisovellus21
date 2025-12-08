@@ -7,8 +7,8 @@ class InMemoryHelpStore {
   final Map<String, ServiceHelpResponse> responses = <String, ServiceHelpResponse>{};
 }
 
-class FakeHelpService implements HelpService {
-  FakeHelpService(this._store);
+class StubHelpService implements HelpService {
+  StubHelpService(this._store);
 
   final InMemoryHelpStore _store;
 
@@ -54,5 +54,4 @@ class FakeHelpService implements HelpService {
     }
   }
 }
-
 
