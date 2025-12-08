@@ -1,9 +1,15 @@
 import { BaseService } from '../BaseService.js';
-import { Review, ReviewRequest, SnowType, HazardType, Observation, GuideUpdate } from '../../types';
+import {
+  Review,
+  ReviewRequest,
+  SnowType,
+  HazardType,
+  Observation,
+  GuideUpdate,
+} from '../../types';
 import { generateSnowTypeIdentifier } from '../../../utils/snowTypeUtils.js';
 
 export class ReviewsService extends BaseService {
-
   async getAllSnowTypes(): Promise<SnowType[]> {
     try {
       const snowTypes = await this.prisma.snowType.findMany({
@@ -43,30 +49,21 @@ export class ReviewsService extends BaseService {
   }
 
   /**
-   * Get the latest guide update (SnowUpdate created by admin) for a segment
+   * Get the latest guide update (SnowUpdate created by admin or guide) for a segment
    */
   private async getGuideUpdateForSegment(
     segmentId: string,
     since?: Date
   ): Promise<GuideUpdate | null> {
     try {
-      // First, find admin users who created updates for this segment
-      const adminUsers = await this.prisma.user.findMany({
-        where: { role: 'ADMIN' },
-        select: { id: true },
-      });
-      const adminUserIds = adminUsers.map((u) => u.id);
-
-      if (adminUserIds.length === 0) {
-        return null;
-      }
-
-      // Get the latest active SnowUpdate created by an admin
+      // Get the latest active SnowUpdate created by an admin or guide
       const guideUpdate = await this.prisma.snowUpdate.findFirst({
         where: {
           segment: segmentId,
           status: 'ACTIVE',
-          creator: { in: adminUserIds },
+          creatorRel: {
+            role: { in: ['ADMIN', 'GUIDE'] },
+          },
           ...(since
             ? {
                 time: {
@@ -81,7 +78,11 @@ export class ReviewsService extends BaseService {
         },
       });
 
-      if (!guideUpdate || !guideUpdate.snowConditions || guideUpdate.snowConditions.length === 0) {
+      if (
+        !guideUpdate ||
+        !guideUpdate.snowConditions ||
+        guideUpdate.snowConditions.length === 0
+      ) {
         return null;
       }
 
@@ -90,19 +91,25 @@ export class ReviewsService extends BaseService {
       const secondarySnowTypeIds: string[] = [];
 
       for (const condition of guideUpdate.snowConditions) {
-        if (condition.snowType && !primarySnowTypeIds.includes(condition.snowType)) {
+        if (
+          condition.snowType &&
+          !primarySnowTypeIds.includes(condition.snowType)
+        ) {
           primarySnowTypeIds.push(condition.snowType);
         }
-        if (condition.secondarySnowType && !secondarySnowTypeIds.includes(condition.secondarySnowType)) {
+        if (
+          condition.secondarySnowType &&
+          !secondarySnowTypeIds.includes(condition.secondarySnowType)
+        ) {
           secondarySnowTypeIds.push(condition.secondarySnowType);
         }
       }
 
       // Parse hazards from JSON if it exists
       const hazards = (guideUpdate as any).hazards
-        ? (Array.isArray((guideUpdate as any).hazards)
-            ? ((guideUpdate as any).hazards as HazardType[])
-            : JSON.parse((guideUpdate as any).hazards as string))
+        ? Array.isArray((guideUpdate as any).hazards)
+          ? ((guideUpdate as any).hazards as HazardType[])
+          : JSON.parse((guideUpdate as any).hazards as string)
         : [];
 
       // Limit to max 2 each
@@ -149,19 +156,20 @@ export class ReviewsService extends BaseService {
       });
       const adminUserIds = adminUsers.map((u) => u.id);
 
-      const guideUpdateSegments = adminUserIds.length > 0
-        ? await this.prisma.snowUpdate.findMany({
-            where: {
-              status: 'ACTIVE',
-              creator: { in: adminUserIds },
-              time: { gt: daysAgo },
-            },
-            select: {
-              segment: true,
-            },
-            distinct: ['segment'],
-          })
-        : [];
+      const guideUpdateSegments =
+        adminUserIds.length > 0
+          ? await this.prisma.snowUpdate.findMany({
+              where: {
+                status: 'ACTIVE',
+                creator: { in: adminUserIds },
+                time: { gt: daysAgo },
+              },
+              select: {
+                segment: true,
+              },
+              distinct: ['segment'],
+            })
+          : [];
 
       // Combine unique segment IDs
       const segmentIdsSet = new Set<string>();
@@ -182,7 +190,10 @@ export class ReviewsService extends BaseService {
       // Process segments in parallel for better performance
       const observationPromises = paginatedSegmentIds.map(async (segmentId) => {
         // Get guide update for this segment
-        const guideUpdate = await this.getGuideUpdateForSegment(segmentId, daysAgo);
+        const guideUpdate = await this.getGuideUpdateForSegment(
+          segmentId,
+          daysAgo
+        );
 
         // Get user reviews for this segment (limited and filtered by date)
         const segmentReviews = await this.prisma.userReview.findMany({
@@ -196,9 +207,9 @@ export class ReviewsService extends BaseService {
 
         const userReviews = segmentReviews.map((review) => {
           const hazards = review.hazards
-            ? (Array.isArray(review.hazards)
-                ? (review.hazards as HazardType[])
-                : JSON.parse(review.hazards as string))
+            ? Array.isArray(review.hazards)
+              ? (review.hazards as HazardType[])
+              : JSON.parse(review.hazards as string)
             : [];
 
           return {
@@ -221,7 +232,9 @@ export class ReviewsService extends BaseService {
 
       const results = await Promise.all(observationPromises);
       // Filter out null values (segments that don't have reviews or guide updates)
-      const validObservations = results.filter((obs): obs is Observation => obs !== null);
+      const validObservations = results.filter(
+        (obs): obs is Observation => obs !== null
+      );
       observations.push(...validObservations);
 
       return { observations, total };
@@ -241,7 +254,8 @@ export class ReviewsService extends BaseService {
           segment: segmentId, // Get segment ID from URL path parameter
           snowType: reviewData.snowType,
           secondarySnowType: reviewData.secondarySnowType || null,
-          hazards: reviewData.hazards.length > 0 ? reviewData.hazards : undefined,
+          hazards:
+            reviewData.hazards.length > 0 ? reviewData.hazards : undefined,
           comment: reviewData.comment,
           // Anonymous review while auth is disabled
           userId: undefined,
@@ -255,9 +269,9 @@ export class ReviewsService extends BaseService {
 
       // Parse hazards from JSON if it exists
       const hazards = review.hazards
-        ? (Array.isArray(review.hazards)
-            ? (review.hazards as HazardType[])
-            : JSON.parse(review.hazards as string))
+        ? Array.isArray(review.hazards)
+          ? (review.hazards as HazardType[])
+          : JSON.parse(review.hazards as string)
         : [];
 
       return {
@@ -282,7 +296,10 @@ export class ReviewsService extends BaseService {
     const daysAgo = new Date();
     daysAgo.setDate(daysAgo.getDate() - days);
 
-    const guideUpdatePromise = this.getGuideUpdateForSegment(segmentId, daysAgo);
+    const guideUpdatePromise = this.getGuideUpdateForSegment(
+      segmentId,
+      daysAgo
+    );
     const reviewsPromise = this.prisma.userReview.findMany({
       where: {
         segment: segmentId,
@@ -299,9 +316,9 @@ export class ReviewsService extends BaseService {
 
     const userReviews = segmentReviews.map((review) => {
       const hazards = review.hazards
-        ? (Array.isArray(review.hazards)
-            ? (review.hazards as HazardType[])
-            : JSON.parse(review.hazards as string))
+        ? Array.isArray(review.hazards)
+          ? (review.hazards as HazardType[])
+          : JSON.parse(review.hazards as string)
         : [];
 
       return {

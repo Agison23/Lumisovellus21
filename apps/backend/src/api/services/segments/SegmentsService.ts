@@ -51,7 +51,7 @@ export class SegmentsService extends BaseService {
   }
 
   /**
-   * Get the latest guide update (SnowUpdate created by admin) for a segment
+   * Get the latest guide update (SnowUpdate created by admin or guide) for a segment
    */
   private async getGuideUpdateForSegment(
     segmentId: string,
