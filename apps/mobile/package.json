@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "pubget": "flutter pub get",
-    "dev": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && flutter run",
+    "dev": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && flutter run --dart-define=API_BASE_URL=http://localhost:3001 --dart-define=USE_REMOTE_CONFIG=false",
     "format": "dart format --set-exit-if-changed .",
     "lint": "dart analyze",
     "typecheck": "dart analyze",
