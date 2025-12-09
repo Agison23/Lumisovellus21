@@ -68,9 +68,9 @@ class _PulsatingHelpButtonState extends State<PulsatingHelpButton>
             height: buttonSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withOpacity((1 - progress) * 0.25),
+              color: color.withValues(alpha: (1 - progress) * 0.25),
               border: Border.all(
-                color: color.withOpacity((1 - progress) * 0.45),
+                color: color.withValues(alpha: (1 - progress) * 0.45),
                 width: 1.5,
               ),
             ),

@@ -299,7 +299,7 @@ class LocationDisplayWidget extends ConsumerWidget {
                               : null,
                           icon: Icon(
                             Icons.place,
-                            color: rescueTheme.requestHelpButton,
+                            color: rescueTheme.placeIconColor,
                             size: iconSize,
                           ),
                           label: AutoSizeText(

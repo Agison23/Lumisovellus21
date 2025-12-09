@@ -646,13 +646,13 @@ abstract class AppLocalizations {
   /// No description provided for @rescuePageHelpRequestDescription.
   ///
   /// In en, this message translates to:
-  /// **'A help request alerts and sends your location to nearby rescuers'**
+  /// **'A help request alerts and sends your location to nearby wanderers'**
   String get rescuePageHelpRequestDescription;
 
   /// No description provided for @rescuePageEmergencyCallDescription.
   ///
   /// In en, this message translates to:
-  /// **'In an emergency, always call 112'**
+  /// **'In a severe emergency, always call 112'**
   String get rescuePageEmergencyCallDescription;
 
   /// No description provided for @rescuePageEmergencyCallFailed.
@@ -720,12 +720,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complete Event'**
   String get rescueEndEventDialogComplete;
-
-  /// No description provided for @rescuePageRequestHelpConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Send help request to nearby rescuers?'**
-  String get rescuePageRequestHelpConfirm;
 
   /// No description provided for @map.
   ///

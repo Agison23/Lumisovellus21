@@ -304,11 +304,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescuePageHelpRequestDescription =>
-      'A help request alerts and sends your location to nearby rescuers';
+      'A help request alerts and sends your location to nearby wanderers';
 
   @override
   String get rescuePageEmergencyCallDescription =>
-      'In an emergency, always call 112';
+      'In a severe emergency, always call 112';
 
   @override
   String get rescuePageEmergencyCallFailed =>
@@ -344,10 +344,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescueEndEventDialogComplete => 'Complete Event';
-
-  @override
-  String get rescuePageRequestHelpConfirm =>
-      'Send help request to nearby rescuers?';
 
   @override
   String get map => 'Map';

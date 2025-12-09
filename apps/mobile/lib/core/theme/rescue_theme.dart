@@ -11,6 +11,9 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
   /// Color for coordinate display cells
   final Color coordinateCell;
 
+  /// Place icon color
+  final Color placeIconColor;
+
   /// Request help button color
   final Color requestHelpButton;
 
@@ -65,6 +68,7 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
   const RescueTheme({
     required this.pageBackground,
     required this.coordinateCell,
+    required this.placeIconColor,
     required this.requestHelpButton,
     required this.requestHelpButtonText,
     required this.requestHelpButtonShadow,
@@ -130,7 +134,8 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
     return const RescueTheme(
       pageBackground: Color(0xFAFAFAFA),
       coordinateCell: Color.fromARGB(217, 111, 114, 117),
-      requestHelpButton: Color(0xFF415A77),
+      placeIconColor: Color(0xFF415A77),
+      requestHelpButton: Color.fromARGB(255, 175, 5, 5),
       requestHelpButtonText: Color.fromARGB(255, 242, 240, 240),
       requestHelpButtonShadow: Color.fromARGB(116, 186, 186, 188),
       secondaryButtonBackground: Color(0xfffafafa),
@@ -155,6 +160,7 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
     return const RescueTheme(
       pageBackground: Color(0xFF121212),
       coordinateCell: Color.fromARGB(255, 90, 130, 170),
+      placeIconColor: Color.fromARGB(217, 111, 114, 117),
       requestHelpButton: Color(0xFFD32F2F),
       requestHelpButtonText: Color(0xFFFAFAFA),
       requestHelpButtonShadow: Color(0xFF000000),
@@ -179,6 +185,7 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
   ThemeExtension<RescueTheme> copyWith({
     Color? pageBackground,
     Color? coordinateCell,
+    Color? placeIconColor,
     Color? requestHelpButton,
     Color? requestHelpButtonText,
     Color? requestHelpButtonShadow,
@@ -200,6 +207,7 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
     return RescueTheme(
       pageBackground: pageBackground ?? this.pageBackground,
       coordinateCell: coordinateCell ?? this.coordinateCell,
+      placeIconColor: placeIconColor ?? this.placeIconColor,
       requestHelpButton: requestHelpButton ?? this.requestHelpButton,
       requestHelpButtonText:
           requestHelpButtonText ?? this.requestHelpButtonText,
@@ -240,6 +248,7 @@ class RescueTheme extends ThemeExtension<RescueTheme> {
     return RescueTheme(
       pageBackground: Color.lerp(pageBackground, other.pageBackground, t)!,
       coordinateCell: Color.lerp(coordinateCell, other.coordinateCell, t)!,
+      placeIconColor: Color.lerp(placeIconColor, other.placeIconColor, t)!,
       requestHelpButton: Color.lerp(
         requestHelpButton,
         other.requestHelpButton,

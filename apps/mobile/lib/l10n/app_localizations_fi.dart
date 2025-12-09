@@ -304,11 +304,11 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get rescuePageHelpRequestDescription =>
-      'Hätäpyyntö ilmoittaa sijaintisi lähistöllä oleville pelastajille';
+      'Hätäpyyntö jakaa sijaintisi lähistöllä oleville auttajille.';
 
   @override
   String get rescuePageEmergencyCallDescription =>
-      'Hätätilanteessa soita aina 112';
+      'Hätätilanteessa soita aina numeroon 112.';
 
   @override
   String get rescuePageEmergencyCallFailed =>
@@ -344,10 +344,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get rescueEndEventDialogComplete => 'Merkitse valmiiksi';
-
-  @override
-  String get rescuePageRequestHelpConfirm =>
-      'Lähetetäänkö avunpyyntö lähellä oleville pelastajille?';
 
   @override
   String get map => 'Kartta';
