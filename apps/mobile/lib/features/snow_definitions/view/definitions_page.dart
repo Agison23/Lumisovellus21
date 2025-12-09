@@ -14,47 +14,38 @@ class DefinitionsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBody: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: const Color(0xff324c6d),
+        foregroundColor: Colors.white,
+        title: Text(
+          t.snowDefinitionsPageTitle.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       // allow the page content to extend under the bottom nav so the nav's
       // translucency can show the actual page content beneath it
       body: SafeArea(
-        top: true,
+        top: false,
         bottom: false,
-        child: Column(
-          children: [
-            // Header
-            Container(
-              width: double.infinity,
-              height: 80,
-              color: const Color(0xff324c6d),
-              child: Center(
-                child: Text(
-                  t.snowDefinitionsPageTitle.toUpperCase(),
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            // Content
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Avalanche warning section
-                    _buildAvalancheWarningSection(context, t),
-                    const SizedBox(height: 32),
-                    // Snow types section
-                    _buildSnowTypesSection(context, t),
-                    // add spacing equal to the bottom navigation bar height so content
-                    // isn't overlapped by the translucent nav
-                    const SizedBox(height: kBottomNavigationBarHeight + 16),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Avalanche warning section
+              _buildAvalancheWarningSection(context, t),
+              const SizedBox(height: 32),
+              // Snow types section
+              _buildSnowTypesSection(context, t),
+              // add spacing equal to the bottom navigation bar height so content
+              // isn't overlapped by the translucent nav
+              const SizedBox(height: kBottomNavigationBarHeight + 16),
+            ],
+          ),
         ),
       ),
     );
