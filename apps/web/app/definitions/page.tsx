@@ -54,18 +54,16 @@ export default function DefinitionsPage() {
       {isError && <p>{t("errors.loadingFailed")}</p>}
       {!isLoading && !isError && (
         <>
-          <Input
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            placeholder={t("search.placeholder")}
-          />
-
-          <div className="flex-1 overflow-y-auto space-y-6 pb-14">
+          <div className="flex flex-col gap-4">
+            <Input
+              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              placeholder={t("search.placeholder")}
+            />
+          </div>
+          <div className="flex-1 overflow-y-auto pb-14">
             {filteredSnowTypes.length > 0 && (
               <section>
-                <h2 className="text-xl font-bold mb-4">
-                  {t("labels.snowTypes")}
-                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {filteredSnowTypes.map((snowType) => {
                     const translationKey = getTranslationKeyForSnowTypeName(

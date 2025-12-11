@@ -5,6 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:lumisovellus/core/data/persistence/app_db.dart';
 import 'package:lumisovellus/core/data/persistence/daos/jobs_dao.dart';
 
+/// WARNING: Legacy implementation.  
+/// This repository is kept only as a reference for the Drift-based caching
+/// pattern used in the app. For the full design and how new offline features
+/// should be built, see docs/mobile/caching.md.
 class TileCacheRepository {
   TileCacheRepository(this.db, this.jobs);
   final AppDb db;

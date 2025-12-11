@@ -1,4 +1,12 @@
-# Lumisovellus
+<p align="center">
+  <picture>
+    <source srcset="apps/mobile/assets/images/pallaksen_pollot_logo_white.png" media="(prefers-color-scheme: dark)">
+    <source srcset="apps/mobile/assets/images/pallaksen_pollot_logo.png" media="(prefers-color-scheme: light)">
+    <img alt="Pallaksen Pöllöt logo" src="apps/mobile/assets/images/pallaksen_pollot_logo.png" width="240">
+  </picture>
+</p>
+
+# Lumisovellus / Snowledge
 
 Monorepo for the Lumisovellus project: backend API, web dashboard and Flutter mobile app.
 

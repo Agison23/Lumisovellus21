@@ -58,6 +58,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final s = ref.watch(segmentsNotifierProvider).value;
     final segments = s?.segments ?? const [];
     final selectedSegment = segments.firstWhereOrNull((seg) => seg.id == s?.selectedId);
+    final topInset = MediaQuery.of(context).padding.top;
 
     ref.listen(
       segmentsNotifierProvider.select((a) => a.value?.selectedId),
@@ -141,6 +142,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               _map = controller;
               areasMgr.attach(controller);
 
+              await controller.compass.updateSettings(
+                CompassSettings(marginTop: topInset),
+              );
+              await controller.scaleBar.updateSettings(
+                ScaleBarSettings(marginTop: topInset),
+              );
+
               await controller.gestures.updateSettings(
                 GesturesSettings(
                   pitchEnabled: true,
@@ -187,7 +195,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
           if (selectedSegment != null)
             Positioned(
-              top: 32,
+              top: 32 + topInset,
               left: 16,
               child: AreaCard(
                 t: t,

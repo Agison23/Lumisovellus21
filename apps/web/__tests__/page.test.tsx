@@ -1,31 +1,21 @@
 "use client";
 
-import '@testing-library/jest-dom/vitest'
+import "@testing-library/jest-dom/vitest";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
-import { describe, expect, test, vi } from 'vitest'
+import { render } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
 
-vi.mock('next-intl', () => ({
-  useTranslations: () => () => 'Map Title'
-}))
+vi.mock("next-intl", () => ({
+  useTranslations: () => () => "Map Title",
+}));
 
-vi.mock('@/components/map-3d', () => ({
-  default: () => <div data-testid="mock-map">Mock Map</div>
-}))
+import Page from "../app/page";
 
-import Page from '../app/page'
+describe("app/page", () => {
+  test("renders without errors", () => {
+    const { container } = render(<Page />);
 
-describe('app/page', () => {
-  test('renders map component', () => {
-    const queryClient = new QueryClient()
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Page />
-      </QueryClientProvider>
-    )
-
-    expect(screen.getByTestId('mock-map')).toBeInTheDocument()
-  })
-})
+    // Page now returns null as map is rendered in layout via PersistentMap
+    expect(container.firstChild).toBeNull();
+  });
+});
