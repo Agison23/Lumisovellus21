@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
+import { SnowTypeCombobox } from "./snow-type-combobox";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SnowTypeCombobox } from "./snow-type-combobox";
 import type { Obstacles } from "@/hooks/use-observation-mutation";
 
 export interface GuideFormProps {

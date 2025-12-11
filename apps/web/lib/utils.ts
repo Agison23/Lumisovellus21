@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
+import { useTranslations } from "next-intl";
 import { twMerge } from "tailwind-merge";
 import { SnowTypesResponse } from "./map/loaders";
-import { useTranslations } from "next-intl";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
