@@ -1,70 +1,44 @@
-/node_modules
-/dist
+.env
 
-# Python virtual environment
-myEnv/
+# TurboRepo cache
+.turbo
 
-#Jetbrains toolbox
-.idea
+# Node dependencies
+node_modules/
 
-#Below are combined old .gitignore files
-#map-app .gitignore file
+# Logs
+*.log
 
-# dependencies
-src/map-app/node_modules
-src/map-app/.pnp
-src/map-app/.pnp.js
+# Runtime data
+pids/
+*.pid
 
-# testing
-src/map-app/coverage
+# Build outputs / caches
+dist/
+build/
+.cache
+.next/
+.nuxt/
 
-# production
-src/map-app/build
 
-# misc
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS generated files
 .DS_Store
-src/map-app/.DS_Store
-src/map-app/.env.local
-src/map-app/.env.development.local
-src/map-app/.env.test.local
-src/map-app/.env.production.local
-src/map-app/.env
+Thumbs.db
 
-src/map-app/npm-debug.log*
-src/map-app/yarn-debug.log*
-src/map-app/yarn-error.log*
-
-
-#src .gitignore file
-
-# dependencies
-src/node_modules
-src/.pnp
-src/.pnp.js
-
-# testing
-src/coverage
-
-# production
-src/build
-
-# misc
-src/.DS_Store
-src/.env.local
-src/.env.development.local
-src/.env.test.local
-src/.env.production.local
-src/.env
-
-src/npm-debug.log*
-src/yarn-debug.log*
-src/yarn-error.log*
-
-#Vagrant .gitignore file
-vagrant/.vagrant
-vagrant/ubuntu*console.log
-
-#database
-Mobile snowledge/Server/back_end/db/database
-Mobile snowledge/Server/back_end/__pycache__
-*.pyc
+# SQLite / database files
+*.sqlite
+*.db
+*.sqlite-journal
+*.sqlite-lock
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.sqlite-lock
+*.sqlite-wal
+*.sqlite-shm

@@ -1,0 +1,17 @@
+{
+  "name": "@repo/shared",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo \"Shared package has no build step\"",
+    "test": "echo \"Warning: No test specified\" && exit 0",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

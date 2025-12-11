@@ -1,0 +1,24 @@
+name: PR -> frontend
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+    branches:
+      - 'frontend'
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  job:
+    uses: ./.github/workflows/ci-reusable.yml
+    with:
+      coverage-threshold: 80
+      run-build: true
+      run-heavy-lint: true
+      run-security-checks: true
+      audit-level: "high"
+      run-smoke-e2e: true
+    secrets: inherit

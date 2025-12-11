@@ -1,0 +1,70 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: lumisovellus-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lumisovellus
+      MYSQL_USER: lumisovellus
+      MYSQL_PASSWORD: password
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.backend
+      target: deps
+    container_name: lumisovellus-backend
+    environment:
+      DATABASE_URL: mysql://lumisovellus:password@mysql:3306/lumisovellus
+      PORT: 3001
+      NODE_ENV: development
+      CORS_ORIGIN: http://localhost:3000
+      JWT_SECRET: dev-secret-key
+    ports:
+      - '3001:3001'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../../apps/backend:/app
+      - /app/node_modules
+    command: sh -c "npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed && npm run dev"
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:3001/health',
+        ]
+      timeout: 10s
+      retries: 5
+
+  web:
+    build:
+      context: ../../
+      dockerfile: infra/docker/Dockerfile.web
+    container_name: lumisovellus-web
+    ports:
+      - '3000:3000'
+    env_file:
+      - ../../apps/web/.env
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

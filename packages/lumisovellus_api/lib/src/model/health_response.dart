@@ -1,0 +1,75 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:json_annotation/json_annotation.dart';
+
+part 'health_response.g.dart';
+
+
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class HealthResponse {
+/// Modified to fix Dart constructor errors (dart_constructor.mustache):
+/// Adds `const []` as default for list fields to avoid non-nullable parameter issues,
+/// while keeping normal defaults for all other field types.
+/// Returns a new [HealthResponse] instance.
+HealthResponse({
+  required  this.status,
+  required  this.version,
+});
+
+      /// Server status
+  @JsonKey(
+    
+    name: r'status',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String status;
+
+
+
+      /// API version
+  @JsonKey(
+    
+    name: r'version',
+    required: true,
+    includeIfNull: false,
+  )
+
+
+  final String version;
+
+
+
+
+
+    @override
+    bool operator ==(Object other) => identical(this, other) || other is HealthResponse &&
+      other.status == status &&
+      other.version == version;
+
+    @override
+    int get hashCode =>
+        status.hashCode +
+        version.hashCode;
+
+  factory HealthResponse.fromJson(Map<String, dynamic> json) => _$HealthResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HealthResponseToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+
+}
+

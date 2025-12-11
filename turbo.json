@@ -1,0 +1,77 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "dev": { 
+      "cache": false, 
+      "persistent": true, 
+      "dependsOn": ["^dev"] 
+    },
+
+    "openapi:client:web": {},
+
+    "openapi:check": { 
+      "dependsOn": ["openapi:client:web", "openapi:client:mobile"], 
+      "outputs": [] 
+    },
+
+    "lint:heavy": { 
+      "outputs": [], 
+      "dependsOn": ["^lint:heavy"] 
+    },
+
+    "test:unit": {},
+    "test:integration": {},
+
+    "build": {
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "dependsOn": ["^build", "^openapi:check", "^typecheck", "^lint", "^test"]
+    },
+
+    "e2e": {
+      "passThroughEnv": ["PLAYWRIGHT_*"]
+    },
+
+    "test": {
+      "outputs": ["apps/mobile/coverage/**"],
+      "dependsOn": ["^test", "openapi:client:mobile", "transit"]
+    },
+
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+
+    "lint": { 
+      "outputs": [], 
+      "dependsOn": ["^lint"] 
+    },
+
+    "lint:fix": { 
+      "outputs": [], 
+      "dependsOn": ["^lint:fix"] 
+    },
+
+    "format": { "outputs": [] },
+    "format:check": { "outputs": [] },
+
+    "typecheck": { 
+      "outputs": [], 
+      "dependsOn": ["^typecheck"] 
+    },
+
+    "pubget": {
+      "cache": false,
+      "dependsOn": [],
+      "outputs": [],
+      "inputs": []
+    },
+
+    "openapi:emit": {
+      "outputs": ["apps/backend/openapi.json"]
+    },
+
+    "openapi:client:mobile": {
+      "dependsOn": ["openapi:emit"],
+      "outputs": ["packages/lumisovellus_api/**"]
+    }
+  }
+}

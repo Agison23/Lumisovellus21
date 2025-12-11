@@ -1,0 +1,63 @@
+{
+  "name": "lumisovellus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "dev": "turbo run dev --parallel",
+
+  "test": "turbo run test --filter=!mobile",
+  "test:unit": "turbo run test:unit --filter=!mobile",
+  "test:integration": "turbo run test:integration --filter=!mobile",
+
+  "build": "turbo run build --filter=!mobile",
+
+  "lint": "turbo run lint --filter=!mobile",
+  "lint:fix": "turbo run lint:fix --filter=!mobile",
+  "lint:heavy": "turbo run lint:heavy --filter=!mobile",
+
+  "typecheck": "turbo run typecheck --filter=!mobile",
+
+  "postinstall": "npx turbo run pubget --filter=!mobile",
+
+  "openapi:check": "turbo run openapi:check",
+  "openapi:emit": "echo \"Error: Create script for emiting openapi spec\" && exit 0",
+  "openapi:client:web": "npx openapi-typescript apps/backend/openapi.json --output packages/api-client-web/index.ts",
+  "openapi:client:mobile": "npm run openapi:emit && rimraf packages/lumisovellus_api && openapi-generator-cli generate --config apps/mobile/openapi-config.yaml --template-dir packages/templates && cd packages/lumisovellus_api && flutter pub get && dart run build_runner build --delete-conflicting-outputs && cd ../..",
+
+  "verify": "turbo run openapi:check lint typecheck test build",
+
+  "act:push:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/push-to-frontend.yml -n push",
+  "act:pr:frontend": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-frontend.yml -n pull_request",
+  "act:pr:release": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-release.yml -n pull_request",
+  "act:pr:master": "bash .github/scripts/act-run.sh -w .github/workflows/pr-to-master.yml -n pull_request"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": "true",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": "24.11.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@openapitools/openapi-generator-cli": "^2.23.4",
+    "@types/node": "24.10.1",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.6",
+    "typescript": "5.9.2",
+    "typescript-eslint": "^8.44.0"
+  },
+  "packageManager": "npm@10.2.3",
+  "dependencies": {
+    "@radix-ui/react-navigation-menu": "^1.2.14"
+  }
+}

@@ -1,0 +1,464 @@
+{
+  "AppLayout": {
+    "map": "Map",
+    "definitions": "Definitions",
+    "weather": "Weather",
+    "dashboard": "Dashboard"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "fi": "Suomi"
+  },
+  "ThemeSwitcher": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "MapPage": {
+    "title": "Map",
+    "loading": {
+      "map": "Loading map...",
+      "snowData": "Loading snow data...",
+      "segments": "Loading segments...",
+      "segmentData": "Loading segment data..."
+    },
+    "warnings": {
+      "avalanche": {
+        "noDanger": "No avalanche warning",
+        "danger": "Avalanche warning"
+      }
+    },
+    "errors": {
+      "loadingData": "Error loading data. Please try again later.",
+      "loadingSnowData": "Error loading snow types. Please try again later.",
+      "loadingSegmentData": "Error loading segment data. Please try again later.",
+      "loadingMonitorData": "Error loading monitor data. Please try again later."
+    },
+    "controls": {
+      "segments": "Segments",
+      "sensors": "Sensors"
+    },
+    "monitorInfo": {
+      "fields": {
+        "temperature": {
+          "label": "Temperature",
+          "unit": "°C",
+          "noData": "No data"
+        },
+        "snowDepth": {
+          "label": "Snow depth",
+          "unit": "cm",
+          "noData": "No data"
+        },
+        "coordinates": {
+          "label": "Coordinates",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "noData": "No data"
+        }
+      },
+      "buttons": {
+        "close": "Close"
+      }
+    },
+    "reportForm": {
+      "steps": {
+        "selectSnowType": "Select snow type",
+        "specifySnowType": "Specify snow type"
+      },
+      "labels": {
+        "primarySnowTypes": "Primary snow types",
+        "secondarySnowTypes": "Secondary snow types",
+        "primarySnowType": "Primary snow type",
+        "secondarySnowType": "Secondary snow type"
+      },
+      "generalSnowTypes": {
+        "fresh": "new/freshly fallen snow",
+        "windblown": "windblown",
+        "icy": "icy",
+        "wet": "wet",
+        "crust": "crust",
+        "minor": "minor"
+      },
+      "snowTypes": {
+        "crust": {
+          "name": "Crust",
+          "description": "Hard crust covering the surface. Crust can be smooth or rough in nature."
+        },
+        "slush": {
+          "name": "Slush",
+          "description": "Water-rich and partially melted snow in sheltered conditions."
+        },
+        "ice": {
+          "name": "Ice",
+          "description": "Hard and unbroken icy layer on the surface. Ice forms as a result of melt-freeze cycles."
+        },
+        "fresh": {
+          "name": "Fresh snow",
+          "description": "Recently fallen soft snow."
+        },
+        "wind-blown": {
+          "name": "Wind-blown snow",
+          "description": "Wind-hardened and unevenly shaped snow."
+        },
+        "sparse": {
+          "name": "Sparse snow",
+          "description": ""
+        },
+        "bare-ground": {
+          "name": "Bare ground",
+          "description": ""
+        },
+        "powder-snow": {
+          "name": "Powder snow",
+          "description": "Recently fallen, light, soft and slightly consolidated frost snow."
+        },
+        "powder": {
+          "name": "Powder",
+          "description": "Recently fallen loose, feather-light and non-consolidated snow. Powder usually forms in calm weather and hard frost."
+        },
+        "wet": {
+          "name": "Wet fresh snow",
+          "description": "Snow from which you can easily make a snowball. Wet snow forms when it rains near freezing or well in sheltered areas."
+        },
+        "sastrugi": {
+          "name": "Sastrugi",
+          "description": "Wind-caused snow ridges that are hard, icy and sharp-crested."
+        },
+        "wavy": {
+          "name": "Wavy snow",
+          "description": "Wind-shaped fresh snow area. Waves are soft and easily broken."
+        },
+        "wind-packed": {
+          "name": "Wind-packed snow",
+          "description": "Smooth, wind-layered and compacted slab or lens. Wind-packed snow can also accumulate without snowfall if wind moves snow from place to place. Wind-packed snow typically forms in sheltered areas."
+        },
+        "thin-crust": {
+          "name": "Thin crust",
+          "description": "Snow crust that breaks under the skier's weight. Below the crust, snow can be sinking in places."
+        },
+        "breakable-crust": {
+          "name": "Breakable crust",
+          "description": "Intermittently bearing, unexpectedly breaking snow surface. The crust can be very thick if there is porous snow beneath it."
+        },
+        "bearing-crust": {
+          "name": "Bearing crust",
+          "description": "Solid and bearing snow crust, often with a very hard and dense surface."
+        },
+        "breakable-ice": {
+          "name": "Breakable ice",
+          "description": "Hard and breakable icy layer on the surface."
+        },
+        "softening-snow": {
+          "name": "Softening snow",
+          "description": "Snow that becomes wet or moist from warming or rain starting from the surface."
+        },
+        "saturated-snow": {
+          "name": "Saturated snow",
+          "description": "Wet, throughly soaked and whipped cream-like snow."
+        },
+        "stones": {
+          "name": "Stones",
+          "description": ""
+        },
+        "branches": {
+          "name": "Branches",
+          "description": ""
+        }
+      },
+      "buttons": {
+        "addObservation": "Add observation",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "submitting": "Submitting...",
+        "close": "Close"
+      },
+      "obstacles": {
+        "description": "Obstacles",
+        "stones": {
+          "name": "Stones",
+          "description": ""
+        },
+        "branches": {
+          "name": "Branches",
+          "description": ""
+        }
+      },
+      "messages": {
+        "submitError": "Failed to submit observation. Please try again.",
+        "submitSuccess": "Observation submitted successfully. Thank you!"
+      },
+      "observationType": {
+        "visitor": "The information below is based on observations from other users.",
+        "guide": "Latest guide update for {name}:"
+      },
+      "lastUpdate": {
+        "visitor": "Latest update: {time}",
+        "guide": "Latest guide update: {time}"
+      },
+      "time": {
+        "justNow": "Just now",
+        "minutesAgo": "{count} minutes ago",
+        "hoursAgo": "{count} hours ago",
+        "daysAgo": "{count} days ago"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Add any additional information about the snow conditions here..."
+      }
+    }
+  },
+  "WeatherPage": {
+    "title": "Weather",
+    "loading": "Loading weather data...",
+    "avgWindTitle": "Average Wind (3 days)",
+    "windDirection": "at {deg}°",
+    "tempTitle": "Temperature (3 days)",
+    "min": "Min",
+    "max": "Max",
+    "maxWindTitle": "Max Wind Speed (3 days)",
+    "snowChangeTitle": "Snow Depth Change (7 days)",
+    "aboveFreezingTitle": "Days Above Freezing (3 days)",
+    "noAboveFreezing": "No days above freezing.",
+    "notAvailable": "Data not available"
+  },
+  "DefinitionsPage": {
+    "title": "Definitions",
+    "loading": "Loading snow types...",
+    "errors": {
+      "loadingFailed": "Failed to load snow types. Please try again later."
+    },
+    "search": {
+      "placeholder": "Search snow types..."
+    },
+    "labels": {
+      "snowTypes": "Snow Types",
+      "description": "Description",
+      "noDescription": "No description available"
+    },
+    "noResults": "No snow types found matching your search."
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "OverviewPage": {
+      "title": "Overview",
+      "greetings": {
+        "morning": "Good morning, {name}",
+        "day": "Good day, {name}",
+        "afternoon": "Good afternoon, {name}",
+        "evening": "Good evening, {name}",
+        "night": "Good night, {name}"
+      },
+      "user": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      }
+    },
+    "SegmentsPage": {
+      "title": "Segments",
+      "newButton": "New Segment",
+      "search": {
+        "placeholder": "Search segments..."
+      },
+      "avalanche": {
+        "avalancheDanger": "Avalanche danger: ",
+        "true": "True",
+        "false": "False"
+      },
+      "createDialog": {
+        "title": "Create New Segment",
+        "name": "Name",
+        "terrain": "Terrain",
+        "id": "ID",
+        "coordinates": {
+          "title": "Coordinates",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "addCoordinate": "Add coordinate"
+        },
+        "avalanche": {
+          "title": "Avalanche",
+          "toggleAvalancheWarning": "Area is prone to avalanches"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create",
+          "creating": "Creating..."
+        },
+        "errors": {
+          "createFailed": "Failed to create segment. Please try again."
+        },
+        "success": {
+          "createSuccessful": "Segment created successfully."
+        }
+      },
+      "editDialog": {
+        "title": "Editing {name}",
+        "name": "Name",
+        "terrain": "Terrain",
+        "coordinates": {
+          "title": "Coordinates",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "addCoordinate": "Add coordinate"
+        },
+        "avalanche": {
+          "title": "Avalanche",
+          "toggleAvalancheWarning": "Area is prone to avalanches"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "saveFailed": "Failed to save changes. Please try again.",
+          "deleteFailed": "Failed to delete area. Please try again."
+        },
+        "success": {
+          "saveSuccessful": "Changes saved successfully."
+        }
+      },
+      "deleteDialog": {
+        "title": "Delete {name}?",
+        "message": "Are you sure you want to delete this area? This action cannot be undone.",
+        "buttons": {
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "deleting": "Deleting..."
+        },
+        "errors": {
+          "deleteFailed": "Failed to delete area. Please try again."
+        },
+        "success": {
+          "deleteSuccessful": "Area deleted successfully."
+        }
+      }
+    },
+    "UsersPage": {
+      "title": "Users",
+      "loading": "Loading users...",
+      "errors": {
+        "loadingFailed": "Failed to load users. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search users..."
+      },
+      "labels": {
+        "email": "Email",
+        "role": "Role",
+        "id": "ID"
+      },
+      "editDialog": {
+        "title": "Editing {email}",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "role": "Role",
+        "rolePlaceholder": "Select a role",
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving..."
+        },
+        "errors": {
+          "saveFailed": "Failed to save changes. Please try again."
+        },
+        "success": {
+          "saveSuccessful": "Changes saved successfully."
+        }
+      }
+    },
+    "ReportsPage": {
+      "title": "Reports",
+      "loading": "Loading reports...",
+      "errors": {
+        "loadingFailed": "Failed to load reports. Please try again later."
+      },
+      "search": {
+        "placeholder": "Search reports..."
+      },
+      "labels": {
+        "id": "ID",
+        "date": "Date",
+        "snowType": "Snow type",
+        "location": "Location",
+        "description": "Description",
+        "hazards": "Hazards",
+        "primarySnowType": "Primary Snow Type",
+        "secondarySnowType": "Secondary Snow Type",
+        "guideUpdates": "Guide Updates",
+        "userReviews": "User Reviews"
+      }
+    },
+    "Sidebar": {
+      "title": "Dashboard"
+    }
+  },
+  "Sidebar": {
+    "logIn": {
+      "logIn": "Log in",
+      "logOut": "Log out"
+    },
+    "title": "Pallaksen Pöllöt",
+    "p1": "The snow application produced by Pallas Pöllöjen provides information about the prevailing snow conditions in the area. The application is in active use from February to May. The fell area is divided into segments, within which the snow is typically very similar.",
+    "p2": "The information in the application is the subjective observations of the guides and the conditions can change quickly. When using snow data, it is worth taking into account the time stamp of the observation, as well as what additional information has been given about the segment and what the weather data about the area says. In the fells, the traveler is responsible for applying the observations, and the application does not in any way reduce his own responsibility.",
+    "p3": "More detailed snow information for each segment opens by clicking on it. You can find information about the weather for the last few days behind the weather button.",
+    "p4": "Please remember to share your location with someone, for example on Whatsapp. Let's take care of ourselves, the fell and its beauty."
+  },
+  "LoginPage": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "buttons": {
+      "login": "Login",
+      "loggingIn": "Logging in..."
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password.",
+      "loginFailed": "Login failed. Please try again later."
+    },
+    "success": {
+      "loginSuccessful": "Login successful. Redirecting..."
+    },
+    "links": {
+      "register": "Don't have an account? Register here.",
+      "forgotPassword": "Forgot your password?"
+    }
+  },
+  "RegisterPage": {
+    "title": "Register",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "buttons": {
+      "register": "Register",
+      "registering": "Registering..."
+    },
+    "passwordRequirements": {
+      "title": "Password Requirements",
+      "minLength": "At least 8 characters",
+      "hasNumber": "At least one number",
+      "hasSpecialChar": "At least one special character"
+    },
+    "errors": {
+      "missingFields": "Please fill in all fields.",
+      "invalidCredentials": "Invalid email or password.",
+      "passwordMismatch": "Passwords do not match.",
+      "passwordTooWeak": "Password is too weak, must be at least 8 characters.",
+      "registrationFailed": "Registration failed. Please try again later."
+    },
+    "success": {
+      "registrationSuccessful": "Registration successful. Redirecting..."
+    },
+    "links": {
+      "login": "Already have an account? Log in here."
+    }
+  }
+}

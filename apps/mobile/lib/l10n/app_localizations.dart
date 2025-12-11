@@ -1,0 +1,1265 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart' deferred as app_localizations_en;
+import 'app_localizations_fi.dart' deferred as app_localizations_fi;
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('fi'),
+  ];
+
+  /// No description provided for @snowAppInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'The snow application produced by Pallaksen Pöllöt provides information about the prevailing snow conditions in the area.'**
+  String get snowAppInfo;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get next;
+
+  /// No description provided for @sharingLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'SHARING OF LOCATION INFORMATION'**
+  String get sharingLocation;
+
+  /// No description provided for @rescueFeatureInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'The app\'\'s rescue feature collects information about your location. With it, we can provide help for rescues. Using your location, the rescue department can see the route you have taken and the app can request for help from other users around you. You can help other users, too. Location sharing can be disabled at any time.'**
+  String get rescueFeatureInfo;
+
+  /// No description provided for @allowSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'ALLOW SHARING'**
+  String get allowSharing;
+
+  /// No description provided for @noLocationShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not allow location sharing'**
+  String get noLocationShare;
+
+  /// No description provided for @correctInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure to enter the correct information'**
+  String get correctInfo;
+
+  /// No description provided for @infoUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your information will be used for the application\'\'s rescue function.\nThe function allows the rescue service to find you more easily in the event of an emergency.'**
+  String get infoUsage;
+
+  /// No description provided for @fName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get fName;
+
+  /// No description provided for @surname.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get surname;
+
+  /// No description provided for @phoneNum.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneNum;
+
+  /// No description provided for @definitions.
+  ///
+  /// In en, this message translates to:
+  /// **'DEFINITIONS'**
+  String get definitions;
+
+  /// No description provided for @avalancheWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Avalanche warning'**
+  String get avalancheWarning;
+
+  /// No description provided for @avalancheWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The avalanche terrains of Pallas include several kurus such as Pyhäkuru, Palkaskuru, Rihmakuru and all steep slopes of over 25 degrees in Lommoltunturi, Keimiötunturi and Lehmäkero. Individual smaller avalanches can also occur elsewhere in the vicinity of steep terrain. The likelihood of an avalanche increases with weather changes.'**
+  String get avalancheWarningDesc;
+
+  /// No description provided for @snowTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow types'**
+  String get snowTypes;
+
+  /// No description provided for @newSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'New snow'**
+  String get newSnow;
+
+  /// No description provided for @newSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Freshly landed soft snow.'**
+  String get newSnowDesc;
+
+  /// No description provided for @freshWetSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh wet snow'**
+  String get freshWetSnow;
+
+  /// No description provided for @freshWetSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow from which you can easily make a snowball. Wet snow forms due to rain and temperatures above freezing point.'**
+  String get freshWetSnowDesc;
+
+  /// No description provided for @powderSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Powder snow'**
+  String get powderSnow;
+
+  /// No description provided for @powderSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh, loose and extremely light snow. Powder snowfall occurs in calm and very cold weather.'**
+  String get powderSnowDesc;
+
+  /// No description provided for @freshSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh snow'**
+  String get freshSnow;
+
+  /// No description provided for @freshSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh, light, soft and slightly packed snow.'**
+  String get freshSnowDesc;
+
+  /// No description provided for @crust.
+  ///
+  /// In en, this message translates to:
+  /// **'Crust'**
+  String get crust;
+
+  /// No description provided for @crustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A hard crust on the surface of the snow. The crust can be flat or jagged.'**
+  String get crustDesc;
+
+  /// No description provided for @concrete.
+  ///
+  /// In en, this message translates to:
+  /// **'Concrete'**
+  String get concrete;
+
+  /// No description provided for @concreteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Solid snow crust, which is usually extremely hard and compact.'**
+  String get concreteDesc;
+
+  /// No description provided for @thinCrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Thin crust'**
+  String get thinCrust;
+
+  /// No description provided for @thinCrustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A crust that breaks from the weight of a skier. Under the crust, a foot may sink deep.'**
+  String get thinCrustDesc;
+
+  /// No description provided for @collapsingCrust.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapsing crust'**
+  String get collapsingCrust;
+
+  /// No description provided for @collapsingCrustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Firm, however occasionally breaking crust of snow. The crust can be extremely thick if there is porous snow underneath.'**
+  String get collapsingCrustDesc;
+
+  /// No description provided for @windpackedSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Windpacked snow'**
+  String get windpackedSnow;
+
+  /// No description provided for @windpackedSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow hardened by the wind and uneven in many places.'**
+  String get windpackedSnowDesc;
+
+  /// No description provided for @driftsAndBanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Drifts and banks of windblown snow'**
+  String get driftsAndBanks;
+
+  /// No description provided for @driftsAndBanksDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'An area of new snow shaped by the wind. Waves are soft and easy to break.'**
+  String get driftsAndBanksDesc;
+
+  /// No description provided for @sastrug.
+  ///
+  /// In en, this message translates to:
+  /// **'Sastrug'**
+  String get sastrug;
+
+  /// No description provided for @sastrugDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind-induced wavy snow, which is hard, icy and has sharp ridges.'**
+  String get sastrugDesc;
+
+  /// No description provided for @windblownSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Windblown snow'**
+  String get windblownSnow;
+
+  /// No description provided for @windblownSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat, wind-layered and compressed tile or lens. Windblown snow can also accumulate without snowfall if wind moves snow from one place to another. Windblown snow is usually formed on the side of the fell protected from the wind.'**
+  String get windblownSnowDesc;
+
+  /// No description provided for @ice.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice'**
+  String get ice;
+
+  /// No description provided for @iceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A hard and unbreakable icy layer on the surface of the snow. Hard, glazed surface caused by melt-freeze process.'**
+  String get iceDesc;
+
+  /// No description provided for @breakableIce.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakable ice'**
+  String get breakableIce;
+
+  /// No description provided for @breakableIceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A hard and breakable icy layer on the surface of the snow.'**
+  String get breakableIceDesc;
+
+  /// No description provided for @slush.
+  ///
+  /// In en, this message translates to:
+  /// **'Slush'**
+  String get slush;
+
+  /// No description provided for @slushDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Wet and partially melted snow in above zero degrees weather.'**
+  String get slushDesc;
+
+  /// No description provided for @wettingSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Wetting snow'**
+  String get wettingSnow;
+
+  /// No description provided for @wettingSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Wet or moist snow resulting from warm weather or rainfall.'**
+  String get wettingSnowDesc;
+
+  /// No description provided for @saturatedSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturated snow'**
+  String get saturatedSnow;
+
+  /// No description provided for @saturatedSnowDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Completely wet, slushing and whipped cream-like snow.'**
+  String get saturatedSnowDesc;
+
+  /// No description provided for @littleSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Little snow'**
+  String get littleSnow;
+
+  /// No description provided for @mapOfflineModeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'\'re offline - showing saved map data'**
+  String get mapOfflineModeMessage;
+
+  /// No description provided for @mapOfflineModeMessageNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'\'re offline - no map data available'**
+  String get mapOfflineModeMessageNoData;
+
+  /// No description provided for @weather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get weather;
+
+  /// No description provided for @dayBeforeYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'2 days ago'**
+  String get dayBeforeYesterday;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @now.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get now;
+
+  /// No description provided for @temperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get temperature;
+
+  /// No description provided for @snowDepth.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow depth'**
+  String get snowDepth;
+
+  /// No description provided for @wind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get wind;
+
+  /// No description provided for @airPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Air pressure'**
+  String get airPressure;
+
+  /// No description provided for @north.
+  ///
+  /// In en, this message translates to:
+  /// **'North'**
+  String get north;
+
+  /// No description provided for @northeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Northeast'**
+  String get northeast;
+
+  /// No description provided for @east.
+  ///
+  /// In en, this message translates to:
+  /// **'East'**
+  String get east;
+
+  /// No description provided for @southeast.
+  ///
+  /// In en, this message translates to:
+  /// **'Southeast'**
+  String get southeast;
+
+  /// No description provided for @south.
+  ///
+  /// In en, this message translates to:
+  /// **'South'**
+  String get south;
+
+  /// No description provided for @southwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Southwest'**
+  String get southwest;
+
+  /// No description provided for @west.
+  ///
+  /// In en, this message translates to:
+  /// **'West'**
+  String get west;
+
+  /// No description provided for @northwest.
+  ///
+  /// In en, this message translates to:
+  /// **'Northwest'**
+  String get northwest;
+
+  /// No description provided for @trend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend'**
+  String get trend;
+
+  /// No description provided for @lastFewDaysWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent weather'**
+  String get lastFewDaysWeather;
+
+  /// No description provided for @snowDepthChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change in snow depth'**
+  String get snowDepthChange;
+
+  /// No description provided for @temperature3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature over 3 days'**
+  String get temperature3Days;
+
+  /// No description provided for @highest.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest'**
+  String get highest;
+
+  /// No description provided for @lowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest'**
+  String get lowest;
+
+  /// No description provided for @countDaysAboveFreezing.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of days above freezing'**
+  String get countDaysAboveFreezing;
+
+  /// No description provided for @daysAboveFreezing.
+  ///
+  /// In en, this message translates to:
+  /// **'Days above freezing'**
+  String get daysAboveFreezing;
+
+  /// No description provided for @wind3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind over 3 days'**
+  String get wind3Days;
+
+  /// No description provided for @avgSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Average speed'**
+  String get avgSpeed;
+
+  /// No description provided for @avgDirection.
+  ///
+  /// In en, this message translates to:
+  /// **'Average direction'**
+  String get avgDirection;
+
+  /// No description provided for @maxWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum wind speed'**
+  String get maxWind;
+
+  /// No description provided for @lastThreeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last three days'**
+  String get lastThreeDays;
+
+  /// No description provided for @lastSevenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seven days'**
+  String get lastSevenDays;
+
+  /// No description provided for @snowDefinitionsPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Definitions'**
+  String get snowDefinitionsPageTitle;
+
+  /// No description provided for @noAvalancheWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'No avalanche warning'**
+  String get noAvalancheWarning;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @addObservation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add observation'**
+  String get addObservation;
+
+  /// No description provided for @rescue.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get rescue;
+
+  /// No description provided for @rescuePageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get rescuePageTitle;
+
+  /// No description provided for @rescuePageCoordinateSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinate system'**
+  String get rescuePageCoordinateSystem;
+
+  /// No description provided for @rescuePageShowOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on map'**
+  String get rescuePageShowOnMap;
+
+  /// No description provided for @rescuePageAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Position accuracy'**
+  String get rescuePageAccuracy;
+
+  /// No description provided for @rescuePageHelpRequestDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A help request alerts and sends your location to nearby wanderers'**
+  String get rescuePageHelpRequestDescription;
+
+  /// No description provided for @rescuePageEmergencyCallDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'In a severe emergency, always call 112'**
+  String get rescuePageEmergencyCallDescription;
+
+  /// No description provided for @rescuePageEmergencyCallFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone app could not be opened'**
+  String get rescuePageEmergencyCallFailed;
+
+  /// No description provided for @rescuePageIndicateNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please indicate your need'**
+  String get rescuePageIndicateNeed;
+
+  /// No description provided for @rescuePageHealthIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Health issue'**
+  String get rescuePageHealthIssue;
+
+  /// No description provided for @rescuePageEquipmentIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment issue'**
+  String get rescuePageEquipmentIssue;
+
+  /// No description provided for @rescuePageImLost.
+  ///
+  /// In en, this message translates to:
+  /// **'I am lost'**
+  String get rescuePageImLost;
+
+  /// No description provided for @rescuePageRequestHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Help'**
+  String get rescuePageRequestHelp;
+
+  /// No description provided for @rescuePageEndEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'End Event'**
+  String get rescuePageEndEvent;
+
+  /// No description provided for @rescueEndEventDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'End Help Event'**
+  String get rescueEndEventDialogTitle;
+
+  /// No description provided for @rescueEndEventDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to end this help event?'**
+  String get rescueEndEventDialogDescription;
+
+  /// No description provided for @rescueEndEventDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Event'**
+  String get rescueEndEventDialogCancel;
+
+  /// No description provided for @rescueEndEventDialogComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Event'**
+  String get rescueEndEventDialogComplete;
+
+  /// No description provided for @map.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get map;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @callForHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Call for Help'**
+  String get callForHelp;
+
+  /// No description provided for @currentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Location'**
+  String get currentLocation;
+
+  /// No description provided for @locationNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not available'**
+  String get locationNotAvailable;
+
+  /// No description provided for @userInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'User Information'**
+  String get userInformation;
+
+  /// No description provided for @userInformationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your personal information'**
+  String get userInformationSubtitle;
+
+  /// No description provided for @settingsPageSnowDefinitions.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow definitions'**
+  String get settingsPageSnowDefinitions;
+
+  /// No description provided for @settingsPageSnowDefinitionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show snow type definitions'**
+  String get settingsPageSnowDefinitionsSubtitle;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @languageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change app language'**
+  String get languageSubtitle;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @finnish.
+  ///
+  /// In en, this message translates to:
+  /// **'Suomi'**
+  String get finnish;
+
+  /// No description provided for @userInfoNotImplemented.
+  ///
+  /// In en, this message translates to:
+  /// **'User information feature coming soon'**
+  String get userInfoNotImplemented;
+
+  /// No description provided for @dialogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get dialogConfirm;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @obstacles.
+  ///
+  /// In en, this message translates to:
+  /// **'Obstacles'**
+  String get obstacles;
+
+  /// No description provided for @selectSnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select snow type'**
+  String get selectSnowType;
+
+  /// No description provided for @specifySnowType.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify snow type'**
+  String get specifySnowType;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// No description provided for @coordinateDirectionNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'N'**
+  String get coordinateDirectionNorth;
+
+  /// No description provided for @coordinateDirectionSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'S'**
+  String get coordinateDirectionSouth;
+
+  /// No description provided for @coordinateDirectionEast.
+  ///
+  /// In en, this message translates to:
+  /// **'E'**
+  String get coordinateDirectionEast;
+
+  /// No description provided for @coordinateDirectionWest.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get coordinateDirectionWest;
+
+  /// No description provided for @sensors.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensors'**
+  String get sensors;
+
+  /// No description provided for @segments.
+  ///
+  /// In en, this message translates to:
+  /// **'Segments'**
+  String get segments;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address'**
+  String get invalidEmail;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too short'**
+  String get passwordTooShort;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @min6Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get min6Characters;
+
+  /// No description provided for @logIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get logIn;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @passwordRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Requirements'**
+  String get passwordRequirements;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed'**
+  String get registrationFailed;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed'**
+  String get loginFailed;
+
+  /// No description provided for @loggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in'**
+  String get loggedIn;
+
+  /// No description provided for @registeredSuccesfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered successfully'**
+  String get registeredSuccesfully;
+
+  /// No description provided for @loggedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in as'**
+  String get loggedInAs;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneNumber;
+
+  /// No description provided for @registeredAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered at'**
+  String get registeredAt;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @guideHazards.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazards'**
+  String get guideHazards;
+
+  /// No description provided for @guideInfoFromUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'The information below is based on observations from other users.'**
+  String get guideInfoFromUsers;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeJustNow;
+
+  /// No description provided for @timeUnderMinuteAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'under a minute ago'**
+  String get timeUnderMinuteAgo;
+
+  /// No description provided for @timeOneMinuteAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute ago'**
+  String get timeOneMinuteAgo;
+
+  /// No description provided for @timeNMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String timeNMinutesAgo(Object minutes);
+
+  /// No description provided for @timeOneHourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour ago'**
+  String get timeOneHourAgo;
+
+  /// No description provided for @timeNHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String timeNHoursAgo(Object hours);
+
+  /// No description provided for @timeOneDayAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day ago'**
+  String get timeOneDayAgo;
+
+  /// No description provided for @timeNDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String timeNDaysAgo(Object days);
+
+  /// No description provided for @dataPointUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get dataPointUnavailable;
+
+  /// No description provided for @degrees.
+  ///
+  /// In en, this message translates to:
+  /// **'°'**
+  String get degrees;
+
+  /// No description provided for @degreesCelsius.
+  ///
+  /// In en, this message translates to:
+  /// **'°C'**
+  String get degreesCelsius;
+
+  /// No description provided for @metersPerSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'m/s'**
+  String get metersPerSecond;
+
+  /// No description provided for @centimeters.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get centimeters;
+
+  /// No description provided for @stones.
+  ///
+  /// In en, this message translates to:
+  /// **'Stones'**
+  String get stones;
+
+  /// No description provided for @branches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get branches;
+
+  /// No description provided for @translationMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Translation missing'**
+  String get translationMissing;
+
+  /// No description provided for @errorNoInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network and try again.'**
+  String get errorNoInternetConnection;
+
+  /// No description provided for @errorConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed. Please try again later.'**
+  String get errorConnectionFailed;
+
+  /// No description provided for @errorRequestHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to request help. Please try again.'**
+  String get errorRequestHelpFailed;
+
+  /// No description provided for @errorCancelHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to cancel help request. Please try again.'**
+  String get errorCancelHelpFailed;
+
+  /// No description provided for @errorCompleteHelpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to complete help request. Please try again.'**
+  String get errorCompleteHelpFailed;
+
+  /// No description provided for @errorServerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Server is temporarily unavailable. Please try again later.'**
+  String get errorServerUnavailable;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get errorUnknown;
+
+  /// No description provided for @settingsDefaultTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Tab'**
+  String get settingsDefaultTab;
+
+  /// No description provided for @settingsDefaultTabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which screen to show when the app starts'**
+  String get settingsDefaultTabSubtitle;
+
+  /// No description provided for @settingsDefaultTabRescue.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescue'**
+  String get settingsDefaultTabRescue;
+
+  /// No description provided for @settingsDefaultTabMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get settingsDefaultTabMap;
+
+  /// No description provided for @settingsDefaultTabWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get settingsDefaultTabWeather;
+
+  /// No description provided for @settingsDefaultTabSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsDefaultTabSettings;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return lookupAppLocalizations(locale);
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fi'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+Future<AppLocalizations> lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return app_localizations_en.loadLibrary().then(
+        (dynamic _) => app_localizations_en.AppLocalizationsEn(),
+      );
+    case 'fi':
+      return app_localizations_fi.loadLibrary().then(
+        (dynamic _) => app_localizations_fi.AppLocalizationsFi(),
+      );
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

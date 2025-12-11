@@ -1,0 +1,847 @@
+import { Feature, Polygon } from "geojson";
+export type InteractiveAreaProperties = {
+	name: string;
+	terrain: string;
+	avalancheDanger: boolean;
+	isLowerSegment: number | null;
+	id: string;
+};
+
+export type InteractiveAreaFeature = Feature<
+	Polygon,
+	InteractiveAreaProperties
+>;
+
+export const mapAreas: InteractiveAreaFeature[] = [
+	{
+		type: "Feature",
+		properties: {
+			name: "Laukukero Pohjoisseinä",
+			terrain: "Tuulikangas",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-2",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0316, 68.0613],
+					[24.0333, 68.0639],
+					[24.0398, 68.067],
+					[24.021, 68.0702],
+					[24.0042, 68.0655],
+					[24.0102, 68.0625],
+					[24.0316, 68.0613],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Lehmäkero länsiseinä ja laakso",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-3",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0381, 68.0826],
+					[24.0425, 68.0844],
+					[24.0359, 68.0883],
+					[24.0258, 68.0979],
+					[24.0358, 68.1046],
+					[24.0499, 68.1081],
+					[24.0562, 68.0937],
+					[24.0628, 68.0874],
+					[24.0666, 68.0846],
+					[24.0633, 68.0807],
+					[24.0652, 68.0793],
+					[24.0667, 68.0737],
+					[24.061, 68.0752],
+					[24.0576, 68.0759],
+					[24.0498, 68.0806],
+					[24.0381, 68.0826],
+				],
+			],
+		},
+	},
+];
+
+export const mapAreas2: InteractiveAreaFeature[] = [
+	/*   {
+    "type": "Feature",
+    "properties": {
+      "name": "Metsä",
+      "terrain": "Metsä",
+      "avalancheDanger": false,
+      "isLowerSegment": null,
+      "id": "area-1"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            23.078,
+            68.2861
+          ],
+          [
+            23.128,
+            67.7465
+          ],
+          [
+            25.1663,
+            67.7352
+          ],
+          [
+            25.1919,
+            68.3988
+          ],
+          [
+            23.078,
+            68.2861
+          ]
+        ]
+      ]
+    }
+  }, */
+	{
+		type: "Feature",
+		properties: {
+			name: "Laukukero Pohjoisseinä",
+			terrain: "Tuulikangas",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-2",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0316, 68.0613],
+					[24.0333, 68.0639],
+					[24.0398, 68.067],
+					[24.021, 68.0702],
+					[24.0042, 68.0655],
+					[24.0102, 68.0625],
+					[24.0316, 68.0613],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Lehmäkero länsiseinä ja laakso",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-3",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0381, 68.0826],
+					[24.0425, 68.0844],
+					[24.0359, 68.0883],
+					[24.0258, 68.0979],
+					[24.0358, 68.1046],
+					[24.0499, 68.1081],
+					[24.0562, 68.0937],
+					[24.0628, 68.0874],
+					[24.0666, 68.0846],
+					[24.0633, 68.0807],
+					[24.0652, 68.0793],
+					[24.0667, 68.0737],
+					[24.061, 68.0752],
+					[24.0576, 68.0759],
+					[24.0498, 68.0806],
+					[24.0381, 68.0826],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Orotuskero eteläseinä ja laakso",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-4",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0536, 68.0749],
+					[24.0383, 68.0747],
+					[24.021, 68.0702],
+					[24.0042, 68.0655],
+					[23.9948, 68.0701],
+					[24.0119, 68.0776],
+					[24.0191, 68.08],
+					[24.025, 68.082],
+					[24.0381, 68.0826],
+					[24.0498, 68.0806],
+					[24.0576, 68.0759],
+					[24.0536, 68.0749],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Paratiisikuru",
+			terrain: "Tuulikangas, keskellä rehevä katajainen joenuoma",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-5",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0398, 68.067],
+					[24.0413, 68.0681],
+					[24.0536, 68.0749],
+					[24.0383, 68.0747],
+					[24.021, 68.0702],
+					[24.0398, 68.067],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Pallas-Palkas itäseinä",
+			terrain: "Rakka, puurajassa varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-6",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.1142, 68.0309],
+					[24.1059, 68.0392],
+					[24.1096, 68.0483],
+					[24.0967, 68.0534],
+					[24.0945, 68.0638],
+					[24.1027, 68.0659],
+					[24.1122, 68.0567],
+					[24.1258, 68.0515],
+					[24.1273, 68.0447],
+					[24.1248, 68.0408],
+					[24.1227, 68.037],
+					[24.1142, 68.0309],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Laukukero itäseinä",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-7",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0443, 68.048],
+					[24.053, 68.0497],
+					[24.0562, 68.0593],
+					[24.0398, 68.067],
+					[24.0333, 68.0639],
+					[24.0316, 68.0613],
+					[24.0386, 68.0563],
+					[24.0443, 68.048],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Laukukero länsiseinä",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-8",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0102, 68.0625],
+					[24.0316, 68.0613],
+					[24.0386, 68.0563],
+					[24.0443, 68.048],
+					[24.0364, 68.0508],
+					[24.0296, 68.0525],
+					[24.0244, 68.0546],
+					[24.0194, 68.056],
+					[24.0171, 68.057],
+					[24.0102, 68.0625],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Pallas-Palkas länsiseinä",
+			terrain: "Tuulikangas ja varvikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-9",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.1142, 68.0309],
+					[24.0972, 68.0336],
+					[24.0807, 68.0401],
+					[24.0807, 68.0401],
+					[24.0622, 68.0513],
+					[24.0945, 68.0638],
+					[24.0967, 68.0534],
+					[24.1096, 68.0483],
+					[24.1059, 68.0392],
+					[24.1142, 68.0309],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Vatikuru",
+			terrain: "Tuulikangas alaosassa puronvarsilla katajikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-10",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0627, 68.0593],
+					[24.0628, 68.0625],
+					[24.0737, 68.0702],
+					[24.0667, 68.0737],
+					[24.061, 68.0752],
+					[24.0576, 68.0759],
+					[24.0536, 68.0749],
+					[24.0413, 68.0681],
+					[24.0398, 68.067],
+					[24.0562, 68.0593],
+					[24.0561, 68.0593],
+					[24.0627, 68.0593],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Pyhä-Lehmäkero itäseinä",
+			terrain: "Raakakivikko",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-11",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.1027, 68.0659],
+					[24.0737, 68.0702],
+					[24.0667, 68.0737],
+					[24.0652, 68.0793],
+					[24.0633, 68.0807],
+					[24.0666, 68.0846],
+					[24.0628, 68.0874],
+					[24.0562, 68.0937],
+					[24.0692, 68.1007],
+					[24.0745, 68.0992],
+					[24.0722, 68.0955],
+					[24.0792, 68.0917],
+					[24.0859, 68.0871],
+					[24.0892, 68.082],
+					[24.0917, 68.0794],
+					[24.0984, 68.0746],
+					[24.1053, 68.0694],
+					[24.1027, 68.0659],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Pyhäkero eteläseinä",
+			terrain: "Raakakivikko ja tuulikangas",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-12",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0737, 68.0702],
+					[24.1027, 68.0659],
+					[24.0945, 68.0638],
+					[24.0622, 68.0513],
+					[24.0627, 68.0593],
+					[24.0628, 68.0625],
+					[24.0737, 68.0702],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Paratiisikuru",
+			terrain: "Vakio",
+			avalancheDanger: false,
+			isLowerSegment: 5,
+			id: "area-13",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.038, 68.0728],
+					[24.0341, 68.0725],
+					[24.0341, 68.0725],
+					[24.0306, 68.0724],
+					[24.0248, 68.0712],
+					[24.0227, 68.0706],
+					[24.0234, 68.07],
+					[24.0261, 68.0694],
+					[24.0361, 68.0677],
+					[24.0391, 68.068],
+					[24.041, 68.0687],
+					[24.0412, 68.0699],
+					[24.0404, 68.0711],
+					[24.038, 68.0728],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Pyhäkuru",
+			terrain: "Vakio",
+			avalancheDanger: true,
+			isLowerSegment: 11,
+			id: "area-14",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0697, 68.0809],
+					[24.0685, 68.0801],
+					[24.0677, 68.0788],
+					[24.0689, 68.0779],
+					[24.0704, 68.077],
+					[24.0722, 68.0763],
+					[24.0755, 68.0759],
+					[24.0778, 68.0763],
+					[24.0806, 68.0769],
+					[24.0826, 68.0778],
+					[24.084, 68.0785],
+					[24.0851, 68.0791],
+					[24.0859, 68.0796],
+					[24.0835, 68.0805],
+					[24.08, 68.0813],
+					[24.0759, 68.0812],
+					[24.0738, 68.0812],
+					[24.0716, 68.0811],
+					[24.0697, 68.0809],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Soilenrinne",
+			terrain: "Vakio",
+			avalancheDanger: false,
+			isLowerSegment: 8,
+			id: "area-15",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0304, 68.0596],
+					[24.0279, 68.0588],
+					[24.0258, 68.0583],
+					[24.0232, 68.0575],
+					[24.02018, 68.05656],
+					[24.01968, 68.05627],
+					[24.02676, 68.05423],
+					[24.02791, 68.05476],
+					[24.03123, 68.05588],
+					[24.0336, 68.05744],
+					[24.03453, 68.05824],
+					[24.0304, 68.0596],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Veitikka",
+			terrain: "Vakio",
+			avalancheDanger: false,
+			isLowerSegment: 10,
+			id: "area-16",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0584, 68.0685],
+					[24.058, 68.0691],
+					[24.0575, 68.0696],
+					[24.0573, 68.07],
+					[24.0572, 68.0708],
+					[24.0577, 68.0718],
+					[24.0601, 68.0718],
+					[24.0621, 68.0717],
+					[24.064, 68.0713],
+					[24.0652, 68.0709],
+					[24.0657, 68.0706],
+					[24.0644, 68.0692],
+					[24.0629, 68.0688],
+					[24.0615, 68.0687],
+					[24.0604, 68.0684],
+					[24.0594, 68.0682],
+					[24.0584, 68.0685],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Viivakuru",
+			terrain: "Vakio",
+			avalancheDanger: false,
+			isLowerSegment: 6,
+			id: "area-17",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.1112, 68.0502],
+					[24.1123, 68.0506],
+					[24.1133, 68.0509],
+					[24.1152, 68.0516],
+					[24.117, 68.0521],
+					[24.1186, 68.0528],
+					[24.1195, 68.0531],
+					[24.1201, 68.0531],
+					[24.1204, 68.0529],
+					[24.1203, 68.0527],
+					[24.1198, 68.0524],
+					[24.1189, 68.052],
+					[24.1172, 68.0513],
+					[24.1161, 68.051],
+					[24.115, 68.0507],
+					[24.114, 68.0503],
+					[24.1132, 68.0501],
+					[24.1121, 68.0497],
+					[24.1114, 68.0499],
+					[24.1112, 68.0502],
+				],
+			],
+		},
+	},
+	{
+		type: "Feature",
+		properties: {
+			name: "Orotuskero pohjoinen",
+			terrain: "Kivirakka, alhaalla kosteikkoa",
+			avalancheDanger: false,
+			isLowerSegment: null,
+			id: "area-18",
+		},
+		geometry: {
+			type: "Polygon",
+			coordinates: [
+				[
+					[24.0381, 68.0826],
+					[24.0425, 68.0844],
+					[24.0359, 68.0883],
+					[24.0258, 68.0979],
+					[23.9948, 68.0701],
+					[24.0119, 68.0776],
+					[24.0191, 68.08],
+					[24.025, 68.082],
+					[24.0381, 68.0826],
+				],
+			],
+		},
+	},
+];
+
+export type SnowType = {
+	id: number;
+	name: string;
+	colour: string;
+	skiability: number | null;
+	primarySnowTypeId: number | null;
+	explanation: string;
+};
+
+export const mockSnowData: SnowType[] = [
+	{
+		id: 1,
+		name: "Korppu",
+		colour: "#3838a0",
+		skiability: 3,
+		primarySnowTypeId: null,
+		explanation:
+			"Kova hangen pinnalla oleva kansi. Korppu voi olla luonteeltaan tasaista tai rosoista.",
+	},
+	{
+		id: 2,
+		name: "Sohjo",
+		colour: "#919394",
+		skiability: 2,
+		primarySnowTypeId: null,
+		explanation: "Vesipitoinen ja osittain sulanut lumi suojasäällä.",
+	},
+	{
+		id: 3,
+		name: "Jää",
+		colour: "#34929A",
+		skiability: 2,
+		primarySnowTypeId: null,
+		explanation:
+			"Hangen pinnalla oleva kova ja rikkoutumaton jäinen kerros. Jää on syntynyt sulamis-jäätymisreaktion tuloksena.",
+	},
+	{
+		id: 4,
+		name: "Uusi lumi",
+		colour: "#5AABED",
+		skiability: 4,
+		primarySnowTypeId: null,
+		explanation: "Vastasatanut pehmeä lumi.",
+	},
+	{
+		id: 5,
+		name: "Tuulen pieksemä lumi",
+		colour: "#7C759F",
+		skiability: 3,
+		primarySnowTypeId: null,
+		explanation:
+			"Tuulen kovettama ja moninpaikoin epätasaiseksi muotoilema lumi.",
+	},
+	{
+		id: 6,
+		name: "Vähäinen lumi",
+		colour: "#6D4F32",
+		skiability: null,
+		primarySnowTypeId: null,
+		explanation: "",
+	},
+	{
+		id: 8,
+		name: "Lumeton maa",
+		colour: "#000000",
+		skiability: null,
+		primarySnowTypeId: null,
+		explanation: "",
+	},
+	{
+		id: 9,
+		name: "Vitilumi",
+		colour: "#5AABED",
+		skiability: 5,
+		primarySnowTypeId: 4,
+		explanation:
+			"Vastasatanutta, kevyttä, pehmeää ja hieman tiivistyvää pakkaslunta.",
+	},
+	{
+		id: 10,
+		name: "Puuterilumi",
+		colour: "#5AABED",
+		skiability: 5,
+		primarySnowTypeId: 4,
+		explanation:
+			"Vastasatanutta irtonaista, höyhenenkevyttä ja tiivistymätöntä lunta. Puuterilunta muodostuu yleensä tyynellä ilmalla ja kovalla pakkasella.",
+	},
+	{
+		id: 11,
+		name: "Märkä uusi lumi",
+		colour: "#5AABED",
+		skiability: 4,
+		primarySnowTypeId: 4,
+		explanation:
+			"Lunta, josta voit helposti tehdä lumipallon. Märkää lunta muodostuu sateen tapahtuessa lähellä nollaa tai reilusti suojan puolella.",
+	},
+	{
+		id: 12,
+		name: "Sastrugi",
+		colour: "#7C759F",
+		skiability: 1,
+		primarySnowTypeId: 5,
+		explanation:
+			"Tuulen aiheuttamaa lumiaallokkoa, joka on kovaa, jäistä ja terväharjanteista.",
+	},
+	{
+		id: 13,
+		name: "Aaltoileva lumi",
+		colour: "#7C759F",
+		skiability: 4,
+		primarySnowTypeId: 5,
+		explanation:
+			"Tuulen muotoilema uuden lumen alue. Aallot ovat pehmeitä ja hyvin rikottavissa.",
+	},
+	{
+		id: 14,
+		name: "Tuiskulumi",
+		colour: "#7C759F",
+		skiability: 4,
+		primarySnowTypeId: 5,
+		explanation:
+			"Tasainen, tuulen kerrostama ja pakkaama laatta tai linssi. Tuiskulunta voi kertyä myös ilman lumisadetta, jos tuuli siirtää lunta paikasta toiseen. Tuiskulunta syntyy yleensä suojapuolelle.",
+	},
+	{
+		id: 15,
+		name: "Ohut korppu",
+		colour: "#3838a0",
+		skiability: 3,
+		primarySnowTypeId: 1,
+		explanation:
+			"Hiihtäjän painosta rikkoutuva lumikansi. Korpun alla lumi voi olla paikoitellen upottavaa.",
+	},
+	{
+		id: 16,
+		name: "Rikkoutuva korppu",
+		colour: "#3838a0",
+		skiability: 2,
+		primarySnowTypeId: 1,
+		explanation:
+			"Satunnaisesti kantava, yllättäen rikkoutuva lumen pinta. Kansi voi olla hyvinkin paksu, jos sen alla on huokoista lunta.",
+	},
+	{
+		id: 17,
+		name: "Kantava korppu",
+		colour: "#3838a0",
+		skiability: 3,
+		primarySnowTypeId: 1,
+		explanation:
+			"Tukeva ja kantava lumikansi, jonka pinta on usein hyvin kovaa ja tiivistä.",
+	},
+	{
+		id: 18,
+		name: "Rikkoutuva jää",
+		colour: "#34929A",
+		skiability: 1,
+		primarySnowTypeId: 3,
+		explanation: "Hangen pinnalla oleva kova ja rikkoutuva jäinen kerros.",
+	},
+	{
+		id: 19,
+		name: "Kastuva lumi",
+		colour: "#919394",
+		skiability: 3,
+		primarySnowTypeId: 2,
+		explanation:
+			"Lämpenemisen tai vesisateen myötä pinnalta alkaen märkä tai kostea lumi.",
+	},
+	{
+		id: 20,
+		name: "Saturoitunut lumi",
+		colour: "#919394",
+		skiability: 2,
+		primarySnowTypeId: 2,
+		explanation:
+			"Märkä, läpi koko kerroksen sohjoutuva ja kermavaahtomainen lumi",
+	},
+];
+
+export type UpdateData = {
+	segment: number;
+	time: string;
+	description: string | null;
+	snowTypeId1: number | null;
+	snowTypeId2: number | null;
+	secondaryId1: number | null;
+	secondaryId2: number | null;
+	a1Time: string | null;
+	a1SnowType: number | null;
+	a1Details: number | null;
+	a2Time: string | null;
+	a2SnowType: number | null;
+	a2Details: number | null;
+	a3Time: string | null;
+	a3SnowType: number | null;
+	a3Details: number | null;
+};
+
+export const mockUpdateData: UpdateData[] = [
+	{
+		segment: 3,
+		time: "2025-10-21T15:11:00.000Z",
+		description: null,
+		snowTypeId1: 1,
+		snowTypeId2: null,
+		secondaryId1: null,
+		secondaryId2: null,
+		a1Time: "2025-10-16T15:11:00.000Z",
+		a1SnowType: 18,
+		a1Details: 3,
+		a2Time: null,
+		a2SnowType: null,
+		a2Details: null,
+		a3Time: null,
+		a3SnowType: null,
+		a3Details: null,
+	},
+	{
+		segment: 18,
+		time: "2025-10-16T15:15:42.000Z",
+		description: null,
+		snowTypeId1: null,
+		snowTypeId2: null,
+		secondaryId1: null,
+		secondaryId2: null,
+		a1Time: "2025-10-16T15:15:42.000Z",
+		a1SnowType: 18,
+		a1Details: 1,
+		a2Time: null,
+		a2SnowType: null,
+		a2Details: null,
+		a3Time: null,
+		a3SnowType: null,
+		a3Details: null,
+	},
+];

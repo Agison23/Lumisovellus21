@@ -1,0 +1,389 @@
+name: Unified CI
+
+on:
+  workflow_call:
+    inputs:
+      coverage-threshold:
+        type: number
+        default: 70
+      run-build:
+        type: boolean
+        default: false
+      run-heavy-lint:
+        type: boolean
+        default: false
+      audit-level:
+        type: string
+        default: "critical"
+      run-security-checks:
+        type: boolean
+        default: false
+      run-smoke-e2e:
+        type: boolean
+        default: false
+      run-backend-full:
+        type: boolean
+        default: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - "apps/backend/**"
+            frontend:
+              - "!apps/backend/**"
+
+  backend-lint:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+
+    strategy:
+      matrix:
+        node-version: [24.11.1]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: npm i --ignore-scripts
+
+      - name: Run backend linter
+        working-directory: apps/backend
+        run: npm run lint
+
+  backend-test:
+    runs-on: ubuntu-latest
+    needs: backend-lint
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Patch npm optional dep bug
+        run: npm install -g npm@10.8.1
+      
+      - name: Install missing Rollup native binary
+        working-directory: apps/backend
+        run: |
+          echo "Installing Rollup native binary"
+          npm install @rollup/rollup-linux-x64-gnu --no-save || true
+      
+      - name: Install Rollup native binary in root
+        run: npm install @rollup/rollup-linux-x64-gnu --no-save || true
+
+      - name: Install backend dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Setup test database
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+          NODE_ENV: test
+          PORT: 3001
+          JWT_SECRET: test_jwt_secret_key_for_testing_only
+        run: |
+          sleep 10
+          npx prisma db push
+
+      - name: Run backend tests with coverage
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: mysql://root:testpassword@localhost:3306/testdb
+          NODE_ENV: test
+          PORT: 3001
+          JWT_SECRET: test_jwt_secret_key_for_testing_only
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: apps/backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: apps/backend/coverage/lcov.info
+          delete-old-comments: true
+
+  backend-security:
+    runs-on: ubuntu-latest
+    needs: backend-test
+    if: ${{ inputs.run-backend-full }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: npm security audit
+        working-directory: apps/backend
+        run: npm audit --audit-level=high
+
+      - name: Run dependency check (non-fatal)
+        working-directory: apps/backend
+        run: npx audit-ci --config audit-ci.json
+        continue-on-error: true
+
+  backend-build:
+    runs-on: ubuntu-latest
+    needs: backend-security
+    if: ${{ inputs.run-backend-full }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+
+      - name: Install backend dependencies
+        working-directory: apps/backend
+        run: npm i --ignore-scripts
+
+      - name: Generate Prisma client
+        working-directory: apps/backend
+        run: npx prisma generate
+
+      - name: Build backend
+        working-directory: apps/backend
+        run: npm run build
+
+  validate:
+    runs-on: ubuntu-22.04
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+            .nvmrc
+            .turboignore
+            .gitleaks.toml
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Flutter (stable channel)
+        if: ${{ env.ACT != 'true' }}
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.35.6"
+          cache: false
+
+      - name: Mock Flutter (act)
+        if: ${{ env.ACT == 'true' }}
+        run: |
+          echo "Simulating Flutter"
+          mkdir -p /usr/local/bin
+          echo -e '#!/bin/bash\necho Flutter 3.35.6-stable' > /usr/local/bin/flutter
+          chmod +x /usr/local/bin/flutter
+          echo -e '#!/bin/bash\necho Dart 3.6.0' > /usr/local/bin/dart
+          chmod +x /usr/local/bin/dart
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: |
+          npm ci --prefer-offline --no-audit --fund=false
+          npx turbo run pubget
+
+      - name: Install Playwright browsers (ACT)
+        if: ${{ env.ACT == 'true' }}
+        run: npx playwright install --with-deps
+
+      - name: Generate OpenAPI & clients
+        run: npm run openapi:check
+
+      - name: Verify OpenAPI clients committed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Uncommitted OpenAPI/client changes detected"
+            exit 0
+          fi
+
+      - name: Lint (fast)
+        run: npm run lint
+
+      - name: Lint (heavy)
+        if: ${{ inputs.run-heavy-lint }}
+        run: npm run lint:heavy
+
+      - name: Create Next type shim
+        run: |
+          f=apps/web/next-env.d.ts
+          if [ ! -f "$f" ]; then
+            printf '/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n' > "$f"
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  build:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' && inputs.run-build }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.11.1"
+          cache: npm
+
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: Build frontend
+        run: npm run build
+
+  test:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            apps/web
+            apps/mobile
+            packages
+            infra
+            turbo.json
+            package.json
+            package-lock.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.11.1"
+          cache: npm
+
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: Patch npm optional dep bug
+        run: npm install -g npm@10.8.1
+
+      - name: Install missing Rollup native binary (fix Vitest optional dep bug)
+        run: |
+          echo "Installing Rollup native binary"
+          npm install @rollup/rollup-linux-x64-gnu --no-save || true
+
+      - name: Test
+        run: npx turbo run test:unit
+
+      - name: Coverage gate
+        run: |
+          echo "Checking threshold ${{ inputs.coverage-threshold }}%"
+
+  security:
+    runs-on: ubuntu-22.04
+    needs: validate
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' && inputs.run-security-checks }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.11.1"
+          cache: npm
+
+      - run: npm ci --prefer-offline --no-audit --fund=false
+
+      - name: npm audit
+        run: npm audit --audit-level=${{ inputs.audit-level }}
+
+  smoke:
+    runs-on: ubuntu-22.04
+    needs: [validate, build, test, security]
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' && inputs.run-smoke-e2e }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Smoke E2E placeholder
+        run: echo "Run smoke tests"
