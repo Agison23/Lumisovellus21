@@ -73,3 +73,6 @@ docker compose -f docker-compose.demo.yml up web
 This command will build the Docker images and start the containers for the database, backend, and web application.
 
 Unfreezing the VPS can only be done by restarting the VPS via the hosting provider's control panel. The legacy application restarts without problems usually.
+IF it does not, and it is the map that is not loading, a process occupying the port that the application is trying to use needs to be killed.
+This error should be found from the pm2 logs if that is the case, "Error: listen EADDRINUSE: address already in use :::3000".
+For example with the command "lsof -i :3000" you can find the PID that needs to be killed if this is the case.
