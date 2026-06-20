@@ -1,0 +1,2 @@
+DATABASE="mysql://lumisovellus:password@mysql:3306/lumisovellus"
+

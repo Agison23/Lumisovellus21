@@ -1,18 +1,3 @@
-{
-  "name": "Lumisovellus Dev",
-  "dockerComposeFile": "../infra/docker/docker-compose.dev.yml",
-  "service": "dev",
-  "workspaceFolder": "/workspace",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "dart-code.flutter",
-        "prisma.prisma"
-      ]
-    }
-  },
-  "postCreateCommand": "(adb connect host.docker.internal:5555 || true) && (adb reverse tcp:3001 tcp:3001 || true) && cd apps/mobile && flutter pub get",
-  "forwardPorts": [3000, 8080]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:0cb2da66be54dfe0f934e6ea751f1459caf4cb4b0fccd6043f2f46be8e1443ea
+size 557

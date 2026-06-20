@@ -1,28 +1,3 @@
-//
-//  Generated file. Do not edit.
-//
-
-import FlutterMacOS
-import Foundation
-
-import connectivity_plus
-import firebase_core
-import firebase_remote_config
-import flutter_secure_storage_macos
-import geolocator_apple
-import path_provider_foundation
-import shared_preferences_foundation
-import sqlite3_flutter_libs
-import url_launcher_macos
-
-func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  ConnectivityPlusPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlusPlugin"))
-  FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
-  FirebaseRemoteConfigPlugin.register(with: registry.registrar(forPlugin: "FirebaseRemoteConfigPlugin"))
-  FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
-  GeolocatorPlugin.register(with: registry.registrar(forPlugin: "GeolocatorPlugin"))
-  PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
-  SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
-  Sqlite3FlutterLibsPlugin.register(with: registry.registrar(forPlugin: "Sqlite3FlutterLibsPlugin"))
-  UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:61120325f60e837315b673bc9eef667917956814d07945b4718ad3403c7799e4
+size 1652
