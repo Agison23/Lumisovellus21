@@ -1,3 +1,77 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1605977720d985bfe0341341fb347ecb50471207689faa17689d84af556a70e9
-size 1588
+{
+  "$schema": "https://v2-9-3.turborepo.dev/schema.json",
+  "tasks": {
+    "dev": { 
+      "cache": false, 
+      "persistent": true, 
+      "dependsOn": ["^dev"] 
+    },
+
+    "openapi:client:web": {},
+
+    "openapi:check": { 
+      "dependsOn": ["openapi:client:web", "openapi:client:mobile"], 
+      "outputs": [] 
+    },
+
+    "lint:heavy": { 
+      "outputs": [], 
+      "dependsOn": ["^lint:heavy"] 
+    },
+
+    "test:unit": {},
+    "test:integration": {},
+
+    "build": {
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "dependsOn": ["^build", "^openapi:check", "^typecheck", "^lint", "^test"]
+    },
+
+    "e2e": {
+      "passThroughEnv": ["PLAYWRIGHT_*"]
+    },
+
+    "test": {
+      "outputs": ["apps/mobile/coverage/**"],
+      "dependsOn": ["^test", "openapi:client:mobile", "transit"]
+    },
+
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+
+    "lint": { 
+      "outputs": [], 
+      "dependsOn": ["^lint"] 
+    },
+
+    "lint:fix": { 
+      "outputs": [], 
+      "dependsOn": ["^lint:fix"] 
+    },
+
+    "format": { "outputs": [] },
+    "format:check": { "outputs": [] },
+
+    "typecheck": { 
+      "outputs": [], 
+      "dependsOn": ["^typecheck"] 
+    },
+
+    "pubget": {
+      "cache": false,
+      "dependsOn": [],
+      "outputs": [],
+      "inputs": []
+    },
+
+    "openapi:emit": {
+      "outputs": ["apps/backend/openapi.json"]
+    },
+
+    "openapi:client:mobile": {
+      "dependsOn": ["openapi:emit"],
+      "outputs": ["packages/lumisovellus_api/**"]
+    }
+  }
+}
